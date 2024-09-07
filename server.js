@@ -3,6 +3,7 @@ const app = express();
 require("dotenv").config();
 const path = require("path");
 const cors = require("cors");
+const session = require("express-session");
 const flash = require("express-flash");
 
 //-------ROUTES--------//
@@ -14,6 +15,15 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/node_modules", express.static(path.join(__dirname, "node_modules")));
 app.use(cors());
 
+app.use(
+    session({
+        secret: process.env.SECRET,
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: false },
+    })
+);
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(flash());
@@ -23,7 +33,7 @@ app.use((req, res, next) => {
     res.header("Expires", "-1");
     res.header("Pragma", "no-cache");
     next();
-  });
+});
 
 //-----REDIRECT TO PAGE PREVIEW-----//
 app.get("/", (req, res) => {
