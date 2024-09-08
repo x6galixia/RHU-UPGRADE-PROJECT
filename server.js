@@ -36,6 +36,8 @@ app.use((req, res, next) => {
 });
 
 //-----REDIRECT TO PAGE PREVIEW-----//
+//-----this is just for initial setup-----//
+//-----for production the url should be redirected to the login-----//
 app.get("/", (req, res) => {
     res.redirect("/admin-dashboard");
 })
