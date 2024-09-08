@@ -7,7 +7,7 @@ const session = require("express-session");
 const flash = require("express-flash");
 
 //-------ROUTES--------//
-const adminRouter = require("./routes/admin/preview");
+const adminRouter = require("./routes/admin/admin");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -37,7 +37,7 @@ app.use((req, res, next) => {
 
 //-----REDIRECT TO PAGE PREVIEW-----//
 app.get("/", (req, res) => {
-    res.redirect("/preview");
+    res.redirect("/admin-dashboard");
 })
 
 //------INITIALIZE ROUTES------//
