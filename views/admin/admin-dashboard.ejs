@@ -46,7 +46,32 @@
         </div>
         <div class="inner-container">
             <div class="inner-inner-container">
-                <p>Create user</p>
+                <div class="create-user-container">
+                    <p>Create user</p>
+                <select name="rhu_id" id="rhu-id-dropdown">
+                    <option value="none" selected disabled>select an rhu</option>
+                    <option value="main">Main</option>
+                    <option value="maypangdan">Maypangdan</option>
+                    <option value="tabunan">Tabunan</option>
+                    <option value="songco">Songco</option>
+                </select>
+
+                <input type="text" name="last_name" id="input" placeholder="Last name">
+                <input type="text" name="first_name" id="input" placeholder="First name">
+                <input type="text" name="middle_name" id="input" placeholder="Middle initial">
+
+                <select name="profession" id="profession-dropdown">
+                    <option value="none" selected disabled>select a profession</option>
+                    <option value="doctor">Doctor</option>
+                    <option value="nurse">Nurse</option>
+                    <option value="medtech">Med tech</option>
+                    <option value="pharmacist">Pharmacist</option>
+                </select>
+                <input type="text" name="license-no" id="input" placeholder="License number">
+                <input type="text" name="username" id="input" placeholder="username">
+                <input type="password" name="password" id="input" placeholder="password">
+                </div>
+                <button>cancel</button> <button>ok</button>
             </div>
         </div>
     </div>

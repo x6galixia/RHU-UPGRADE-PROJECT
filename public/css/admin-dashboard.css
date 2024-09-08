@@ -34,6 +34,31 @@ body{
     padding: 10px;
 }
 
+.create-user-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+select{
+    width: 508px;
+    height: 30px;
+    margin: 5px;
+}
+
+input{
+    width: 500px;
+    height: 30px;
+    margin: 5px;
+}
+
+button{
+    width: 100px;
+    height: 30px;
+    margin: 20px;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
