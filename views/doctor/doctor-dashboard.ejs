@@ -3,9 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/global/general.css" />
     <title>Document</title>
 </head>
 <body>
-    this is doctor dashboard
+    <%- include("../includes/header.ejs")  %>
+    <h1 class="headings">PATIENT HISTORY</h1>
+    <main>
+        <div class="buttons">
+            <div class="search">
+              <input type="text" placeholder="Search..." />
+              <img src="../icon/search.svg" alt="" />
+            </div>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Address</th>
+                        <th>Medical Records</th>
+                        <th>More information</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Johny Sinss</td>
+                        <td>75</td>
+                        <td>Male</td>
+                        <td>Maypangdan</td>
+                        <td>
+                            <select class="" >
+                                <option value="" selected disabled >Medical records</option>
+                                <option value="">Vital sign</option>
+                                <option value="">Vital sign</option>
+                                <option value="">Vital sign</option>
+                                <option value="">Vital sign</option>
+                                <option value="">Vital sign</option>
+                            </select>
+                        </td>
+                        <td>
+                            <img src="../icon/mata_ine.svg" alt="" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Johny Sinss</td>
+                        <td>75</td>
+                        <td>Male</td>
+                        <td>Maypangdan</td>
+                        <td>
+                            <select class="" >
+                                <option value="" selected disabled >Medical records</option>
+                                <option value="">Vital sign</option>
+                                <option value="">Vital sign</option>
+                                <option value="">Vital sign</option>
+                                <option value="">Vital sign</option>
+                                <option value="">Vital sign</option>
+                            </select>
+                        </td>
+                        <td>
+                            <img src="../icon/mata_ine.svg" alt="" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Johny Sinss</td>
+                        <td>75</td>
+                        <td>Male</td>
+                        <td>Maypangdan</td>
+                        <td>
+                            <select class="" >
+                                <option value="" selected disabled >Medical records</option>
+                                <option value="">Vital sign</option>
+                                <option value="">Vital sign</option>
+                                <option value="">Vital sign</option>
+                                <option value="">Vital sign</option>
+                                <option value="">Vital sign</option>
+                            </select>
+                        </td>
+                        <td>
+                            <img src="../icon/mata_ine.svg" alt="" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
 </body>
 </html>
