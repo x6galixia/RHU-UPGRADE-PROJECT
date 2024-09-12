@@ -1,0 +1,28 @@
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  overflow: visible;
+}
+
+.buttons > .search {
+  border: solid 1px gray;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 4px 16px 4px 8px;
+  width: 40%;
+}
+
+.buttons > .search > input[type="text"] {
+  border: none;
+  padding: 8px;
+  outline: none;
+  width: 100%;
+}
+.buttons > .search > img {
+  width: 20px;
+}
+.buttons > .add-transfer > button {
+  background-color: #44a130;
+}
