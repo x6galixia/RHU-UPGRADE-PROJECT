@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/global/general.css" />
+    <link rel="stylesheet" href="../css/local/patient-registration.css" />
+    <title>Document</title>
+</head>
+<body>
+    <%- include("../includes/header.ejs")  %>
+    <h1 class="headings">PATIENT REGISTRATION</h1>
+    <main>
+        <div class="buttons">
+            <div class="add-transfer">
+              <button>RECENTLY ADDED</button>
+              <button>HEALTH ASSESMENT</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="sub-con patients-information-container">
+                <img src="../icon/qr.svg" alt="">
+                <div class="patient-head">
+                    <h2>PATIEN INFORMATION</h2>
+                </div>
+                <div class="information">
+                    <div>
+                        <div>
+                            <label for="uniqId">Unique ID:</label>
+                            <input type="text">
+                        </div>
+                        <div>
+                            <button class="patient-button">Generate ID</button>
+                            <button class="patient-button">Search</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="sub-con vital-sign-container">
+                <div class="patient-head">
+                    <h2>VITALS SIGN</h2> 
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
