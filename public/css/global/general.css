@@ -37,7 +37,7 @@ main {
   padding: 0 24px 24px 24px;
 }
 
-.buttons > .search {
+.search {
   border: solid 1px gray;
   border-radius: 10px;
   display: flex;
@@ -46,13 +46,13 @@ main {
   width: 40%;
 }
 
-.buttons > .search > input[type="text"] {
+.search > input[type="text"] {
   border: none;
   padding: 8px;
   outline: none;
   width: 100%;
 }
-.buttons > .search > img {
+.search > img {
   width: 20px;
 }
 
