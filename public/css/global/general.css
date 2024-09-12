@@ -133,7 +133,9 @@ table >tbody > tr{
 }
 .sub-head > .border-bot > h2{
   padding: 10px;
+  cursor: pointer;
 }
 .sub-head > .bord-bot > h2{
   padding: 10px;
+  cursor: pointer;
 }
