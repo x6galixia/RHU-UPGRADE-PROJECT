@@ -8,8 +8,10 @@ const flash = require("express-flash");
 
 //-------ROUTES--------//
 const adminRouter = require("./routes/admin/admin");
-const pharmacyRouter = require("./routes/pharmacy/pharmacy");
+const nurseRouter = require("./routes/nurse/nurse");
 const doctorRouter = require("./routes/doctor/doctor");
+const medtechRouter = require("./routes/medtech/medtech");
+const pharmacyRouter = require("./routes/pharmacy/pharmacy");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -43,8 +45,10 @@ app.use((req, res, next) => {
 
 //------INITIALIZE ROUTES------//
 app.use("/", adminRouter);
-app.use("/", pharmacyRouter);
+app.use("/", nurseRouter);
 app.use("/", doctorRouter);
+app.use("/", medtechRouter);
+app.use("/", pharmacyRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is up and running on port ${process.env.PORT}`);
