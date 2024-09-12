@@ -1,0 +1,45 @@
+.add-transfer button {
+    background-color: #44a130;
+}
+
+.add-transfer {
+    display: flex;
+    justify-content: end;
+    gap: 8px;
+}
+
+.container {
+    margin-top: 32px;
+    display: flex;
+}
+
+.sub-con {
+    padding: 16px;
+    position: relative;
+}
+
+.sub-con img {
+    position: absolute;
+    top: 10%;
+    right: 5%;
+}
+
+.patients-information-container {
+    background-color: aqua;
+    width: 50%;
+}
+
+.patient-head {
+    display: flex;
+    justify-content: center;
+}
+
+.vital-sign-container {
+    background-color: blueviolet;
+    width: 50%;
+}
+
+.patient-button {
+    background-color: var(--pink-color);
+    font-size: var(--font-size);
+}
