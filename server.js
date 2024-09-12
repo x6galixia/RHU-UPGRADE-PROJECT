@@ -8,7 +8,7 @@ const flash = require("express-flash");
 
 //-------ROUTES--------//
 const adminRouter = require("./routes/admin/admin");
-const pharmacyRouter = require("./routes/pharmacy/inventory");
+const pharmacyRouter = require("./routes/pharmacy/pharmacy");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));

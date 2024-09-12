@@ -1,0 +1,41 @@
+.beneficiary-info{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid black;
+  padding: 50px;
+  gap: 50px;
+  text-wrap: nowrap;
+  font-family: lexend;
+  margin-bottom: -50px;
+}
+
+.beneficiary-info > .info{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 28px;
+}
+.beneficiary-info > .info > div >input{
+  outline: none;
+  border: none;
+  border-bottom: 1px solid black;
+  width: -webkit-fill-available;
+}
+.beneficiary-info > .info > div{
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  }
+
+.beneficiary-info > div:nth-child(2) > img{
+  height: 100%;
+}
+.print{
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+.print > button{
+  background-color: #FF007F;
+}

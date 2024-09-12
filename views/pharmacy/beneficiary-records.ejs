@@ -10,12 +10,12 @@
     <title>PHARMACY|Inventory</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/global/general.css" />
-    <link rel="stylesheet" href="../css/local/pharmacy-inventory.css" />
+    <link rel="stylesheet" href="../css/local/beneficiary-records.css" />
     <title>Document</title>
   </head>
   <body>
     <%- include("../includes/header.ejs")  %>
-    <h1 class="headings">INVENTORY</h1>
+    <h1 class="headings">BENEFICIARY RECORDS</h1>
     <main>
       <div class="buttons">
         <div class="search">
@@ -23,26 +23,21 @@
           <img src="../icon/search.svg" alt="" />
         </div>
         <div class="add-transfer">
-          <button>RESTOCK</button>
-          <button>TRANSFER</button>
-          <button>ADD MEDICINE</button>
+          <button>DISPENSE</button>
+          <button>ADD BENEFICIARY</button>
         </div>
       </div>
       <div class="table-container">
         <table>
           <thead>
             <tr>
-              <th>PRODUCT ID</th>
-              <th>PRODUCT CODE</th>
-              <th>PRODUCT NAME</th>
-              <th>BRAND NAME</th>
-              <th>SUPPLIER</th>
-              <th>DOSAGE FORM</th>
-              <th>DOSAGE</th>
-              <th>REORDER LEVEL</th>
-              <th>BATCH NUMBER</th>
-              <th>QUANTITY</th>
-              <th>EXPIRATION DATE</th>
+              <th>NAME</th>
+              <th>GENDER</th>
+              <th>ADDRESS</th>
+              <th>CONTACT NO.</th>
+              <th>AGE</th>
+              <th>SENIOR CITIZEN</th>
+              <th>PWD</th>
             </tr>
           </thead>
           <tbody>
@@ -54,10 +49,6 @@
               <td>asdasdas</td>
               <td>asdsadas</td>
               <td>asdsadas</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdasd</td>
-              <td>asdasdasd</td>
             </tr>
             <tr>
               <td>asdasdas</td>
@@ -67,10 +58,6 @@
               <td>asdasdas</td>
               <td>asdsadas</td>
               <td>asdsadas</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdasd</td>
-              <td>asdasdasd</td>
             </tr>
             <tr>
               <td>asdasdas</td>
@@ -80,16 +67,9 @@
               <td>asdasdas</td>
               <td>asdsadas</td>
               <td>asdsadas</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdasd</td>
-              <td>asdasdasd</td>
             </tr>
           </tbody>
         </table>
-      </div>
-      <div class="download-CSV">
-        <button>DOWNLOAD CSV</button>
       </div>
     </main>
   </body>

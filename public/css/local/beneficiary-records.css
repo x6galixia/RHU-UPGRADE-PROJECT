@@ -7,12 +7,3 @@
 .buttons > .add-transfer > button {
   background-color: #44a130;
 }
-
-.download-CSV > button{
-  background-color: #FF007F;
-}
-.download-CSV{
-  width: 100%;
-  display: flex;
-  justify-content: end;
-}
