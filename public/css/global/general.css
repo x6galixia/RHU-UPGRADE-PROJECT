@@ -1,12 +1,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
 
 * {
+  font-family: lexend;
   margin: 0;
-  font-family: "Lexend";
+  font-family: lexend;
+}
+
+:root {
+  --green-color: #44a130;
+  --pink-color: #ff007f;
+  --font-size: 1rem;
 }
 
 header {
-  background-color: #44a130;
+  background-color: var(--green-color);
   height: 56px;
   display: flex;
   justify-content: space-between;
@@ -21,7 +28,7 @@ header > .profile > img {
 }
 
 .headings {
-  color: #ff007f;
+  color: var(--pink-color);
   -webkit-text-stroke-width: 1;
   -webkit-text-stroke-color: #fff;
   font-family: Lexend;
@@ -77,6 +84,15 @@ button:hover {
   height: 42px;
 }
 
+.button-maliit{
+  width: fit-content !important;
+  text-wrap: nowrap;
+  cursor: pointer;
+}
+.button-maliit:hover{
+  width: fit-content !important;
+}
+
 select{
   height: 40px;
   width: 200px;
@@ -85,7 +101,6 @@ select{
   -webkit-appearance: none;
   -moz-appearance: none;
 }
-
 
 .table-container{
   width: 100%;
@@ -104,7 +119,7 @@ table{
 
 table > thead > tr {
   height: 40px;
-  background-color: #44a130;
+  background-color: var(--green-color);
   color: #fff;
 }
 
@@ -138,4 +153,18 @@ table >tbody > tr{
 .sub-head > .bord-bot > h2{
   padding: 10px;
   cursor: pointer;
+}
+
+input, textarea {
+  border: #696969 solid 1px;
+  border-radius: 8px;
+  height: 40px;
+}
+
+
+.form-header {
+  background-color: var(--green-color);
+  color: white;
+  padding: 4px 24px;
+  border-radius: 10px;
 }
