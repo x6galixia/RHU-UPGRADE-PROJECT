@@ -1,0 +1,85 @@
+.graphs{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  text-align: start;
+  margin-top: 28px;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.graphs .main-graph, .main-graph img{
+  height: 100%;
+  margin: auto;
+}
+
+
+main{
+  padding: 0 100px;
+}
+.graphs > div{
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 24px;
+  width: 100%;
+}
+
+.graphs >div > div{
+  width: 50%;
+}
+
+.graphs .graph-heading{
+  color: #44a130;
+  font-weight: 900;
+}
+
+.graphs > div > div > div{
+  width: fit-content;
+}
+.graphs > div > div > div > h4{
+  text-align: left;
+  color: #44a130;
+  font-weight: 900;
+}
+
+.graphs .data{
+  display: flex;
+  justify-content: space-between;
+  text-align: left;
+  gap: 24px;
+  margin: auto;
+}
+
+.graphs .data> div{
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 10px;
+}
+
+.bullet{
+  border-radius: 50%;
+  height: 16px;
+  width: 16px;
+  margin-top: 10px;
+}
+.bullet1{
+  background-color: #2EA4AD;
+}
+.bullet2{
+  background-color: #514D76;
+}
+
+.graphs .data p{
+  font-size: .8rem;
+}
+
+.data .person > div{
+  display: flex;
+}
+
+.data .person img{
+  height: 32px !important;
+}

@@ -2,6 +2,7 @@
 
 * {
   margin: 0;
+  font-family: lexend;
 }
 
 header {
@@ -76,6 +77,15 @@ button:hover {
   height: 42px;
 }
 
+.buttonMaliit{
+  width: fit-content !important;
+  text-wrap: nowrap;
+  cursor: pointer;
+}
+.buttonMaliit:hover{
+  width: fit-content !important;
+}
+
 select{
   height: 40px;
   width: 200px;
@@ -84,7 +94,6 @@ select{
   -webkit-appearance: none;
   -moz-appearance: none;
 }
-
 
 .table-container{
   width: 100%;
