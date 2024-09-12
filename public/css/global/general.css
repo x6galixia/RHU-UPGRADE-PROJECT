@@ -83,12 +83,12 @@ button:hover {
   height: 42px;
 }
 
-.buttonMaliit{
+.button-maliit{
   width: fit-content !important;
   text-wrap: nowrap;
   cursor: pointer;
 }
-.buttonMaliit:hover{
+.button-maliit:hover{
   width: fit-content !important;
 }
 
