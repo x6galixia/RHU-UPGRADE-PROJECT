@@ -101,6 +101,19 @@ select{
   -moz-appearance: none;
 }
 
+select::after{
+  content: '';
+  position: absolute;
+  right: 10px; 
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px; 
+  height: 20px; 
+  background-image: url('path_to_your_image.png'); /* Specify the image URL */
+  background-size: contain; /* Make sure the image fits the box */
+  background-repeat: no-repeat;
+}
+
 .table-container{
   width: 100%;
   overflow: scroll;

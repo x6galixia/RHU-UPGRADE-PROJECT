@@ -78,8 +78,56 @@ main{
 
 .data .person > div{
   display: flex;
+  justify-content: center;
 }
 
 .data .person img{
   height: 32px !important;
+  width: fit-content;
+}
+.demographics > .data > div{
+  display: flex;
+  gap: 20px;
+  text-align: center;
+}
+.summary .main-graph > div{
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.summary .main-graph{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 70px;
+}
+.summary .main-graph > div > img{
+  margin: 0;
+  width: 80px;
+}
+.disease, .prescribe-drugs, .estimated-cost {
+  display: flex;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center;
+}
+.prescribe-drugs > table{
+  min-width: 50%;
+  border: 1px solid black;
+}
+.disease > div:nth-child(2){
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+.disease > div:nth-child(2) > p{
+  text-align: left;
+}
+
+.estimated-cost > table{
+  border: 1px solid black;
+}
+.estimated-cost > table > thead > tr{
+  border-bottom: 1px solid black;
 }
