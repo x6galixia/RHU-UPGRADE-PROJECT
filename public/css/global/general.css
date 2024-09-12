@@ -1,0 +1,85 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+
+* {
+  margin: 0;
+}
+
+header {
+  background-color: #44a130;
+  height: 56px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+header > .logo-menu > .menu > img {
+  width: 24px;
+}
+header > .profile > img {
+  width: 40px;
+}
+
+.headings {
+  color: #ff007f;
+  -webkit-text-stroke-width: 1;
+  -webkit-text-stroke-color: #fff;
+  font-family: Lexend;
+  font-size: 50px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: normal;
+  letter-spacing: 2.5px;
+  text-align: center;
+  margin: 28px 0;
+}
+
+main {
+  padding: 24px;
+}
+
+button {
+  width: 160px;
+  height: 40px;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  padding: 12px;
+  font-weight: bold;
+  font-family: Lexend;
+  cursor: pointer;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  letter-spacing: 2px;
+}
+
+button:hover {
+  width: 162px;
+  height: 42px;
+}
+
+.table-container{
+  width: 100%;
+  overflow: scroll;
+  height: 700px;
+  background-color: #44a130;
+}
+.table-container::-webkit-scrollbar{
+  display: none;
+}
+
+table{
+  margin-top: 32px;
+  border-collapse: collapse;
+  min-width: 100%;
+}
+
+table > thead > tr {
+  height: 40px;
+  background-color: #44a130;
+  color: #fff;
+}
+
+table > thead > tr > th{
+  padding: 12px;
+  text-wrap: nowrap;
+}
