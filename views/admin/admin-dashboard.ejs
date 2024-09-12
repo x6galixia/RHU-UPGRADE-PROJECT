@@ -1,84 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/local/admin-dashboard.css">
-    <title>Preview</title>
-</head>
-<body>
-    <div class="header-container">
-        <h1>ADMINISTRATOR</h1>
-    </div>
-    
-    <div class="container">
-        <div class="inner-container">
-            <div class="inner-inner-container 1">
-                <p>Users</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Usertype</th>
-                            <th>Name</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Engineer</td>
-                            <td>Engr. Kim A. Galicia</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="inner-inner-container 2">
-                <p>Restricted users</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Usertype</th>
-                            <th>Name</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Engineer</td>
-                            <td>Engr. Kim A. Galicia</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+    rel="shortcut icon"
+    type="image/png"
+    href=""
+  />
+    <title>Doctors Laboratory Request</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/global/general.css" />
+    <link rel="stylesheet" href="../css/local/index-form.css" />
+    <link rel="stylesheet" href="../css/local/admin-dash.css">
+  </head>
+  <body>
+    <%- include("../includes/header.ejs")  %>
+    <div class="sub-head">
+        <div class="border-bot">
+            <h2>DASHBOARD</h2>
         </div>
-        <div class="inner-container">
-            <div class="inner-inner-container">
-                <div class="create-user-container">
-                    <p>Create user</p>
-                <select name="rhu_id" id="rhu-id-dropdown">
-                    <option value="none" selected disabled>select an rhu</option>
-                    <option value="main">Main</option>
-                    <option value="maypangdan">Maypangdan</option>
-                    <option value="tabunan">Tabunan</option>
-                    <option value="songco">Songco</option>
-                </select>
-
-                <input type="text" name="last_name" id="input" placeholder="Last name">
-                <input type="text" name="first_name" id="input" placeholder="First name">
-                <input type="text" name="middle_name" id="input" placeholder="Middle initial">
-
-                <select name="profession" id="profession-dropdown">
-                    <option value="none" selected disabled>select a profession</option>
-                    <option value="doctor">Doctor</option>
-                    <option value="nurse">Nurse</option>
-                    <option value="medtech">Med tech</option>
-                    <option value="pharmacist">Pharmacist</option>
-                </select>
-                
-                <input type="text" name="license-no" id="input" placeholder="License number">
-                <input type="text" name="username" id="input" placeholder="username">
-                <input type="password" name="password" id="input" placeholder="password">
-                </div>
-                <button>cancel</button> <button>ok</button>
-            </div>
+        <div class="bord-bot">
+            <h2>USERS LIST</h2>
         </div>
     </div>
-</body>
-</html> 
+    <main>
+        <div class="wrapper">
+            <div class="container">
+              <div class="item">
+                <img class="lidong" src="/img/local/Group 552.png" alt="">
+                <h2>DOCTOR</h2>
+              </div>
+              <div class="item">
+                <img class="lidong" src="/img/local/Group 553.png" alt="">
+                <h2>NURSE</h2>
+              </div>
+              <div class="item">
+                <img class="lidong" src="/img/local/Group 554.png" alt="">
+                <h2>PHARMACY</h2>
+              </div>
+              <div class="item">
+                <img class="lidong" src="/img/local/Group 555.png" alt="">
+                <h2>MEDTECH</h2>
+              </div>
+              
+            </div>
+          </div>
+          
+          
+      
+    </main>
+  </body>
+</html>
