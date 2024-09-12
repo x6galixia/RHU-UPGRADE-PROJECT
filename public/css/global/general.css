@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
 
 * {
+  font-family: lexend;
   margin: 0;
 }
 
@@ -125,4 +126,19 @@ table >tbody > tr{
   height: 40px;
   border-bottom: 1px solid #848383;
   text-align: center;
+}
+
+
+input, textarea {
+  border: #696969 solid 1px;
+  border-radius: 8px;
+  height: 40px;
+}
+
+
+.form-header {
+  background-color: var(--green-color);
+  color: white;
+  padding: 4px 24px;
+  border-radius: 10px;
 }

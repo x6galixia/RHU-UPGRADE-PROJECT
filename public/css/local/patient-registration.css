@@ -17,17 +17,24 @@
 .sub-con {
     padding: 16px;
     position: relative;
+    border-radius: 0px 20px;
+    border: 1px solid #696969;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 
+              0 10px 20px rgba(0, 0, 0, 0.1), 
+              0 20px 40px rgba(0, 0, 0, 0.05);
 }
 
 .sub-con img {
     position: absolute;
-    top: 10px;
+    top: 4px;
     right: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: var(--pink-color);
 }
 
 .patients-information-container {
-    background-color: aqua;
-    width: 50%;
+    width: 100%;
 }
 
 .patient-head {
@@ -48,8 +55,7 @@
 
 
 .vital-sign-container {
-    background-color: blueviolet;
-    width: 50%;
+    width: 100%;
 }
 
 
@@ -74,6 +80,22 @@
 
 .submit-button {
     position: absolute;
+    background-color: var(--green-color);
     bottom: 16px;
     right: 16px;
+}
+
+.align {
+    display: flex;
+    align-items: end;
+}
+
+span {
+    color: red;
+}
+
+.add {
+    font-style: italic;
+    opacity: .5;
+    color: black !important;
 }
