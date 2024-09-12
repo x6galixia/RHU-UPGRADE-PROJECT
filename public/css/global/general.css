@@ -11,7 +11,7 @@
 }
 
 header {
-  background-color: #44a130;
+  background-color: var(--green-color);
   height: 56px;
   display: flex;
   justify-content: space-between;
@@ -26,7 +26,7 @@ header > .profile > img {
 }
 
 .headings {
-  color: #ff007f;
+  color: var(--pink-color);
   -webkit-text-stroke-width: 1;
   -webkit-text-stroke-color: #fff;
   font-family: Lexend;
@@ -109,7 +109,7 @@ table{
 
 table > thead > tr {
   height: 40px;
-  background-color: #44a130;
+  background-color: var(--green-color);
   color: #fff;
 }
 
