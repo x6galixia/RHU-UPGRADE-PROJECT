@@ -9,6 +9,7 @@ const flash = require("express-flash");
 //-------ROUTES--------//
 const adminRouter = require("./routes/admin/admin");
 const pharmacyRouter = require("./routes/pharmacy/pharmacy");
+const doctorRouter = require("./routes/doctor/doctor");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -39,13 +40,11 @@ app.use((req, res, next) => {
 //-----REDIRECT TO PAGE PREVIEW-----//
 //-----this is just for initial setup-----//
 //-----for production the url should be redirected to the login-----//
-app.get("/pharmacy", (req, res) => {
-  res.redirect("/pharmacy/inventory");
-});
 
 //------INITIALIZE ROUTES------//
 app.use("/", adminRouter);
 app.use("/", pharmacyRouter);
+app.use("/", doctorRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is up and running on port ${process.env.PORT}`);
