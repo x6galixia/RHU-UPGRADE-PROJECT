@@ -11,6 +11,7 @@
 .container {
     margin-top: 32px;
     display: flex;
+    gap: 40px;
 }
 
 .sub-con {
@@ -20,8 +21,8 @@
 
 .sub-con img {
     position: absolute;
-    top: 10%;
-    right: 5%;
+    top: 10px;
+    right: 20px;
 }
 
 .patients-information-container {
@@ -34,12 +35,45 @@
     justify-content: center;
 }
 
+
+.patient-button {
+    background-color: var(--pink-color);
+    font-size: var(--font-size);
+}
+
+.information {
+    margin-top: 48px;
+    position: relative;
+}
+
+
 .vital-sign-container {
     background-color: blueviolet;
     width: 50%;
 }
 
-.patient-button {
-    background-color: var(--pink-color);
-    font-size: var(--font-size);
+
+.r {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    margin-top: 16px;
+}
+
+.r div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.b {
+    display: flex;
+    flex-direction: row !important;
+    gap: 8px;
+}
+
+.submit-button {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
 }
