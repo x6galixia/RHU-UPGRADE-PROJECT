@@ -34,11 +34,30 @@ header > .profile > img {
 }
 
 main {
-  padding: 24px;
+  padding: 0 24px 24px 24px;
+}
+
+.buttons > .search {
+  border: solid 1px gray;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 4px 16px 4px 8px;
+  width: 40%;
+}
+
+.buttons > .search > input[type="text"] {
+  border: none;
+  padding: 8px;
+  outline: none;
+  width: 100%;
+}
+.buttons > .search > img {
+  width: 20px;
 }
 
 button {
-  width: 160px;
+  width: 200px;
   height: 40px;
   outline: none;
   border: none;
@@ -53,15 +72,24 @@ button {
 }
 
 button:hover {
-  width: 162px;
+  width: 202px;
   height: 42px;
 }
+
+select{
+  height: 40px;
+  width: 200px;
+  border-radius: 10px;
+  padding: 10px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
 
 .table-container{
   width: 100%;
   overflow: scroll;
   height: 700px;
-  background-color: #44a130;
 }
 .table-container::-webkit-scrollbar{
   display: none;
@@ -79,7 +107,16 @@ table > thead > tr {
   color: #fff;
 }
 
-table > thead > tr > th{
+table > thead > tr > th,
+table > tbody > tr > td{
   padding: 12px;
   text-wrap: nowrap;
+  font-family: lexend;
+  font-weight: 400;
+}
+
+table >tbody > tr{
+  height: 40px;
+  border-bottom: 1px solid #848383;
+  text-align: center;
 }
