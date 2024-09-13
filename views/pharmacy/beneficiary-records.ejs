@@ -2,11 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link
-    rel="shortcut icon"
-    type="image/png"
-    href=""
-  />
+    <link rel="shortcut icon" type="image/png" href=""/>
     <title>PHARMACY|Inventory</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/global/general.css" />
@@ -36,38 +32,30 @@
               <th>ADDRESS</th>
               <th>CONTACT NO.</th>
               <th>AGE</th>
+              <th>NOTE</th>
               <th>SENIOR CITIZEN</th>
               <th>PWD</th>
             </tr>
           </thead>
           <tbody>
+            <% if (getBeneficiaryList && getBeneficiaryList.length > 0) { %>
+              <% getBeneficiaryList.forEach(list => { %>
+                <tr>
+                  <td><%= list.first_name %> <%= list.middle_name %> <%= list.last_name %></td>
+                  <td><%= list.gender %></td>
+                  <td><%= list.street %> <%= list.barangay %> <%= list.city %> <%= list.province %></td>
+                  <td><%= list.phone %></td>
+                  <td><%= list.age %></td>
+                  <td><%= list.note %></td>
+                  <td><%= list.senior_citizen %></td>
+                  <td><%= list.pwd %></td>
+                </tr>
+             <% }) %>
+           <% } else { %> 
             <tr>
-              <td>asdasdas</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdsadasd</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdsadas</td>
+              <td colspan="7">No list of beneficiary</td>
             </tr>
-            <tr>
-              <td>asdasdas</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdsadasd</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdsadas</td>
-            </tr>
-            <tr>
-              <td>asdasdas</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdsadasd</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdsadas</td>
-            </tr>
+            <% } %>
           </tbody>
         </table>
       </div>
