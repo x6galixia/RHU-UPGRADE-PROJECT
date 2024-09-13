@@ -23,9 +23,9 @@
           <img src="../icon/search.svg" alt="" />
         </div>
         <div class="add-transfer">
-          <button>RESTOCK</button>
-          <button>TRANSFER</button>
-          <button>ADD MEDICINE</button>
+          <button id="restock" onclick="popUp_button(this)">RESTOCK</button>
+          <button id="transfer" onclick="popUp_button(this)">TRANSFER</button>
+          <button id="add" onclick="popUp_button(this)">ADD MEDICINE</button>
         </div>
       </div>
       <div class="table-container" id="inventoryTable">
@@ -83,13 +83,39 @@
         <button id="downloadbtn">Download CSV</button>
       </div>
     </main>
-    <div class="pop-up visible">
+    <div class="pop-up hidden" id="transfer-med">
       <div>
-        <img src="../icon/close.svg" alt="">
+        <img src="../icon/close.svg" alt="" class="close_popUp">
+      </div>
+      <h1 class="heading">TRANSFER MEDICINE</h1>
+      <main>
+        <form action="" class="restock-transfer">
+          <div>
+            <label for="rhu">Select an RHU</label>
+            <select name="" id="rhu">
+              <option value="">Main</option>
+              <option value="">Maypangdan</option>
+            </select>
+          </div>
+          <div>
+            <label for="product_id">Product ID</label>
+            <input type="text" placeholder="PRD0001" id="product_id">
+          </div>
+          <div>
+            <label for="quantity">Batch no</label>
+            <input type="number" id="quantity">
+          </div>
+          <button type="submit" class="button-green">SUBMIT</button>
+        </form>
+      </main>
+    </div>
+    <div class="pop-up hidden" id="restock-med">
+      <div>
+        <img src="../icon/close.svg" alt=""class="close_popUp" >
       </div>
       <h1 class="heading">RESTOCK MEDICINE</h1>
       <main>
-        <form action="" class="restock-form">
+        <form action="" class="restock-transfer">
           <div>
             <label for="batch_number">Batch no</label>
             <input type="text" placeholder="BATCH0001" id="batch_number">
@@ -106,7 +132,106 @@
         </form>
       </main>
     </div>
+    <div class="pop-up hidden" id="add-med">
+      <div>
+        <img src="../icon/close.svg" alt="" class="close_popUp">
+      </div>
+      <h1 class="heading">ADD MEDICINE</h1>
+      <main>
+        <form action="" class="add-med-form">
+          <div>
+            <div class="col">
+              <div class="input-w8-label">
+                <label>Product ID</label>
+                <input type="text">
+              </div>
+              <div class="input-w8-label">
+                <label>Product Code</label>
+                <input type="text">
+              </div>
+              <div class="input-w8-label">
+                <label>Product Name</label>
+                <input type="text">
+              </div>
+              <div class="input-w8-label">
+                <label>Brand Name</label>
+                <input type="text">
+              </div>
+              <div class="input-w8-label">
+                <label>Supplier</label>
+                <input type="text">
+              </div>
+              <div class="input-w8-label">
+                <label>Added Quantity</label>
+                <input type="text">
+              </div>
+            </div>
+            <div class="col">
+              <div class="input-w8-label">
+                <label>Dosage Form</label>
+                <input type="text">
+              </div>
+              <div class="input-w8-label">
+                <label>Dosage</label>
+                <input type="text">
+              </div>
+              <div class="input-w8-label">
+                <label>Reorder Level</label>
+                <input type="text">
+              </div>
+              <div class="input-w8-label">
+                <label>Batch Number</label>
+                <input type="text">
+              </div>
+              <div class="input-w8-label">
+                <label>Expiration Date</label>
+                <input type="text">
+              </div>
+              <div class="input-w8-label">
+                <label>Date Added</label>
+                <input type="text">
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="button-green">SUBMIT</button>
+        </form>
+      </main>
+    </div>
     <script src="../../js/local/search-medicine.js"></script>
     <script src="../../js/local/download-csv.js"></script>
   </body>
+  <script>
+    const restock = document.getElementById("restock-med");
+    const transfer = document.getElementById("transfer-med");
+    const add = document.getElementById("add-med");
+    function popUp_button(button) {
+      var buttonId = button.id;
+      if (buttonId === "restock"){
+        restock.classList.toggle("visible");
+      } else if (buttonId === "transfer"){
+        transfer.classList.toggle("visible");
+      } else if (buttonId === "add"){
+        add.classList.toggle("visible");
+      }
+    }
+
+    document.querySelectorAll(".close_popUp").forEach(function(closeBtn) {
+      closeBtn.addEventListener("click", function() {
+        var pop_up = closeBtn.closest(".pop-up"); 
+        if (pop_up) {
+          pop_up.classList.remove("visible"); 
+        }
+      });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+      var nav1 = document.querySelector(".nav1");
+      if (nav1) {
+        nav1.classList.toggle("selected");
+      }
+    });
+
+
+
+  </script>
 </html>
