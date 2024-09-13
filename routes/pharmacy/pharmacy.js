@@ -11,7 +11,7 @@ router.get("/pharmacy-inventory", (req, res) => {
 //-------ROUTE FOR PHARMACY BENEFICIARY RECORDS-------//
 router.get("/pharmacy-records", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 100; // define limit here
+  const limit = parseInt(req.query.limit) || 100;
   
   try {
     const { getBeneficiaryList, totalPages } = await fetchBeneficiaryList(page, limit);
