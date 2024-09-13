@@ -45,6 +45,13 @@ main {
   padding: 0 24px 24px 24px;
 }
 
+input{
+  height: 38px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  padding: 0 12px;
+}
+
 .search {
   border: solid 1px gray;
   border-radius: 10px;
@@ -55,14 +62,17 @@ main {
 }
 
 .search > input[type="text"] {
-  border: none;
-  padding: 8px;
-  outline: none;
-  width: 100%;
+  border: none !important;
+  padding: 8px !important;
+  outline: none !important;
+  width: 100% !important;
+  box-shadow: none;
+  height: fit-content;
 }
 .search > img {
   width: 20px;
 }
+
 
 button {
   width: 200px;
@@ -77,6 +87,14 @@ button {
   cursor: pointer;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   letter-spacing: 2px;
+}
+
+.button-green{
+  background-color: #44a130;
+}
+
+.button-pink{
+  background-color: #FF007F;
 }
 
 button:hover {
@@ -170,4 +188,38 @@ input, textarea {
   color: white;
   padding: 4px 24px;
   border-radius: 10px;
+}
+
+.pop-up{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  background: #FFF;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  padding: 40px 60px;
+}
+.pop-up > div:first-child {
+ margin: 0 -60px;
+ margin-top: -40px;
+ display: grid;
+ place-items: end;
+ padding: 10px;
+}
+.pop-up > .heading{
+  color: #FF007F;
+  text-align: center;
+  font-style: normal;
+  line-height: normal;
+  margin-bottom: 40px;
+}
+
+.visible {
+  display: block;
+}
+
+.hidden {
+  display: none;
 }
