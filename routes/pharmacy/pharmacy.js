@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+
 //------IMPORTING PHARMACY DATABASE------//
 const pharmacyPool = require("../../models/pharmacydb");
 
@@ -48,7 +49,9 @@ router.get("/pharmacy-records/search", async (req, res) => {
 
     const data = searchResult.rows.map(row => ({
       ...row,
-      middle_name: row.middle_name ? row.middle_name.charAt(0) : ''
+      middle_name: row.middle_name ? row.middle_name.charAt(0) : '',
+      age : calculateAge(row.birthdate),
+      senior_citizen : isSeniorCitizen(row.age)
     }));
 
     res.json({ getBeneficiaryList: data });
@@ -84,7 +87,8 @@ async function fetchBeneficiaryList(page, limit) {
     const data = beneficiaryList.rows.map(row => ({
       ...row,
       middle_name: row.middle_name ? row.middle_name.charAt(0) : '',
-      age : calculateAge(row.birthdate)
+      age : calculateAge(row.birthdate),
+      senior_citizen : isSeniorCitizen(row.age)
     }));
 
     const totalPages = Math.ceil(totalCount / limit);
@@ -95,7 +99,11 @@ async function fetchBeneficiaryList(page, limit) {
     return { getBeneficiaryList: [], totalPages: 0 };
   }
 }
+
 //-------AUTOMATIC CALCULATION OF AGE-------//
+//we add a automation in calculation of age to
+//make sure the age is always updated
+
 function calculateAge(birthdateString) {
   const birthdate = new Date(birthdateString);
   const today = new Date();
@@ -110,6 +118,10 @@ function calculateAge(birthdateString) {
   return age;
 }
 //-------AUTOMATIC CALCULATION OF SENIOR CITIZEN-------//
-//-------TO BE IMPLEMENTED SOON--------//
+//we added a automation to update if the beneficiary
+//is a senior citizen or not based on his/her age
+function isSeniorCitizen(age){
+  return age >= 60 ? 'Yes' : 'No';
+}
 
 module.exports = router;
