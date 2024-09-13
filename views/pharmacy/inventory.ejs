@@ -15,7 +15,14 @@
   </head>
   <body>
     <%- include("../includes/header.ejs")  %>
-    <h1 class="headings">INVENTORY</h1>
+    <div class="sub-head">
+      <div class="nav1 selected">
+          <h2>INVENTORY</h2>
+      </div>
+      <div class="nav2">
+          <h2>RECORDS</h2>
+      </div>
+  </div>
     <main>
       <div class="buttons">
         <div class="search">
@@ -23,7 +30,6 @@
           <img src="../icon/search.svg" alt="" />
         </div>
         <div class="add-transfer">
-          <button>RECORDS</button>
           <button>RESTOCK</button>
           <button>TRANSFER</button>
           <button>ADD MEDICINE</button>

@@ -104,23 +104,12 @@ select{
   background-size: 12px;
 }
 
-/* select::after{
-  content: '';
-  position: absolute;
-  right: 10px; 
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px; 
-  height: 20px; 
-  background-image: url('../../icon/dropdownIcon.svg'); 
-  background-size: contain;
-  background-repeat: no-repeat;
-} */
-
 .table-container{
   width: 100%;
   overflow: scroll;
-  height: 700px;
+  max-height: 700px;
+  height: fit-content;
+  margin-bottom: 24px;
 }
 .table-container::-webkit-scrollbar{
   display: none;
@@ -161,13 +150,14 @@ table >tbody > tr{
   margin-top: 30px;
   margin-bottom: 50px;
 }
-.sub-head > .border-bot > h2{
+.sub-head > .nav1 > h2,
+.sub-head > .nav2 >h2{
   padding: 10px;
   cursor: pointer;
 }
-.sub-head > .bord-bot > h2{
-  padding: 10px;
-  cursor: pointer;
+
+.sub-head > .selected{
+  border-bottom: 4px solid black;
 }
 
 input, textarea {
