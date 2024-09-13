@@ -31,23 +31,27 @@ router.get("/pharmacy-inventory", async (req, res) => {
 router.get("/pharmacy-inventory/search", async (req, res) => {
   const { query } = req.query;
 
-  if (!query) {
-    return res.status(400).send("Query parameter is required");
-  }
-
   try {
-    const searchResult = await pharmacyPool.query(
-      `SELECT * FROM inventory 
-       WHERE CONCAT(product_name, ' ', brand_name) ILIKE $1
-       OR product_name ILIKE $1
-       OR brand_name ILIKE $1
-       LIMIT 100`,
-      [`%${query}%`]
-    );
+    let searchResult;
+
+    if (!query) {
+      searchResult = await pharmacyPool.query(
+        `SELECT * FROM inventory LIMIT 100`
+      );
+    } else {
+      searchResult = await pharmacyPool.query(
+        `SELECT * FROM inventory 
+         WHERE CONCAT(product_name, ' ', brand_name) ILIKE $1
+         OR product_name ILIKE $1
+         OR brand_name ILIKE $1
+         LIMIT 100`,
+        [`%${query}%`]
+      );
+    }
 
     const data = searchResult.rows.map(row => ({
       ...row,
-      expiration : formatDate(row.expiration)
+      expiration: formatDate(row.expiration)
     }));
 
     res.json({ getInventoryList: data });
@@ -56,6 +60,7 @@ router.get("/pharmacy-inventory/search", async (req, res) => {
     res.status(500).send("An error occurred during the search.");
   }
 });
+
 
 //-------ROUTE FOR PHARMACY BENEFICIARY RECORDS-------//
 router.get("/pharmacy-records", async (req, res) => {
@@ -81,19 +86,23 @@ router.get("/pharmacy-records", async (req, res) => {
 router.get("/pharmacy-records/search", async (req, res) => {
   const { query } = req.query;
 
-  if (!query) {
-    return res.status(400).send("Query parameter is required");
-  }
-
   try {
-    const searchResult = await pharmacyPool.query(
-      `SELECT * FROM beneficiary 
-       WHERE CONCAT(first_name, ' ', last_name) ILIKE $1
-       OR first_name ILIKE $1
-       OR last_name ILIKE $1
-       LIMIT 100`,
-      [`%${query}%`]
-    );
+    let searchResult;
+
+    if (!query) {
+      searchResult = await pharmacyPool.query(
+        `SELECT * FROM beneficiary LIMIT 100`
+      );
+    } else {
+      searchResult = await pharmacyPool.query(
+        `SELECT * FROM beneficiary 
+         WHERE CONCAT(first_name, ' ', last_name) ILIKE $1
+         OR first_name ILIKE $1
+         OR last_name ILIKE $1
+         LIMIT 100`,
+        [`%${query}%`]
+      );
+    }
 
     const data = searchResult.rows.map(row => ({
       ...row,
@@ -120,6 +129,8 @@ router.get("/pharmacy-trends", (req, res) => {
 });
 
 //--------ROUTE FOR ADDING A MEDICINE TO THE INVENTORY-------//
+//--------NEEDS TO BE UPDATED ONES WE HAVE A USER LOGIN-------//
+//--------USER ID SHOULD BE QUERIED ALONG WITH THE MEDICINE INFO--------//
 router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
   const {product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added} = req.body;
   try {
