@@ -29,3 +29,14 @@
   display: flex;
   justify-content: end;
 }
+
+.pop-up > main > .restock-form{
+  display: flex;
+  align-items: end;
+  gap: 10px;
+}
+.pop-up > main > .restock-form > div{
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+}
