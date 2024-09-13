@@ -37,6 +37,7 @@
             </tr>
           </thead>
           <tbody id="beneficiaryTableBody">
+            <div id="loadingSpinner" style="display:none;">Loading...</div>
             <% if (getBeneficiaryList && getBeneficiaryList.length > 0) { %>
               <% getBeneficiaryList.forEach(list => { %>
                 <tr>
