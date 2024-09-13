@@ -11,7 +11,7 @@ router.get("/pharmacy-inventory", (req, res) => {
 //-------ROUTE FOR PHARMACY BENEFICIARY RECORDS-------//
 router.get("/pharmacy-records", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 100;
+  const limit = parseInt(req.query.limit) || 100; // define limit here
   
   try {
     const { getBeneficiaryList, totalPages } = await fetchBeneficiaryList(page, limit);
@@ -19,11 +19,41 @@ router.get("/pharmacy-records", async (req, res) => {
     res.render("pharmacy/beneficiary-records", { 
       getBeneficiaryList, 
       currentPage: page, 
-      totalPages 
+      totalPages,
+      limit
     });
   } catch (err) {
     console.error("Error: ", err);
     res.sendStatus(500);
+  }
+});
+
+//-------ROUTE FOR SEARCHING BENEFICIARY RECORDS-------//
+router.get("/pharmacy-records/search", async (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).send("Query parameter is required");
+  }
+
+  try {
+    const searchResult = await pharmacyPool.query(
+      `SELECT * FROM beneficiary 
+       WHERE CONCAT(first_name, ' ', last_name) ILIKE $1
+       OR first_name ILIKE $1
+       OR last_name ILIKE $1`,
+      [`%${query}%`]
+    );
+
+    const data = searchResult.rows.map(row => ({
+      ...row,
+      middle_name: row.middle_name ? row.middle_name.charAt(0) : ''
+    }));
+
+    res.json({ getBeneficiaryList: data });
+  } catch (err) {
+    console.error("Error: ", err);
+    res.status(500).send("An error occurred during the search.");
   }
 });
 
@@ -38,6 +68,7 @@ router.get("/pharmacy-trends", (req, res) => {
 });
 
 //-------FUNCTIONS------//
+
 //-------FETCHING PAGINATED LIST OF BENEFICIARIES-------//
 async function fetchBeneficiaryList(page, limit) {
   const offset = (page - 1) * limit;
@@ -51,12 +82,12 @@ async function fetchBeneficiaryList(page, limit) {
     
     const data = beneficiaryList.rows.map(row => ({
       ...row,
-      middle_name: row.middle_name ? row.middle_name.charAt(0) : null
+      middle_name: row.middle_name ? row.middle_name.charAt(0) : ''
     }));
 
     const totalPages = Math.ceil(totalCount / limit);
-    
-    return { getBeneficiaryList: data, totalPages };
+
+    return { getBeneficiaryList: data, totalPages: totalPages || 1 };
   } catch (err) {
     console.error("Error: ", err);
     return { getBeneficiaryList: [], totalPages: 0 };
