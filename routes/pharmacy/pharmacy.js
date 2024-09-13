@@ -83,7 +83,8 @@ async function fetchBeneficiaryList(page, limit) {
     
     const data = beneficiaryList.rows.map(row => ({
       ...row,
-      middle_name: row.middle_name ? row.middle_name.charAt(0) : ''
+      middle_name: row.middle_name ? row.middle_name.charAt(0) : '',
+      age : calculateAge(row.birthdate)
     }));
 
     const totalPages = Math.ceil(totalCount / limit);
@@ -94,5 +95,21 @@ async function fetchBeneficiaryList(page, limit) {
     return { getBeneficiaryList: [], totalPages: 0 };
   }
 }
+//-------AUTOMATIC CALCULATION OF AGE-------//
+function calculateAge(birthdateString) {
+  const birthdate = new Date(birthdateString);
+  const today = new Date();
+
+  let age = today.getFullYear() - birthdate.getFullYear();
+  const monthDifference = today.getMonth() - birthdate.getMonth();
+  const dayDifference = today.getDate() - birthdate.getDate();
+
+  if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+    age--;
+  }
+  return age;
+}
+//-------AUTOMATIC CALCULATION OF SENIOR CITIZEN-------//
+//-------TO BE IMPLEMENTED SOON--------//
 
 module.exports = router;
