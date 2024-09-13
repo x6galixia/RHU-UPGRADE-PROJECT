@@ -5,7 +5,7 @@ const router = express.Router();
 const pharmacyPool = require("../../models/pharmacydb");
 
 //------IMPORTING MIDDLEWARES-------//
-const {calculateAge, formatDate} = require("../../middlewares/middleware");
+const {calculateAge, formatDate} = require("../../public/js/global/functions");
 
 //-------ROUTE FOR PHARMACY INVENTORY-------//
 router.get("/pharmacy-inventory", async (req, res) => {
