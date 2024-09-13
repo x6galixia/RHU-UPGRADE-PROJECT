@@ -1,3 +1,4 @@
+const loadingSpinner = document.getElementById('loadingSpinner');
 document.getElementById('searchInput').addEventListener('input', function() {
     const query = this.value;
 

@@ -41,7 +41,8 @@ router.get("/pharmacy-records/search", async (req, res) => {
       `SELECT * FROM beneficiary 
        WHERE CONCAT(first_name, ' ', last_name) ILIKE $1
        OR first_name ILIKE $1
-       OR last_name ILIKE $1`,
+       OR last_name ILIKE $1
+       LIMIT 100`,
       [`%${query}%`]
     );
 
