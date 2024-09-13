@@ -10,7 +10,7 @@ const {calculateAge, formatDate} = require("../../middlewares/middleware");
 //-------ROUTE FOR PHARMACY INVENTORY-------//
 router.get("/pharmacy-inventory", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 100;
+  const limit = parseInt(req.query.limit) || 10;
 
   try {
     const { getInventoryList, totalPages } = await fetchInventoryList(page, limit);
@@ -60,7 +60,7 @@ router.get("/pharmacy-inventory/search", async (req, res) => {
 //-------ROUTE FOR PHARMACY BENEFICIARY RECORDS-------//
 router.get("/pharmacy-records", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 100;
+  const limit = parseInt(req.query.limit) || 10;
   
   try {
     const { getBeneficiaryList, totalPages } = await fetchBeneficiaryList(page, limit);
