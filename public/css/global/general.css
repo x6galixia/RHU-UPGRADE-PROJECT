@@ -98,11 +98,13 @@ select{
   width: 200px;
   border-radius: 10px;
   padding: 10px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+  appearance: none;
+  padding-right: 30px;
+  background: url('../../icon/dropdownIcon.svg') no-repeat right 10px center;
+  background-size: 12px;
 }
 
-select::after{
+/* select::after{
   content: '';
   position: absolute;
   right: 10px; 
@@ -110,10 +112,10 @@ select::after{
   transform: translateY(-50%);
   width: 20px; 
   height: 20px; 
-  background-image: url('path_to_your_image.png'); /* Specify the image URL */
-  background-size: contain; /* Make sure the image fits the box */
+  background-image: url('../../icon/dropdownIcon.svg'); 
+  background-size: contain;
   background-repeat: no-repeat;
-}
+} */
 
 .table-container{
   width: 100%;

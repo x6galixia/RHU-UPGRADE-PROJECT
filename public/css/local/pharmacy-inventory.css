@@ -1,11 +1,24 @@
 .buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   overflow: visible;
+  flex-wrap: wrap-reverse;
+  gap: 24px;
+}
+.buttons > div{
+  flex-grow: 1;
+  margin: 0 16px;
 }
 .buttons > .add-transfer > button {
   background-color: #44a130;
+}
+
+.buttons > .add-transfer {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .download-CSV > button{
