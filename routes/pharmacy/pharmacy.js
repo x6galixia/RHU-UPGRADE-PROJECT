@@ -57,6 +57,21 @@ router.get("/pharmacy-inventory/search", async (req, res) => {
   }
 });
 
+router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
+  const {product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added} = req.body;
+  try {
+    await pharmacyPool.query(`
+      INSERT INTO inventory (product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+      [product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added]
+    );
+    res.redirect("/pharmacy-inventory");
+  } catch (err) {
+    console.error("Error: ", err);
+    res.sendStatus(500);
+  }
+});
+
 //-------ROUTE FOR PHARMACY BENEFICIARY RECORDS-------//
 router.get("/pharmacy-records", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
