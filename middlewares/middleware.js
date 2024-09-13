@@ -16,6 +16,21 @@ function calculateAge(birthdateString) {
     return age;
   }
 
+//-------FORMAT DATE FUNCTION-------//
+//format date in to standard date
+
+  function formatDate(dateString) {
+    const options = {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", options);
+  }
+
   module.exports = {
-    calculateAge
+    calculateAge,
+    formatDate
   }
