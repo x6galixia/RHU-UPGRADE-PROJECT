@@ -99,3 +99,8 @@ span {
     opacity: .5;
     color: black !important;
 }
+
+
+textarea {
+    height: 20vh;
+}

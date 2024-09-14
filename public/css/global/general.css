@@ -9,7 +9,9 @@
 :root {
   --green-color: #44a130;
   --pink-color: #ff007f;
-  --font-size: 1rem;
+  --font-size: 1.5rem;
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.05);
+  /* wag delete comments lang para andito lang hahaha */
 }
 
 header {
@@ -188,6 +190,19 @@ input, textarea {
   color: white;
   padding: 4px 24px;
   border-radius: 10px;
+}
+
+.underlineInputs {
+  border: none;
+  width: 100%;
+  border-bottom: 1px solid black;
+  border-radius: 0;
+}
+
+
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px; 
 }
 
 .pop-up{
