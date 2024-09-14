@@ -15,7 +15,7 @@
   </head>
   <body>
     <%- include("../includes/header.ejs")  %>
-    <%- include("../includes/sub-head.ejs")  %>
+    <%- include("../includes/admin-sub-head.ejs")  %>
     
     <main>
         <div class="wrapper">
@@ -44,4 +44,12 @@
       
     </main>
   </body>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+      var nav2 = document.querySelector(".nav1");
+      if (nav2) {
+        nav2.classList.toggle("selected");
+      }
+    });
+    </script>
 </html>

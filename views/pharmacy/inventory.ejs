@@ -10,6 +10,7 @@
     <title>Document</title>
   </head>
   <body>
+    <div class="overlay"></div>
     <%- include("../includes/header.ejs")  %>
     <%- include("../includes/pharmacy-sub-head.ejs")  %>
     <main>
@@ -79,8 +80,8 @@
         <button id="downloadbtn">Download CSV</button>
       </div>
     </main>
-    <div class="pop-up hidden" id="transfer-med">
-      <div>
+    <div class="pop-up" id="transfer-med">
+      <div class="close-container">
         <img src="../icon/close.svg" alt="" class="close_popUp">
       </div>
       <h1 class="heading">TRANSFER MEDICINE</h1>
@@ -101,35 +102,71 @@
             <label for="quantity">Quantity</label>
             <input type="number" id="quantity">
           </div>
-          <button type="submit" class="button-green">SUBMIT</button>
+          <button type="button" class="button-green" id="transfer_form" onclick="popUp_button(this)">SUBMIT</button>
+          <div class="pop-up-confirm" id="confirm-transfer">
+            <div>
+              <h2>Do you want to transfer medicine?</h2>
+              <main>
+                <button type="button" class="button-bordered close_confirm">No</button>
+                <button type="submit" class="button-green">Yes</button>
+              </main>
+            </div>
+          </div>
         </form>
       </main>
     </div>
-    <div class="pop-up hidden" id="restock-med">
-      <div>
+    <div class="pop-up" id="restock-med">
+      <div class="close-container">
         <img src="../icon/close.svg" alt=""class="close_popUp" >
       </div>
       <h1 class="heading">RESTOCK MEDICINE</h1>
       <main>
-        <form action="/pharmacy-inventory/restock-medicine" class="restock-transfer" method="PUT">
+        <form action="/pharmacy-inventory/restock-medicine" class="restock" method="POST">
           <div>
-            <label for="batch_number">Batch no</label>
-            <input type="text" placeholder="BATCH0001" id="batch_number">
+            <div>
+              <div class="input-w8-label">
+                <label for="batch_number">Batch no</label>
+                <input type="text" placeholder="BATCH0001" id="batch_number" name="batch_number">
+              </div>
+              <div class="input-w8-label">
+                <label for="product_id">Product ID</label>
+                <input type="text" placeholder="PRD0001" id="product_id" name="product_id">
+              </div>
+              <div class="input-w8-label">
+                <label for="product_code">Product Code</label>
+                <input type="text" id="product_code" name="product_code">
+              </div>
+            </div>
+            <div>
+              <div class="input-w8-label">
+                <label>Date Added</label>
+                <input type="date" class="current-date" name="date_added">
+              </div>
+              <div class="input-w8-label">
+                <label>Expiration Date</label>
+                <input type="date" name="expiration">
+              </div>
+              <div class="input-w8-label">
+                <label for="quantity">Quantity</label>
+                <input type="number" id="quantity" name="product_quantity">
+              </div>
+            </div>
           </div>
-          <div>
-            <label for="product_id">Product ID</label>
-            <input type="text" placeholder="PRD0001" id="product_id">
+          <button type="button" class="button-green" id="restock_form" onclick="popUp_button(this)">SUBMIT</button>
+          <div class="pop-up-confirm" id="confirm-restock">
+            <div>
+              <h2>Do you want to restock medicine?</h2>
+              <main>
+                <button type="button" class="button-bordered close_confirm">No</button>
+                <button type="submit" class="button-green">Yes</button>
+              </main>
+            </div>
           </div>
-          <div>
-            <label for="quantity">Quantity</label>
-            <input type="number" id="quantity">
-          </div>
-          <button type="submit" class="button-green">SUBMIT</button>
         </form>
       </main>
     </div>
-    <div class="pop-up hidden" id="add-med">
-      <div>
+    <div class="pop-up" id="add-med">
+      <div class="close-container">
         <img src="../icon/close.svg" alt="" class="close_popUp">
       </div>
       <h1 class="heading">ADD MEDICINE</h1>
@@ -185,42 +222,28 @@
               </div>
               <div class="input-w8-label">
                 <label>Date Added</label>
-                <input type="date" name="date_added" id="current-date" readonly>
+                <input type="date" name="date_added" class="current-date" readonly>
               </div>
             </div>
           </div>
-          <button type="submit" class="button-green">SUBMIT</button>
+          <button type="button" class="button-green" id="add_med_form" onclick="popUp_button(this)">SUBMIT</button>
+          <div class="pop-up-confirm" id="confirm-add-med">
+            <div>
+              <h2>Confirm adding medicine?</h2>
+              <main>
+                <button type="button" class="button-bordered close_confirm">Cancel</button>
+                <button type="submit" class="button-green">Yes</button>
+              </main>
+            </div>
+          </div>
         </form>
       </main>
     </div>
     <script src="../../js/local/search-medicine.js"></script>
     <script src="../../js/local/download-csv.js"></script>
+    <script src="../../js/local/pharmacy-inventory.js"></script>
     <script src="../../js/global/client-side-functions.js"></script>
-  </body>
   <script>
-    const restock = document.getElementById("restock-med");
-    const transfer = document.getElementById("transfer-med");
-    const add = document.getElementById("add-med");
-    function popUp_button(button) {
-      var buttonId = button.id;
-      if (buttonId === "restock"){
-        restock.classList.toggle("visible");
-      } else if (buttonId === "transfer"){
-        transfer.classList.toggle("visible");
-      } else if (buttonId === "add"){
-        add.classList.toggle("visible");
-      }
-    }
-
-    document.querySelectorAll(".close_popUp").forEach(function(closeBtn) {
-      closeBtn.addEventListener("click", function() {
-        var pop_up = closeBtn.closest(".pop-up"); 
-        if (pop_up) {
-          pop_up.classList.remove("visible"); 
-        }
-      });
-    });
-
     document.addEventListener("DOMContentLoaded", function() {
       var nav1 = document.querySelector(".nav1");
       if (nav1) {
@@ -228,4 +251,5 @@
       }
     });
   </script>
+  </body>
 </html>
