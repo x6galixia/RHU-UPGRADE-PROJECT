@@ -195,6 +195,7 @@ input, textarea {
   color: white;
   padding: 4px 24px;
   border-radius: 10px;
+  text-align: center;
 }
 
 .underlineInputs {
