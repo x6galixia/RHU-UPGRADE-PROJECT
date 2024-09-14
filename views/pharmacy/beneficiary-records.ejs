@@ -18,7 +18,7 @@
           <img src="../icon/search.svg" alt="" />
         </div>
         <div class="add-transfer">
-          <button>DISPENSE</button>
+          <button id="dispense" onclick="popUp_button(this)">DISPENSE</button>
           <button>ADD BENEFICIARY</button>
         </div>
       </div>
@@ -68,31 +68,212 @@
         </div>        
       </div>
     </main>
-    <div class="pop-up hidden" id="restock-med">
-      <div>
-        <img src="../icon/close.svg" alt=""class="close_popUp" >
+    <div class="pop-up" id="dispense-med">
+      <div class="close-container">
+        <img src="../icon/close.svg" alt="" class="close_popUp">
       </div>
-      <h1 class="heading">RESTOCK MEDICINE</h1>
+      <h1 class="heading">DISPENSE MEDICINE</h1>
       <main>
-        <form action="/pharmacy-inventory/restock-medicine" class="restock-transfer" method="PUT">
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>TRANSACTION NO.</th>
+                <th>PRODUCT NAME</th>
+                <th>ISSUED QUANTITY</th>
+                <th>ISSUED DATE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>11111</td>
+                <td>Kim Boog</td>
+                <td>Guti</td>
+                <td>Delay</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <form action="" class="dispense-med" method="POST">
           <div>
-            <label for="batch_number">Batch no</label>
-            <input type="text" placeholder="BATCH0001" id="batch_number">
+            <div>
+              <div class="input-w8-label">
+                <label>Beneficiary Name</label>
+                <input type="text" name="beneficiary_name">
+              </div>
+              <div class="input-w8-label">
+                <label>Physician</label>
+                <input type="text" name="physician">
+              </div>
+              <div class="input-w8-label">
+                <label>Diagnosis</label>
+                <input type="text" name="diagnosis">
+              </div>
+            </div>
+            <div>
+              <div class="input-w8-label">
+                <label>Requesting Party</label>
+                <input type="text" name="requesting_party">
+              </div>
+              <div class="input-w8-label">
+                <label>Affiliation</label>
+                <input type="text" name="relationship">
+              </div>
+            </div>
           </div>
           <div>
-            <label for="product_id">Product ID</label>
-            <input type="text" placeholder="PRD0001" id="product_id">
+            <button type="button" class="button-bordered" id="reject_dispense_button" onclick="popUp_button(this)">REJECT</button>
+            <button type="button" class="button-green" id="submit_dispense_button" onclick="popUp_button(this)">SUBMIT</button>
           </div>
+          <div class="pop-up-confirm" id="reject_dispense">
+            <div>
+              <div class="reject-heading">
+                <img src="../icon/warning.svg" alt="">
+                <h2>Rejecting a dispense request will automatically delete from the list</h2>
+              </div>
+              <main>
+                <h2>Are sure you want to reject this dispense request?</h2>
+                <div>
+                  <button type="button" class="button-bordered close_confirm">No</button>
+                  <button type="submit" class="button-bordered">Yes</button>
+                </div>
+              </main>
+            </div>
+          </div>
+          <div class="pop-up-confirm" id="submit_dispense">
+            <div>
+              <h2>Do you want to dispense medicine?</h2>
+              <main>
+                <button type="button" class="button-bordered close_confirm">No</button>
+                <button type="submit" class="button-green">Yes</button>
+              </main>
+            </div>
+          </div>
+        </form>
+      </main>
+    </div>
+    <div class="pop-up" id="add-beneficiary" style="display: block !important;">
+      <div class="close-container">
+        <img src="../icon/close.svg" alt="" class="close_popUp">
+      </div>
+      <h1 class="heading">ADD BENEFICIARY</h1>
+      <main>
+        <form action="" class="dispense-med" method="POST">
           <div>
-            <label for="quantity">Quantity</label>
-            <input type="number" id="quantity">
+            <div class="row">
+              <div class="input-w8-label" id="surubadan">
+                <label>Last Name</label>
+                <input type="text">
+              </div>
+              <div class="input-w8-label">
+                <label>First Name</label>
+                <input type="text">
+              </div>
+              <div class="input-w8-label">
+                <label>Middle Name</label>
+                <input type="text">
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-w8-label" id="masubad">
+                <label>Gender</label>
+                <input type="text">
+              </div>
+              <div class="input-w8-label">
+                <label>Birthdate</label>
+                <input type="date">
+              </div>
+              <div class="input-w8-label">
+                <label>Processed Date</label>
+                <input type="date">
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-w8-label">
+                <label>Phone No.</label>
+                <input type="text">
+              </div>
+              <div class="input-w8-label">
+                <label>Occupation</label>
+                <input type="text">
+              </div>
+              <div class="row1">
+                <div class="input-w8-label">
+                  <label>Senior</label>
+                  <select name="" id="">
+                    <option value="">Yes</option>
+                    <option value="">No</option>
+                  </select>
+                </div>
+                <div class="input-w8-label">
+                  <label>PWD</label>
+                  <select name="" id="">
+                    <option value="">Yes</option>
+                    <option value="">No</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label>Address</label>
+              <div>
+                <input type="text" placeholder="Street">
+                <input type="text" placeholder="Barangay">
+                <input type="text" placeholder="City">
+                <input type="text" placeholder="Province">
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-w8-label">
+                <label for="">Note</label>
+                <textarea name="" id="" cols="30" rows="10"></textarea>
+              </div>
+              <div class="input-w8-label">
+                <label for="">Select an image</label>
+                  <input type="file">
+              </div>
+            </div>
           </div>
-          <button type="submit" class="button-green">SUBMIT</button>
+            <button type="button" class="button-green" id="submit_dispense_button" onclick="popUp_button(this)">SUBMIT</button>
+          <div class="pop-up-confirm" id="reject_dispense">
+            <div>
+              <div class="reject-heading">
+                <img src="../icon/warning.svg" alt="">
+                <h2>Rejecting a dispense request will automatically delete from the list</h2>
+              </div>
+              <main>
+                <h2>Are sure you want to reject this dispense request?</h2>
+                <div>
+                  <button type="button" class="button-bordered close_confirm">No</button>
+                  <button type="submit" class="button-bordered">Yes</button>
+                </div>
+              </main>
+            </div>
+          </div>
+          <div class="pop-up-confirm" id="submit_dispense">
+            <div>
+              <h2>Do you want to dispense medicine?</h2>
+              <main>
+                <button type="button" class="button-bordered close_confirm">No</button>
+                <button type="submit" class="button-green">Yes</button>
+              </main>
+            </div>
+          </div>
         </form>
       </main>
     </div>
     <script src="../../js/local/search-beneficiary.js"></script>
+    <script src="../../js/global/pop-up.js"></script>
     <script>
+      const container = document.getElementById("surubadan");
+      const masubad = document.getElementById("masubad");
+
+      const containerWidth = parseFloat(window.getComputedStyle(container).width);
+
+      const newWidth = containerWidth - 107.33;
+
+      masubad.style.width = newWidth + "px";
+
       document.addEventListener("DOMContentLoaded", function() {
       var nav2 = document.querySelector(".nav2");
       if (nav2) {

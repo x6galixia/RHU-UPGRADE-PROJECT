@@ -1,13 +1,24 @@
-const restock = document.getElementById("restock-med");
+    
+    // inbentory
+    const restock = document.getElementById("restock-med");
     const transfer = document.getElementById("transfer-med");
     const add = document.getElementById("add-med");
     const confirm_transfer = document.getElementById("confirm-transfer");
     const confirm_restock = document.getElementById("confirm-restock");
     const confirm_add_med = document.getElementById("confirm-add-med");
+
+    //beneficiary-records
+    const dispense = document.getElementById("dispense-med");
+    const reject_dispense = document.getElementById("reject_dispense");
+    const submit_dispense = document.getElementById("submit_dispense");
+
+
     const overlay = document.querySelector(".overlay");
 
     function popUp_button(button) {
       var buttonId = button.id;
+
+      //inbentory
       if (buttonId === "restock"){
         restock.classList.toggle("visible");
       } else if (buttonId === "transfer"){
@@ -21,6 +32,18 @@ const restock = document.getElementById("restock-med");
       } else if (buttonId === "add_med_form"){
         confirm_add_med.classList.toggle("visible");
       }
+
+      //beneficiary-records
+      else if (buttonId === "reject_dispense_button"){
+        reject_dispense.classList.toggle("visible");
+      }
+      else if (buttonId === "submit_dispense_button"){
+        submit_dispense.classList.toggle("visible");
+      }
+      else if (buttonId === "dispense"){
+        dispense.classList.toggle("visible");
+      }
+
       overlay.classList.add("visible");
     }
     document.querySelectorAll(".close_popUp").forEach(function(closeBtn) {
