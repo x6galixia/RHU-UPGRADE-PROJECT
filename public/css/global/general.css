@@ -91,6 +91,11 @@ button {
   letter-spacing: 2px;
 }
 
+.button-bordered{
+  border: 1px solid black;
+  color:black;
+}
+
 .button-green{
   background-color: #44a130;
 }
@@ -205,7 +210,20 @@ input[type="checkbox"] {
   height: 20px; 
 }
 
-.pop-up{
+.overlay{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: .5;
+  display: none;
+  z-index: 1;
+}
+
+.pop-up, .pop-up-confirm{
   position: fixed;
   top: 50%;
   left: 50%;
@@ -215,15 +233,18 @@ input[type="checkbox"] {
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   overflow: hidden;
   padding: 30px 60px;
+  display: none;
+  overflow: visible;
+  z-index: 2;
 }
-.pop-up > div:first-child {
+.pop-up > .close-container{
  margin: 0 -60px;
  margin-top: -30px;
  display: grid;
  place-items: end;
  padding: 10px;
 }
-.pop-up > div:first-child > img {
+.pop-up > .close-container > img {
  cursor: pointer;
 }
 .pop-up > .heading{
@@ -233,6 +254,20 @@ input[type="checkbox"] {
   line-height: normal;
   margin-bottom: 40px;
 }
+.pop-up-confirm{
+  display: none !important;
+}
+
+.pop-up-confirm > div{
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  text-align: center;
+}
+.pop-up-confirm > div > main{
+  display: flex;
+  gap: 12px;
+}
 
 .input-w8-label{
   display: flex;
@@ -241,8 +276,4 @@ input[type="checkbox"] {
 
 .visible {
   display: block !important;
-}
-
-.hidden {
-  display: none;
 }
