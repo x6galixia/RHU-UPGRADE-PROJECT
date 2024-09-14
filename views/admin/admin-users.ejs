@@ -15,7 +15,60 @@
   </head>
   <body>
     <%- include("../includes/header.ejs")  %>
-    <%- include("../includes/sub-head.ejs")  %>
+    <%- include("../includes/admin-sub-head.ejs")  %>
+    <main>
+      
+      <div class="search2">
+        <div class="search">
+          <input type="text" placeholder="Search..." />
+          <img src="../icon/search.svg" alt="" />
+        </div>
+      </div>
+      <div class="table-container">
+        <div class="separate-sec">
+          <div >
+            <button class="btn-users button-green">USERS</button>
+            <button class="btn-users user-btn">RESTRICTED</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>USER TYPE</th>
+              <th>NAME</th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr>
+              <td>asdasdas</td>
+              <td>asdasdas</td>
+              
+            </tr>
+            <tr>
+              <td>asdasdas</td>
+              <td>asdasdas</td>             
+            </tr>
+            
+          </tbody>
+        </table>
     </main>
   </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+    var nav2 = document.querySelector(".nav2");
+    if (nav2) {
+      nav2.classList.toggle("selected");
+    }
+  });
+  </script>
 </html>
