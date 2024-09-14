@@ -34,3 +34,6 @@
   display: flex;
   justify-content: end;
 }
+.res-btn{
+  display: flex;
+}
