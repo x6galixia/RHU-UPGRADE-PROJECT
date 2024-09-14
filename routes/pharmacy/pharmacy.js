@@ -157,14 +157,14 @@ async function fetchBeneficiaryList(page, limit) {
     const totalCount = parseInt(totalCountResult.rows[0].count);
     
     const beneficiaryList = await pharmacyPool.query(
-      `SELECT * FROM beneficiary ORDER BY id LIMIT $1 OFFSET $2`, [limit, offset]
+      `SELECT * FROM beneficiary ORDER BY first_name LIMIT $1 OFFSET $2`, [limit, offset]
     );
     
     const data = beneficiaryList.rows.map(row => ({
       ...row,
       middle_name: row.middle_name ? row.middle_name.charAt(0) : '',
-      age : calculateAge(row.birthdate),
-      senior_citizen : isSeniorCitizen(row.age)
+      age: calculateAge(row.birthdate),
+      senior_citizen: isSeniorCitizen(row.age)
     }));
 
     const totalPages = Math.ceil(totalCount / limit);
@@ -177,20 +177,20 @@ async function fetchBeneficiaryList(page, limit) {
 }
 
 //-------FETCHING PAGINATED LIST OF INVENTORY-------//
-async function fetchInventoryList(page, limit){
+async function fetchInventoryList(page, limit) {
   const offset = (page - 1) * limit;
 
   try {
     const totalCountResult = await pharmacyPool.query("SELECT COUNT(*) FROM inventory");
     const totalCount = parseInt(totalCountResult.rows[0].count);
 
-    const InventoryList = await pharmacyPool.query(
-      `SELECT * FROM inventory ORDER BY product_id LIMIT $1 OFFSET $2`, [limit, offset]
+    const inventoryList = await pharmacyPool.query(
+      `SELECT * FROM inventory ORDER BY product_name LIMIT $1 OFFSET $2`, [limit, offset]
     );
 
-    const data = InventoryList.rows.map(row => ({
+    const data = inventoryList.rows.map(row => ({
       ...row,
-      expiration : formatDate(row.expiration)
+      expiration: formatDate(row.expiration)
     }));
 
     const totalPages = Math.ceil(totalCount / limit);
