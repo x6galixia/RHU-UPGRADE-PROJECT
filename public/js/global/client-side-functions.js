@@ -7,5 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return `${year}-${month}-${day}`;
     }
 
-    document.getElementById("current-date").value = getCurrentDate();
+    document.querySelectorAll(".current-date").forEach(function (element) {
+        element.value = getCurrentDate();
+    });
 });
