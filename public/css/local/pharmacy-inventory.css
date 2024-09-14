@@ -41,6 +41,20 @@
   flex-direction: column;
 }
 
+
+#restock-med .restock{
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+#restock-med > main > .restock > div:first-child{
+  display: flex;
+  gap: 12px;
+}
+
 .add-med-form{
   display: flex;
   flex-direction: column;
