@@ -153,7 +153,6 @@ router.get("/pharmacy-trends", (req, res) => {
 //--------ROUTE FOR ADDING A MEDICINE TO THE INVENTORY-------//
 //--------NEEDS TO BE UPDATED ONES WE HAVE A USER LOGIN-------//
 //--------USER ID SHOULD BE QUERIED ALONG WITH THE MEDICINE INFO--------//
-
 router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
 
@@ -172,6 +171,16 @@ router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
     res.sendStatus(500);
   }
 });
+
+//-------ROUTE FOR RESTOCKING MEDICINE-------//
+router.put("/pharmacy-inventory/restock-medicine/:id", async (req, res) => {
+  try {
+    
+  } catch (err) {
+    console.error("Error: ", err);
+    res.sendStatus(400).send(err);
+  }
+})
 
 //-------FUNCTIONS------//
 
