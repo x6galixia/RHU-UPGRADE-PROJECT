@@ -10,7 +10,7 @@
   </head>
   <body>
     <%- include("../includes/header.ejs")  %>
-    <h1 class="headings">BENEFICIARY RECORDS</h1>
+    <%- include("../includes/pharmacy-sub-head.ejs")  %>
     <main>
       <div class="buttons">
         <div class="search">
@@ -18,7 +18,6 @@
           <img src="../icon/search.svg" alt="" />
         </div>
         <div class="add-transfer">
-          <button>INVENTORY</button>
           <button>DISPENSE</button>
           <button>ADD BENEFICIARY</button>
         </div>
@@ -70,5 +69,13 @@
       </div>
     </main>
     <script src="../../js/local/search-beneficiary.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+      var nav2 = document.querySelector(".nav2");
+      if (nav2) {
+        nav2.classList.toggle("selected");
+      }
+    });
+    </script>
   </body>
 </html>
