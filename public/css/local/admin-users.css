@@ -2,4 +2,35 @@
     border-bottom: 4px solid #000;
     height: 50%;
   }
-  
+.separate-sec{
+  display: flex;
+  justify-content: space-between;
+}
+.btn-users{
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  filter: none;
+}
+.btn-users:hover{
+  width: 200px !important;
+  height: 40px !important;
+}
+
+.user-btn{
+  border: none !important;
+  color: #000 !important;
+  background-color: rgb(230, 228, 228);
+}
+.table-container table{
+  margin: 0;
+}
+.table-container table th{
+  background-color: rgb(230, 228, 228);
+  color: black;
+}
+
+.search2{
+  display: flex;
+  justify-content: end;
+}
