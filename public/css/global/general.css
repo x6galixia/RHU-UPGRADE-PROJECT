@@ -3,16 +3,19 @@
 * {
   font-family: lexend;
   margin: 0;
+  font-family: lexend;
 }
 
 :root {
   --green-color: #44a130;
   --pink-color: #ff007f;
-  --font-size: 1rem;
+  --font-size: 1.5rem;
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.05);
+  /* wag delete comments lang para andito lang hahaha */
 }
 
 header {
-  background-color: #44a130;
+  background-color: var(--green-color);
   height: 56px;
   display: flex;
   justify-content: space-between;
@@ -27,7 +30,7 @@ header > .profile > img {
 }
 
 .headings {
-  color: #ff007f;
+  color: var(--pink-color);
   -webkit-text-stroke-width: 1;
   -webkit-text-stroke-color: #fff;
   font-family: Lexend;
@@ -83,6 +86,15 @@ button:hover {
   height: 42px;
 }
 
+.button-maliit{
+  width: fit-content !important;
+  text-wrap: nowrap;
+  cursor: pointer;
+}
+.button-maliit:hover{
+  width: fit-content !important;
+}
+
 select{
   height: 40px;
   width: 200px;
@@ -92,6 +104,18 @@ select{
   -moz-appearance: none;
 }
 
+select::after{
+  content: '';
+  position: absolute;
+  right: 10px; 
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px; 
+  height: 20px; 
+  background-image: url('path_to_your_image.png'); /* Specify the image URL */
+  background-size: contain; /* Make sure the image fits the box */
+  background-repeat: no-repeat;
+}
 
 .table-container{
   width: 100%;
@@ -110,7 +134,7 @@ table{
 
 table > thead > tr {
   height: 40px;
-  background-color: #44a130;
+  background-color: var(--green-color);
   color: #fff;
 }
 
@@ -128,11 +152,26 @@ table >tbody > tr{
   text-align: center;
 }
 
+.sub-head{
+  display: flex;
+  width: 100%;
+  background: linear-gradient(90deg, rgba(255, 0, 127, 0.00) 0%, rgba(255, 0, 127, 0.10) 48.5%, rgba(255, 0, 127, 0.00) 100%);
+  gap: 50px;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+.sub-head > .border-bot > h2{
+  padding: 10px;
+  cursor: pointer;
+}
+.sub-head > .bord-bot > h2{
+  padding: 10px;
+  cursor: pointer;
+}
 
 input, textarea {
   border: #696969 solid 1px;
-  border-radius: 8px;
-  height: 40px;
 }
 
 
@@ -142,3 +181,17 @@ input, textarea {
   padding: 4px 24px;
   border-radius: 10px;
 }
+
+.underlineInputs {
+  border: none;
+  width: 100%;
+  border-bottom: 1px solid black;
+  border-radius: 0;
+}
+
+
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px; 
+}
+

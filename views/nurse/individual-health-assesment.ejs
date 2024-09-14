@@ -16,7 +16,7 @@
             <div class="sub-con left-container">
                 <!-- PATIENT INFORMATION< -->
                 <div class="ulo"><h2 class="form-header">PATIENT INFORMATION</h2></div>
-                <div class="gar right-info">
+                <div class="large-margine right-info">
                     <div class="row">
                         <div class="col">
                             <label for="firstName">First Name:</label>
@@ -78,7 +78,7 @@
                     <hr>
                     <!-- PERTINENT PHYSICAL EXAMINATION FINDINGS -->
                     <div class="ulo"><h2 class="form-header">PERTINENT PHYSICAL EXAMINATION FINDINGS</h2></div>
-                    <div class="gar">
+                    <div class="large-margine">
                         <div class="row">
                             <div class="col">
                                 <label for="height">Height(cm) <span>*</span>:</label>
@@ -139,14 +139,8 @@
                                     </select>
                                 </div>
                                 <div class="col">
-                                    <div class="row">
-                                        <input type="checkbox">
-                                        <label for="awake">Awake & Alert</label>
-                                    </div>
-                                    <div class="row">
-                                        <input type="checkbox">
-                                        <label for="altered">Altered Sensorium</label>
-                                    </div>
+                                    <div class="labels-input-rows"><label for="" class="special-child"><input type="checkbox"> Awake and alert</label></div>
+                                    <div class="labels-input-rows"><label for=""class="special-child"><input type="checkbox"> Altered Sensorium</label></div>
                                 </div>
                             </div>
                         </div>
@@ -156,73 +150,223 @@
                         </div>
                     </div>
                 </div>
-                <!-- Above 25 years old questionaire -->
-                 <hr>
-                <div>
-                    <div style="margin-bottom: 20px;"><p>Questionaires for <u>25 years old & above only:</u></p></div>
-                    <div class="ulo"><h2 class="form-header">NCD HIGH RISK ASSSESMENT</h2></div>
-                    <div class="gar">
+                <hr>
 
+                <!-- Above 25 years old small-margineuestionaire -->
+                <div>
+                    <div style="margin-bottom: 20px;"><p>small-margineuestionaires for <u>25 years old & above only:</u></p></div>
+                    <div class="ulo"><h2 class="form-header">NCD HIGH RISK ASSSESMENT</h2></div>
+                    <div class="small-margineuestions large-margine">
                         <div>
                             <h2><u>High Fat/High Salt Food Intake</u></h2>
-                            <p>Eats processed/fast foods (eg. instant noodles, hamburger,
+                            <p>
+                                Eats processed/fast foods (eg. instant noodles, hamburger,
                                 fried chicken skin etc.) and ihaw-ihaw (eg. Isaw, adidas,etc.) weekly.
                             </p>
-                            <div class="radyoo">
-                                <div class="radyo">
-                                    <label for="Yes">Yes</label>
-                                    <input type="checkbox">
-                                </div>
-                                <div class="radyo">
-                                    <label for="No">No</label>
-                                    <input type="checkbox">
-                                </div>
+                            <div class="labels-input-rows">
+                                <label for=""><input type="checkbox"> Yes</label>
+                                <label for=""><input type="checkbox"> No</label>
                             </div>
                         </div>
                         <div>
                             <h2><u>Dietary Fiber Intake:</u></h2>
-                            <div class="radyo">
-                                <p class="tanong">3 Serving’s Vegetables?</p>
-                                <div class="sagot radyoo">
-                                    <div class="radyo">
-                                        <label for="Yes">Yes</label>
-                                        <input type="checkbox">
-                                    </div>
-                                    <div class="radyo">
-                                        <label for="No">No</label>
-                                        <input type="checkbox">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="radyo">
-                                <p class="tanong">2-3 Servings of Fruits daily?</p>
-                                <div class="sagot radyoo">
-                                    <div class="radyo">
-                                        <label for="Yes">Yes</label>
-                                        <input type="checkbox">
-                                    </div>
-                                    <div class="radyo">
-                                        <label for="No">No</label>
-                                        <input type="checkbox">
-                                    </div>
-                                </div>
+                            <div class="col">
+                                <label for="">3 Serving’s Vegetables?
+                                    <input type="checkbox"> Yes
+                                    <input type="checkbox"> No
+                                </label>
+                                <label for="">
+                                    2-3 Servings of Fruits daily?
+                                    <input type="checkbox">Yes
+                                    <input type="checkbox">No
+                                </label>
                             </div>
                         </div>
                         <div>
                             <h2><u>Physical Activities:</u></h2>
-                            <p>Does at least 2.5 hours a week of moderate-intensity physical activity?</p>
-                            <div class="radyoo">
-                                <div class="radyo">
-                                    <label for="Yes">Yes</label>
-                                    <input type="checkbox">
+                            <div class="col">
+                                <label for="">Does at least 2.5 hours a week of moderate-intensity physical activity?
+                                    <input type="checkbox"> Yes
+                                    <input type="checkbox"> No
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <h2><u>Presence/Absence of Diabetes:</u></h2>
+                            <div class="col">
+                                <p>1. Was patient diagnosed as having diabetes?</p>
+                                <div class="labels-input-rows">
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                    <label for=""><input type="checkbox"> Do not know</label>
                                 </div>
-                                <div class="radyo">
-                                    <label for="No">No</label>
-                                    <input type="checkbox">
+                                <div class="labels-input-rows small-margine">
+                                    <p>If yes</p>
+                                    <label for="">
+                                        <input type="checkbox"> With medication
+                                        <input type="checkbox"> Without medication
+                                    </label>
+                                </div>
+                            </div>
+                            <p>and perform Urine Test for Ketones.</p>
+                            <p class="small-margine">If No, or Dot know, proceed to small-margineuestion 2.</p>
+                            <p class="small-margine">2. Does patient have the following symptoms?</p>
+                            <div class="col">
+                                <div class="grid">
+                                    <p>*Polyhagia</p>
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                                <div class="grid">
+                                    <p>*Polydisia</p>
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                                <div class="grid">
+                                    <p>*Polyuria</p>
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                                <p class="small-margine">If two or more of the above symptoms are present, perform a blood glucose test.</p>
+                                <div class="labels-input-rows small-margine">
+                                    <p>Raised Blood Glucose:</p>
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                                <label for="" class="small-margine labels-input-rows">FBS/RBS <input class="underlineInputs" type="text"> mg/dL</label>
+                                <label for="" class="small-margine labels-input-rows no-w">Date taken: <input type="text" class="underlineInputs"> mmol/L</label>
+                                <div class="labels-input-rows small-margine">
+                                    <p>Raised Blood Lipids:</p>
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                                <label for="" class="small-margine labels-input-rows no-w">
+                                    Total Cholesterol: <input type="text" class="underlineInputs">
+                                    Date Taken: <input type="date" class="underlineInputs">
+                                </label>
+                                <div class="labels-input-rows small-margine">
+                                    <p>Presence of Urine Ketones:</p>
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                                <label for="" class="labels-input-rows small-margine no-w">
+                                    Urine Ketones: <input type="text" class="underlineInputs">
+                                    Date Taken: <input type="date" class="underlineInputs">
+                                </label>
+                                <div class="labels-input-rows small-margine">
+                                    <p>Presence of Urine Protein:</p>
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                                <label for="" class="small-margine labels-input-rows no-w">
+                                    Urine Ketones: <input type="text" class="underlineInputs">
+                                    Date Taken: <input type="date" class="underlineInputs">
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 class="large-margine"><u>RISK LEVEL</u></h2>
+                            <div class="col">
+                                <div class="labels-input-rows">
+                                    <label for=""><input type="checkbox"> &lt;10</label>
+                                    <label for=""><input type="checkbox"> 10% to &lt; 20%</label>
+                                    <label for=""><input type="checkbox"> 20% to &lt; 30%</label>
+                                </div>
+                                <div class="labels-input-rows">
+                                    <label for=""><input type="checkbox"> 30% to &lt; 40%</label>
+                                    <label for=""><input type="checkbox"> <u>&gt;</u> 40%</label>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
+                    <!-- small-margineuestionnaire to Determine Probable Agina, Heart Attack, Stroke or Transient Ischemic Attack: -->
+                    <div style="margin-top: 50px;">
+                        <div style="width: 75ch; text-align: center;"><h2><u>small-margineuestionnaire to Determine Probable Agina, Heart Attack, Stroke or Transient Ischemic Attack:</u></h2></div>
+                        <div class="col large-margine">
+                            <div class="labels-input-rows">
+                                <p>Angina or Heart attack</p>
+                                <label for=""><input type="checkbox"> Yes</label>
+                                <label for=""><input type="checkbox"> No</label>
+                            </div>
+                            <div>
+                                <p class="small-margine">1. Have you had any pain or discomfort or any pressure or Heaviness in your chest?</p>
+                                <div class="labels-input-rows">
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                                <p><u>If No, go to small-margineuestion 8.</u></p>
+                            </div>
+                            <div>
+                                <p class="small-margine">2. Do you get the pain or discomfort in the center of the chest or left arm? </p>
+                                <div class="labels-input-rows">
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                                <p><u>If No, go to small-margineuestion 8.</u></p>
+                            </div>
+                            <div>
+                                <p class="small-margine">3. Do you get it when you walk uphill or hurry? </p>
+                                <div class="labels-input-rows">
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="small-margine">4. Do you slowdown if you get the pain while walking?  </p>
+                                <div class="labels-input-rows">
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="small-margine">5. Does the pain go away if you stand still or if you take a tablet under the tongue?</p>
+                                <div class="labels-input-rows">
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="small-margine">6. Does the pain go away in less than 10 mins.?</p>
+                                <div class="labels-input-rows">
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="small-margine">7. Have you ever had a severe chest pain across the front of your chest lasting for a half an hour or more?</p>
+                                <div class="labels-input-rows">
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                                <p class="small-margine">If the answer to small-margineuestion 3 or 4 or 5 or 6 or 7 is Yes,
+                                    patient hve the angina or heart attack 
+                                    and needs to see the Doctor. 
+                                </p>
+                            </div>
+                            <div class="labels-input-rows">
+                                <p>Stroke and TIA ( transient Ischemic Attack)</p>
+                                <div class="labels-input-rows">
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="small-margine">Have you ever had any of the following: difficulty of talking,
+                                    weakness of arm/ or legs on one side of the body or numbness
+                                    on one side of the body?
+                                </p>
+                                <div class="labels-input-rows">
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                                <p class="small-margine">If the answer to small-margineuestion 8 is Yes, the patient may 
+                                    have had a TIA or stroke and needs to see a Doctor.
+                                </p>
+                            </div>
+
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -231,9 +375,185 @@
              <div class="sub-con right-container">
                 <div class="left-container" style="width: 100%;">
                     <div class="ulo"><h2 class="form-header">PAST MEDICAL HISTORY</h2></div>
-                    <div class="gar right-info">
-        
+                    <div class="large-margine right-info">
+                        <div class="row-right">
+                            <div class="col">
+                                <label for="">Allergy</label>
+                                <label for=""><input type="checkbox"> Diabetes</label>
+                                <label for=""><input type="checkbox"> Asthma</label>
+                                <label for=""><input type="checkbox"> TB Resp.</label>
+                                <label for=""><input type="checkbox"> TB Resp.</label>
+                                <label for=""><input type="checkbox"> Pneumonia</label>
+                            </div>
+                            <div class="col">
+                                <label for=""><input type="checkbox"> UTI</label>
+                                <label for=""><input type="checkbox"> Thyroid</label>
+                                <label for=""><input type="checkbox"> Peptic Ulcer</label>
+                                <label for=""><input type="checkbox"> Hypertension</label>
+                                <label for=""><input type="checkbox"> Cancer <input type="text" class="underlineInputs" placeholder="(Body part)"></label>
+                            </div>
+                        </div>
+                        <div class="large-margine">
+                            <label for="" class="labels-input-rows">Other: <input class="underlineInputs" type="text"></label>
+                        </div>
                     </div>
+                    <hr>
+                    <div class="ulo"><h2 class="form-header">PAST SURGICAL HISTORY</h2></div>
+                    <div class="row large-margine">
+                        <label for="" class="labels-input-rows">Surgery/Operation: <input type="text" class="underlineInputs"></label>
+                        <label for="" class="labels-input-rows">Date: <input type="date" class="underlineInputs"></label>
+                    </div>
+                    <div class="ulo large-margine"><h2 class="form-header">FAMILY MEDICAL HISTORY</h2></div>
+                    <div class="large-margine right-info">
+                        <div class="row-right">
+                            <div class="col">
+                                <label for="">Allergy</label>
+                                <label for=""><input type="checkbox"> Diabetes</label>
+                                <label for=""><input type="checkbox"> Asthma</label>
+                                <label for=""><input type="checkbox"> TB Resp.</label>
+                                <label for=""><input type="checkbox"> TB Resp.</label>
+                                <label for=""><input type="checkbox"> Pneumonia</label>
+                            </div>
+                            <div class="col">
+                                <label for=""><input type="checkbox"> UTI</label>
+                                <label for=""><input type="checkbox"> Thyroid</label>
+                                <label for=""><input type="checkbox"> Peptic Ulcer</label>
+                                <label for=""><input type="checkbox"> Hypertension</label>
+                                <label for=""><input type="checkbox"> Cancer <input type="text" class="underlineInputs" placeholder="(Body part)"></label>
+                            </div>
+                        </div>
+                        <div class="large-margine">
+                            <label for="" class="labels-input-rows">Other: <input class="underlineInputs" type="text"></label>
+                        </div>
+                    </div>
+                    <div class="ulo large-margine"><h2 class="form-header">PERSONAL/SOCIAL HISTORY</h2></div>
+                    <div class="row large-margine">
+                        <div class="col">
+                            <p><u>Smoking:</u></p>
+                            <div class="labels-input-rows">
+                                <label for=""><input type="checkbox"> Yes</label>
+                                <label for=""><input type="checkbox"> No</label>
+                                <label for=""><input type="checkbox"> small-margineuit</label>
+                            </div>
+                            <label for="" class="labels-input-rows no-w">No. of packs/year: <input type="text" class="underlineInputs"></label>
+                        </div>
+                        <div class="col">
+                            <p><u>Aclohol:</u></p>
+                            <div class="labels-input-rows">
+                                <label for=""><input type="checkbox"> Yes</label>
+                                <label for=""><input type="checkbox"> No</label>
+                                <label for=""><input type="checkbox"> small-margineuit</label>
+                            </div>
+                            <label for=""class="labels-input-rows no-w">No. of bottles/year: <input type="text" class="underlineInputs"></label>
+                        </div>
+                    </div>
+                    <div class="ulo large-margine"><h2 class="form-header">IMUNIZATION</h2></div>
+                    <!-- FOR CHILD -->
+                    <div class="large-margine">
+                        <p style="text-wrap: nowrap;"><u>For Children: </u></p>
+                        <div class="col" style="margin-left: 40px;">
+                            <div class="grid">
+                                <label for=""><input type="checkbox"> BCG</label>
+                                <label for=""><input type="checkbox"> OPV1</label>
+                                <label for=""><input type="checkbox"> OPV2</label>
+                                <label for=""><input type="checkbox"> OPV3</label>
+                                <label for=""><input type="checkbox"> DPT1</label>
+                                <label for=""><input type="checkbox"> DPT2</label>
+                                <label for=""><input type="checkbox"> DPT</label>
+                                <label for=""><input type="checkbox"> Measles</label>
+                                <label for=""><input type="checkbox"> HepaB1</label>
+                                <label for=""><input type="checkbox"> HepaB2</label>
+                                <label for=""><input type="checkbox"> HepaB3</label>
+                                <label for=""><input type="checkbox"> Hepa A</label>
+                                <label for=""><input type="checkbox"> Varicella</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- FOR ADULT -->
+                    <div class="large-margine">
+                        <p style="text-wrap: nowrap;"><u>For Adult: </u></p>
+                        <div class="labels-input-rows" style="margin-left: 40px; margin-top: 10px;">
+                            <label for=""><input type="checkbox"> HPV</label>
+                            <label for=""><input type="checkbox"> MMW</label>
+                            <label for=""><input type="checkbox"> COVID-19</label>
+                            <label for=""><input type="checkbox"> NONE</label>
+                        </div>
+                    </div>
+                    <!-- FOR PREGNANT -->
+                    <div class="large-margine">
+                        <p style="text-wrap: nowrap;"><u>For Pregnant Women: </u></p>
+                        <div class="labels-input-rows" style="margin-left: 40px; margin-top: 10px;">
+                            <label for=""><input type="checkbox"> Tetanus Toxoid</label>
+                            <label for=""><input type="checkbox"> COVID-19</label>
+                            <label for=""><input type="checkbox"> NONE</label>
+                        </div>
+                    </div>
+                    <!-- MGA LAGAS -->
+                    <div class="large-margine">
+                        <p style="text-wrap: nowrap;"><u>For Elder and Immunocompromised: </u></p>
+                        <div class="labels-input-rows" style="margin-left: 40px; margin-top: 10px;">
+                            <label for=""><input type="checkbox"> Pneumococcal</label>
+                            <label for=""><input type="checkbox"> Flu Vaccine</label>
+                            <label for=""><input type="checkbox"> Covid-19</label>
+                            <label for=""><input type="checkbox"> None</label>
+                        </div>
+                    </div>
+
+                    <!-- OB-GYNE HISTORY (FEMALE) -->
+                    <div class="ulo large-margine"><h2 class="form-header">OB-GYNE HISTORY (FEMALE)</h2></div>
+                     <div class="large-margine">
+                        <!-- FIMILY PLANNING -->
+                        <h2><u>FAMILY PLANNING</u></h2>
+                        <div class="labels-input-rows">
+                            <p>With access to family planning counselling?</p>
+                            <label for=""><input type="checkbox"> Yes</label>
+                            <label for=""><input type="checkbox"> No</label>
+                        </div>
+                        <!-- MENSTRUAL HISTORY -->
+                        <h2 class="large-margine"><u>MENSTRUAL HISTORY</u></h2>
+                        <div class="labels-input-rows">
+                            <label for=""><input type="checkbox"> Applicable</label>
+                            <label for=""><input type="checkbox"> Not applicable</label>
+                        </div>
+                        <div class="col ">
+                            <label for="" class="labels-input-rows no-w small-margine">1st Menstruation/Menarche: <input type="number" class="underlineInputs"> yrs. old.</label>
+                            <label for="" class="labels-input-rows no-w small-margine">Age married/Onset sexual intercoures: <input type="number" class="underlineInputs"> yrs. old.</label>
+                            <label for="" class="labels-input-rows no-w small-margine">Last menstrual Period: <input type="number" class="underlineInputs"></label>
+                            <label for="" class="labels-input-rows no-w small-margine">
+                                Period Duration: <input type="number" class="underlineInputs"> days.
+                                Interval Cycle: <input type="number" class="underlineInputs"> days.
+                            </label>
+                            <label for=""class="labels-input-rows no-w small-margine">No. of pads/day during menstruation: <input type="number" class="underlineInputs"></label>
+                            <label for=""class="labels-input-rows no-w small-margine">Birth Control Method: <input type="text" class="underlineInputs"></label>
+                            <div>
+                                <label for=""class="labels-input-rows no-w small-margine">Menopause? If yes, what age? <input type="text" class="underlineInputs"> yrs. old</label>
+                                <div class="labels-input-rows">
+                                    <label for=""><input type="checkbox"> Yes</label>
+                                    <label for=""><input type="checkbox"> No</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- PREGNANCY HISTORY -->
+                        <h2 class="large-margine"><u>PREGNANCY HISTORY</u></h2>
+                        <div><label for="" class="labels-input-rows no-w small-margine">No. of pregnancy(Gravidity): <input type="text" class="underlineInputs"></label></div>
+                        <div><label for=""class="labels-input-rows no-w small-margine">No. of delivery(large-margineity): <input type="text" class="underlineInputs"></label></div>
+                        <div class="labels-input-rows small-margine">
+                            <p>Type of Delivery:</p>
+                            <label for=""><input type="checkbox"> Normal Delivery</label>
+                            <label for=""><input type="checkbox"> Caesarean</label>
+                        </div>
+                        <div class="labels-input-rows">
+                            <div class="col">
+                                <label for=""class="labels-input-rows no-w small-margine">No. of Full Term: <input type="text" class="underlineInputs"></label>
+                                <label for=""class="labels-input-rows no-w small-margine">No. of Abortion: <input type="text" class="underlineInputs"></label>
+                            </div>
+                            <div class="col">
+                                <label for=""class="labels-input-rows no-w small-margine">No. of Premature: <input type="text" class="underlineInputs"></label>
+                                <label for=""class="labels-input-rows no-w small-margine">No. of Living Children: <input type="text" class="underlineInputs"></label>
+                            </div>
+                        </div>
+                     </div>
+
                 </div>
              </div>
         </div>

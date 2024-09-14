@@ -19,10 +19,11 @@
     <main>
       <div class="buttons">
         <div class="search">
-          <input type="text" placeholder="Search..." />
+          <input type="text" id="searchInput" placeholder="Search..." />
           <img src="../icon/search.svg" alt="" />
         </div>
         <div class="add-transfer">
+          <button>RECORDS</button>
           <button>RESTOCK</button>
           <button>TRANSFER</button>
           <button>ADD MEDICINE</button>
@@ -45,52 +46,44 @@
               <th>EXPIRATION DATE</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="inventoryTableBody">
+            <div id="loadingSpinner" style="display:none;">Loading...</div>
+            <% if (getInventoryList && getInventoryList.length > 0) { %>
+              <% getInventoryList.forEach(list => { %>
+                <tr>
+                  <td><%= list.product_id %></td>
+                  <td><%= list.product_code %></td>
+                  <td><%= list.product_name %></td>
+                  <td><%= list.brand_name %></td>
+                  <td><%= list.supplier %></td>
+                  <td><%= list.dosage_form %></td>
+                  <td><%= list.dosage %></td>
+                  <td><%= list.reorder_level %></td>
+                  <td><%= list.batch_number %></td>
+                  <td><%= list.product_quantity %></td>
+                  <td><%= list.expiration %></td>
+                </tr>
+             <% }) %>
+           <% } else { %> 
             <tr>
-              <td>asdasdas</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdsadasd</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdsadas</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdasd</td>
-              <td>asdasdasd</td>
+              <td colspan="11">No list of Medicine</td>
             </tr>
-            <tr>
-              <td>asdasdas</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdsadasd</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdsadas</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdasd</td>
-              <td>asdasdasd</td>
-            </tr>
-            <tr>
-              <td>asdasdas</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdsadasd</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdsadas</td>
-              <td>asdasdas</td>
-              <td>asdsadas</td>
-              <td>asdasd</td>
-              <td>asdasdasd</td>
-            </tr>
+            <% } %>
           </tbody>
         </table>
+        <div>
+          <% if (currentPage > 1) { %>
+            <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
+          <% } %>
+          <% if (currentPage < totalPages) { %>
+            <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
+          <% } %>
+        </div>
       </div>
       <div class="download-CSV">
         <button>DOWNLOAD CSV</button>
       </div>
     </main>
+    <script src="../../js/local/search-medicine.js"></script>
   </body>
 </html>

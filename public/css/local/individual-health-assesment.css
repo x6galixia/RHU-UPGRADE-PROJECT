@@ -2,7 +2,6 @@
     display: flex;
     justify-content: space-around;
     gap: 60px;
-    background-color: aqua;
 }
 
 .ulo {
@@ -14,13 +13,14 @@
 .sub-con {
     width: 100%;
     padding: 20px 60px;
+    box-shadow: var(--shadow);
 }
 
 .col {
     display: flex;
     flex-direction: column;
-    gap: 10px;
     margin-top: 10px;
+    gap: 8px;
 }
 
 .row {
@@ -30,26 +30,50 @@
     gap: 20px;
 }
 
-.radyo {
+.labels-input-rows {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 10px;
-}
-.radyoo {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 40px;
+    gap: 20px;
 }
 
+.small-margineuestions {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.row-right {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.row-right > div {
+    width: 25%;
+    text-wrap: nowrap;
+}
+
+.right-container {
+    display: flex;
+    align-self: self-start;
+}
+
+.small-margine {
+    margin-top: 30px;
+}
 
 .row > div {
     width: 100%;
 }
 
 
-.gar {
+.large-margine {
     margin-top: 40px;
 }
 
@@ -57,9 +81,42 @@ hr {
     margin: 20px 0px;
 }
 
-.tanong {
-    float: left;
+.h {
+    margin-top: 20px;
 }
+
+p, label {
+    font-size: var(--font-size);
+}
+
+.no-w {
+    text-wrap: nowrap;
+}
+
+input, textarea {
+    height: 32px;
+    border-radius: 10px;
+    font-size: 1.24rem;
+}
+
+textarea {
+    height: 20vh;
+}
+
+
+.special-child {
+    font-size: 1rem !important;
+    text-wrap: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+select {
+    width: 100%;
+}
+
+
 
 
 

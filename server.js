@@ -6,6 +6,9 @@ const cors = require("cors");
 const session = require("express-session");
 const flash = require("express-flash");
 
+//-------DATABASES IMPORTING-------//
+const pharmacyPool = require("./models/pharmacydb");
+
 //-------ROUTES--------//
 const adminRouter = require("./routes/admin/admin");
 const nurseRouter = require("./routes/nurse/nurse");
@@ -13,6 +16,13 @@ const doctorRouter = require("./routes/doctor/doctor");
 const medtechRouter = require("./routes/medtech/medtech");
 const pharmacyRouter = require("./routes/pharmacy/pharmacy");
 
+//-------CONNECTING TO DATABASE-------//
+pharmacyPool
+  .connect()
+  .then(() => console.log("Connected to PHARMACY database"))
+  .catch((err) => console.error("Error connecting to PHARMACY database:", err));
+
+//-------INITIALIZING VIEW ENGINE AND PATH------//
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -38,10 +48,6 @@ app.use((req, res, next) => {
   res.header("Pragma", "no-cache");
   next();
 });
-
-//-----REDIRECT TO PAGE PREVIEW-----//
-//-----this is just for initial setup-----//
-//-----for production the url should be redirected to the login-----//
 
 //------INITIALIZE ROUTES------//
 app.use("/", adminRouter);
