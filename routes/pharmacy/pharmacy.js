@@ -80,7 +80,6 @@ router.get("/pharmacy-inventory/search", async (req, res) => {
   }
 });
 
-
 //-------ROUTE FOR PHARMACY BENEFICIARY RECORDS-------//
 router.get("/pharmacy-records", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -139,6 +138,11 @@ router.get("/pharmacy-records/search", async (req, res) => {
     res.status(500).send("An error occurred during the search.");
   }
 });
+
+//-------ROUTE FOR REQUESTS FOR DISPENSE-------//
+router.get("/pharmacy-dispense-request", (req, res) => {
+  res.render("pharmacy/requests-for-dispense")
+})
 
 //-------ROUTE FOR PHARMACY BENEFICIARY INDEX FORM------//
 router.get("/pharmacy-index-form", (req, res) => {
