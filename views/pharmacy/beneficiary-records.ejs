@@ -68,6 +68,29 @@
         </div>        
       </div>
     </main>
+    <div class="pop-up hidden" id="restock-med">
+      <div>
+        <img src="../icon/close.svg" alt=""class="close_popUp" >
+      </div>
+      <h1 class="heading">RESTOCK MEDICINE</h1>
+      <main>
+        <form action="/pharmacy-inventory/restock-medicine" class="restock-transfer" method="PUT">
+          <div>
+            <label for="batch_number">Batch no</label>
+            <input type="text" placeholder="BATCH0001" id="batch_number">
+          </div>
+          <div>
+            <label for="product_id">Product ID</label>
+            <input type="text" placeholder="PRD0001" id="product_id">
+          </div>
+          <div>
+            <label for="quantity">Quantity</label>
+            <input type="number" id="quantity">
+          </div>
+          <button type="submit" class="button-green">SUBMIT</button>
+        </form>
+      </main>
+    </div>
     <script src="../../js/local/search-beneficiary.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function() {
