@@ -201,6 +201,7 @@ input, textarea {
 .underlineInputs {
   border: none;
   width: 100%;
+  box-shadow: none;
   border-bottom: 1px solid black;
   border-radius: 0;
 }
