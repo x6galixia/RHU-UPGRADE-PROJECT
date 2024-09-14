@@ -200,11 +200,13 @@ input, textarea {
   color: white;
   padding: 4px 24px;
   border-radius: 10px;
+  text-align: center;
 }
 
 .underlineInputs {
   border: none;
   width: 100%;
+  box-shadow: none;
   border-bottom: 1px solid black;
   border-radius: 0;
 }

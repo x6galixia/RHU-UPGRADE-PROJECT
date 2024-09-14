@@ -177,14 +177,20 @@ router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
 });
 
 //-------ROUTE FOR RESTOCKING MEDICINE-------//
-router.put("/pharmacy-inventory/restock-medicine/:id", async (req, res) => {
+router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
+  const { error, value } = medicineSchema.validate(req.body);
+
   try {
-    
+    await pharmacyPool.query(
+      "UPDATE inventory SET batch_number = $3, date_added = $4, expiration = $5, product_quantity = $6 WHERE product_id = $1 AND product_code = $2",
+      [value.product_id, value.product_code, value.batch_number, value.date_added, value.expiration, value.product_quantity]
+    );
+    res.redirect("/pharmacy-inventory");
   } catch (err) {
     console.error("Error: ", err);
-    res.sendStatus(400).send(err);
+    res.status(400).send("Error updating medicine");
   }
-})
+});
 
 //-------FUNCTIONS------//
 
