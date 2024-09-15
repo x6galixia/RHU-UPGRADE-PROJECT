@@ -120,6 +120,7 @@ router.get("/pharmacy-records/search", async (req, res) => {
       searchResult = await pharmacyPool.query(
         `SELECT * FROM beneficiary 
          WHERE CONCAT(first_name, ' ', middle_name, ' ', last_name) ILIKE $1
+         OR CONCAT(first_name,' ', last_name) ILIKE $1
          OR first_name ILIKE $1
          OR middle_name ILIKE $1
          OR last_name ILIKE $1
