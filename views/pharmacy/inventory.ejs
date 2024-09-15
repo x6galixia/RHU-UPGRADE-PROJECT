@@ -85,21 +85,22 @@
       </div>
       <h1 class="heading">TRANSFER MEDICINE</h1>
       <main>
-        <form action="" class="restock-transfer">
+        <form action="/pharmacy-inventory/transfer-medicine" method="POST" class="restock-transfer" >
           <div>
             <label for="rhu">Select an RHU</label>
-            <select name="" id="rhu">
-              <option value="">Main</option>
-              <option value="">Maypangdan</option>
+            <select name="rhu_id" id="rhu">
+              <option value="Tabunan">Tabunan</option>
+              <option value="Maypangdan">Maypangdan</option>
+              <option value="Songco">Songco</option>
             </select>
           </div>
           <div>
             <label for="product_id">Product ID</label>
-            <input type="text" placeholder="PRD0001" id="product_id">
+            <input type="text" placeholder="PRD0001" id="product_id" name="product_id">
           </div>
           <div>
             <label for="quantity">Quantity</label>
-            <input type="number" id="quantity">
+            <input type="number" id="quantity" name="product_quantity">
           </div>
           <button type="button" class="button-green" id="transfer_form" onclick="popUp_button(this)">SUBMIT</button>
           <div class="pop-up-confirm" id="confirm-transfer">
