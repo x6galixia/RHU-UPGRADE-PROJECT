@@ -1,1 +1,145 @@
 -- setup your .env 
+
+-- RHU DATABASE SETUP
+CREATE TABLE rhu (
+    id SERIAL PRIMARY KEY,
+    rhu_name VARCHAR(255),
+    rhu_address VARCHAR(255)
+);
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES rhu(id) ON DELETE CASCADE,
+    surname VARCHAR(255),
+    firstname VARCHAR(255),
+    middle_name VARCHAR(50),
+    profession VARCHAR(255),
+    license_number VARCHAR(255),
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    user_type VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE patients (
+    id SERIAL PRIMARY KEY,
+    patient_id INTEGER REFERENCES rhu(id) ON DELETE CASCADE,
+    last_name VARCHAR(50),
+    first_name VARCHAR(50),
+    middle_name VARCHAR(50),
+    suffix VARCHAR(50),
+    phone VARCHAR(20),
+    gender VARCHAR(10),
+    birthdate DATE,
+    house_no VARCHAR(100), 
+    street VARCHAR(100),
+    barangay VARCHAR(100),
+    town VARCHAR(100),
+    province VARCHAR(100),
+    occupation VARCHAR(250),
+    email VARCHAR(50),
+    philhealth_no VARCHAR(100),
+    guardian VARCHAR(250)
+);
+
+CREATE TABLE nurse_checks (
+    id SERIAL PRIMARY KEY,
+    patient_id INTEGER REFERENCES patients(id) ON DELETE CASCADE,
+    check_date DATE,
+    height INT,
+    weight INT,
+    systolic INT,
+    diastolic INT,
+    temperature INT,
+    heart_rate INT,
+    respiratory_rate INT,
+    bmi DECIMAL(5, 2),
+    comment TEXT
+);
+
+CREATE TABLE doctor_visits (
+    id SERIAL PRIMARY KEY,
+    patient_id INTEGER REFERENCES patients(id) ON DELETE CASCADE,
+    follow_date DATE,
+    diagnoses TEXT,
+    findings TEXT,
+    category TEXT,
+    service TEXT,
+    medicine TEXT,
+    instruction TEXT,
+    quantity INT
+);
+
+CREATE TABLE medtech_labs (
+    id SERIAL PRIMARY KEY,
+    patient_id INTEGER REFERENCES patients(id) ON DELETE CASCADE,
+    lab_result TEXT
+);
+
+CREATE INDEX idx_patient_id_nurse_checks ON nurse_checks(patient_id);
+CREATE INDEX idx_patient_id_doctor_visits ON doctor_visits(patient_id);
+CREATE INDEX idx_patient_id_medtech_labs ON medtech_labs(patient_id);
+
+-- PHARMACY DATABASE SETUP
+CREATE TABLE rhu (
+    id SERIAL PRIMARY KEY,
+    rhu_name VARCHAR(255),
+    rhu_address VARCHAR(255)
+);
+
+CREATE TABLE beneficiary (
+    id SERIAL PRIMARY KEY NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    middle_name VARCHAR(100),
+    phone VARCHAR(20),
+    gender VARCHAR(10),
+    birthdate DATE,
+    age INT,
+    street VARCHAR(255),
+    barangay VARCHAR(255),
+    city VARCHAR(255),
+    province VARCHAR(255), 
+    occupation VARCHAR(255),
+    senior_citizen TEXT,
+    pwd TEXT,
+    picture VARCHAR(255),
+    note VARCHAR(255),
+    processed_date DATE
+);
+
+
+CREATE TABLE transaction_records (
+    id SERIAL PRIMARY KEY,
+    beneficiary_id INT REFERENCES beneficiary(id) ON DELETE CASCADE,
+    transaction_number VARCHAR(50) NOT NULL,
+    batch_number VARCHAR(50) NOT NULL,
+    product_details TEXT,
+    quantity INT,
+    expiration_date DATE,
+    date_issued DATE,
+    prescribing_doctor VARCHAR(255),
+    requesting_person VARCHAR(255),
+    relationship_beneficiary VARCHAR(100)
+);
+
+CREATE TABLE inventory (
+    id SERIAL PRIMARY KEY NOT NULL,
+    rhu_id INTEGER REFERENCES rhu(id) ON DELETE CASCADE,
+    product_id VARCHAR(255) NOT NULL,
+    product_code VARCHAR(255) NOT NULL,
+    product_name VARCHAR(255),
+    brand_name VARCHAR(255),
+    supplier VARCHAR(255),
+    dosage_form VARCHAR(100),
+    dosage VARCHAR(100),
+    reorder_level INT,
+    batch_number VARCHAR(255) NOT NULL,
+    date_added DATE,
+    expiration DATE,
+    product_quantity INT
+);
+
+CREATE INDEX idx_transaction_number ON transaction_records(transaction_number);
+CREATE INDEX idx_batch_number_transaction ON transaction_records(batch_number);
+CREATE INDEX idx_product_code ON inventory(product_code);
+CREATE INDEX idx_batch_number_inventory ON inventory(batch_number);
