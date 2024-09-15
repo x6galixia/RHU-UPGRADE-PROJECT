@@ -4,6 +4,7 @@ const router = express.Router();
 
 const medicineSchema = Joi.object({
   product_id: Joi.string().required(),
+  rhu_id: Joi.string().required(),
   product_code: Joi.string().required(),
   product_name: Joi.string().required(),
   brand_name: Joi.string().required(),
@@ -180,6 +181,10 @@ router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
 router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
 
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
+
   try {
     await pharmacyPool.query(
       "UPDATE inventory SET batch_number = $3, date_added = $4, expiration = $5, product_quantity = $6 WHERE product_id = $1 AND product_code = $2",
@@ -189,6 +194,42 @@ router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
   } catch (err) {
     console.error("Error: ", err);
     res.status(400).send("Error updating medicine");
+  }
+});
+
+//-------ROUTE FOR TRANSFERRING MEDICINE TO OTHER RHU-------//
+router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
+  const { error, value } = medicineSchema.validate(req.body);
+
+  try {
+
+    const trimmedProductId = value.product_id.trim();
+
+    const medValue = await pharmacyPool.query("SELECT * FROM inventory WHERE product_id = $1", [trimmedProductId]);
+
+    if (medValue.rows.length === 0) {
+      return res.status(404).send(`Medicine with product_id ${value.product_id} is not available`);
+    }
+
+    const data = medValue.rows[0];
+
+    if (data.product_quantity < value.product_quantity) {
+      return res.status(400).send(`Not enough stock available. Available quantity: ${data.product_quantity}`);
+    }
+
+    await pharmacyPool.query(`
+      INSERT INTO inventory (product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added, rhu_id)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+    `, [data.product_id, data.product_code, data.product_name, data.brand_name, data.supplier, value.product_quantity, data.dosage_form, data.dosage, data.reorder_level, data.batch_number, data.expiration, data.date_added, value.rhu_id]);
+
+    const new_product_quantity = data.product_quantity - value.product_quantity;
+
+    await pharmacyPool.query("UPDATE inventory SET product_quantity = $3 WHERE product_id = $1 AND rhu_id = $2", [data.product_id, data.rhu_id, new_product_quantity]);
+
+    res.redirect("/pharmacy-inventory");
+  } catch (err) {
+    console.error("Error: ", err);
+    res.status(500).send(`Error transferring medicine to RHU ${rhu_id}`);
   }
 });
 
