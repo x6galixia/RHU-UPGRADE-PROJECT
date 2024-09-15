@@ -7,6 +7,7 @@ const session = require("express-session");
 const flash = require("express-flash");
 
 //-------DATABASES IMPORTING-------//
+const rhuPool = require("./models/rhudb");
 const pharmacyPool = require("./models/pharmacydb");
 
 //-------ROUTES--------//
@@ -17,6 +18,11 @@ const medtechRouter = require("./routes/medtech/medtech");
 const pharmacyRouter = require("./routes/pharmacy/pharmacy");
 
 //-------CONNECTING TO DATABASE-------//
+rhuPool
+  .connect()
+  .then(() => console.log("Connected to RHU database"))
+  .catch((err) => console.error("Error connecting to RHU database:", err));
+  
 pharmacyPool
   .connect()
   .then(() => console.log("Connected to PHARMACY database"))
