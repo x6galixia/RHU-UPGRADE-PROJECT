@@ -3,19 +3,19 @@ const Joi = require('joi');
 const router = express.Router();
 
 const medicineSchema = Joi.object({
-  product_id: Joi.string().required(),
-  rhu_id: Joi.string().required(),
-  product_code: Joi.string().required(),
-  product_name: Joi.string().required(),
-  brand_name: Joi.string().required(),
-  supplier: Joi.string().required(),
-  product_quantity: Joi.number().integer().min(1).required(),
-  dosage_form: Joi.string().required(),
-  dosage: Joi.string().required(),
-  reorder_level: Joi.number().integer().min(0).required(),
-  batch_number: Joi.string().required(),
-  expiration: Joi.date().required(),
-  date_added: Joi.date().required()
+  product_id: Joi.string(),
+  rhu_id: Joi.string(),
+  product_code: Joi.string(),
+  product_name: Joi.string(),
+  brand_name: Joi.string(),
+  supplier: Joi.string(),
+  product_quantity: Joi.number().integer().min(1),
+  dosage_form: Joi.string(),
+  dosage: Joi.string(),
+  reorder_level: Joi.number().integer().min(0),
+  batch_number: Joi.string(),
+  expiration: Joi.date(),
+  date_added: Joi.date()
 });
 
 //------IMPORTING PHARMACY DATABASE------//
