@@ -178,6 +178,8 @@ router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
 });
 
 //-------ROUTE FOR RESTOCKING MEDICINE-------//
+//-------in restocking the only medicine that will restock should be in main--------//
+//-------future fixes: include rhu_id-------//
 router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
 
@@ -200,6 +202,10 @@ router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
 //-------ROUTE FOR TRANSFERRING MEDICINE TO OTHER RHU-------//
 router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
 
   try {
 
