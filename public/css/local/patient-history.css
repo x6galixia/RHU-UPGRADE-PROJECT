@@ -75,15 +75,21 @@ select {
     box-shadow: var(--shadow);
 }
 
-.health-btn {
-    background-color: var(--green-color);
-}
-
 .health-btn-div {
     display: flex;
     justify-content: end;
     margin-bottom: 1em;
 }
+
+.health-btn-div > .health-btn{
+    width: 230px !important;
+    background-color: var(--green-color);
+}
+
+.health-btn-div > .health-btn:hover{
+    width: 232px !important;
+}
+
 
 /* .history-container > .date-container{
     background-color: rgb(255, 255, 255);
