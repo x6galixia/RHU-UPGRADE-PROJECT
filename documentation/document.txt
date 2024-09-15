@@ -143,3 +143,4 @@ CREATE INDEX idx_transaction_number ON transaction_records(transaction_number);
 CREATE INDEX idx_batch_number_transaction ON transaction_records(batch_number);
 CREATE INDEX idx_product_code ON inventory(product_code);
 CREATE INDEX idx_batch_number_inventory ON inventory(batch_number);
+CREATE INDEX idx_beneficiary_name ON beneficiary USING gin(to_tsvector('english', first_name || ' ' || last_name));
