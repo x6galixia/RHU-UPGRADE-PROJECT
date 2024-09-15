@@ -7,3 +7,125 @@
 .buttons > .add-transfer > button {
   background-color: #44a130;
 }
+
+#dispense-med .dispense-med{
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  width: 100%;
+}
+
+#dispense-med .dispense-med > div{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+#dispense-med .dispense-med > div > div:last-child{
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+#dispense-med .dispense-med > div > div:first-child{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+#dispense-med .dispense-med > div > div:first-child > div,
+#dispense-med .dispense-med > div > div:last-child > div
+{
+  flex-grow: 1;
+}
+
+#dispense-med .dispense-med > div:nth-child(2){
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  gap: 12px;
+}
+#dispense-med .dispense-med > div:nth-child(2) > button{
+  flex-grow: 1;
+}
+
+.reject-heading{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 2px solid black;
+  padding:12px 0;
+}
+
+#reject_dispense main > div> button:first-child{
+  color: red;
+}
+#reject_dispense main{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+#reject_dispense main > div{
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  justify-content: center;
+}
+
+#reject_dispense {
+  width: fit-content !important;
+}
+#reject_dispense h2 {
+  font-weight: 400;
+}
+#submit_dispense {
+  width: fit-content !important;
+}
+
+#add-beneficiary .row{
+  display: flex;
+  gap: 12px;
+}
+#add-beneficiary .row > .row1{
+  display: flex;
+  gap: 12px;
+}
+
+.dispense-med{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+.dispense-med > div{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dispense-med > div:first-child{
+  display: flex;
+  flex-direction: column;
+}
+.dispense-med > div:first-child > .row:nth-child(4){
+  display: flex;
+  flex-direction: column;
+  gap: 0 !important;
+}
+.dispense-med > div:first-child > .row:nth-child(4) > div{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 12px;
+}
+.dispense-med > div:first-child > .row:last-child > div:last-child{
+  width: 5%;
+}
+.dispense-med select{
+  width: fit-content;
+}
+.dispense-med .input-w8-label{
+  flex-grow: 1;
+}
