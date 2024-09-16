@@ -6,12 +6,25 @@
     <title>HealthSync|Login</title>
 </head>
 <body>
-
-    <div>
-        <input type="text" name="username">
-        <input type="password" name="password">
-        <button type="submit">Login</button>
-    </div>
-    
+    <main>
+        <% if (messages.error) { %>
+            <div>
+                <%= messages.error %>
+            </div>
+            <% } %>
+        <form action="/user/login" method="POST">
+            <div>
+                <select name="user_type" id="">
+                    <option value="Nurse">Nurse</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Med Tech">Med Tech</option>
+                    <option value="Pharmacist">Pharmacist</option>
+                </select>
+                <input type="text" name="username">
+                <input type="password" name="password">
+                <button type="submit">Login</button>
+            </div>     
+        </form>
+    </main>
 </body>
 </html>
