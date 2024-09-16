@@ -32,14 +32,14 @@ router.post("/admin/create-user/submit", async (req, res) => {
         return res.status(400).json({ error: error.details[0].message });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(value.password, 10);
     try {
         await rhuPool.query(
             `INSERT INTO users (rhu_id, surname, firstname, middle_name, profession, license_number, username, password, user_type)
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
             [value.rhu_id, value.surname, value.firstname, value.middle_name, value.profession, value.license_number, value.username, hashedPassword, value.user_type]
         );
-        res.redirect("/admin/create-user");
+        res.redirect("/admin-users");
     } catch (err) {
         console.error("Error: ", err);
         return res.status(500).json({ error: "Internal Server Error" });

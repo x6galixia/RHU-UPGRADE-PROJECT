@@ -1,29 +1,28 @@
 const express = require("express");
 const Joi = require('joi');
 const router = express.Router();
-
-// Schema for medicine validation
-const medicineSchema = Joi.object({
-  product_id: Joi.string().required(),
-  rhu_id: Joi.number().integer(),
-  product_code: Joi.string(),
-  product_name: Joi.string(),
-  brand_name: Joi.string(),
-  supplier: Joi.string(),
-  product_quantity: Joi.number().integer().min(1),
-  dosage_form: Joi.string(),
-  dosage: Joi.string(),
-  reorder_level: Joi.number().integer().min(0),
-  batch_number: Joi.string(),
-  expiration: Joi.date(),
-  date_added: Joi.date()
-});
-
 //------IMPORTING PHARMACY DATABASE------//
 const pharmacyPool = require("../../models/pharmacydb");
 
 //------IMPORTING MIDDLEWARES-------//
 const { calculateAge, formatDate } = require("../../public/js/global/functions");
+
+// Schema for medicine validation
+const medicineSchema = Joi.object({
+  product_id: Joi.string().required(),
+  rhu_id: Joi.number().integer(),
+  product_code: Joi.string().optional(),
+  product_name: Joi.string().optional(),
+  brand_name: Joi.string().optional(),
+  supplier: Joi.string().optional(),
+  product_quantity: Joi.number().integer().min(1).optional(),
+  dosage_form: Joi.string().optional(),
+  dosage: Joi.string().optional(),
+  reorder_level: Joi.number().integer().min(0).optional(),
+  batch_number: Joi.string().optional(),
+  expiration: Joi.date().optional(),
+  date_added: Joi.date().optional()
+});
 
 //-------ROUTE FOR PHARMACY INVENTORY-------//
 router.get("/pharmacy-inventory", async (req, res) => {
