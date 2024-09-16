@@ -153,6 +153,11 @@ router.get("/pharmacy-index-form", (req, res) => {
   res.render("pharmacy/beneficiary-index-form");
 });
 
+//-------ROUTE FOR CHECKING THE MEDICINE REQUEST-------//
+router.get("/pharmacy-request", (req, res) => {
+  res.render("pharmacy/pharmacy-request");
+});
+
 //-------ROUTE FOR PHARMACY TRENDS------//
 router.get("/pharmacy-trends", (req, res) => {
   res.render("pharmacy/trends");
@@ -170,7 +175,7 @@ router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
     await pharmacyPool.query(`
       INSERT INTO inventory (product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added, rhu_id)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`, 
-      [value.product_id, value.product_code, value.product_name, value.brand_name, value.supplier, value.product_quantity, value.dosage_form, value.dosage, value.reorder_level, value.batch_number, value.expiration, value.date_added, value.rhu_id]
+      [value.product_id, value.product_code, value.product_name, value.brand_name, value.supplier, value.product_quantity, value.dosage_form, value.dosage, value.reorder_level, value.batch_number, value.expiration, value.date_added, 1]
     );    
     res.redirect("/pharmacy-inventory");
   } catch (err) {
@@ -189,8 +194,8 @@ router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
 
   try {
     await pharmacyPool.query(
-      "UPDATE inventory SET batch_number = $3, date_added = $4, expiration = $5, product_quantity = $6 WHERE product_id = $1 AND product_code = $2",
-      [value.product_id, value.product_code, value.batch_number, value.date_added, value.expiration, value.product_quantity]
+      "UPDATE inventory SET batch_number = $4, date_added = $5, expiration = $6, product_quantity = $7 WHERE product_id = $1 AND product_code = $2 AND rhu_id = $3",
+      [value.product_id, value.product_code, 1, value.batch_number, value.date_added, value.expiration, value.product_quantity]
     );
     res.redirect("/pharmacy-inventory");
   } catch (err) {
@@ -227,11 +232,12 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
     `, [data.product_id, data.product_code, data.product_name, data.brand_name, data.supplier, value.product_quantity, data.dosage_form, data.dosage, data.reorder_level, data.batch_number, data.expiration, data.date_added, value.rhu_id]);
 
+    const newProductQuantity = data.product_quantity - value.product_quantity
     await pharmacyPool.query(`
       UPDATE inventory 
-      SET product_quantity = product_quantity - $1 
-      WHERE product_id = $2`, 
-      [value.product_quantity, trimmedProductId]
+      SET product_quantity = $1 
+      WHERE product_id = $2 AND rhu_id = $3`, 
+      [newProductQuantity, trimmedProductId, 1]
     );
 
     res.redirect("/pharmacy-inventory");
@@ -239,11 +245,6 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
     console.error("Error: ", err);
     res.status(400).send("Error transferring medicine");
   }
-});
-
-//-------ROUTE FOR CHECKING THE MEDICINE REQUEST-------//
-router.get("/pharmacy-request", (req, res) => {
-  res.render("pharmacy/pharmacy-request");
 });
 
 //-------ROUTE FOR DELETING A MEDICINE-------//
