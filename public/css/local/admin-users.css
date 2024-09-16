@@ -17,6 +17,21 @@
   height: 40px !important;
 }
 
+.create-user-btn {
+  margin-top: 24px;
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+
+.create-user-btn > button {
+  background-color:  #FF007F;
+}
+
+.create-btn {
+  background-color:  var(--green-color);
+}
+
 .user-btn{
   border: none !important;
   color: #000 !important;
