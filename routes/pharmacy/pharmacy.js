@@ -1,13 +1,13 @@
 const express = require("express");
 const Joi = require('joi');
 const router = express.Router();
-//------IMPORTING PHARMACY DATABASE------//
+
 const pharmacyPool = require("../../models/pharmacydb");
+const {calculateAge, formatDate} = require("../../public/js/global/functions");
+const {setUserData} = require("../../middlewares/middleware");
 
-//------IMPORTING MIDDLEWARES-------//
-const { calculateAge, formatDate } = require("../../public/js/global/functions");
+router.use(setUserData);
 
-// Schema for medicine validation
 const medicineSchema = Joi.object({
   product_id: Joi.string().required(),
   rhu_id: Joi.number().integer(),
@@ -24,13 +24,12 @@ const medicineSchema = Joi.object({
   date_added: Joi.date().optional()
 });
 
-//-------ROUTE FOR PHARMACY INVENTORY-------//
 router.get("/pharmacy-inventory", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
 
   try {
-    const { getInventoryList, totalPages } = await fetchInventoryList(page, limit);
+    const { getInventoryList, totalPages } = await fetchInventoryList(page, limit, req.user.rhu_id);
     
     res.render("pharmacy/inventory", {
       getInventoryList, 
@@ -44,7 +43,6 @@ router.get("/pharmacy-inventory", async (req, res) => {
   }
 });
 
-//-------ROUTE FOR SEARCHING MEDICINE IN INVENTORY-------//
 router.get("/pharmacy-inventory/search", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
@@ -56,17 +54,18 @@ router.get("/pharmacy-inventory/search", async (req, res) => {
 
     if (!query) {
       searchResult = await pharmacyPool.query(
-        `SELECT * FROM inventory ORDER BY product_name LIMIT $1 OFFSET $2`, [limit, offset]
+        `SELECT * FROM inventory WHERE rhu_id = $3 ORDER BY product_name LIMIT $1 OFFSET $2`, [limit, offset, req.user.rhu_id]
       );
     } else {
       searchResult = await pharmacyPool.query(
         `SELECT * FROM inventory 
-         WHERE CONCAT(product_name, ' ', brand_name) ILIKE $1
+         WHERE rhu_id = $2 
+         AND (CONCAT(product_name, ' ', brand_name) ILIKE $1
          OR product_name ILIKE $1
-         OR brand_name ILIKE $1
+         OR brand_name ILIKE $1)
          LIMIT 100`,
-        [`%${query}%`]
-      );
+        [`%${query}%`, req.user.rhu_id]
+      );          
     }
 
     const data = searchResult.rows.map(row => ({
@@ -81,7 +80,6 @@ router.get("/pharmacy-inventory/search", async (req, res) => {
   }
 });
 
-//-------ROUTE FOR PHARMACY BENEFICIARY RECORDS-------//
 router.get("/pharmacy-records", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
@@ -101,7 +99,6 @@ router.get("/pharmacy-records", async (req, res) => {
   }
 });
 
-//-------ROUTE FOR SEARCHING BENEFICIARY RECORDS-------//
 router.get("/pharmacy-records/search", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
@@ -142,27 +139,22 @@ router.get("/pharmacy-records/search", async (req, res) => {
   }
 });
 
-//-------ROUTE FOR REQUESTS FOR DISPENSE-------//
 router.get("/pharmacy-dispense-request", (req, res) => {
   res.render("pharmacy/requests-for-dispense");
 });
 
-//-------ROUTE FOR PHARMACY BENEFICIARY INDEX FORM------//
 router.get("/pharmacy-index-form", (req, res) => {
   res.render("pharmacy/beneficiary-index-form");
 });
 
-//-------ROUTE FOR CHECKING THE MEDICINE REQUEST-------//
 router.get("/pharmacy-request", (req, res) => {
   res.render("pharmacy/pharmacy-request");
 });
 
-//-------ROUTE FOR PHARMACY TRENDS------//
 router.get("/pharmacy-trends", (req, res) => {
   res.render("pharmacy/trends");
 });
 
-//--------ROUTE FOR ADDING A MEDICINE TO THE INVENTORY-------//
 router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
 
@@ -183,7 +175,6 @@ router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
   }
 });
 
-//-------ROUTE FOR RESTOCKING MEDICINE-------//
 router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
 
@@ -203,7 +194,6 @@ router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
   }
 });
 
-//-------ROUTE FOR TRANSFERRING MEDICINE TO OTHER RHU-------//
 router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
 
@@ -246,29 +236,16 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
   }
 });
 
-//-------ROUTE FOR DELETING A MEDICINE-------//
-router.post("/pharmacy-inventory/delete-medicine", async (req, res) => {
-  const { product_id } = req.body;
-
-  try {
-    await pharmacyPool.query("DELETE FROM inventory WHERE product_id = $1", [product_id]);
-    res.redirect("/pharmacy-inventory");
-  } catch (err) {
-    console.error("Error: ", err);
-    res.status(500).send("An error occurred while deleting the medicine.");
-  }
-});
-
-async function fetchInventoryList(page, limit) {
+async function fetchInventoryList(page, limit, rhu_id) {
   const offset = (page - 1) * limit;
   
   try {
-    const totalItemsResult = await pharmacyPool.query("SELECT COUNT(*) FROM inventory");
+    const totalItemsResult = await pharmacyPool.query("SELECT COUNT(*) FROM inventory WHERE rhu_id = $1", [rhu_id]);
     const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
     const totalPages = Math.ceil(totalItems / limit);
 
     const inventoryList = await pharmacyPool.query(
-      `SELECT * FROM inventory ORDER BY product_name LIMIT $1 OFFSET $2`, [limit, offset]
+      `SELECT * FROM inventory WHERE rhu_id = $3 ORDER BY product_name LIMIT $1 OFFSET $2`, [limit, offset, rhu_id]
     );
 
     const data = inventoryList.rows.map(row => ({

@@ -72,7 +72,7 @@ app.use("/", medtechRouter);
 app.use("/", pharmacyRouter);
 
 app.get("/", (req, res) => {
-  res.redirect("/login");
+  res.redirect("/user/login");
 });
 
 app.listen(process.env.PORT, () => {
