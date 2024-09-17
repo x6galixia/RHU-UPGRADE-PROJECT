@@ -10,11 +10,11 @@ const userSchema = Joi.object({
   user_type: Joi.string().required()
 });
 
-router.get("/login", (req, res) => {
+router.get("/user/login", (req, res) => {
   res.render("login/login");
 });
 
-router.post("/user/login", async (req, res, next) => {
+router.post("/login/user", async (req, res, next) => {
   const {error, value} = userSchema.validate(req.body);
 
   if(error){
@@ -29,10 +29,10 @@ router.post("/user/login", async (req, res, next) => {
       } if (!user){
         console.log("Authentication failed:", info.message);
         req.flash("error", info.message);
-        return res.redirect("/login");
+        return res.redirect("/user/login");
       } if (user.user_type !== value.user_type) {
         req.flash("error", "User type does not match.");
-        return res.redirect("/login");
+        return res.redirect("/user/login");
       }
       req.login(user, (err) => {
         if (err){
@@ -41,11 +41,11 @@ router.post("/user/login", async (req, res, next) => {
         }
         switch (value.user_type) {
           case "Nurse":
-            return res.redirect("/nurse-dashboard");
+            return res.redirect("/nurse/patient-registration");
           case "Doctor":
             return res.redirect("/doctor-dashboard");
           case "Med Tech":
-            return res.redirect("/doctor/dashboard");
+            return res.redirect("/medtech-dashboard");
           case "Pharmacist":
             return res.redirect("/pharmacy-inventory");
           default:
