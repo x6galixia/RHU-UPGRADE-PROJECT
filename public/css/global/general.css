@@ -132,6 +132,7 @@ select{
   padding-right: 30px;
   background: url('../../icon/dropdownIcon.svg') no-repeat right 10px center;
   background-size: 12px;
+  background-color: #FFF;
 }
 
 .table-container{

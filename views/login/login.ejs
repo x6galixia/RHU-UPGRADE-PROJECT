@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/global/general.css" />
+    <link rel="stylesheet" href="../css/local/login.css" />
     <title>HealthSync|Login</title>
 </head>
 <body>
@@ -13,7 +15,6 @@
             </div>
             <% } %>
         <form action="/login/user" method="POST">
-            <div>
                 <select name="user_type" id="">
                     <option value="Nurse">Nurse</option>
                     <option value="Doctor">Doctor</option>
@@ -22,8 +23,7 @@
                 </select>
                 <input type="text" name="username">
                 <input type="password" name="password">
-                <button type="submit">Login</button>
-            </div>     
+                <button type="submit" class="button-pink">Login</button>
         </form>
     </main>
 </body>
