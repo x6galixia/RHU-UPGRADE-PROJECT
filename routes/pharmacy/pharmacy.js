@@ -4,7 +4,7 @@ const router = express.Router();
 
 const pharmacyPool = require("../../models/pharmacydb");
 const {calculateAge, formatDate} = require("../../public/js/global/functions");
-const {setUserData} = require("../../middlewares/middleware");
+const {setUserData, ensureAuthenticated, checkUserType} = require("../../middlewares/middleware");
 
 router.use(setUserData);
 
@@ -24,12 +24,17 @@ const medicineSchema = Joi.object({
   date_added: Joi.date().optional()
 });
 
-router.get("/pharmacy-inventory", async (req, res) => {
+router.get("/pharmacy-inventory", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
+  const isAjax = req.query.ajax === "true";
 
   try {
     const { getInventoryList, totalPages } = await fetchInventoryList(page, limit, req.user.rhu_id);
+
+    if (isAjax) {
+      return res.json({ getInventoryList, totalPages });
+    }
     
     res.render("pharmacy/inventory", {
       getInventoryList, 
@@ -43,7 +48,7 @@ router.get("/pharmacy-inventory", async (req, res) => {
   }
 });
 
-router.get("/pharmacy-inventory/search", async (req, res) => {
+router.get("/pharmacy-inventory/search", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const offset = (page - 1) * limit;
@@ -80,12 +85,17 @@ router.get("/pharmacy-inventory/search", async (req, res) => {
   }
 });
 
-router.get("/pharmacy-records", async (req, res) => {
+router.get("/pharmacy-records", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
+  const isAjax = req.query.ajax === "true";
   
   try {
     const { getBeneficiaryList, totalPages } = await fetchBeneficiaryList(page, limit);
+
+    if (isAjax) {
+      return res.json({ getBeneficiaryList, totalPages });
+    }
     
     res.render("pharmacy/beneficiary-records", { 
       getBeneficiaryList, 
@@ -99,7 +109,7 @@ router.get("/pharmacy-records", async (req, res) => {
   }
 });
 
-router.get("/pharmacy-records/search", async (req, res) => {
+router.get("/pharmacy-records/search", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const offset = (page - 1) * limit;
@@ -139,19 +149,19 @@ router.get("/pharmacy-records/search", async (req, res) => {
   }
 });
 
-router.get("/pharmacy-dispense-request", (req, res) => {
+router.get("/pharmacy-dispense-request", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
   res.render("pharmacy/requests-for-dispense");
 });
 
-router.get("/pharmacy-index-form", (req, res) => {
+router.get("/pharmacy-index-form", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
   res.render("pharmacy/beneficiary-index-form");
 });
 
-router.get("/pharmacy-request", (req, res) => {
+router.get("/pharmacy-request", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
   res.render("pharmacy/pharmacy-request");
 });
 
-router.get("/pharmacy-trends", (req, res) => {
+router.get("/pharmacy-trends", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
   res.render("pharmacy/trends");
 });
 

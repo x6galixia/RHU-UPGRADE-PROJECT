@@ -15,6 +15,50 @@ function setUserData(req, res, next) {
     next();
 }
 
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        if (req.user.rhu_id) {
+            return next();
+        } else {
+            res.redirect("/user/login");
+        }
+    } else {
+        res.redirect("/user/login");
+    }
+}
+
+function checkNotAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        const user = req.user;
+        switch (user.user_type) {
+            case "Nurse":
+            return res.redirect("/nurse/patient-registration");
+            case "Doctor":
+                return res.redirect("/doctor-dashboard");
+            case "Med Tech":
+                return res.redirect("/medtech-dashboard");
+            case "Pharmacist":
+                return res.redirect("/pharmacy-inventory");
+            default:
+                return res.redirect("/");
+        }
+    }
+    next();
+}
+
+function checkUserType(userType) {
+    return function (req, res, next) {
+        if (req.isAuthenticated() && req.user.user_type === userType && req.user.rhu_id) {
+            return next();
+        }
+        res.redirect("/user/login");
+    };
+}
+
+
 module.exports = {
-    setUserData
+    setUserData,
+    ensureAuthenticated,
+    checkNotAuthenticated,
+    checkUserType
 };

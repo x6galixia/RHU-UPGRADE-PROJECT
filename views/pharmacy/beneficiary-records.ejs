@@ -262,24 +262,14 @@
         </form>
       </main>
     </div>
-    <script src="../../js/local/search-beneficiary.js"></script>
+    <script src="../../js/local/beneficiary/beneficiary-api.js"></script>
     <script src="../../js/global/pop-up.js"></script>
     <script>
       const container = document.getElementById("surubadan");
       const masubad = document.getElementById("masubad");
-
       const containerWidth = parseFloat(window.getComputedStyle(container).width);
-
       const newWidth = containerWidth - 107.33;
-
       masubad.style.width = newWidth + "px";
-
-      document.addEventListener("DOMContentLoaded", function() {
-      var nav2 = document.querySelector(".nav2");
-      if (nav2) {
-        nav2.classList.toggle("selected");
-      }
-    });
     </script>
   </body>
 </html>

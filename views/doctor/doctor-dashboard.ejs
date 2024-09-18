@@ -7,16 +7,17 @@
     <title>Document</title>
 </head>
 <body>
-    <%- include("../includes/header.ejs")  %>
+    <%- include("../includes/header.ejs") %>
     <h1 class="headings">PATIENT HISTORY</h1>
     <main>
         <div class="buttons">
             <div class="search">
-              <input type="text" placeholder="Search..." />
-              <img src="../icon/search.svg" alt="" />
+                <input type="text" id="searchInput" placeholder="Search..." aria-label="Search" />
+                <img src="../icon/search.svg" alt="Search Icon" />
             </div>
         </div>
         <div class="table-container">
+            <div id="loadingSpinner" style="display:none;">Loading...</div>
             <table>
                 <thead>
                     <tr>
@@ -28,67 +29,46 @@
                         <th>More information</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>Johny Sinss</td>
-                        <td>75</td>
-                        <td>Male</td>
-                        <td>Maypangdan</td>
-                        <td>
-                            <select class="" >
-                                <option value="" selected disabled >Medical records</option>
-                                <option value="">Vital sign</option>
-                                <option value="">Vital sign</option>
-                                <option value="">Vital sign</option>
-                                <option value="">Vital sign</option>
-                                <option value="">Vital sign</option>
+                <tbody id="patientsTableBody">
+                    <% if (getPatientList && getPatientList.length > 0) { %>
+                      <% getPatientList.forEach(list => { %>
+                        <tr>
+                          <td><%= list.first_name %> <%= list.middle_name %> <%= list.last_name %> <%= list.suffix %></td>
+                          <td><%= list.age %></td>
+                          <td><%= list.gender %></td>
+                          <td><%= list.house_no %> <%= list.street %> <%= list.barangay %> <%= list.town %> <%= list.province %></td>
+                          <td>
+                            <select name="medicalRecords" id="medicalRecords" aria-label="Medical Records">
+                              <option value="">bla</option>
+                              <option value="">bla</option>
+                              <option value="">bla</option>
+                              <option value="">bla</option>
+                              <option value="">bla</option>
+                              <option value="">bla</option>
                             </select>
-                        </td>
-                        <td>
-                            <img src="../icon/mata_ine.svg" alt="" />
-                        </td>
-                    </tr>
+                          </td>
+                          <td>
+                              <img src="../icon/mata_ine.svg" alt="More Information Icon" />
+                          </td>
+                        </tr>
+                     <% }) %>
+                   <% } else { %> 
                     <tr>
-                        <td>Johny Sinss</td>
-                        <td>75</td>
-                        <td>Male</td>
-                        <td>Maypangdan</td>
-                        <td>
-                            <select class="" >
-                                <option value="" selected disabled >Medical records</option>
-                                <option value="">Vital sign</option>
-                                <option value="">Vital sign</option>
-                                <option value="">Vital sign</option>
-                                <option value="">Vital sign</option>
-                                <option value="">Vital sign</option>
-                            </select>
-                        </td>
-                        <td>
-                            <img src="../icon/mata_ine.svg" alt="" />
-                        </td>
+                      <td colspan="6">No list of patients</td>
                     </tr>
-                    <tr>
-                        <td>Johny Sinss</td>
-                        <td>75</td>
-                        <td>Male</td>
-                        <td>Maypangdan</td>
-                        <td>
-                            <select class="" >
-                                <option value="" selected disabled >Medical records</option>
-                                <option value="">Vital sign</option>
-                                <option value="">Vital sign</option>
-                                <option value="">Vital sign</option>
-                                <option value="">Vital sign</option>
-                                <option value="">Vital sign</option>
-                            </select>
-                        </td>
-                        <td>
-                            <img src="../icon/mata_ine.svg" alt="" />
-                        </td>
-                    </tr>
-                </tbody>
+                    <% } %>
+                  </tbody>
             </table>
+            <div>
+                <% if (currentPage > 1) { %>
+                  <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
+                <% } %>
+                <% if (currentPage < totalPages) { %>
+                  <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
+                <% } %>
+              </div> 
         </div>
     </main>
+    <script src="../../js/local/doctor-dashboard/patient-api.js"></script>
 </body>
 </html>
