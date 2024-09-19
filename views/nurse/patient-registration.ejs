@@ -33,9 +33,15 @@
                             <label for="uniqId">Unique ID:</label>
                             <input type="text">
                         </div>
-                        <div class="b">
-                            <button class="patient-button">Generate ID</button>
-                            <button class="patient-button">Search</button>
+                        <div>
+                            <div class="btn-layout" id="hide-search">
+                                <input type="search" class="g" placeholder="Search ID">
+                                <input type="button" id="exit-search" value="X" style="color: white;">
+                            </div>
+                            <div class="btn-layout" id="show-btn">
+                                <button id="grrr">Generate ID</button>
+                                <input type="button" id="search-btn">
+                            </div>
                         </div>
                     </div>
                     <div class="r">
@@ -170,6 +176,25 @@
                 </div>
             </div>
         </div>
+        <script>
+            var showGenerateID = document.getElementById('show-btn');
+            var hideGenerateID = document.getElementById('hide-search');
+            document.getElementById('search-btn').addEventListener('click',
+                function(){
+                    showGenerateID.style.display = 'none';
+                    hideGenerateID.style.display = 'block';
+                    hideGenerateID.style.display = 'flex';
+                }
+            );
+            document.getElementById('exit-search').addEventListener('click',
+                function(){
+                    showGenerateID.style.display = "block";
+                    showGenerateID.style.display = "flex";
+                    hideGenerateID.style.display = "none";
+                }
+            );
+            
+        </script>
     </main>
 </body>
 </html>

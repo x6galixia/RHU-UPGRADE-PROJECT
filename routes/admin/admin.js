@@ -46,4 +46,8 @@ router.post("/admin/create-user/submit", async (req, res) => {
     }
 });
 
+router.get("/sign-in", (req, res) => {
+    res.render("admin/sign-in");
+})
+
 module.exports = router;
