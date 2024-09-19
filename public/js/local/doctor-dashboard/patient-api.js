@@ -17,13 +17,13 @@ document.addEventListener("DOMContentLoaded", function() {
                     <td> ${patient.gender} </td>
                     <td> ${patient.house_no} ${patient.street} ${patient.barangay} ${patient.town} ${patient.province}</td>
                     <td> 
-                        <select name="" id="">
-                            <option value="">bla</option>
-                            <option value="">bla</option>
-                            <option value="">bla</option>
-                            <option value="">bla</option>
-                            <option value="">bla</option>
-                            <option value="">bla</option>
+                        <select name="patientAction" class="patientActionDropdown">
+                            <option value="">Vital Signs</option>
+                            <option value="">Request Laboratory</option>
+                            <option value="">Diagnosis</option>
+                            <option value="">Findings</option>
+                            <option value="">Laboratory Result</option>
+                            <option value="">Prescribe</option>
                         </select> 
                     </td>
                     <td>
@@ -89,13 +89,13 @@ document.addEventListener("DOMContentLoaded", function() {
                             <td>${patient.gender}</td>
                             <td>${patient.house_no} ${patient.street} ${patient.barangay} ${patient.town} ${patient.province}</td>
                             <td> 
-                                <select name="" id="">
-                                    <option value="">bla</option>
-                                    <option value="">bla</option>
-                                    <option value="">bla</option>
-                                    <option value="">bla</option>
-                                    <option value="">bla</option>
-                                    <option value="">bla</option>
+                                <select name="patientAction" class="patientActionDropdown">
+                                    <option value="">Vital Signs</option>
+                                    <option value="">Request Laboratory</option>
+                                    <option value="">Diagnosis</option>
+                                    <option value="">Findings</option>
+                                    <option value="">Laboratory Result</option>
+                                    <option value="">Prescribe</option>
                                 </select> 
                             </td>
                             <td>
@@ -112,5 +112,17 @@ document.addEventListener("DOMContentLoaded", function() {
             .finally(() => {
                 loadingSpinner.style.display = 'none';
             });
+    });
+
+    document.addEventListener('focusin', function(event) {
+        if (event.target && event.target.classList.contains('patientActionDropdown')) {
+            clearInterval(pollIntervalId);
+        }
+    });
+
+    document.addEventListener('focusout', function(event) {
+        if (event.target && event.target.classList.contains('patientActionDropdown')) {
+            pollIntervalId = setInterval(fetchPatientsUpdates, POLL_INTERVAL);
+        }
     });
 });
