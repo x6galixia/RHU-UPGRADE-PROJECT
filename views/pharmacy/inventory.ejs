@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/global/general.css" />
     <link rel="stylesheet" href="../css/local/pharmacy-inventory.css" />
-    <title>Document</title>
   </head>
   <body>
     <%- include("../includes/header.ejs")  %>
@@ -89,9 +88,9 @@
           <div>
             <label for="rhu">Select an RHU</label>
             <select name="rhu_id" id="rhu">
-              <option value="Tabunan">Tabunan</option>
-              <option value="Maypangdan">Maypangdan</option>
-              <option value="Songco">Songco</option>
+              <option value="1">Tabunan</option>
+              <option value="2">Maypangdan</option>
+              <option value="3">Songco</option>
             </select>
           </div>
           <div>
@@ -239,7 +238,7 @@
         </form>
       </main>
     </div>
-    <script src="../../js/local/search-medicine.js"></script>
+    <script src="../../js/local/inventory/inventory-api.js"></script>
     <script src="../../js/local/download-csv.js"></script>
     <script src="../../js/global/pop-up.js"></script>
     <script src="../../js/global/client-side-functions.js"></script>

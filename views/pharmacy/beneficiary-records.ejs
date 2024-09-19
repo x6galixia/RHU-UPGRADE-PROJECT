@@ -2,8 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="shortcut icon" type="image/png" href=""/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Pharmacy Records Management">
+    <meta name="keywords" content="Pharmacy, Records, Management">
+    <link rel="shortcut icon" type="image/png" href=""/>
     <link rel="stylesheet" href="../css/global/general.css" />
     <link rel="stylesheet" href="../css/local/beneficiary-records.css" />
     <title>PHARMACY|RECORDS</title>
@@ -14,15 +16,16 @@
     <main>
       <div class="buttons">
         <div class="search">
-          <input type="text" id="searchInput" placeholder="Search..." />
+          <input type="text" id="searchInput" placeholder="Search..." aria-label="Search" />
           <img src="../icon/search.svg" alt="" />
         </div>
         <div class="add-transfer">
-          <button id="dispense" onclick="popUp_button(this)">DISPENSE</button>
+          <button id="dispense" onclick="popUp_button(this)" aria-label="Dispense Medicine">DISPENSE</button>
           <button>ADD BENEFICIARY</button>
         </div>
       </div>
       <div class="table-container">
+        <div id="loadingSpinner" style="display:none;">Loading...</div>
         <table>
           <thead>
             <tr>
@@ -37,7 +40,6 @@
             </tr>
           </thead>
           <tbody id="beneficiaryTableBody">
-            <div id="loadingSpinner" style="display:none;">Loading...</div>
             <% if (getBeneficiaryList && getBeneficiaryList.length > 0) { %>
               <% getBeneficiaryList.forEach(list => { %>
                 <tr>
@@ -58,14 +60,14 @@
             <% } %>
           </tbody>
         </table>
-        <div>
+        <nav aria-label="Page navigation">
           <% if (currentPage > 1) { %>
-            <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
+            <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
           <% } %>
           <% if (currentPage < totalPages) { %>
-            <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
+            <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
           <% } %>
-        </div>        
+        </nav>        
       </div>
     </main>
     <div class="pop-up" id="dispense-med">
@@ -97,27 +99,27 @@
         <form action="" class="dispense-med" method="POST">
           <div>
             <div>
-              <div class="input-w8-label">
+              <div class="input-with-label">
                 <label>Beneficiary Name</label>
-                <input type="text" name="beneficiary_name">
+                <input type="text" name="beneficiary_name" required>
               </div>
-              <div class="input-w8-label">
+              <div class="input-with-label">
                 <label>Physician</label>
-                <input type="text" name="physician">
+                <input type="text" name="physician" required>
               </div>
-              <div class="input-w8-label">
+              <div class="input-with-label">
                 <label>Diagnosis</label>
-                <input type="text" name="diagnosis">
+                <input type="text" name="diagnosis" required>
               </div>
             </div>
             <div>
-              <div class="input-w8-label">
+              <div class="input-with-label">
                 <label>Requesting Party</label>
-                <input type="text" name="requesting_party">
+                <input type="text" name="requesting_party" required>
               </div>
-              <div class="input-w8-label">
+              <div class="input-with-label">
                 <label>Affiliation</label>
-                <input type="text" name="relationship">
+                <input type="text" name="relationship" required>
               </div>
             </div>
           </div>
@@ -161,53 +163,53 @@
         <form action="" class="dispense-med" method="POST">
           <div>
             <div class="row">
-              <div class="input-w8-label" id="surubadan">
+              <div class="input-with-label" id="surubadan">
                 <label>Last Name</label>
-                <input type="text">
+                <input type="text" aria-label="Last Name" required>
               </div>
-              <div class="input-w8-label">
+              <div class="input-with-label">
                 <label>First Name</label>
-                <input type="text">
+                <input type="text" aria-label="First Name" required>
               </div>
-              <div class="input-w8-label">
+              <div class="input-with-label">
                 <label>Middle Name</label>
-                <input type="text">
+                <input type="text" aria-label="Middle Name" required>
               </div>
             </div>
             <div class="row">
-              <div class="input-w8-label" id="masubad">
+              <div class="input-with-label" id="masubad">
                 <label>Gender</label>
-                <input type="text">
+                <input type="text" aria-label="Gender" required>
               </div>
-              <div class="input-w8-label">
+              <div class="input-with-label">
                 <label>Birthdate</label>
-                <input type="date">
+                <input type="date" aria-label="Birthdate" required>
               </div>
-              <div class="input-w8-label">
+              <div class="input-with-label">
                 <label>Processed Date</label>
-                <input type="date">
+                <input type="date" aria-label="Processed Date" required>
               </div>
             </div>
             <div class="row">
-              <div class="input-w8-label">
+              <div class="input-with-label">
                 <label>Phone No.</label>
-                <input type="text">
+                <input type="text" aria-label="Phone No." required>
               </div>
-              <div class="input-w8-label">
+              <div class="input-with-label">
                 <label>Occupation</label>
-                <input type="text">
+                <input type="text" aria-label="Occupation" required>
               </div>
               <div class="row1">
-                <div class="input-w8-label">
+                <div class="input-with-label">
                   <label>Senior</label>
-                  <select name="" id="">
+                  <select name="" id="" aria-label="Senior">
                     <option value="">Yes</option>
                     <option value="">No</option>
                   </select>
                 </div>
-                <div class="input-w8-label">
+                <div class="input-with-label">
                   <label>PWD</label>
-                  <select name="" id="">
+                  <select name="" id="" aria-label="PWD">
                     <option value="">Yes</option>
                     <option value="">No</option>
                   </select>
@@ -217,24 +219,24 @@
             <div class="row">
               <label>Address</label>
               <div>
-                <input type="text" placeholder="Street">
-                <input type="text" placeholder="Barangay">
-                <input type="text" placeholder="City">
-                <input type="text" placeholder="Province">
+                <input type="text" placeholder="Street" aria-label="Street">
+                <input type="text" placeholder="Barangay" aria-label="Barangay">
+                <input type="text" placeholder="City" aria-label="City">
+                <input type="text" placeholder="Province" aria-label="Province">
               </div>
             </div>
             <div class="row">
-              <div class="input-w8-label">
+              <div class="input-with-label">
                 <label for="">Note</label>
-                <textarea name="" id="" cols="30" rows="10"></textarea>
+                <textarea name="" id="" cols="30" rows="10" aria-label="Note"></textarea>
               </div>
-              <div class="input-w8-label">
+              <div class="input-with-label">
                 <label for="">Select an image</label>
-                  <input type="file">
+                <input type="file" aria-label="Select an image">
               </div>
             </div>
           </div>
-            <button type="button" class="button-green" id="submit_dispense_button" onclick="popUp_button(this)">SUBMIT</button>
+          <button type="button" class="button-green" id="submit_dispense_button" onclick="popUp_button(this)">SUBMIT</button>
           <div class="pop-up-confirm" id="reject_dispense">
             <div>
               <div class="reject-heading">
@@ -262,24 +264,14 @@
         </form>
       </main>
     </div>
-    <script src="../../js/local/search-beneficiary.js"></script>
+    <script src="../../js/local/beneficiary/beneficiary-api.js"></script>
     <script src="../../js/global/pop-up.js"></script>
     <script>
       const container = document.getElementById("surubadan");
       const masubad = document.getElementById("masubad");
-
       const containerWidth = parseFloat(window.getComputedStyle(container).width);
-
       const newWidth = containerWidth - 107.33;
-
       masubad.style.width = newWidth + "px";
-
-      document.addEventListener("DOMContentLoaded", function() {
-      var nav2 = document.querySelector(".nav2");
-      if (nav2) {
-        nav2.classList.toggle("selected");
-      }
-    });
     </script>
   </body>
 </html>

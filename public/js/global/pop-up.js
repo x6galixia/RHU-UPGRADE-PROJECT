@@ -1,3 +1,5 @@
+    //admin
+    const createUser = document.getElementById("create-user");
     
     // inbentory
     const restock = document.getElementById("restock-med");
@@ -42,6 +44,11 @@
       }
       else if (buttonId === "dispense"){
         dispense.classList.toggle("visible");
+      }
+
+      //admin - user
+      else if (buttonId === "createUser"){
+        createUser.classList.toggle("visible");
       }
 
       overlay.classList.add("visible");

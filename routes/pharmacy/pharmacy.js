@@ -2,35 +2,39 @@ const express = require("express");
 const Joi = require('joi');
 const router = express.Router();
 
+const pharmacyPool = require("../../models/pharmacydb");
+const {calculateAge, formatDate} = require("../../public/js/global/functions");
+const {setUserData, ensureAuthenticated, checkUserType} = require("../../middlewares/middleware");
+
+router.use(setUserData);
+
 const medicineSchema = Joi.object({
-  product_id: Joi.string(),
-  rhu_id: Joi.string(),
-  product_code: Joi.string(),
-  product_name: Joi.string(),
-  brand_name: Joi.string(),
-  supplier: Joi.string(),
-  product_quantity: Joi.number().integer().min(1),
-  dosage_form: Joi.string(),
-  dosage: Joi.string(),
-  reorder_level: Joi.number().integer().min(0),
-  batch_number: Joi.string(),
-  expiration: Joi.date(),
-  date_added: Joi.date()
+  product_id: Joi.string().required(),
+  rhu_id: Joi.number().integer(),
+  product_code: Joi.string().optional(),
+  product_name: Joi.string().optional(),
+  brand_name: Joi.string().optional(),
+  supplier: Joi.string().optional(),
+  product_quantity: Joi.number().integer().min(1).optional(),
+  dosage_form: Joi.string().optional(),
+  dosage: Joi.string().optional(),
+  reorder_level: Joi.number().integer().min(0).optional(),
+  batch_number: Joi.string().optional(),
+  expiration: Joi.date().optional(),
+  date_added: Joi.date().optional()
 });
 
-//------IMPORTING PHARMACY DATABASE------//
-const pharmacyPool = require("../../models/pharmacydb");
-
-//------IMPORTING MIDDLEWARES-------//
-const {calculateAge, formatDate} = require("../../public/js/global/functions");
-
-//-------ROUTE FOR PHARMACY INVENTORY-------//
-router.get("/pharmacy-inventory", async (req, res) => {
+router.get("/pharmacy-inventory", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
+  const isAjax = req.query.ajax === "true";
 
   try {
-    const { getInventoryList, totalPages } = await fetchInventoryList(page, limit);
+    const { getInventoryList, totalPages } = await fetchInventoryList(page, limit, req.user.rhu_id);
+
+    if (isAjax) {
+      return res.json({ getInventoryList, totalPages });
+    }
     
     res.render("pharmacy/inventory", {
       getInventoryList, 
@@ -44,8 +48,7 @@ router.get("/pharmacy-inventory", async (req, res) => {
   }
 });
 
-//-------ROUTE FOR SEARCHING MEDICINE IN INVENTORY-------//
-router.get("/pharmacy-inventory/search", async (req, res) => {
+router.get("/pharmacy-inventory/search", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const offset = (page - 1) * limit;
@@ -56,17 +59,18 @@ router.get("/pharmacy-inventory/search", async (req, res) => {
 
     if (!query) {
       searchResult = await pharmacyPool.query(
-        `SELECT * FROM inventory ORDER BY product_name LIMIT $1 OFFSET $2`, [limit, offset]
+        `SELECT * FROM inventory WHERE rhu_id = $3 ORDER BY product_name LIMIT $1 OFFSET $2`, [limit, offset, req.user.rhu_id]
       );
     } else {
       searchResult = await pharmacyPool.query(
         `SELECT * FROM inventory 
-         WHERE CONCAT(product_name, ' ', brand_name) ILIKE $1
+         WHERE rhu_id = $2 
+         AND (CONCAT(product_name, ' ', brand_name) ILIKE $1
          OR product_name ILIKE $1
-         OR brand_name ILIKE $1
+         OR brand_name ILIKE $1)
          LIMIT 100`,
-        [`%${query}%`]
-      );
+        [`%${query}%`, req.user.rhu_id]
+      );          
     }
 
     const data = searchResult.rows.map(row => ({
@@ -81,13 +85,17 @@ router.get("/pharmacy-inventory/search", async (req, res) => {
   }
 });
 
-//-------ROUTE FOR PHARMACY BENEFICIARY RECORDS-------//
-router.get("/pharmacy-records", async (req, res) => {
+router.get("/pharmacy-records", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
+  const isAjax = req.query.ajax === "true";
   
   try {
     const { getBeneficiaryList, totalPages } = await fetchBeneficiaryList(page, limit);
+
+    if (isAjax) {
+      return res.json({ getBeneficiaryList, totalPages });
+    }
     
     res.render("pharmacy/beneficiary-records", { 
       getBeneficiaryList, 
@@ -101,8 +109,7 @@ router.get("/pharmacy-records", async (req, res) => {
   }
 });
 
-//-------ROUTE FOR SEARCHING BENEFICIARY RECORDS-------//
-router.get("/pharmacy-records/search", async (req, res) => {
+router.get("/pharmacy-records/search", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const offset = (page - 1) * limit;
@@ -118,8 +125,10 @@ router.get("/pharmacy-records/search", async (req, res) => {
     } else {
       searchResult = await pharmacyPool.query(
         `SELECT * FROM beneficiary 
-         WHERE CONCAT(first_name, ' ', last_name) ILIKE $1
+         WHERE CONCAT(first_name, ' ', middle_name, ' ', last_name) ILIKE $1
+         OR CONCAT(first_name,' ', last_name) ILIKE $1
          OR first_name ILIKE $1
+         OR middle_name ILIKE $1
          OR last_name ILIKE $1
          LIMIT 100`,
         [`%${query}%`]
@@ -128,9 +137,9 @@ router.get("/pharmacy-records/search", async (req, res) => {
 
     const data = searchResult.rows.map(row => ({
       ...row,
-      middle_name: row.middle_name ? row.middle_name.charAt(0) : '',
-      age : calculateAge(row.birthdate),
-      senior_citizen : isSeniorCitizen(row.age)
+      middle_name: row.middle_name ? row.middle_name : '',
+      age: calculateAge(row.birthdate),
+      senior_citizen: isSeniorCitizen(row.age)
     }));
 
     res.json({ getBeneficiaryList: data });
@@ -140,24 +149,22 @@ router.get("/pharmacy-records/search", async (req, res) => {
   }
 });
 
-//-------ROUTE FOR REQUESTS FOR DISPENSE-------//
-router.get("/pharmacy-dispense-request", (req, res) => {
-  res.render("pharmacy/requests-for-dispense")
-})
+router.get("/pharmacy-dispense-request", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
+  res.render("pharmacy/requests-for-dispense");
+});
 
-//-------ROUTE FOR PHARMACY BENEFICIARY INDEX FORM------//
-router.get("/pharmacy-index-form", (req, res) => {
+router.get("/pharmacy-index-form", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
   res.render("pharmacy/beneficiary-index-form");
 });
 
-//-------ROUTE FOR PHARMACY TRENDS------//
-router.get("/pharmacy-trends", (req, res) => {
+router.get("/pharmacy-request", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
+  res.render("pharmacy/pharmacy-request");
+});
+
+router.get("/pharmacy-trends", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
   res.render("pharmacy/trends");
 });
 
-//--------ROUTE FOR ADDING A MEDICINE TO THE INVENTORY-------//
-//--------NEEDS TO BE UPDATED ONES WE HAVE A USER LOGIN-------//
-//--------USER ID SHOULD BE QUERIED ALONG WITH THE MEDICINE INFO--------//
 router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
 
@@ -167,9 +174,10 @@ router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
 
   try {
     await pharmacyPool.query(`
-      INSERT INTO inventory (product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`, 
-      [value.product_id, value.product_code, value.product_name, value.brand_name, value.supplier, value.product_quantity, value.dosage_form, value.dosage, value.reorder_level, value.batch_number, value.expiration, value.date_added]);    
+      INSERT INTO inventory (product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added, rhu_id)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`, 
+      [value.product_id, value.product_code, value.product_name, value.brand_name, value.supplier, value.product_quantity, value.dosage_form, value.dosage, value.reorder_level, value.batch_number, value.expiration, value.date_added, 1]
+    );    
     res.redirect("/pharmacy-inventory");
   } catch (err) {
     console.error("Error: ", err);
@@ -177,9 +185,6 @@ router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
   }
 });
 
-//-------ROUTE FOR RESTOCKING MEDICINE-------//
-//-------in restocking the only medicine that will restock should be in main--------//
-//-------future fixes: include rhu_id-------//
 router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
 
@@ -189,8 +194,8 @@ router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
 
   try {
     await pharmacyPool.query(
-      "UPDATE inventory SET batch_number = $3, date_added = $4, expiration = $5, product_quantity = $6 WHERE product_id = $1 AND product_code = $2",
-      [value.product_id, value.product_code, value.batch_number, value.date_added, value.expiration, value.product_quantity]
+      "UPDATE inventory SET batch_number = $4, date_added = $5, expiration = $6, product_quantity = $7 WHERE product_id = $1 AND product_code = $2 AND rhu_id = $3",
+      [value.product_id, value.product_code, 1, value.batch_number, value.date_added, value.expiration, value.product_quantity]
     );
     res.redirect("/pharmacy-inventory");
   } catch (err) {
@@ -199,7 +204,6 @@ router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
   }
 });
 
-//-------ROUTE FOR TRANSFERRING MEDICINE TO OTHER RHU-------//
 router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
 
@@ -208,7 +212,6 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
   }
 
   try {
-
     const trimmedProductId = value.product_id.trim();
 
     const medValue = await pharmacyPool.query("SELECT * FROM inventory WHERE product_id = $1", [trimmedProductId]);
@@ -228,57 +231,31 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
     `, [data.product_id, data.product_code, data.product_name, data.brand_name, data.supplier, value.product_quantity, data.dosage_form, data.dosage, data.reorder_level, data.batch_number, data.expiration, data.date_added, value.rhu_id]);
 
-    const new_product_quantity = data.product_quantity - value.product_quantity;
-
-    await pharmacyPool.query("UPDATE inventory SET product_quantity = $3 WHERE product_id = $1 AND rhu_id = $2", [data.product_id, data.rhu_id, new_product_quantity]);
+    const newProductQuantity = data.product_quantity - value.product_quantity
+    await pharmacyPool.query(`
+      UPDATE inventory 
+      SET product_quantity = $1 
+      WHERE product_id = $2 AND rhu_id = $3`, 
+      [newProductQuantity, trimmedProductId, 1]
+    );
 
     res.redirect("/pharmacy-inventory");
   } catch (err) {
     console.error("Error: ", err);
-    res.status(500).send(`Error transferring medicine to RHU ${rhu_id}`);
+    res.status(400).send("Error transferring medicine");
   }
 });
 
-//-------FUNCTIONS------//
-
-//-------FETCHING PAGINATED LIST OF BENEFICIARIES-------//
-async function fetchBeneficiaryList(page, limit) {
+async function fetchInventoryList(page, limit, rhu_id) {
   const offset = (page - 1) * limit;
-
+  
   try {
-    const totalCountResult = await pharmacyPool.query("SELECT COUNT(*) FROM beneficiary");
-    const totalCount = parseInt(totalCountResult.rows[0].count);
-    
-    const beneficiaryList = await pharmacyPool.query(
-      `SELECT * FROM beneficiary ORDER BY first_name LIMIT $1 OFFSET $2`, [limit, offset]
-    );
-    
-    const data = beneficiaryList.rows.map(row => ({
-      ...row,
-      middle_name: row.middle_name ? row.middle_name.charAt(0) : '',
-      age: calculateAge(row.birthdate),
-      senior_citizen: isSeniorCitizen(row.age)
-    }));
-
-    const totalPages = Math.ceil(totalCount / limit);
-
-    return { getBeneficiaryList: data, totalPages: totalPages || 1 };
-  } catch (err) {
-    console.error("Error: ", err);
-    return { getBeneficiaryList: [], totalPages: 0 };
-  }
-}
-
-//-------FETCHING PAGINATED LIST OF INVENTORY-------//
-async function fetchInventoryList(page, limit) {
-  const offset = (page - 1) * limit;
-
-  try {
-    const totalCountResult = await pharmacyPool.query("SELECT COUNT(*) FROM inventory");
-    const totalCount = parseInt(totalCountResult.rows[0].count);
+    const totalItemsResult = await pharmacyPool.query("SELECT COUNT(*) FROM inventory WHERE rhu_id = $1", [rhu_id]);
+    const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
+    const totalPages = Math.ceil(totalItems / limit);
 
     const inventoryList = await pharmacyPool.query(
-      `SELECT * FROM inventory ORDER BY product_name LIMIT $1 OFFSET $2`, [limit, offset]
+      `SELECT * FROM inventory WHERE rhu_id = $3 ORDER BY product_name LIMIT $1 OFFSET $2`, [limit, offset, rhu_id]
     );
 
     const data = inventoryList.rows.map(row => ({
@@ -286,20 +263,40 @@ async function fetchInventoryList(page, limit) {
       expiration: formatDate(row.expiration)
     }));
 
-    const totalPages = Math.ceil(totalCount / limit);
-
-    return { getInventoryList: data, totalPages: totalPages || 1 };
+    return { getInventoryList: data, totalPages };
   } catch (err) {
     console.error("Error: ", err);
-    return { getInventoryList: [], totalPages: 0 };
+    throw new Error("Error fetching inventory list");
   }
 }
 
-//-------AUTOMATIC CALCULATION OF SENIOR CITIZEN-------//
-//we added a automation to update if the beneficiary
-//is a senior citizen or not based on his/her age
+async function fetchBeneficiaryList(page, limit) {
+  const offset = (page - 1) * limit;
+  
+  try {
+    const totalItemsResult = await pharmacyPool.query("SELECT COUNT(*) FROM beneficiary");
+    const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
+    const totalPages = Math.ceil(totalItems / limit);
 
-function isSeniorCitizen(age){
+    const beneficiaryList = await pharmacyPool.query(
+      `SELECT * FROM beneficiary ORDER BY first_name LIMIT $1 OFFSET $2`, [limit, offset]
+    );
+
+    const data = beneficiaryList.rows.map(row => ({
+      ...row,
+      middle_name: row.middle_name ? row.middle_name : '',
+      age: calculateAge(row.birthdate),
+      senior_citizen: isSeniorCitizen(row.age)
+    }));
+
+    return { getBeneficiaryList: data, totalPages };
+  } catch (err) {
+    console.error("Error: ", err);
+    throw new Error("Error fetching beneficiary list");
+  }
+}
+
+function isSeniorCitizen(age) {
   return age >= 60 ? 'Yes' : 'No';
 }
 
