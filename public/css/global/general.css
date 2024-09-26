@@ -182,7 +182,8 @@ table >tbody > tr{
   margin-bottom: 50px;
 }
 .sub-head > .nav1 > h2,
-.sub-head > .nav2 >h2{
+.sub-head > .nav2 >h2,
+.sub-head > .nav3 >h2{
   padding: 10px;
   cursor: pointer;
 }
