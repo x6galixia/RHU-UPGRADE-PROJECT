@@ -2,8 +2,12 @@ body{
   background: linear-gradient(180deg, #44A130 0%, #FF007F 100%) no-repeat ;
   height: 100vh;
   width: 100vw;
-  display: grid;
-  place-items: center;
+  display: flex;
+  /* place-items: center; */
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 32px;
 }
 
 main > form{
@@ -17,4 +21,47 @@ main{
   background: #FFF;
   box-shadow: 8px 10px 5px 0px rgba(0, 0, 0, 0.25);
   padding: 40px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+select{
+  width: auto;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+button{
+  width: auto;
+}
+button:hover{
+  width: auto;
+  height: auto;
+  background-color: #eb0075;
+}
+a{
+  align-self: center;
+  margin-top: -12px;
+}
+
+.logo{
+  display: grid;
+  place-items: center;
+}
+.logo img{
+  width: 80%;
+}
+
+footer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+footer > .logos > img{
+  width: 48px;
+}
+footer > .logos {
+  display: flex;
+  gap: 12px;
 }
