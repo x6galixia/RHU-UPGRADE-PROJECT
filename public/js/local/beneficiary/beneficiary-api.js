@@ -7,7 +7,9 @@ document.addEventListener("DOMContentLoaded", function() {
     if (nav2) {
       nav2.classList.toggle("selected");
     }
-  
+    var main_container = "dot"
+    var triple_dot = "triple-dot";
+
     function createTableRow(beneficiary) {
       const row = document.createElement('tr');
       row.innerHTML = `
@@ -19,9 +21,32 @@ document.addEventListener("DOMContentLoaded", function() {
         <td>${beneficiary.note}</td>
         <td>${beneficiary.senior_citizen}</td>
         <td>${beneficiary.pwd}</td>
+        <td class="menu-row">
+                <img class="${main_container}" src="../icon/triple-dot.svg" alt="">
+                <div class="${triple_dot}">
+                  <div class="menu">
+                    <button>Delete</button>
+                    <button>Update</button>
+                    <button>Generate ID</button>
+                </div>
+            </div>
+        </td>
       `;
       return row;
     }
+
+    document.querySelector(".dot").forEach(function(dot) {
+      dot.addEventListener("click", function() {
+        var tripleDotContainer = dot.closest("td").querySelector(".triple-dot"); 
+        if (tripleDotContainer) {
+          tripleDotContainer.classList.toggle("visible"); 
+          console.log("asd");
+        }
+        console.log(tripleDotContainer);
+      });
+    });
+
+
   
     function updateBeneficiaryTable(data) {
       const tableBody = document.getElementById("beneficiaryTableBody");
