@@ -132,6 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
                       tableBody.appendChild(row);
                   });
               }
+              attachDotEventListeners();
           })
           .catch(error => {
               console.error('Error during search:', error);
