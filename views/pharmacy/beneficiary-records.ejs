@@ -37,6 +37,7 @@
               <th>NOTE</th>
               <th>SENIOR CITIZEN</th>
               <th>PWD</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="beneficiaryTableBody">
@@ -51,6 +52,16 @@
                   <td><%= list.note %></td>
                   <td><%= list.senior_citizen %></td>
                   <td><%= list.pwd %></td>
+                  <td class="menu-row">
+                    <img class="dot" src="../icon/triple-dot.svg" alt="">
+                    <div class="triple-dot">
+                      <div class="menu">
+                        <button>Delete</button>
+                        <button>Update</button>
+                        <button>Generate ID</button>
+                      </div>
+                    </div>
+                  </td>
                 </tr>
              <% }) %>
            <% } else { %> 
