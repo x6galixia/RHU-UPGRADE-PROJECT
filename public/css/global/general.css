@@ -296,3 +296,11 @@ input[type="checkbox"] {
 .pop-up .table-container > table > tbody > tr{
   border: none;
 }
+
+.error{
+  padding: 5px 0;
+  width: 100%;
+  text-align: center;
+  color: red;
+  font-weight: bold;
+}
