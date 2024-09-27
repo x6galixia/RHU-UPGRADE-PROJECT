@@ -52,3 +52,21 @@
 .res-btn{
   display: flex;
 }
+.selecter select{
+  width: 100% !important;
+  margin-bottom: 20px;
+}
+select{
+  width: 189.6px;
+}
+.gap-all{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+.create-all{
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
