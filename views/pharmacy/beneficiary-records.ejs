@@ -37,28 +37,10 @@
               <th>NOTE</th>
               <th>SENIOR CITIZEN</th>
               <th>PWD</th>
+              <th></th>
             </tr>
           </thead>
-          <tbody id="beneficiaryTableBody">
-            <% if (getBeneficiaryList && getBeneficiaryList.length > 0) { %>
-              <% getBeneficiaryList.forEach(list => { %>
-                <tr>
-                  <td><%= list.first_name %> <%= list.middle_name %> <%= list.last_name %></td>
-                  <td><%= list.gender %></td>
-                  <td><%= list.street %> <%= list.barangay %> <%= list.city %> <%= list.province %></td>
-                  <td><%= list.phone %></td>
-                  <td><%= list.age %></td>
-                  <td><%= list.note %></td>
-                  <td><%= list.senior_citizen %></td>
-                  <td><%= list.pwd %></td>
-                </tr>
-             <% }) %>
-           <% } else { %> 
-            <tr>
-              <td colspan="8">No list of beneficiary</td>
-            </tr>
-            <% } %>
-          </tbody>
+          <tbody id="beneficiaryTableBody"></tbody>
         </table>
         <nav aria-label="Page navigation">
           <% if (currentPage > 1) { %>

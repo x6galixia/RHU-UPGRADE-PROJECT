@@ -9,11 +9,16 @@
 </head>
 <body>
     <main>
+        <div class="logo">
+            <img src="../img/global/logo.png" alt="">
+        </div>
+        <div class="error">
         <% if (messages.error) { %>
-            <div>
                 <%= messages.error %>
-            </div>
-            <% } %>
+                
+                <% } %>
+        </div>
+            Sign-in as...
         <form action="/login/user" method="POST">
                 <select name="user_type" id="">
                     <option value="Nurse">Nurse</option>
@@ -21,10 +26,20 @@
                     <option value="Med Tech">Med Tech</option>
                     <option value="Pharmacist">Pharmacist</option>
                 </select>
-                <input type="text" name="username">
-                <input type="password" name="password">
+                <input type="text" name="username" placeholder="Username">
+                <input type="password" name="password" placeholder="Password">
                 <button type="submit" class="button-pink">Login</button>
+                <a href="">forgot password</a>
         </form>
     </main>
+    <footer>
+        <div class="logos">
+            <img src="../img/global/dost-logo.png" alt="">
+            <img src="../img/global/essu-logo.png" alt="">
+            <img src="../img/global/lgu-logo.png" alt="">
+            <img src="../img/global/DA-logo.png" alt="">
+        </div>
+        <p>All right reserve 2024: Kim Galicia</p>
+    </footer>
 </body>
 </html>

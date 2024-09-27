@@ -76,7 +76,8 @@ async function fetchPatientList(page, limit) {
       FROM patients p
       LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
       LEFT JOIN doctor_visits dv ON p.patient_id = dv.patient_id
-      LEFT JOIN medtech_labs lr ON p.patient_id = lr.patient_id;
+      LEFT JOIN medtech_labs lr ON p.patient_id = lr.patient_id
+      LEFT JOIN rhu r ON p.rhu_id = r.rhu_id;
     `);
     const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
     const totalPages = Math.ceil(totalItems / limit);
@@ -87,11 +88,12 @@ async function fetchPatientList(page, limit) {
         p.birthdate, p.house_no, p.street, p.barangay, p.town, p.province, p.occupation, p.email, p.philhealth_no, p.guardian,
         nc.check_date, nc.height, nc.weight, nc.systolic, nc.diastolic, nc.temperature, nc.heart_rate, nc.respiratory_rate, nc.bmi, nc.comment,
         dv.follow_date, dv.diagnoses, dv.findings, dv.category, dv.service, dv.medicine, dv.instruction, dv.quantity,
-        lr.lab_result
+        lr.lab_result, r.rhu_name, r.rhu_address
       FROM patients p
       LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
       LEFT JOIN doctor_visits dv ON p.patient_id = dv.patient_id
       LEFT JOIN medtech_labs lr ON p.patient_id = lr.patient_id
+      LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
       ORDER BY p.first_name LIMIT $1 OFFSET $2`, [limit, offset]
     );
 

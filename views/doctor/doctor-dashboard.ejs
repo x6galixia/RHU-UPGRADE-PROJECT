@@ -21,46 +21,17 @@
             <div id="loadingSpinner" style="display:none;">Loading...</div>
             <table>
                 <thead>
-                  <tr>
-                      <th>RHU</th>
-                      <th>Name</th>
-                      <th>Age</th>
-                      <th>Gender</th>
-                      <th>Address</th>
-                      <th>Medical Records</th>
-                      <th>More information</th>
+                    <tr>
+                        <th>RHU</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Address</th>
+                        <th>Medical Records</th>
+                        <th>More information</th>
                     </tr>
                 </thead>
-                <tbody id="patientsTableBody">
-                    <% if (getPatientList && getPatientList.length > 0) { %>
-                      <% getPatientList.forEach(list => { %>
-                        <tr>
-                          <td><%= list.rhu_name %></td>
-                          <td><%= list.first_name %> <%= list.middle_name %> <%= list.last_name %> <%= list.suffix %></td>
-                          <td><%= list.age %></td>
-                          <td><%= list.gender %></td>
-                          <td><%= list.house_no %> <%= list.street %> <%= list.barangay %> <%= list.town %> <%= list.province %></td>
-                          <td>
-                            <select name="medicalRecords" id="medicalRecords" aria-label="Medical Records">
-                              <option value="">Vital Signs</option>
-                              <option value="">Request Laboratory</option>
-                              <option value="">Diagnosis</option>
-                              <option value="">Findings</option>
-                              <option value="">Laboratory Result</option>
-                              <option value="">Prescribe</option>
-                            </select>
-                          </td>
-                          <td>
-                              <img src="../icon/mata_ine.svg" alt="More Information Icon"/>
-                          </td>
-                        </tr>
-                     <% }) %>
-                   <% } else { %> 
-                    <tr>
-                      <td colspan="6">No list of patients</td>
-                    </tr>
-                    <% } %>
-                  </tbody>
+                <tbody id="patientsTableBody"></tbody>
             </table>
             <div>
                 <% if (currentPage > 1) { %>

@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
             data.getPatientList.forEach(patient => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
+                    <td> ${patient.rhu_name} </td>
                     <td> ${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}</td>
                     <td> ${patient.age} </td>
                     <td> ${patient.gender} </td>
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         } else {
             const emptyRow = document.createElement("tr");
-            emptyRow.innerHTML = '<td colspan="6">No list of Patients</td>';
+            emptyRow.innerHTML = '<td colspan="7">No list of Patients</td>';
             tableBody.appendChild(emptyRow);
         }
     }
