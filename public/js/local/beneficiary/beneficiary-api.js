@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const POLL_INTERVAL = 1000;
   let pollIntervalId;
   let isSearching = false;
-  let isDotMenuOpen = false;  // To track if dot menu is open
+  let isDotMenuOpen = false;
 
   const nav2 = document.querySelector(".nav2");
   if (nav2) {
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
       row.innerHTML = `
       <td>${beneficiary.first_name} ${beneficiary.middle_name || ''} ${beneficiary.last_name}</td>
       <td>${beneficiary.gender}</td>
-      <td>${beneficiary.address}</td>
+      <td>${beneficiary.street} ${beneficiary.barangay} ${beneficiary.city} ${beneficiary.province}</td>
       <td>${beneficiary.phone}</td>
       <td>${beneficiary.age}</td>
       <td>${beneficiary.note}</td>
