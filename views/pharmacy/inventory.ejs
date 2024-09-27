@@ -40,30 +40,7 @@
               <th>EXPIRATION DATE</th>
             </tr>
           </thead>
-          <tbody id="inventoryTableBody">
-            <div id="loadingSpinner" style="display:none;">Loading...</div>
-            <% if (getInventoryList && getInventoryList.length > 0) { %>
-              <% getInventoryList.forEach(list => { %>
-                <tr>
-                  <td><%= list.product_id %></td>
-                  <td><%= list.product_code %></td>
-                  <td><%= list.product_name %></td>
-                  <td><%= list.brand_name %></td>
-                  <td><%= list.supplier %></td>
-                  <td><%= list.dosage_form %></td>
-                  <td><%= list.dosage %></td>
-                  <td><%= list.reorder_level %></td>
-                  <td><%= list.batch_number %></td>
-                  <td><%= list.product_quantity %></td>
-                  <td><%= list.expiration %></td>
-                </tr>
-             <% }) %>
-           <% } else { %> 
-            <tr>
-              <td colspan="11">No list of Medicine</td>
-            </tr>
-            <% } %>
-          </tbody>
+          <tbody id="inventoryTableBody"></tbody>
         </table>
         <div>
           <% if (currentPage > 1) { %>
