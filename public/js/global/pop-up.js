@@ -53,7 +53,7 @@
 
       //triple dot 
       
-
+      
       overlay.classList.add("visible");
     }
     document.querySelectorAll(".close_popUp").forEach(function(closeBtn) {

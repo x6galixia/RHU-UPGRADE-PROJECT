@@ -85,16 +85,21 @@
           <h1 class="heading">CREATE USER</h1>
           <main>
             <form action="/admin/create-user/submit" method="POST">
-              <select name="rhu_id" id="">
-                  <option value="1">Main</option>
-                  <option value="2">Maypangdan</option>
-                  <option value="3">Tabunan</option>
-                  <option value="4">Songco</option>
-              </select>
-              <input type="text" placeholder="Surname" name="surname" required>
-              <input type="text" placeholder="Firstname" name="firstname" required>
-              <input type="text" placeholder="Middlename" name="middle_name">
-              <select name="profession" id="">
+              <div class="selecter">
+                <select name="rhu_id" id="">
+                <option value="1">Main</option>
+                <option value="2">Maypangdan</option>
+                <option value="3">Tabunan</option>
+                <option value="4">Songco</option>
+                </select>
+              </div>
+              <div class="gap-all">
+                <input type="text" placeholder="Surname" name="surname" required>
+                <input type="text" placeholder="Firstname" name="firstname" required>
+                <input type="text" placeholder="Middlename" name="middle_name">
+              </div>
+              <div class="gap-all">
+                <select name="profession" id="">
                   <option value="Pediatrician">Pediatrician</option>
                   <option value="Optalmologist">Optalmologist</option>
                   <option value="Oncologist">Oncologist</option>
@@ -112,14 +117,20 @@
               </select>
               <input type="text" placeholder="License no." name="license_number">
               <input type="text" placeholder="Username" name="username" required>
-              <input type="password" placeholder="Password" name="password" required>
+              </div>
+              <div class="gap-all">
+                <input type="password" placeholder="Password" name="password" required>
+              <input type="password" placeholder="Confirm password" name="password" required>
               <select name="user_type" id="" required>
                   <option value="Doctor">Doctor</option>
                   <option value="Nurse">Nurse</option>
                   <option value="Med Tech">Med Tech</option>
                   <option value="Pharmacist">Pharmacist</option>
               </select>
-              <button class="create-btn" type="submit">Create</button>
+              </div>
+              <div class="create-all">
+                <button class="create-btn" type="submit">Create</button>
+              </div>
           </form>
           </main>
         </div>
