@@ -53,6 +53,7 @@
 
       overlay.classList.add("visible");
     }
+    
     document.querySelectorAll(".close_popUp").forEach(function(closeBtn) {
       closeBtn.addEventListener("click", function() {
         var pop_up = closeBtn.closest(".pop-up"); 
@@ -62,6 +63,7 @@
         }
       });
     });
+
     document.querySelectorAll(".close_confirm").forEach(function(closeBtn) {
       closeBtn.addEventListener("click", function() {
         var pop_up_confirm = closeBtn.closest(".pop-up-confirm"); 
