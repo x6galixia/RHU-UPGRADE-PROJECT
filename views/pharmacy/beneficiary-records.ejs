@@ -58,58 +58,58 @@
       </div>
       <h1 class="heading">ADD BENEFICIARY</h1>
       <main>
-        <form action="" class="dispense-med" method="POST">
+        <form action="/pharmacy-records/add-beneficiary" class="dispense-med" method="POST" enctype="multipart/form-data">
           <div>
             <div class="row">
               <div class="input-w8-label" id="surubadan">
                 <label>Last Name</label>
-                <input type="text" aria-label="Last Name" required>
+                <input type="text" aria-label="Last Name" name="last_name" required>
               </div>
               <div class="input-w8-label">
                 <label>First Name</label>
-                <input type="text" aria-label="First Name" required>
+                <input type="text" aria-label="First Name" name="first_name" required>
               </div>
               <div class="input-w8-label">
                 <label>Middle Name</label>
-                <input type="text" aria-label="Middle Name" required>
+                <input type="text" aria-label="Middle Name" name="middle_name" required>
               </div>
             </div>
             <div class="row">
               <div class="input-w8-label" id="masubad">
                 <label>Gender</label>
-                <input type="text" aria-label="Gender" required>
+                <input type="text" aria-label="Gender" name="gender" required>
               </div>
               <div class="input-w8-label">
                 <label>Birthdate</label>
-                <input type="date" aria-label="Birthdate" required>
+                <input type="date" aria-label="Birthdate" name="birthdate" required>
               </div>
               <div class="input-w8-label">
                 <label>Processed Date</label>
-                <input type="date" aria-label="Processed Date" required>
+                <input type="date" aria-label="Processed Date" name="processed_date" required>
               </div>
             </div>
             <div class="row">
               <div class="input-w8-label">
                 <label>Phone No.</label>
-                <input type="text" aria-label="Phone No." required>
+                <input type="text" aria-label="Phone No." name="phone" required>
               </div>
               <div class="input-w8-label">
                 <label>Occupation</label>
-                <input type="text" aria-label="Occupation" required>
+                <input type="text" aria-label="Occupation" name="occupation" required>
               </div>
               <div class="row1">
                 <div class="input-w8-label">
                   <label>Senior</label>
-                  <select name="" id="" aria-label="Senior">
-                    <option value="">Yes</option>
-                    <option value="">No</option>
+                  <select name="senior_citizen" id="" aria-label="Senior">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
                   </select>
                 </div>
                 <div class="input-w8-label">
                   <label>PWD</label>
-                  <select name="" id="" aria-label="PWD">
-                    <option value="">Yes</option>
-                    <option value="">No</option>
+                  <select name="pwd" id="" aria-label="PWD">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
                   </select>
                 </div>
               </div>
@@ -117,16 +117,16 @@
             <div class="row">
               <label>Address</label>
               <div>
-                <input type="text" placeholder="Street" aria-label="Street">
-                <input type="text" placeholder="Barangay" aria-label="Barangay">
-                <input type="text" placeholder="City" aria-label="City">
-                <input type="text" placeholder="Province" aria-label="Province">
+                <input type="text" placeholder="Street" aria-label="Street" name="street">
+                <input type="text" placeholder="Barangay" aria-label="Barangay" name="barangay">
+                <input type="text" placeholder="City" aria-label="City" name="city">
+                <input type="text" placeholder="Province" aria-label="Province" name="province">
               </div>
             </div>
             <div class="row">
               <div class="input-w8-label">
                 <label for="">Note</label>
-                <textarea name="" id="" cols="30" rows="10" aria-label="Note"></textarea>
+                <textarea name="note" id="" cols="30" rows="10" aria-label="Note"></textarea>
               </div>
               <div class="input-w8-label">
                 <label for="">Select an image</label>
@@ -135,7 +135,7 @@
                     <img src="../icon/upload-img-default.svg" alt="">
                     <p id="upload-image-text">Upload Image Here</p>
                   </div>
-                  <input class="beneficiary-upload-image" type="file" aria-label="Select an image">
+                  <input class="beneficiary-upload-image" type="file" aria-label="Select an image" name="picture">
                 </div>
               </div>
             </div>
@@ -158,7 +158,7 @@
           </div>
           <div class="pop-up-confirm" id="submit_dispense">
             <div>
-              <h2>Do you want to dispense medicine?</h2>
+              <h2>Do you want to add this beneficiary?</h2>
               <main>
                 <button type="button" class="button-bordered close_confirm">No</button>
                 <button type="submit" class="button-green">Yes</button>
@@ -266,11 +266,11 @@
           <img src="../icon/warning.svg" alt="">
           <h2>Deleting a Beneficiary will automatically delete from the list</h2>
         </div>
-        <main>
+        <main> 
           <h2>Are sure you want to delete this Beneficiary?</h2>
           <div>
             <button type="button" class="button-bordered close_popUp1">No</button>
-            <button type="submit" class="button-bordered" style="color: red;">Yes</button>
+            <button type="button" class="button-bordered" style="color: red;">Yes</button>
           </div>
         </main>
       </div>
@@ -336,56 +336,7 @@
       </main>
     </div>
     <script src="../../js/local/beneficiary/beneficiary-api.js"></script>
+    <script src="../../js/local/beneficiary/beneficiary-local.js"></script>
     <script src="../../js/global/pop-up.js"></script>
-    <script>
-      const container = document.getElementById("surubadan");
-      const masubad = document.getElementById("masubad");
-      const containerWidth = parseFloat(window.getComputedStyle(container).width);
-      const newWidth = containerWidth - 107.33;
-      masubad.style.width = newWidth + "px";
-
-      document.querySelector('.upload-section').addEventListener('click', function() {
-          document.querySelector('.beneficiary-upload-image').click();
-      });
-
-      document.querySelector('.beneficiary-upload-image').addEventListener('change', function(event) {
-          const file = event.target.files[0];
-          if (file) {
-              document.getElementById("upload-image-text").innerHTML = "Change Image";
-              const reader = new FileReader();
-              reader.onload = function(e) {
-                  document.querySelector('.upload-section img').src = e.target.result;
-              }
-              reader.readAsDataURL(file);
-          }
-      });
-
-      function Delete(beneficiary_id){
-        console.log("delete: " + beneficiary_id);
-      }
-  
-      function Update(beneficiary_id){
-        console.log("update: " + beneficiary_id);
-          
-      }
-      function Generate(first_name, last_name, middle_name, phone, street, province) {
-          // Null handler: Replace null, undefined, or empty strings with "N/A"
-          first_name = first_name || "N/A";
-          last_name = last_name || "N/A";
-          middle_name = middle_name || "N/A";
-          phone = phone || "N/A";
-          street = street || "N/A";
-          province = province || "N/A";
-
-          console.log("First name: " + first_name);
-          console.log("Last name: " + last_name);
-          console.log("Middle name: " + middle_name);
-          console.log("Phone: " + phone);
-          console.log("Street: " + street);
-          console.log("Province: " + province);
-      }
-
-
-    </script>
   </body>
 </html>

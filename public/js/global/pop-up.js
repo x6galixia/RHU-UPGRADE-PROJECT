@@ -51,9 +51,6 @@
       else if (buttonId === "update-id"){
         update_beneficiary.classList.toggle("visible");
       }
-      else if (buttonId === "delete-id"){
-        delete_beneficiary.classList.toggle("visible");
-      }
 
       // dispense
       else if (buttonId === "reject_dispense_button"){
