@@ -256,6 +256,25 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
   }
 });
 
+router.delete('/delete-beneficiary/:id', async (req, res) => {
+  const beneficiaryId = parseInt(req.params.id);
+  console.log(beneficiaryId);
+  if (isNaN(beneficiaryId)) {
+      return res.status(400).json({ message: 'Invalid beneficiary ID' });
+  }
+  try {
+      const result = await pharmacyPool.query('DELETE FROM beneficiary WHERE beneficiary_id = $1', [beneficiaryId]);
+      if (result.rowCount > 0) {
+          res.json({ message: 'Beneficiary deleted successfully.' });
+      } else {
+          res.status(404).json({ message: 'Beneficiary not found.' });
+      }
+  } catch (error) {
+      console.error('Error deleting beneficiary:', error);
+      res.status(500).json({ message: 'Failed to delete the beneficiary.' });
+  }
+});
+
 async function fetchInventoryList(page, limit, rhu_id) {
   const offset = (page - 1) * limit;
   
