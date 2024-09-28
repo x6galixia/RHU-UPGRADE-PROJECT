@@ -11,6 +11,22 @@ const {setUserData, ensureAuthenticated, checkUserType} = require("../../middlew
 
 router.use(setUserData);
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = 'uploads/beneficiary-img/';
+    
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
 const medicineSchema = Joi.object({
   product_id: Joi.string().required(),
   rhu_id: Joi.number().integer(),
@@ -48,23 +64,6 @@ const beneficiarySchema = Joi.object({
   processed_date: Joi.date().required(),
   existing_picture: Joi.string().optional() 
 });
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = 'uploads/beneficiary-img/';
-
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
 const upload = multer({ storage: storage });
 router.use("/uploads/beneficiary-img", express.static("uploads"));
 
@@ -356,24 +355,6 @@ router.post("/pharmacy-records/add-beneficiary", upload.single('picture'), async
   }
 });
 
-router.delete('/pharmacy-records/delete/:id', async (req, res) => {
-  const beneficiaryId = parseInt(req.params.id);
-  if (isNaN(beneficiaryId)) {
-      return res.status(400).json({ message: 'Invalid beneficiary ID' });
-  }
-  try {
-      const result = await pharmacyPool.query('DELETE FROM beneficiary WHERE beneficiary_id = $1', [beneficiaryId]);
-      if (result.rowCount > 0) {
-          res.json({ message: 'Beneficiary deleted successfully.' });
-      } else {
-          res.status(404).json({ message: 'Beneficiary not found.' });
-      }
-  } catch (error) {
-      console.error('Error deleting beneficiary:', error);
-      res.status(500).json({ message: 'Failed to delete the beneficiary.' });
-  }
-});
-
 router.post('/pharmacy-records/update', upload.single('picture'), async (req, res) => {
   const { error, value } = beneficiarySchema.validate(req.body);
   const existingPicture = value.existing_picture;
@@ -392,25 +373,7 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
       `UPDATE beneficiary 
        SET last_name = $1, first_name = $2, middle_name = $3, gender = $4, birthdate = $5, processed_date = $6, phone = $7, occupation = $8, senior_citizen = $9, pwd = $10, street = $11, barangay = $12, city = $13, province = $14, note = $15, picture = $16
        WHERE beneficiary_id = $17`,
-      [ 
-        value.last_name, 
-        value.first_name, 
-        value.middle_name, 
-        value.gender, 
-        value.birthdate, 
-        value.processed_date, 
-        value.phone, 
-        value.occupation, 
-        value.senior_citizen, 
-        value.pwd, 
-        value.street, 
-        value.barangay, 
-        value.city, 
-        value.province, 
-        value.note, 
-        picture, 
-        value.beneficiary_id
-      ]
+      [ value.last_name, value.first_name, value.middle_name, value.gender, value.birthdate, value.processed_date, value.phone, value.occupation, value.senior_citizen, value.pwd, value.street, value.barangay, value.city, value.province, value.note, picture, value.beneficiary_id ]
     );
 
     if (result.rowCount > 0) {
@@ -421,6 +384,24 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
   } catch (error) {
     console.error('Error updating beneficiary:', error);
     res.status(500).json({ message: 'Failed to update the beneficiary.' });
+  }
+});
+
+router.delete('/pharmacy-records/delete/:id', async (req, res) => {
+  const beneficiaryId = parseInt(req.params.id);
+  if (isNaN(beneficiaryId)) {
+      return res.status(400).json({ message: 'Invalid beneficiary ID' });
+  }
+  try {
+      const result = await pharmacyPool.query('DELETE FROM beneficiary WHERE beneficiary_id = $1', [beneficiaryId]);
+      if (result.rowCount > 0) {
+          res.json({ message: 'Beneficiary deleted successfully.' });
+      } else {
+          res.status(404).json({ message: 'Beneficiary not found.' });
+      }
+  } catch (error) {
+      console.error('Error deleting beneficiary:', error);
+      res.status(500).json({ message: 'Failed to delete the beneficiary.' });
   }
 });
 
