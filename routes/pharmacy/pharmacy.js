@@ -47,20 +47,20 @@ const beneficiarySchema = Joi.object({
   beneficiary_id: Joi.number().integer().optional(),
   last_name: Joi.string().required(),
   first_name: Joi.string().required(),
-  middle_name: Joi.string().optional(),
-  phone: Joi.string().optional(),
+  middle_name: Joi.string().allow('').optional(),
+  phone: Joi.string().allow('').optional(),
   gender: Joi.string().required(),
   birthdate: Joi.date().required(),
-  age: Joi.string().optional(),
-  street: Joi.string().optional(),
+  age: Joi.string().allow('').optional(),
+  street: Joi.string().allow('').optional(),
   barangay: Joi.string().required(),
   city: Joi.string().required(),
   province: Joi.string().required(),
-  occupation: Joi.string().optional(),
+  occupation: Joi.string().allow('').optional(),
   senior_citizen: Joi.string().optional(),
   pwd: Joi.string().optional(),
   picture: Joi.string().allow('').optional(),
-  note: Joi.string().optional(),
+  note: Joi.string().allow('').optional(),
   processed_date: Joi.date().required(),
   existing_picture: Joi.string().optional() 
 });
@@ -390,20 +390,21 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
 router.delete('/pharmacy-records/delete/:id', async (req, res) => {
   const beneficiaryId = parseInt(req.params.id);
   if (isNaN(beneficiaryId)) {
-      return res.status(400).json({ message: 'Invalid beneficiary ID' });
+    return res.status(400).json({ message: 'Invalid beneficiary ID' });
   }
   try {
-      const result = await pharmacyPool.query('DELETE FROM beneficiary WHERE beneficiary_id = $1', [beneficiaryId]);
-      if (result.rowCount > 0) {
-          res.json({ message: 'Beneficiary deleted successfully.' });
-      } else {
-          res.status(404).json({ message: 'Beneficiary not found.' });
-      }
+    const result = await pharmacyPool.query('DELETE FROM beneficiary WHERE beneficiary_id = $1', [beneficiaryId]);
+    if (result.rowCount > 0) {
+      res.json({ message: 'Beneficiary deleted successfully.' });
+    } else {
+      res.status(404).json({ message: 'Beneficiary not found.' });
+    }
   } catch (error) {
-      console.error('Error deleting beneficiary:', error);
-      res.status(500).json({ message: 'Failed to delete the beneficiary.' });
+    console.error('Error deleting beneficiary:', error);
+    res.status(500).json({ message: 'Failed to delete the beneficiary.' });
   }
 });
+
 
 async function fetchInventoryList(page, limit, rhu_id) {
   const offset = (page - 1) * limit;

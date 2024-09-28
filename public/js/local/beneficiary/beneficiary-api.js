@@ -198,6 +198,13 @@ document.addEventListener("DOMContentLoaded", function () {
     window.popUp_three_dot = function(button) {
         const action = button.textContent.trim();
         const beneficiaryId = button.closest('.menu').querySelector('.delete-button').getAttribute('data-id');
+
+        if (action === 'Delete' && beneficiaryId) {
+            if (confirm('Are you sure you want to delete this beneficiary?'))           
+            {
+                deleteBeneficiary(beneficiaryId);
+            }
+        }
     
         if (action === 'Update' && beneficiaryId) {
             fetch(`/pharmacy-records/beneficiary/${beneficiaryId}`)
@@ -255,7 +262,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 deleteBeneficiary(beneficiaryId);
             }
         }
-    });  
+    });
 
     function deleteBeneficiary(beneficiaryId) {
         console.log('Sending DELETE request for ID:', beneficiaryId);
@@ -269,6 +276,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!response.ok) {
                 throw new Error('Failed to delete beneficiary');
             }
+
             alert('Beneficiary deleted successfully.');
             fetchBeneficiaryUpdates();
         })
