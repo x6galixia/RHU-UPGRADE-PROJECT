@@ -174,7 +174,7 @@
       </div>
       <h1 class="heading">UPDATE BENEFICIARY</h1>
       <main>
-        <form id="update_beneficiary" action="/pharmacy-records/update" class="dispense-med" method="POST">
+        <form id="update_beneficiary" action="/pharmacy-records/update" class="dispense-med" method="POST" enctype="multipart/form-data">
           <div>
               <div class="row">
                   <div class="input-w8-label" id="surubadan">
@@ -244,6 +244,7 @@
                     <label for="">Note</label>
                     <textarea name="note" id="note" cols="30" rows="10" aria-label="Note"></textarea>
                 </div>
+                <!-------------kuan la in place holder la------------->
                 <input type="hidden" id="existing_picture" name="existing_picture">
                 <div class="input-w8-label">
                     <label for="">Select an image</label>

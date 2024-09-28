@@ -255,7 +255,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 deleteBeneficiary(beneficiaryId);
             }
         }
-    });
+    });  
 
     function deleteBeneficiary(beneficiaryId) {
         console.log('Sending DELETE request for ID:', beneficiaryId);
