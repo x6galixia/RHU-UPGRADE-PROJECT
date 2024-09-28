@@ -129,3 +129,24 @@
 .dispense-med .input-w8-label{
   flex-grow: 1;
 }
+.beneficiary-upload-image{
+  display: none;
+}
+.upload-image{
+  height: 100%;
+}
+.upload-image > .upload-section{
+  height: 85%;
+  border:solid 1px gray;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 12px;
+}
+.upload-image img{
+  width: 30%;
+  object-fit: contain;
+  height: 100%;
+}
