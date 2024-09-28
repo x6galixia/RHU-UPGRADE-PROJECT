@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     }
-
+    
     function updateBeneficiaryTable(data) {
         const tableBody = document.getElementById("beneficiaryTableBody");
         tableBody.innerHTML = "";
