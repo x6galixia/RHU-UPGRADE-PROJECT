@@ -87,10 +87,11 @@
             <form action="/admin/create-user/submit" method="POST">
               <div class="selecter">
                 <select name="rhu_id" id="">
-                <option value="1">Main</option>
-                <option value="2">Maypangdan</option>
-                <option value="3">Tabunan</option>
-                <option value="4">Songco</option>
+                <option value="1" selected disabled>Select RHU</option>
+                <option value="2">Main</option>
+                <option value="3">Maypangdan</option>
+                <option value="4">Tabunan</option>
+                <option value="5">Songco</option>
                 </select>
               </div>
               <div class="gap-all">
@@ -100,6 +101,7 @@
               </div>
               <div class="gap-all">
                 <select name="profession" id="">
+                  <option value="Profession" selected disabled>Profession</option>
                   <option value="Pediatrician">Pediatrician</option>
                   <option value="Optalmologist">Optalmologist</option>
                   <option value="Oncologist">Oncologist</option>
@@ -122,6 +124,7 @@
                 <input type="password" placeholder="Password" name="password" required>
               <input type="password" placeholder="Confirm password" name="password" required>
               <select name="user_type" id="" required>
+                  <option value="User" selected disabled>User Type</option>
                   <option value="Doctor">Doctor</option>
                   <option value="Nurse">Nurse</option>
                   <option value="Med Tech">Med Tech</option>
