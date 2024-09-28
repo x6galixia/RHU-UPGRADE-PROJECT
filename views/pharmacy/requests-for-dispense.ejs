@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/global/general.css" />
+    <link rel="stylesheet" href="../css/local/pharmacy-dispense.css" />
     <title>PHARMACY|REQUESTS FOR DISPENSE</title>
 </head>
 <body>
@@ -14,7 +15,6 @@
             <input type="text" id="searchInput" placeholder="Search..." />
             <img src="../icon/search.svg" alt="" />
         </div>
-
         <div class="table-container" id="">
             <table>
               <thead>
@@ -34,7 +34,90 @@
             </div>
           </div>
     </main>
-    
+    <div class="pop-up" id="dispense-med" >
+      <div class="close-container">
+        <img src="../icon/close.svg" alt="" class="close_popUp">
+      </div>
+      <h1 class="heading">DISPENSE MEDICINE</h1>
+      <main>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>TRANSACTION NO.</th>
+                <th>PRODUCT NAME</th>
+                <th>ISSUED QUANTITY</th>
+                <th>ISSUED DATE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>11111</td>
+                <td>Kim Boog</td>
+                <td>Guti</td>
+                <td>Delay</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <form action="" class="dispense-med" method="POST">
+          <div>
+            <div>
+              <div class="input-with-label">
+                <label>Beneficiary Name</label>
+                <input type="text" name="beneficiary_name" required>
+              </div>
+              <div class="input-with-label">
+                <label>Physician</label>
+                <input type="text" name="physician" required>
+              </div>
+              <div class="input-with-label">
+                <label>Diagnosis</label>
+                <input type="text" name="diagnosis" required>
+              </div>
+            </div>
+            <div>
+              <div class="input-with-label">
+                <label>Requesting Party</label>
+                <input type="text" name="requesting_party" required>
+              </div>
+              <div class="input-with-label">
+                <label>Affiliation</label>
+                <input type="text" name="relationship" required>
+              </div>
+            </div>
+          </div>
+          <div>
+            <button type="button" class="button-bordered" id="reject_dispense_button" onclick="popUp_button(this)">REJECT</button>
+            <button type="button" class="button-green" id="submit_dispense_button" onclick="popUp_button(this)">SUBMIT</button>
+          </div>
+          <div class="pop-up-confirm" id="reject_dispense">
+            <div>
+              <div class="reject-heading">
+                <img src="../icon/warning.svg" alt="">
+                <h2>Rejecting a dispense request will automatically delete from the list</h2>
+              </div>
+              <main>
+                <h2>Are sure you want to reject this dispense request?</h2>
+                <div>
+                  <button type="button" class="button-bordered close_confirm">No</button>
+                  <button type="submit" class="button-bordered">Yes</button>
+                </div>
+              </main>
+            </div>
+          </div>
+          <div class="pop-up-confirm" id="submit_dispense">
+            <div>
+              <h2>Do you want to dispense medicine?</h2>
+              <main>
+                <button type="button" class="button-bordered close_confirm">No</button>
+                <button type="submit" class="button-green">Yes</button>
+              </main>
+            </div>
+          </div>
+        </form>
+      </main>
+    </div>
 </body>
 <script>
   document.addEventListener("DOMContentLoaded", function() {

@@ -8,6 +8,7 @@
     <link rel="shortcut icon" type="image/png" href=""/>
     <link rel="stylesheet" href="../css/global/general.css" />
     <link rel="stylesheet" href="../css/local/beneficiary-records.css" />
+    <link rel="stylesheet" href="../css/local/id.css" />
     <title>PHARMACY|RECORDS</title>
   </head>
   <body>
@@ -20,8 +21,7 @@
           <img src="../icon/search.svg" alt="" />
         </div>
         <div class="add-transfer">
-          <button id="dispense" onclick="popUp_button(this)" aria-label="Dispense Medicine">DISPENSE</button>
-          <button>ADD BENEFICIARY</button>
+          <button id="add-beneficiary-button" onclick="popUp_button(this)">ADD BENEFICIARY</button>
         </div>
       </div>
       <div class="table-container">
@@ -52,91 +52,7 @@
       </nav>        
       </div>
     </main>
-    <div class="pop-up" id="dispense-med">
-      <div class="close-container">
-        <img src="../icon/close.svg" alt="" class="close_popUp">
-      </div>
-      <h1 class="heading">DISPENSE MEDICINE</h1>
-      <main>
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>TRANSACTION NO.</th>
-                <th>PRODUCT NAME</th>
-                <th>ISSUED QUANTITY</th>
-                <th>ISSUED DATE</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>11111</td>
-                <td>Kim Boog</td>
-                <td>Guti</td>
-                <td>Delay</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <form action="" class="dispense-med" method="POST">
-          <div>
-            <div>
-              <div class="input-with-label">
-                <label>Beneficiary Name</label>
-                <input type="text" name="beneficiary_name" required>
-              </div>
-              <div class="input-with-label">
-                <label>Physician</label>
-                <input type="text" name="physician" required>
-              </div>
-              <div class="input-with-label">
-                <label>Diagnosis</label>
-                <input type="text" name="diagnosis" required>
-              </div>
-            </div>
-            <div>
-              <div class="input-with-label">
-                <label>Requesting Party</label>
-                <input type="text" name="requesting_party" required>
-              </div>
-              <div class="input-with-label">
-                <label>Affiliation</label>
-                <input type="text" name="relationship" required>
-              </div>
-            </div>
-          </div>
-          <div>
-            <button type="button" class="button-bordered" id="reject_dispense_button" onclick="popUp_button(this)">REJECT</button>
-            <button type="button" class="button-green" id="submit_dispense_button" onclick="popUp_button(this)">SUBMIT</button>
-          </div>
-          <div class="pop-up-confirm" id="reject_dispense">
-            <div>
-              <div class="reject-heading">
-                <img src="../icon/warning.svg" alt="">
-                <h2>Rejecting a dispense request will automatically delete from the list</h2>
-              </div>
-              <main>
-                <h2>Are sure you want to reject this dispense request?</h2>
-                <div>
-                  <button type="button" class="button-bordered close_confirm">No</button>
-                  <button type="submit" class="button-bordered">Yes</button>
-                </div>
-              </main>
-            </div>
-          </div>
-          <div class="pop-up-confirm" id="submit_dispense">
-            <div>
-              <h2>Do you want to dispense medicine?</h2>
-              <main>
-                <button type="button" class="button-bordered close_confirm">No</button>
-                <button type="submit" class="button-green">Yes</button>
-              </main>
-            </div>
-          </div>
-        </form>
-      </main>
-    </div>
-    <div class="pop-up" id="add-beneficiary" style="display: block !important;">
+    <div class="pop-up" id="add-beneficiary">
       <div class="close-container">
         <img src="../icon/close.svg" alt="" class="close_popUp">
       </div>
@@ -217,7 +133,7 @@
                 <div class="upload-image">
                   <div class="upload-section">
                     <img src="../icon/upload-img-default.svg" alt="">
-                    <p>Upload Image Here</p>
+                    <p id="upload-image-text">Upload Image Here</p>
                   </div>
                   <input class="beneficiary-upload-image" type="file" aria-label="Select an image">
                 </div>
@@ -252,6 +168,173 @@
         </form>
       </main>
     </div>
+    <div class="pop-up" id="update-beneficiary">
+      <div class="close-container">
+        <img src="../icon/close.svg" alt="" class="close_popUp">
+      </div>
+      <h1 class="heading">UPDATE BENEFICIARY</h1>
+      <main>
+        <form action="" class="dispense-med" method="POST">
+          <div>
+            <div class="row">
+              <div class="input-w8-label" id="surubadan">
+                <label>Last Name</label>
+                <input type="text" aria-label="Last Name" required>
+              </div>
+              <div class="input-w8-label">
+                <label>First Name</label>
+                <input type="text" aria-label="First Name" required>
+              </div>
+              <div class="input-w8-label">
+                <label>Middle Name</label>
+                <input type="text" aria-label="Middle Name" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-w8-label" id="masubad">
+                <label>Gender</label>
+                <input type="text" aria-label="Gender" required>
+              </div>
+              <div class="input-w8-label">
+                <label>Birthdate</label>
+                <input type="date" aria-label="Birthdate" required>
+              </div>
+              <div class="input-w8-label">
+                <label>Processed Date</label>
+                <input type="date" aria-label="Processed Date" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-w8-label">
+                <label>Phone No.</label>
+                <input type="text" aria-label="Phone No." required>
+              </div>
+              <div class="input-w8-label">
+                <label>Occupation</label>
+                <input type="text" aria-label="Occupation" required>
+              </div>
+              <div class="row1">
+                <div class="input-w8-label">
+                  <label>Senior</label>
+                  <select name="" id="" aria-label="Senior">
+                    <option value="">Yes</option>
+                    <option value="">No</option>
+                  </select>
+                </div>
+                <div class="input-w8-label">
+                  <label>PWD</label>
+                  <select name="" id="" aria-label="PWD">
+                    <option value="">Yes</option>
+                    <option value="">No</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label>Address</label>
+              <div>
+                <input type="text" placeholder="Street" aria-label="Street">
+                <input type="text" placeholder="Barangay" aria-label="Barangay">
+                <input type="text" placeholder="City" aria-label="City">
+                <input type="text" placeholder="Province" aria-label="Province">
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-w8-label">
+                <label for="">Note</label>
+                <textarea name="" id="" cols="30" rows="10" aria-label="Note"></textarea>
+              </div>
+              <div class="input-w8-label">
+                <label for="">Select an image</label>
+                <div class="upload-image">
+                  <div class="upload-section">
+                    <img src="../icon/upload-img-default.svg" alt="">
+                    <p id="upload-image-text">Upload Image Here</p>
+                  </div>
+                  <input class="beneficiary-upload-image" type="file" aria-label="Select an image">
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="button-green" id="submit_dispense_button" onclick="popUp_button(this)">UPDATE</button>
+        </form>
+      </main>
+    </div>
+    <div class="pop-up-confirm" id="delete-beneficiary">
+      <div>
+        <div class="reject-heading">
+          <img src="../icon/warning.svg" alt="">
+          <h2>Deleting a Beneficiary will automatically delete from the list</h2>
+        </div>
+        <main>
+          <h2>Are sure you want to delete this Beneficiary?</h2>
+          <div>
+            <button type="button" class="button-bordered close_popUp1">No</button>
+            <button type="submit" class="button-bordered" style="color: red;">Yes</button>
+          </div>
+        </main>
+      </div>
+    </div>
+    <div class="pop-up" id="id">
+      <div class="close-container">
+        <img src="../icon/close.svg" alt="" class="close_popUp">
+      </div>
+      <h1 class="heading">MULTI-PURPOSE ID</h1>
+      <main class="id-container">
+        <div class="all">
+          <div class="rec11">
+            <img class="rec1" src="../img/id-img/rec1.png" />
+          </div>
+          <div class="three">
+            <div class="prof">
+              <img class="profile" src="../img/local/jr.png" />
+            </div>
+    
+            <div class="info">
+              <p class="name">JOHN REY B. PAGASPAS</p>
+              <p class="status">Student</p>
+              <div class="rectangle"></div>
+    
+              <div class="i1-t">
+                <img class="icon1" src="../img/id-img/icon1.png" />
+                <p class="address">Maypangdan Borongan Eastern Samar</p>
+              </div>
+    
+              <div class="i2-t">
+                <img class="icon2" src="../img/id-img/icon2.png" />
+                <p class="email">pagaspasjohnrey06@gmail.com</p>
+              </div>
+    
+              <div class="i3-t">
+                <img class="icon3" src="../img/id-img/icon3.png" />
+                <p class="phoneno.">09970752488</p>
+              </div>
+            </div>
+    
+            <div class="qrr">
+              <img class="qr" src="../img/id-img/qr.jpg" />
+            </div>
+    
+            <div class="recd11">
+              <img class="recd1" src="../img/id-img/recd1.png" />
+            </div>
+    
+            <div class="recd22">
+              <img class="recd2" src="../img/id-img/recd2.png" />
+            </div>
+    
+            <div class="recd33">
+              <img class="recd3" src="../img/id-img/recd3.png" />
+            </div>
+    
+            <div class="recd44">
+              <img class="recd4" src="../img/id-img/recd4.png" />
+            </div>
+          </div>
+        </div>
+        <button class="button-green">PRINT</button>
+      </main>
+    </div>
     <script src="../../js/local/beneficiary/beneficiary-api.js"></script>
     <script src="../../js/global/pop-up.js"></script>
     <script>
@@ -266,15 +349,43 @@
       });
 
       document.querySelector('.beneficiary-upload-image').addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.querySelector('.upload-section img').src = e.target.result;
-        }
-        reader.readAsDataURL(file);
-    }
-});
+          const file = event.target.files[0];
+          if (file) {
+              document.getElementById("upload-image-text").innerHTML = "Change Image";
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                  document.querySelector('.upload-section img').src = e.target.result;
+              }
+              reader.readAsDataURL(file);
+          }
+      });
+
+      function Delete(beneficiary_id){
+        console.log("delete: " + beneficiary_id);
+      }
+  
+      function Update(beneficiary_id){
+        console.log("update: " + beneficiary_id);
+          
+      }
+      function Generate(first_name, last_name, middle_name, phone, street, province) {
+          // Null handler: Replace null, undefined, or empty strings with "N/A"
+          first_name = first_name || "N/A";
+          last_name = last_name || "N/A";
+          middle_name = middle_name || "N/A";
+          phone = phone || "N/A";
+          street = street || "N/A";
+          province = province || "N/A";
+
+          console.log("First name: " + first_name);
+          console.log("Last name: " + last_name);
+          console.log("Middle name: " + middle_name);
+          console.log("Phone: " + phone);
+          console.log("Street: " + street);
+          console.log("Province: " + province);
+      }
+
+
     </script>
   </body>
 </html>

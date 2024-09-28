@@ -28,16 +28,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 <img class="${main_container}" src="../icon/triple-dot.svg" alt="">
                 <div class="${triple_dot}">
                     <div class="menu">
-                        <button>Delete</button>
-                        <button>Update</button>
-                        <button>Generate ID</button>
+                        <button id="delete-id" onclick="popUp_button(this)">Delete</button>
+                        <button id="update-id" onclick="popUp_button(this)">Update</button>
+                        <button id="generate-id" onclick="popUp_button(this)">Generate ID</button>
                     </div>
                 </div>
             </td>
         `;
         return row;
     }
+    // <button id="generate-id" onclick="Generate(${beneficiary.first_name}, ${beneficiary.last_name}, ${beneficiary.middle_name}, ${beneficiary.phone}, ${beneficiary.street}, ${beneficiary.province})">Generate ID</button>
 
+    
     function attachDotEventListeners() {
         document.querySelectorAll(".dot").forEach(function (dot) {
             dot.addEventListener("click", function () {
@@ -48,6 +50,17 @@ document.addEventListener("DOMContentLoaded", function () {
                         clearInterval(pollIntervalId);
                         isDotMenuOpen = true;
                     } else {
+                        pollIntervalId = setInterval(fetchBeneficiaryUpdates, POLL_INTERVAL);
+                        isDotMenuOpen = false;
+                    }
+                }
+            });
+            document.addEventListener("click", function(event) {
+                // Check if the click was outside the dot container
+                if (!dot.contains(event.target)) {
+                    const tripleDotContainer = dot.closest("td").querySelector(".triple-dot");
+                    if (tripleDotContainer && tripleDotContainer.classList.contains("visible")) {
+                        tripleDotContainer.classList.remove("visible");
                         pollIntervalId = setInterval(fetchBeneficiaryUpdates, POLL_INTERVAL);
                         isDotMenuOpen = false;
                     }

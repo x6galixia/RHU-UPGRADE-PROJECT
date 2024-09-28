@@ -51,6 +51,15 @@
   flex-grow: 1;
 }
 
+#delete-beneficiary main{
+  display: flex;
+  flex-direction: column;
+}
+#delete-beneficiary main > div{
+  display: flex;
+  justify-content: space-around;
+}
+
 .reject-heading{
   display: flex;
   flex-direction: row;
@@ -58,6 +67,7 @@
   border-bottom: 2px solid black;
   padding:12px 0;
 }
+
 
 #reject_dispense main > div> button:first-child{
   color: red;
@@ -84,11 +94,13 @@
   width: fit-content !important;
 }
 
-#add-beneficiary .row{
+#add-beneficiary .row,
+#update-beneficiary .row{
   display: flex;
   gap: 12px;
 }
-#add-beneficiary .row > .row1{
+#add-beneficiary .row > .row1,
+#update-beneficiary .row > .row1{
   display: flex;
   gap: 12px;
 }
@@ -149,4 +161,12 @@
   width: 30%;
   object-fit: contain;
   height: 100%;
+}
+.id-container{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.id-container > button{
+  align-self: self-end;
 }
