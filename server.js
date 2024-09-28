@@ -63,6 +63,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/uploads', express.static('uploads'));
+
 //------INITIALIZE ROUTES------//
 app.use("/", loginRouter);
 app.use("/", adminRouter);

@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let pollIntervalId;
     let isSearching = false;
     let isDotMenuOpen = false;
-    let currentSearchQuery = ""; // Track current search query
+    let currentSearchQuery = "";
 
     pollIntervalId = setInterval(fetchBeneficiaryUpdates, POLL_INTERVAL);
     fetchBeneficiaryUpdates();
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     updateBeneficiaryTable(data);
                 })
                 .catch(error => {
-                    console.error('Error fetching beneficiary updates:', error);
+                    console.Error('Error fetching beneficiary updates:', error);
                 });
         }
     }
@@ -193,27 +193,59 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const update_beneficiary = document.getElementById("update-beneficiary");
+    const overlay = document.querySelector(".overlay");
 
     window.popUp_three_dot = function(button) {
-        var buttonId = button.id;
-        const beneficiaryId = button.closest('.menu').querySelector('.delete-button').getAttribute('data-id');
         const action = button.textContent.trim();
+        const beneficiaryId = button.closest('.menu').querySelector('.delete-button').getAttribute('data-id');
+    
+        if (action === 'Update' && beneficiaryId) {
+            fetch(`/pharmacy-records/beneficiary/${beneficiaryId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(beneficiaryData => {
+                    document.getElementById('beneficiary_id').value = beneficiaryData.beneficiary_id || '';
+                    document.getElementById('last_name').value = beneficiaryData.last_name || '';
+                    document.getElementById('first_name').value = beneficiaryData.first_name || '';
+                    document.getElementById('middle_name').value = beneficiaryData.middle_name || '';
+                    document.getElementById('gender').value = beneficiaryData.gender || '';
+                    document.getElementById('birthdate').value = beneficiaryData.birthdate.split('T')[0] || '';
+                    document.getElementById('phone').value = beneficiaryData.phone || '';
+                    document.getElementById('occupation').value = beneficiaryData.occupation || '';
+                    document.getElementById('street').value = beneficiaryData.street || '';
+                    document.getElementById('barangay').value = beneficiaryData.barangay || '';
+                    document.getElementById('city').value = beneficiaryData.city || '';
+                    document.getElementById('province').value = beneficiaryData.province || '';
+                    document.getElementById('senior_citizen').value = beneficiaryData.senior_citizen || '';
+                    document.getElementById('pwd').value = beneficiaryData.pwd || '';
+                    document.getElementById('note').value = beneficiaryData.note || '';
+                    document.getElementById('existing_picture').value = beneficiaryData.picture || '';
 
-        console.log('Action:', action, 'Beneficiary ID:', beneficiaryId);
+    
+                    const picturePath = beneficiaryData.picture ? `/uploads/beneficiary-img/${beneficiaryData.picture}` : '../icon/upload-img-default.svg';
+                    const pictureElement = document.getElementById('pictureDisplay');
+                    if (pictureElement) {
+                        pictureElement.src = picturePath;
+                    } else {
+                        console.error('Image element not found');
+                    }
 
-        if (buttonId === "generate-id") {
-            ID.classList.toggle("visible");
-        } else if (buttonId === "update-id") {
-            console.log("Toggling update beneficiary popup");
-            update_beneficiary.classList.toggle("visible");
+                    const fileInput = document.getElementById('picture');
+                    if (fileInput) {
+                        fileInput.value = '';
+                    }
+
+                    update_beneficiary.classList.add("visible");
+                    overlay.classList.add("visible");
+                })
+                .catch(error => {
+                    console.error('Error fetching beneficiary data:', error);
+                    alert('Failed to fetch beneficiary data. Please try again.');
+                });
         }
-
-        if (action === 'Delete' && beneficiaryId) {
-            if (confirm('Are you sure you want to delete this beneficiary?')) {
-                deleteBeneficiary(beneficiaryId);
-            }
-        }
-    };
+    };     
 
     document.getElementById('beneficiaryTableBody').addEventListener('click', function(event) {
         if (event.target.classList.contains('delete-button')) {
