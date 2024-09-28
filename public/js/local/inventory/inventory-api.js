@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const POLL_INTERVAL = 1000;
   let pollIntervalId;
   let isSearching = false;
+  let currentSearchQuery = ""; // Track current search query
 
   function updateInventoryTable(data) {
       const tableBody = document.getElementById("inventoryTableBody");
@@ -104,21 +105,26 @@ document.addEventListener("DOMContentLoaded", function() {
   // Function to handle pagination clicks
   function handlePagination(event) {
     event.preventDefault();
-    const url = event.target.getAttribute('href');
-
-    if (url) {
-        // Fetch new data based on pagination link
-        clearInterval(pollIntervalId);  // Stop the interval polling when manually fetching
-        fetch(url + '&ajax=true')
-            .then(response => response.json())
-            .then(data => {
-                updateInventoryTable(data);
-                updatePaginationControls(data.currentPage, data.totalPages, data.limit);
-            })
-            .catch(error => {
-                console.error('Error during pagination:', error);
-            });
+    const url = new URL(event.target.href);
+    const params = new URLSearchParams(url.search);
+    
+    // Add search query to the pagination URL if a search is active
+    if (currentSearchQuery) {
+        params.set('query', currentSearchQuery);
     }
+    params.set('ajax', 'true');
+
+    // Fetch new data based on pagination link
+    clearInterval(pollIntervalId);  // Stop the interval polling when manually fetching
+    fetch(url.pathname + '?' + params.toString())
+        .then(response => response.json())
+        .then(data => {
+            updateInventoryTable(data);
+            updatePaginationControls(data.currentPage, data.totalPages, data.limit);
+        })
+        .catch(error => {
+            console.error('Error during pagination:', error);
+        });
 }
 
 // Attach event listeners to pagination links
