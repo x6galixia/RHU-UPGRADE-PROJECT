@@ -26,6 +26,10 @@
     justify-content: space-between;
 }
 
+.align-item {
+    align-items: center;
+}
+
 .lgap {
     gap: 3em;
 }
@@ -90,3 +94,32 @@ button {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
+
+.lab {
+    border-radius: 10px;
+    border: .1px solid rgb(100, 100, 100);
+}
+
+.lab > p:nth-child(1) {
+    background-color: var(--pink-color);
+    color: white;
+    height: 36px;
+    align-items: center;
+    border-top-left-radius: 9px;
+    border-bottom-left-radius: 9px;
+    padding: 0 .5em;
+}
+
+.trunc {
+    white-space: nowrap; 
+    overflow: hidden;         
+    text-overflow: ellipsis;  
+    width: 40px;               
+  }
+
+.grid-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1em;
+}
+
