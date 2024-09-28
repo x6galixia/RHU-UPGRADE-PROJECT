@@ -136,7 +136,7 @@
         </form>
       </main>
     </div>
-    <div class="pop-up" id="add-beneficiary" style="display: none !important;">
+    <div class="pop-up" id="add-beneficiary" style="display: block !important;">
       <div class="close-container">
         <img src="../icon/close.svg" alt="" class="close_popUp">
       </div>
@@ -145,51 +145,51 @@
         <form action="" class="dispense-med" method="POST">
           <div>
             <div class="row">
-              <div class="input-with-label" id="surubadan">
+              <div class="input-w8-label" id="surubadan">
                 <label>Last Name</label>
                 <input type="text" aria-label="Last Name" required>
               </div>
-              <div class="input-with-label">
+              <div class="input-w8-label">
                 <label>First Name</label>
                 <input type="text" aria-label="First Name" required>
               </div>
-              <div class="input-with-label">
+              <div class="input-w8-label">
                 <label>Middle Name</label>
                 <input type="text" aria-label="Middle Name" required>
               </div>
             </div>
             <div class="row">
-              <div class="input-with-label" id="masubad">
+              <div class="input-w8-label" id="masubad">
                 <label>Gender</label>
                 <input type="text" aria-label="Gender" required>
               </div>
-              <div class="input-with-label">
+              <div class="input-w8-label">
                 <label>Birthdate</label>
                 <input type="date" aria-label="Birthdate" required>
               </div>
-              <div class="input-with-label">
+              <div class="input-w8-label">
                 <label>Processed Date</label>
                 <input type="date" aria-label="Processed Date" required>
               </div>
             </div>
             <div class="row">
-              <div class="input-with-label">
+              <div class="input-w8-label">
                 <label>Phone No.</label>
                 <input type="text" aria-label="Phone No." required>
               </div>
-              <div class="input-with-label">
+              <div class="input-w8-label">
                 <label>Occupation</label>
                 <input type="text" aria-label="Occupation" required>
               </div>
               <div class="row1">
-                <div class="input-with-label">
+                <div class="input-w8-label">
                   <label>Senior</label>
                   <select name="" id="" aria-label="Senior">
                     <option value="">Yes</option>
                     <option value="">No</option>
                   </select>
                 </div>
-                <div class="input-with-label">
+                <div class="input-w8-label">
                   <label>PWD</label>
                   <select name="" id="" aria-label="PWD">
                     <option value="">Yes</option>
@@ -208,13 +208,19 @@
               </div>
             </div>
             <div class="row">
-              <div class="input-with-label">
+              <div class="input-w8-label">
                 <label for="">Note</label>
                 <textarea name="" id="" cols="30" rows="10" aria-label="Note"></textarea>
               </div>
-              <div class="input-with-label">
+              <div class="input-w8-label">
                 <label for="">Select an image</label>
-                <input type="file" aria-label="Select an image">
+                <div class="upload-image">
+                  <div class="upload-section">
+                    <img src="../icon/upload-img-default.svg" alt="">
+                    <p>Upload Image Here</p>
+                  </div>
+                  <input class="beneficiary-upload-image" type="file" aria-label="Select an image">
+                </div>
               </div>
             </div>
           </div>
@@ -254,6 +260,21 @@
       const containerWidth = parseFloat(window.getComputedStyle(container).width);
       const newWidth = containerWidth - 107.33;
       masubad.style.width = newWidth + "px";
+
+      document.querySelector('.upload-section').addEventListener('click', function() {
+          document.querySelector('.beneficiary-upload-image').click();
+      });
+
+      document.querySelector('.beneficiary-upload-image').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.querySelector('.upload-section img').src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+});
     </script>
   </body>
 </html>
