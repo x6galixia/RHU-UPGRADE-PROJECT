@@ -85,7 +85,7 @@
               </div>
               <div class="input-w8-label">
                 <label>Processed Date</label>
-                <input type="date" aria-label="Processed Date" name="processed_date" required>
+                <input type="date" aria-label="Processed Date" class="current-date" name="processed_date" required>
               </div>
             </div>
             <div class="row">
@@ -174,90 +174,93 @@
       </div>
       <h1 class="heading">UPDATE BENEFICIARY</h1>
       <main>
-        <form action="" class="dispense-med" method="POST">
+        <form id="update_beneficiary" action="/pharmacy-records/update" class="dispense-med" method="POST">
           <div>
-            <div class="row">
-              <div class="input-w8-label" id="surubadan">
-                <label>Last Name</label>
-                <input type="text" aria-label="Last Name" required>
-              </div>
-              <div class="input-w8-label">
-                <label>First Name</label>
-                <input type="text" aria-label="First Name" required>
-              </div>
-              <div class="input-w8-label">
-                <label>Middle Name</label>
-                <input type="text" aria-label="Middle Name" required>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-w8-label" id="masubad">
-                <label>Gender</label>
-                <input type="text" aria-label="Gender" required>
-              </div>
-              <div class="input-w8-label">
-                <label>Birthdate</label>
-                <input type="date" aria-label="Birthdate" required>
-              </div>
-              <div class="input-w8-label">
-                <label>Processed Date</label>
-                <input type="date" aria-label="Processed Date" required>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-w8-label">
-                <label>Phone No.</label>
-                <input type="text" aria-label="Phone No." required>
-              </div>
-              <div class="input-w8-label">
-                <label>Occupation</label>
-                <input type="text" aria-label="Occupation" required>
-              </div>
-              <div class="row1">
-                <div class="input-w8-label">
-                  <label>Senior</label>
-                  <select name="" id="" aria-label="Senior">
-                    <option value="">Yes</option>
-                    <option value="">No</option>
-                  </select>
-                </div>
-                <div class="input-w8-label">
-                  <label>PWD</label>
-                  <select name="" id="" aria-label="PWD">
-                    <option value="">Yes</option>
-                    <option value="">No</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <label>Address</label>
-              <div>
-                <input type="text" placeholder="Street" aria-label="Street">
-                <input type="text" placeholder="Barangay" aria-label="Barangay">
-                <input type="text" placeholder="City" aria-label="City">
-                <input type="text" placeholder="Province" aria-label="Province">
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-w8-label">
-                <label for="">Note</label>
-                <textarea name="" id="" cols="30" rows="10" aria-label="Note"></textarea>
-              </div>
-              <div class="input-w8-label">
-                <label for="">Select an image</label>
-                <div class="upload-image">
-                  <div class="upload-section">
-                    <img src="../icon/upload-img-default.svg" alt="">
-                    <p id="upload-image-text">Upload Image Here</p>
+              <div class="row">
+                  <div class="input-w8-label" id="surubadan">
+                      <label>Last Name</label>
+                      <input type="text" aria-label="Last Name" id="last_name" name="last_name" required>
                   </div>
-                  <input class="beneficiary-upload-image" type="file" aria-label="Select an image">
-                </div>
+                  <div class="input-w8-label">
+                      <label>First Name</label>
+                      <input type="text" aria-label="First Name" id="first_name" name="first_name" required>
+                  </div>
+                  <div class="input-w8-label">
+                      <label>Middle Name</label>
+                      <input type="text" aria-label="Middle Name" id="middle_name" name="middle_name" required>
+                  </div>
               </div>
-            </div>
+              <div class="row">
+                  <div class="input-w8-label" id="masubad">
+                      <label>Gender</label>
+                      <input type="text" aria-label="Gender" id="gender" name="gender" required>
+                  </div>
+                  <div class="input-w8-label">
+                      <label>Birthdate</label>
+                      <input type="date" aria-label="Birthdate" id="birthdate" name="birthdate" required>
+                  </div>
+                  <div class="input-w8-label">
+                      <label>Processed Date</label>
+                      <input type="date" aria-label="Processed Date" class="current-date" id="processed_date" name="processed_date" required>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="input-w8-label">
+                      <label>Phone No.</label>
+                      <input type="text" aria-label="Phone No." id="phone" name="phone" required>
+                  </div>
+                  <div class="input-w8-label">
+                      <label>Occupation</label>
+                      <input type="text" aria-label="Occupation" id="occupation" name="occupation" required>
+                  </div>
+                  <div class="row1">
+                      <div class="input-w8-label">
+                          <label>Senior</label>
+                          <select id="senior_citizen" name="senior_citizen" aria-label="Senior" required>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                          </select>
+                      </div>
+                      <div class="input-w8-label">
+                          <label>PWD</label>
+                          <select id="pwd" name="pwd" aria-label="PWD" required>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                          </select>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  <label>Address</label>
+                  <div>
+                      <input type="text" placeholder="Street" aria-label="Street" id="street" name="street" required>
+                      <input type="text" placeholder="Barangay" aria-label="Barangay" id="barangay" name="barangay" required>
+                      <input type="text" placeholder="City" aria-label="City" id="city" name="city" required>
+                      <input type="text" placeholder="Province" aria-label="Province" id="province" name="province" required>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="input-w8-label">
+                    <label for="">Note</label>
+                    <textarea name="note" id="note" cols="30" rows="10" aria-label="Note"></textarea>
+                </div>
+                <input type="hidden" id="existing_picture" name="existing_picture">
+                <div class="input-w8-label">
+                    <label for="">Select an image</label>
+                    <div class="upload-image">
+                        <div class="upload-section">
+                            <img id="pictureDisplay" src="../icon/upload-img-default.svg" alt="">
+                            <p id="upload-image-text">Upload Image Here</p>
+                        </div>
+                        <input class="beneficiary-upload-image" type="file" id="picture" name="picture" aria-label="Select an image">
+                    </div>
+                </div>
+            </div>            
           </div>
-          <button type="button" class="button-green" id="submit_dispense_button" onclick="popUp_button(this)">UPDATE</button>
-        </form>
+          <input type="number" id="beneficiary_id" name="beneficiary_id" style="display: none;">
+          <button type="submit" class="button-green" id="submit_dispense_button">UPDATE</button>
+      </form>
+      
       </main>
     </div>
     <div class="pop-up-confirm" id="delete-beneficiary">
@@ -337,6 +340,7 @@
     </div>
     <script src="../../js/local/beneficiary/beneficiary-api.js"></script>
     <script src="../../js/local/beneficiary/beneficiary-local.js"></script>
+    <script src="../../js/global/client-side-functions.js"></script>
     <script src="../../js/global/pop-up.js"></script>
   </body>
 </html>

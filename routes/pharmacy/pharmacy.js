@@ -28,6 +28,7 @@ const medicineSchema = Joi.object({
 });
 
 const beneficiarySchema = Joi.object({
+  beneficiary_id: Joi.number().integer().optional(),
   last_name: Joi.string().required(),
   first_name: Joi.string().required(),
   middle_name: Joi.string().optional(),
@@ -42,9 +43,10 @@ const beneficiarySchema = Joi.object({
   occupation: Joi.string().optional(),
   senior_citizen: Joi.string().optional(),
   pwd: Joi.string().optional(),
-  picture: Joi.string().optional(),
+  picture: Joi.string().allow('').optional(),
   note: Joi.string().optional(),
-  processed_date: Joi.date().required()
+  processed_date: Joi.date().required(),
+  existing_picture: Joi.string().optional() 
 });
 
 const storage = multer.diskStorage({
@@ -201,6 +203,34 @@ router.get("/pharmacy-records/search", ensureAuthenticated, checkUserType("Pharm
   }
 });
 
+router.get("/pharmacy-records/beneficiary/:id", async (req, res) => {
+  const beneficiaryId = parseInt(req.params.id);
+
+  if (isNaN(beneficiaryId)) {
+    return res.status(400).json({ message: "Invalid beneficiary ID" });
+  }
+
+  try {
+    const result = await pharmacyPool.query(
+      `SELECT beneficiary_id, last_name, first_name, middle_name, gender, birthdate, processed_date, 
+              phone, occupation, senior_citizen, pwd, street, barangay, city, province, note, picture 
+       FROM beneficiary 
+       WHERE beneficiary_id = $1`,
+      [beneficiaryId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Beneficiary not found." });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("Error fetching beneficiary:", err);
+    res.status(500).json({ message: "Failed to fetch the beneficiary." });
+  }
+});
+
+
 router.get("/pharmacy-dispense-request", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
   res.render("pharmacy/requests-for-dispense");
 });
@@ -300,18 +330,13 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
 
 router.post("/pharmacy-records/add-beneficiary", upload.single('picture'), async (req, res) => {
   const { error, value } = beneficiarySchema.validate(req.body);
-  const picture = req.file ? req.file.filename : null; // Handle single file upload
-
-  // Debugging logs to check the request and file
-  console.log('Request body:', req.body);
-  console.log('Received file:', req.file); // Check if the file is being received correctly
+  const picture = req.file ? req.file.filename : null;
 
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
 
   try {
-    // Log the filename if the picture was uploaded
     if (picture) {
       console.log(`Processed file: ${picture}`);
     } else {
@@ -321,24 +346,7 @@ router.post("/pharmacy-records/add-beneficiary", upload.single('picture'), async
     await pharmacyPool.query(
       `INSERT INTO beneficiary (last_name, first_name, middle_name, phone, gender, birthdate, street, barangay, city, province, occupation, senior_citizen, pwd, picture, note, processed_date)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
-      [
-        value.last_name,
-        value.first_name,
-        value.middle_name,
-        value.phone,
-        value.gender,
-        value.birthdate,
-        value.street,
-        value.barangay,
-        value.city,
-        value.province,
-        value.occupation,
-        value.senior_citizen,
-        value.pwd,
-        picture,
-        value.note,
-        value.processed_date,
-      ]
+      [ value.last_name, value.first_name, value.middle_name, value.phone, value.gender, value.birthdate, value.street, value.barangay, value.city, value.province, value.occupation, value.senior_citizen, value.pwd, picture, value.note, value.processed_date ]
     );
 
     res.redirect("/pharmacy-records");
@@ -350,7 +358,6 @@ router.post("/pharmacy-records/add-beneficiary", upload.single('picture'), async
 
 router.delete('/pharmacy-records/delete/:id', async (req, res) => {
   const beneficiaryId = parseInt(req.params.id);
-  console.log(beneficiaryId);
   if (isNaN(beneficiaryId)) {
       return res.status(400).json({ message: 'Invalid beneficiary ID' });
   }
@@ -364,6 +371,56 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
   } catch (error) {
       console.error('Error deleting beneficiary:', error);
       res.status(500).json({ message: 'Failed to delete the beneficiary.' });
+  }
+});
+
+router.post('/pharmacy-records/update', upload.single('picture'), async (req, res) => {
+  const { error, value } = beneficiarySchema.validate(req.body);
+  const existingPicture = value.existing_picture;
+  const picture = req.file ? req.file.filename : existingPicture;
+
+  if (isNaN(value.beneficiary_id)) {
+    return res.status(400).json({ message: 'Invalid beneficiary ID' });
+  }
+
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
+  try {
+    const result = await pharmacyPool.query(
+      `UPDATE beneficiary 
+       SET last_name = $1, first_name = $2, middle_name = $3, gender = $4, birthdate = $5, processed_date = $6, phone = $7, occupation = $8, senior_citizen = $9, pwd = $10, street = $11, barangay = $12, city = $13, province = $14, note = $15, picture = $16
+       WHERE beneficiary_id = $17`,
+      [ 
+        value.last_name, 
+        value.first_name, 
+        value.middle_name, 
+        value.gender, 
+        value.birthdate, 
+        value.processed_date, 
+        value.phone, 
+        value.occupation, 
+        value.senior_citizen, 
+        value.pwd, 
+        value.street, 
+        value.barangay, 
+        value.city, 
+        value.province, 
+        value.note, 
+        picture, 
+        value.beneficiary_id
+      ]
+    );
+
+    if (result.rowCount > 0) {
+      res.redirect("/pharmacy-records");
+    } else {
+      res.status(404).json({ message: 'Beneficiary not found.' });
+    }
+  } catch (error) {
+    console.error('Error updating beneficiary:', error);
+    res.status(500).json({ message: 'Failed to update the beneficiary.' });
   }
 });
 
