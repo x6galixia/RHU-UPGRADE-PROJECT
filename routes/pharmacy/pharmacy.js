@@ -1,5 +1,8 @@
 const express = require("express");
 const Joi = require('joi');
+const multer = require("multer");
+const fs = require('fs');
+const path = require('path');
 const router = express.Router();
 
 const pharmacyPool = require("../../models/pharmacydb");
@@ -23,6 +26,45 @@ const medicineSchema = Joi.object({
   expiration: Joi.date().optional(),
   date_added: Joi.date().optional()
 });
+
+const beneficiarySchema = Joi.object({
+  last_name: Joi.string().required(),
+  first_name: Joi.string().required(),
+  middle_name: Joi.string().optional(),
+  phone: Joi.string().optional(),
+  gender: Joi.string().required(),
+  birthdate: Joi.date().required(),
+  age: Joi.string().optional(),
+  street: Joi.string().optional(),
+  barangay: Joi.string().required(),
+  city: Joi.string().required(),
+  province: Joi.string().required(),
+  occupation: Joi.string().optional(),
+  senior_citizen: Joi.string().optional(),
+  pwd: Joi.string().optional(),
+  picture: Joi.string().optional(),
+  note: Joi.string().optional(),
+  processed_date: Joi.date().required()
+});
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = 'uploads/beneficiary-img/';
+
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
+router.use("/uploads/beneficiary-img", express.static("uploads"));
 
 router.get("/pharmacy-inventory", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -73,7 +115,7 @@ router.get("/pharmacy-inventory/search", ensureAuthenticated, checkUserType("Pha
          AND (CONCAT(product_name, ' ', brand_name) ILIKE $1
          OR product_name ILIKE $1
          OR brand_name ILIKE $1)
-         LIMIT 100`,
+         LIMIT 10`,
         [`%${query}%`, req.user.rhu_id]
       );          
     }
@@ -140,7 +182,7 @@ router.get("/pharmacy-records/search", ensureAuthenticated, checkUserType("Pharm
          OR first_name ILIKE $1
          OR middle_name ILIKE $1
          OR last_name ILIKE $1
-         LIMIT 100`,
+         LIMIT 10`,
         [`%${query}%`]
       );
     }
@@ -256,7 +298,59 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
   }
 });
 
-router.delete('/delete-beneficiary/:id', async (req, res) => {
+router.post("/pharmacy-records/add-beneficiary", upload.single('picture'), async (req, res) => {
+  const { error, value } = beneficiarySchema.validate(req.body);
+  const picture = req.file ? req.file.filename : null; // Handle single file upload
+
+  // Debugging logs to check the request and file
+  console.log('Request body:', req.body);
+  console.log('Received file:', req.file); // Check if the file is being received correctly
+
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
+  try {
+    // Log the filename if the picture was uploaded
+    if (picture) {
+      console.log(`Processed file: ${picture}`);
+    } else {
+      console.log("No file received or file upload failed");
+    }
+
+    await pharmacyPool.query(
+      `INSERT INTO beneficiary (last_name, first_name, middle_name, phone, gender, birthdate, street, barangay, city, province, occupation, senior_citizen, pwd, picture, note, processed_date)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
+      [
+        value.last_name,
+        value.first_name,
+        value.middle_name,
+        value.phone,
+        value.gender,
+        value.birthdate,
+        value.street,
+        value.barangay,
+        value.city,
+        value.province,
+        value.occupation,
+        value.senior_citizen,
+        value.pwd,
+        picture,
+        value.note,
+        value.processed_date,
+      ]
+    );
+
+    res.redirect("/pharmacy-records");
+  } catch (err) {
+    console.error("Error: ", err);
+    res.status(500).send("Failed to add beneficiary.");
+  }
+});
+
+
+
+router.delete('/pharmacy-records/delete/:id', async (req, res) => {
   const beneficiaryId = parseInt(req.params.id);
   console.log(beneficiaryId);
   if (isNaN(beneficiaryId)) {

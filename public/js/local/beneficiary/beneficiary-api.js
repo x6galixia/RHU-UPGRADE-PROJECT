@@ -5,13 +5,17 @@ document.addEventListener("DOMContentLoaded", function () {
     let isDotMenuOpen = false;
     let currentSearchQuery = ""; // Track current search query
 
+    pollIntervalId = setInterval(fetchBeneficiaryUpdates, POLL_INTERVAL);
+    fetchBeneficiaryUpdates();
+
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    var main_container = "dot";
+    var triple_dot = "triple-dot";
+
     const nav2 = document.querySelector(".nav2");
     if (nav2) {
         nav2.classList.toggle("selected");
     }
-
-    var main_container = "dot";
-    var triple_dot = "triple-dot";
 
     function createTableRow(beneficiary) {
         const row = document.createElement('tr');
@@ -28,18 +32,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 <img class="${main_container}" src="../icon/triple-dot.svg" alt="">
                 <div class="${triple_dot}">
                     <div class="menu">
-                        <button id="delete-id" onclick="popUp_button(this)">Delete</button>
-                        <button id="update-id" onclick="popUp_button(this)">Update</button>
-                        <button id="generate-id" onclick="popUp_button(this)">Generate ID</button>
+                        <button class="delete-button" data-id="${beneficiary.beneficiary_id}">Delete</button>
+                        <button onclick="popUp_button(this)">Update</button>
+                        <button onclick="popUp_button(this)">Generate ID</button>
                     </div>
                 </div>
             </td>
         `;
         return row;
-    }
-    // <button id="generate-id" onclick="Generate(${beneficiary.first_name}, ${beneficiary.last_name}, ${beneficiary.middle_name}, ${beneficiary.phone}, ${beneficiary.street}, ${beneficiary.province})">Generate ID</button>
+    }       
 
-    
     function attachDotEventListeners() {
         document.querySelectorAll(".dot").forEach(function (dot) {
             dot.addEventListener("click", function () {
@@ -96,25 +98,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 })
                 .catch(error => {
                     console.error('Error fetching beneficiary updates:', error);
-                    alert('Failed to fetch beneficiary updates. Please try again later.');
                 });
         }
     }
 
-    pollIntervalId = setInterval(fetchBeneficiaryUpdates, POLL_INTERVAL);
-    fetchBeneficiaryUpdates();
-
-    const loadingSpinner = document.getElementById('loadingSpinner');
-
-    function debounce(func, wait) {
-        let timeout;
-        return function (...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-        };
-    }
-
-    document.getElementById('searchInput').addEventListener('input', debounce(function (event) {
+    document.getElementById('searchInput').addEventListener('input', function (event) {
         event.preventDefault();
         const query = this.value;
 
@@ -153,32 +141,32 @@ document.addEventListener("DOMContentLoaded", function () {
             .finally(() => {
                 loadingSpinner.style.display = 'none';
             });
-    }, 300));
+    });
 
-        // Function to handle pagination clicks
-        function handlePagination(event) {
-            event.preventDefault();
-            const url = new URL(event.target.href);
-            const params = new URLSearchParams(url.search);
-            
-            // Add search query to the pagination URL if a search is active
-            if (currentSearchQuery) {
-                params.set('query', currentSearchQuery);
-            }
-            params.set('ajax', 'true');
-    
-            // Fetch new data based on pagination link
-            clearInterval(pollIntervalId);  // Stop the interval polling when manually fetching
-            fetch(url.pathname + '?' + params.toString())
-                .then(response => response.json())
-                .then(data => {
-                    updateBeneficiaryTable(data);
-                    updatePaginationControls(data.currentPage, data.totalPages, data.limit);
-                })
-                .catch(error => {
-                    console.error('Error during pagination:', error);
-                });
+    // Function to handle pagination clicks
+    function handlePagination(event) {
+        event.preventDefault();
+        const url = new URL(event.target.href);
+        const params = new URLSearchParams(url.search);
+        
+        // Add search query to the pagination URL if a search is active
+        if (currentSearchQuery) {
+            params.set('query', currentSearchQuery);
         }
+        params.set('ajax', 'true');
+
+        // Fetch new data based on pagination link
+        clearInterval(pollIntervalId);  // Stop the interval polling when manually fetching
+        fetch(url.pathname + '?' + params.toString())
+            .then(response => response.json())
+            .then(data => {
+                updateBeneficiaryTable(data);
+                updatePaginationControls(data.currentPage, data.totalPages, data.limit);
+            })
+            .catch(error => {
+                console.error('Error during pagination:', error);
+            });
+    }
 
     // Attach event listeners to pagination links
     function attachPaginationListeners() {
@@ -202,6 +190,52 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Re-attach the event listeners after updating the pagination links
         attachPaginationListeners();
+    }
+
+    document.getElementById('beneficiaryTableBody').addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-button')) {
+            const beneficiaryId = event.target.getAttribute('data-id');
+            console.log('Delete button clicked for ID:', beneficiaryId);
+            if (confirm('Are you sure you want to delete this beneficiary?')) {
+                deleteBeneficiary(beneficiaryId);
+            }
+        }
+    });
+    
+    function popUp_three_dot(button) {
+        const beneficiaryId = button.closest('.menu').querySelector('.delete-button').getAttribute('data-id');
+        const action = button.textContent.trim();
+    
+        console.log('Action:', action, 'Beneficiary ID:', beneficiaryId);
+    
+        if (action === 'Delete' && beneficiaryId) {
+            if (confirm('Are you sure you want to delete this beneficiary?')) {
+                deleteBeneficiary(beneficiaryId);
+            }
+        }
+    }
+    
+    function deleteBeneficiary(beneficiaryId) {
+        console.log('Sending DELETE request for ID:', beneficiaryId);
+        fetch(`/pharmacy-records/delete/${beneficiaryId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            // Check if the response is ok (status in the range 200-299)
+            if (!response.ok) {
+                throw new Error('Failed to delete beneficiary');
+            }
+            // Successful deletion
+            alert('Beneficiary deleted successfully.');
+            fetchBeneficiaryUpdates(); // Refresh the table
+        })
+        .catch(error => {
+            console.error('Error deleting beneficiary:', error);
+            alert('An error occurred while trying to delete the beneficiary: ' + error.message);
+        });
     }
 
     // Initial setup
