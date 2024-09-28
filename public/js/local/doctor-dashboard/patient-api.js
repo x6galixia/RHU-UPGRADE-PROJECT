@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const POLL_INTERVAL = 1000;
     let pollIntervalId;
     let isSearching = false;
+    let currentSearchQuery = ""; // Track current search query
+    
     const loadingSpinner = document.getElementById("loadingSpinner");
 
     function updatePatientsTable(data) {
@@ -128,14 +130,20 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Function to handle pagination clicks
-  function handlePagination(event) {
-    event.preventDefault();
-    const url = event.target.getAttribute('href');
+    function handlePagination(event) {
+        event.preventDefault();
+        const url = new URL(event.target.href);
+        const params = new URLSearchParams(url.search);
+        
+        // Add search query to the pagination URL if a search is active
+        if (currentSearchQuery) {
+            params.set('query', currentSearchQuery);
+        }
+        params.set('ajax', 'true');
 
-    if (url) {
         // Fetch new data based on pagination link
         clearInterval(pollIntervalId);  // Stop the interval polling when manually fetching
-        fetch(url + '&ajax=true')
+        fetch(url.pathname + '?' + params.toString())
             .then(response => response.json())
             .then(data => {
                 updatePatientsTable(data);
@@ -145,7 +153,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.error('Error during pagination:', error);
             });
     }
-}
 
 // Attach event listeners to pagination links
 function attachPaginationListeners() {

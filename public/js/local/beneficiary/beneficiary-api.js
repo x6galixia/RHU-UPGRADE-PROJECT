@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let pollIntervalId;
     let isSearching = false;
     let isDotMenuOpen = false;
+    let currentSearchQuery = ""; // Track current search query
 
     const nav2 = document.querySelector(".nav2");
     if (nav2) {
@@ -141,15 +142,21 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }, 300));
 
-    // Function to handle pagination clicks
-    function handlePagination(event) {
-        event.preventDefault();
-        const url = event.target.getAttribute('href');
-
-        if (url) {
+        // Function to handle pagination clicks
+        function handlePagination(event) {
+            event.preventDefault();
+            const url = new URL(event.target.href);
+            const params = new URLSearchParams(url.search);
+            
+            // Add search query to the pagination URL if a search is active
+            if (currentSearchQuery) {
+                params.set('query', currentSearchQuery);
+            }
+            params.set('ajax', 'true');
+    
             // Fetch new data based on pagination link
             clearInterval(pollIntervalId);  // Stop the interval polling when manually fetching
-            fetch(url + '&ajax=true')
+            fetch(url.pathname + '?' + params.toString())
                 .then(response => response.json())
                 .then(data => {
                     updateBeneficiaryTable(data);
@@ -159,7 +166,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.error('Error during pagination:', error);
                 });
         }
-    }
 
     // Attach event listeners to pagination links
     function attachPaginationListeners() {
