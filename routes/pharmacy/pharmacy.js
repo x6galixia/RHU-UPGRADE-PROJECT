@@ -348,8 +348,6 @@ router.post("/pharmacy-records/add-beneficiary", upload.single('picture'), async
   }
 });
 
-
-
 router.delete('/pharmacy-records/delete/:id', async (req, res) => {
   const beneficiaryId = parseInt(req.params.id);
   console.log(beneficiaryId);
