@@ -100,4 +100,51 @@ document.addEventListener("DOMContentLoaded", function() {
               loadingSpinner.style.display = 'none';
           });
   });
+
+  // Function to handle pagination clicks
+  function handlePagination(event) {
+    event.preventDefault();
+    const url = event.target.getAttribute('href');
+
+    if (url) {
+        // Fetch new data based on pagination link
+        clearInterval(pollIntervalId);  // Stop the interval polling when manually fetching
+        fetch(url + '&ajax=true')
+            .then(response => response.json())
+            .then(data => {
+                updateInventoryTable(data);
+                updatePaginationControls(data.currentPage, data.totalPages, data.limit);
+            })
+            .catch(error => {
+                console.error('Error during pagination:', error);
+            });
+    }
+}
+
+// Attach event listeners to pagination links
+function attachPaginationListeners() {
+    document.querySelectorAll('nav[aria-label="Page navigation"] a').forEach(link => {
+        link.addEventListener('click', handlePagination);
+    });
+}
+
+// Function to update pagination controls
+function updatePaginationControls(currentPage, totalPages, limit) {
+    const paginationNav = document.getElementById('paginationNav');
+    paginationNav.innerHTML = '';
+
+    if (currentPage > 1) {
+        paginationNav.innerHTML += `<a href="?page=${currentPage - 1}&limit=${limit}" aria-label="Previous Page">Previous</a>`;
+    }
+
+    if (currentPage < totalPages) {
+        paginationNav.innerHTML += `<a href="?page=${currentPage + 1}&limit=${limit}" aria-label="Next Page">Next</a>`;
+    }
+
+    // Re-attach the event listeners after updating the pagination links
+    attachPaginationListeners();
+}
+
+// Initial setup
+attachPaginationListeners();
 });

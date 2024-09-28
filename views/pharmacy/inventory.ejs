@@ -43,14 +43,14 @@
           </thead>
           <tbody id="inventoryTableBody"></tbody>
         </table>
-        <div>
+        <nav aria-label="Page navigation" id="paginationNav">
           <% if (currentPage > 1) { %>
-            <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
+          <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
           <% } %>
           <% if (currentPage < totalPages) { %>
-            <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
+          <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
           <% } %>
-        </div>
+      </nav>
       </div>
       <div class="download-CSV">
         <button id="downloadbtn">Download CSV</button>

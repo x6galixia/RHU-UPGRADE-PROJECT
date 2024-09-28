@@ -33,7 +33,12 @@ router.get("/pharmacy-inventory", ensureAuthenticated, checkUserType("Pharmacist
     const { getInventoryList, totalPages } = await fetchInventoryList(page, limit, req.user.rhu_id);
 
     if (isAjax) {
-      return res.json({ getInventoryList, totalPages });
+      return res.json({ 
+          getInventoryList,
+          currentPage: page, 
+          totalPages,
+          limit 
+       });
     }
     
     res.render("pharmacy/inventory", {
@@ -94,8 +99,13 @@ router.get("/pharmacy-records", ensureAuthenticated, checkUserType("Pharmacist")
     const { getBeneficiaryList, totalPages } = await fetchBeneficiaryList(page, limit);
 
     if (isAjax) {
-      return res.json({ getBeneficiaryList, totalPages });
-    }
+      return res.json({ 
+          getBeneficiaryList, 
+          currentPage: page, 
+          totalPages,
+          limit 
+      });
+  }
     
     res.render("pharmacy/beneficiary-records", { 
       getBeneficiaryList, 
