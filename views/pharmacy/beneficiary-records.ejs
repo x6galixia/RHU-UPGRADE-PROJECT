@@ -28,28 +28,28 @@
         <div id="loadingSpinner" style="display:none;">Loading...</div>
         <table>
           <thead>
-            <tr>
-              <th>NAME</th>
-              <th>GENDER</th>
-              <th>ADDRESS</th>
-              <th>CONTACT NO.</th>
-              <th>AGE</th>
-              <th>NOTE</th>
-              <th>SENIOR CITIZEN</th>
-              <th>PWD</th>
-              <th></th>
-            </tr>
+              <tr>
+                  <th>NAME</th>
+                  <th>GENDER</th>
+                  <th>ADDRESS</th>
+                  <th>CONTACT NO.</th>
+                  <th>AGE</th>
+                  <th>NOTE</th>
+                  <th>SENIOR CITIZEN</th>
+                  <th>PWD</th>
+                  <th></th>
+              </tr>
           </thead>
           <tbody id="beneficiaryTableBody"></tbody>
-        </table>
-        <nav aria-label="Page navigation">
+      </table>
+      <nav aria-label="Page navigation" id="paginationNav">
           <% if (currentPage > 1) { %>
-            <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
+          <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
           <% } %>
           <% if (currentPage < totalPages) { %>
-            <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
+          <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
           <% } %>
-        </nav>        
+      </nav>        
       </div>
     </main>
     <div class="pop-up" id="dispense-med">
