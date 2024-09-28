@@ -1,0 +1,172 @@
+
+p{
+  margin: 16px 0;
+}
+
+.icon1, .icon2, .icon3{
+  margin: 16px 8px !important;
+}
+
+.all {
+  background-color: white;
+  display: flex;
+  padding-top: 25px;
+  padding-right: 0px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.three {
+  width: 570px;
+  height: 250px;
+  padding-right: 0px;
+  margin-right: 5px;
+  margin-top: 30px;
+  display: flex;
+}
+
+.info {
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 0px;
+  margin-top: -25px;
+}
+
+.prof {
+  display: inline-block;
+  margin-top: -10px;
+  margin-left: 10px;
+  align-self: self-start;
+}
+
+.profile {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.qrr {
+  display: inline-block;
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-left: -20px;
+}
+.qr {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  object-position: center;
+  border: none;
+}
+
+.name {
+  width: 200px;
+}
+.status {
+  color: gray;
+  margin-top: -10px;
+}
+
+
+.rectangle {
+  width: 180px;
+  height: 3px;
+  background-color: rgb(255, 0, 127);
+  margin: 0px;
+  margin-top: -10px;
+}
+
+.rec11 {
+  display: inline-block;
+  margin-left: 0px;
+  margin-top: -25px;
+}
+.rec1 {
+  width: 210px;
+  height: 27px;
+  position: absolute;
+}
+
+.recd1 {
+  width: 576px;
+  height: 50px;
+}
+.recd11 {
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-top: 200px;
+  margin-bottom: 0px;
+  position: absolute;
+  margin-bottom: 0px;
+}
+
+.recd2 {
+  width: 420px;
+  height: 50px;
+}
+.recd22 {
+  margin-right: 0px;
+  margin-left: 156px;
+  margin-top: 190px;
+  margin-bottom: 0px;
+  position: absolute;
+}
+
+.recd3 {
+  width: 200px;
+  height: 80px;
+}
+.recd33 {
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-top: 170px;
+  margin-bottom: 0px;
+  position: absolute;
+}
+
+.recd4 {
+  width: 200px;
+  height: 130px;
+}
+.recd44 {
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-top: 120px;
+  margin-bottom: 0px;
+  position: absolute;
+}
+
+.i1-t {
+  display: inline-flex;
+  width: 280px;
+  display: flex;
+  align-items: center;
+}
+.icon1 {
+  height: 26px;
+  margin-top: 13px;
+  margin-right: 5px;
+}
+
+.i2-t {
+  display: inline-flex;
+  width: 280px;
+  margin-top: -15px;
+}
+.icon2 {
+  height: 20px;
+  width: 20px;
+  margin-top: 15px;
+  margin-right: 5px;
+}
+
+.i3-t {
+  display: inline-flex;
+  width: 280px;
+  margin-top: -15px;
+}
+.icon3 {
+  height: 20px;
+  width: 20px;
+  margin-top: 15px;
+  margin-right: 5px;
+}
