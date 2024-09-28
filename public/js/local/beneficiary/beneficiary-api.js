@@ -33,14 +33,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="${triple_dot}">
                     <div class="menu">
                         <button class="delete-button" data-id="${beneficiary.beneficiary_id}">Delete</button>
-                        <button onclick="popUp_button(this)">Update</button>
-                        <button onclick="popUp_button(this)">Generate ID</button>
+                        <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
+                        <button id="generate-id" onclick="popUp_three_dot(this)">Generate ID</button>
                     </div>
                 </div>
             </td>
         `;
         return row;
-    }       
+    }
 
     function attachDotEventListeners() {
         document.querySelectorAll(".dot").forEach(function (dot) {
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     }
-    
+
     function updateBeneficiaryTable(data) {
         const tableBody = document.getElementById("beneficiaryTableBody");
         tableBody.innerHTML = "";
@@ -192,6 +192,29 @@ document.addEventListener("DOMContentLoaded", function () {
         attachPaginationListeners();
     }
 
+    const update_beneficiary = document.getElementById("update-beneficiary");
+
+    window.popUp_three_dot = function(button) {
+        var buttonId = button.id;
+        const beneficiaryId = button.closest('.menu').querySelector('.delete-button').getAttribute('data-id');
+        const action = button.textContent.trim();
+
+        console.log('Action:', action, 'Beneficiary ID:', beneficiaryId);
+
+        if (buttonId === "generate-id") {
+            ID.classList.toggle("visible");
+        } else if (buttonId === "update-id") {
+            console.log("Toggling update beneficiary popup");
+            update_beneficiary.classList.toggle("visible");
+        }
+
+        if (action === 'Delete' && beneficiaryId) {
+            if (confirm('Are you sure you want to delete this beneficiary?')) {
+                deleteBeneficiary(beneficiaryId);
+            }
+        }
+    };
+
     document.getElementById('beneficiaryTableBody').addEventListener('click', function(event) {
         if (event.target.classList.contains('delete-button')) {
             const beneficiaryId = event.target.getAttribute('data-id');
@@ -201,20 +224,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     });
-    
-    function popUp_three_dot(button) {
-        const beneficiaryId = button.closest('.menu').querySelector('.delete-button').getAttribute('data-id');
-        const action = button.textContent.trim();
-    
-        console.log('Action:', action, 'Beneficiary ID:', beneficiaryId);
-    
-        if (action === 'Delete' && beneficiaryId) {
-            if (confirm('Are you sure you want to delete this beneficiary?')) {
-                deleteBeneficiary(beneficiaryId);
-            }
-        }
-    }
-    
+
     function deleteBeneficiary(beneficiaryId) {
         console.log('Sending DELETE request for ID:', beneficiaryId);
         fetch(`/pharmacy-records/delete/${beneficiaryId}`, {
@@ -224,13 +234,11 @@ document.addEventListener("DOMContentLoaded", function () {
             },
         })
         .then(response => {
-            // Check if the response is ok (status in the range 200-299)
             if (!response.ok) {
                 throw new Error('Failed to delete beneficiary');
             }
-            // Successful deletion
             alert('Beneficiary deleted successfully.');
-            fetchBeneficiaryUpdates(); // Refresh the table
+            fetchBeneficiaryUpdates();
         })
         .catch(error => {
             console.error('Error deleting beneficiary:', error);
