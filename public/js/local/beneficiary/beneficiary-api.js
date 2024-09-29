@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById('note').value = beneficiaryData.note || '';
                     document.getElementById('existing_picture').value = beneficiaryData.picture || '';
 
-                    const pictureElement = document.getElementById('pictureDisplay');
+                    const pictureElement = document.getElementById('pictureDisplay'); 
                     if (pictureElement) {
                         const picturePath = (beneficiaryData.picture && beneficiaryData.picture !== '0')
                             ? `/uploads/beneficiary-img/${beneficiaryData.picture}`
