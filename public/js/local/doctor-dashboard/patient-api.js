@@ -21,12 +21,13 @@ document.addEventListener("DOMContentLoaded", function() {
                     <td> ${patient.house_no} ${patient.street} ${patient.barangay} ${patient.town} ${patient.province}</td>
                     <td> 
                         <select name="patientAction" class="patientActionDropdown">
-                            <option value="">Vital Signs</option>
-                            <option value="">Request Laboratory</option>
-                            <option value="">Diagnosis</option>
-                            <option value="">Findings</option>
-                            <option value="">Laboratory Result</option>
-                            <option value="">Prescribe</option>
+                            <option value="" selected disabled>Medical records</option>
+                            <option value="1">Vital Signs</option>
+                            <option value="2">Request Laboratory</option>
+                            <option value="3">Diagnosis</option>
+                            <option value="4">Findings</option>
+                            <option value="5">Laboratory Result</option>
+                            <option value="6">Prescribe</option>
                         </select> 
                     </td>
                     <td>
@@ -87,18 +88,20 @@ document.addEventListener("DOMContentLoaded", function() {
                     data.getPatientList.forEach(patient => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
+                            <td> ${patient.rhu_name} </td>
                             <td>${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}</td>
                             <td>${patient.age}</td>
                             <td>${patient.gender}</td>
                             <td>${patient.house_no} ${patient.street} ${patient.barangay} ${patient.town} ${patient.province}</td>
                             <td> 
-                                <select name="patientAction" class="patientActionDropdown" id="selectMedicalRecords">
+                                <select name="patientAction" class="patientActionDropdown">
+                                    <option value="" selected disabled>Medical records</option>
                                     <option value="1">Vital Signs</option>
-                                    <option value="">Request Laboratory</option>
-                                    <option value="">Diagnosis</option>
-                                    <option value="">Findings</option>
-                                    <option value="">Laboratory Result</option>
-                                    <option value="">Prescribe</option>
+                                    <option value="2">Request Laboratory</option>
+                                    <option value="3">Diagnosis</option>
+                                    <option value="4">Findings</option>
+                                    <option value="5">Laboratory Result</option>
+                                    <option value="6">Prescribe</option>
                                 </select> 
                             </td>
                             <td>
@@ -180,4 +183,64 @@ function updatePaginationControls(currentPage, totalPages, limit) {
 
 // Initial setup
 attachPaginationListeners();
+});
+
+
+
+
+const over = document.querySelector(".overlay");
+const vital = document.getElementById('vital');
+const reqLab = document.getElementById('reqLab');
+const diagnosis = document.getElementById('diagnosis');
+const findings = document.getElementById('findings');
+const labResult = document.getElementById('labResult');
+const prescribed = document.getElementById('prescribed');
+
+function hideAll() {
+  vital.style.display = 'none';
+  reqLab.style.display = 'none';
+  diagnosis.style.display = 'none';
+  findings.style.display = 'none';
+  labResult.style.display = 'none';
+  prescribed.style.display = 'none';
+}
+
+document.getElementById("patientsTableBody").addEventListener('change', function(event) {
+    if (event.target && event.target.classList.contains('patientActionDropdown')) {
+        const selectedValue = event.target.value;
+        hideAll();
+
+        if (selectedValue === "1") {
+            vital.style.display = 'block';
+        } else if (selectedValue === "2") {
+            reqLab.style.display = 'block';
+        } else if (selectedValue === "3") {
+            diagnosis.style.display = 'block';
+        } else if (selectedValue === "4") {
+            findings.style.display = 'block';
+        } else if (selectedValue === "5") {
+            labResult.style.display = 'block';
+        } else {
+            prescribed.style.display = 'block';
+        }
+
+        over.classList.toggle('visible');
+    }
+});
+
+
+// document.querySelector(".exit").addEventListener('click', function(){
+//   const pop = document.querySelector(".pop-up");
+//   pop.style.display = "none";
+//   over.classList.toggle('visible');
+// }); 
+
+document.querySelectorAll(".exit").forEach((exitButton) => {
+exitButton.addEventListener('click', () => {
+const popUps = document.querySelectorAll(".pop-up");
+  popUps.forEach((pop) => {
+    hideAll();
+      over.classList.remove('visible');
+  });
+});
 });
