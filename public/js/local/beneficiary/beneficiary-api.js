@@ -199,12 +199,18 @@ document.addEventListener("DOMContentLoaded", function () {
         const action = button.textContent.trim();
         const beneficiaryId = button.closest('.menu').querySelector('.delete-button').getAttribute('data-id');
 
-        if (action === 'Delete' && beneficiaryId) {
-            if (confirm('Are you sure you want to delete this beneficiary?'))           
-            {
-                deleteBeneficiary(beneficiaryId);
-            }
-        }
+
+
+
+        // if (action === 'Delete' && beneficiaryId) {
+
+        //     // pop_up_Delete.classList.add("visible");
+        //     // console.log("asd");
+        //     // if (confirm('Are you sure you want to delete this beneficiary?'))           
+        //     // {
+        //     //     deleteBeneficiary(beneficiaryId);
+        //     // }
+        // }
     
         if (action === 'Update' && beneficiaryId) {
             fetch(`/pharmacy-records/beneficiary/${beneficiaryId}`)
@@ -256,11 +262,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById('beneficiaryTableBody').addEventListener('click', function(event) {
         if (event.target.classList.contains('delete-button')) {
+            const confirmDeleteButton = document.getElementById('confirm-delete');
+            const cancelDeleteButton = document.getElementById('cancel-delete');
+            const pop_up_Delete = document.getElementById('delete-beneficiary');
             const beneficiaryId = event.target.getAttribute('data-id');
-            console.log('Delete button clicked for ID:', beneficiaryId);
-            if (confirm('Are you sure you want to delete this beneficiary?')) {
+
+            pop_up_Delete.classList.add("visible");
+
+            confirmDeleteButton.addEventListener('click', function(){
                 deleteBeneficiary(beneficiaryId);
-            }
+                pop_up_Delete.classList.remove("visible");
+            })
+            cancelDeleteButton.addEventListener('click', function(){
+                pop_up_Delete.classList.remove("visible");
+            })
         }
     });
 
