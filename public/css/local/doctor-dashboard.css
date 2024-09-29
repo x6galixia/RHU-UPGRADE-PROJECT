@@ -61,7 +61,7 @@ button {
 }
 
 .s {
-    flex-shrink: 1;
+    width: 20%;
 }
 
 .btn-l {
