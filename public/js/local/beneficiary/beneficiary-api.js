@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 }
             });
-            document.addEventListener("click", function(event) {
+            document.addEventListener("click", function (event) {
                 // Check if the click was outside the dot container
                 if (!dot.contains(event.target)) {
                     const tripleDotContainer = dot.closest("td").querySelector(".triple-dot");
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         const url = new URL(event.target.href);
         const params = new URLSearchParams(url.search);
-        
+
         // Add search query to the pagination URL if a search is active
         if (currentSearchQuery) {
             params.set('query', currentSearchQuery);
@@ -194,10 +194,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const update_beneficiary = document.getElementById("update-beneficiary");
     const overlay = document.querySelector(".overlay");
 
-    window.popUp_three_dot = function(button) {
+    window.popUp_three_dot = function (button) {
         const action = button.textContent.trim();
         const beneficiaryId = button.closest('.menu').querySelector('.delete-button').getAttribute('data-id');
-
+    
         if (action === 'Update' && beneficiaryId) {
             fetch(`/pharmacy-records/beneficiary/${beneficiaryId}`)
                 .then(response => {
@@ -223,10 +223,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById('note').value = beneficiaryData.note || '';
                     document.getElementById('existing_picture').value = beneficiaryData.picture || '';
 
-    
-                    const picturePath = beneficiaryData.picture ? `/uploads/beneficiary-img/${beneficiaryData.picture}` : '../icon/upload-img-default.svg';
                     const pictureElement = document.getElementById('pictureDisplay');
                     if (pictureElement) {
+                        const picturePath = (beneficiaryData.picture && beneficiaryData.picture !== '0')
+                            ? `/uploads/beneficiary-img/${beneficiaryData.picture}`
+                            : '/icon/upload-img-default.svg';
                         pictureElement.src = picturePath;
                     } else {
                         console.error('Image element not found');
@@ -245,28 +246,28 @@ document.addEventListener("DOMContentLoaded", function () {
                     alert('Failed to fetch beneficiary data. Please try again.');
                 });
         }
-    };     
+    };    
 
-    document.getElementById('beneficiaryTableBody').addEventListener('click', function(event) {
+    document.getElementById('beneficiaryTableBody').addEventListener('click', function (event) {
         if (event.target.classList.contains('delete-button')) {
             const confirmDeleteButton = document.getElementById('confirm-delete');
             const cancelDeleteButton = document.getElementById('cancel-delete');
             const pop_up_Delete = document.getElementById('delete-beneficiary');
             const beneficiaryId = event.target.getAttribute('data-id');
-    
+
             pop_up_Delete.classList.add("visible");
-    
+
             confirmDeleteButton.onclick = () => {
                 deleteBeneficiary(beneficiaryId);
                 pop_up_Delete.classList.remove("visible");
             };
-    
+
             cancelDeleteButton.onclick = () => {
                 pop_up_Delete.classList.remove("visible");
             };
         }
     });
-    
+
     async function deleteBeneficiary(beneficiaryId) {
         console.log('Sending DELETE request for ID:', beneficiaryId);
         try {
@@ -276,19 +277,19 @@ document.addEventListener("DOMContentLoaded", function () {
                     'Content-Type': 'application/json',
                 },
             });
-    
+
             if (!response.ok) {
                 throw new Error('Failed to delete beneficiary');
             }
-    
+
             alert('Beneficiary deleted successfully.');
             fetchBeneficiaryUpdates();
         } catch (error) {
             console.error('Error deleting beneficiary:', error);
             alert('An error occurred while trying to delete the beneficiary. Please try again.');
         }
-    }    
-     
+    }
+
     // Initial setup
     attachPaginationListeners();
 });
