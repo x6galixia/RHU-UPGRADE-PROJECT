@@ -212,6 +212,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById('gender').value = beneficiaryData.gender || '';
                     document.getElementById('birthdate').value = beneficiaryData.birthdate.split('T')[0] || '';
                     document.getElementById('phone').value = beneficiaryData.phone || '';
+                    document.getElementById('processed_date').value = beneficiaryData.processed_date.split('T')[0] || '';
                     document.getElementById('occupation').value = beneficiaryData.occupation || '';
                     document.getElementById('street').value = beneficiaryData.street || '';
                     document.getElementById('barangay').value = beneficiaryData.barangay || '';
