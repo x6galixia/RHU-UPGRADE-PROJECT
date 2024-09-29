@@ -28,11 +28,11 @@ document.addEventListener("DOMContentLoaded", function () {
             <td>${beneficiary.note}</td>
             <td>${beneficiary.senior_citizen}</td>
             <td>${beneficiary.pwd}</td>
-            <td class="menu-row" data-id="${beneficiary.beneficiary_id}">
+            <td class="menu-row">
                 <img class="${main_container}" src="../icon/triple-dot.svg" alt="">
                 <div class="${triple_dot}">
                     <div class="menu">
-                        <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
+                        <button class="delete-button" data-id="${beneficiary.beneficiary_id}">Delete</button>
                         <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
                         <button id="generate-id" onclick="popUp_three_dot(this)">Generate ID</button>
                     </div>
@@ -188,7 +188,6 @@ document.addEventListener("DOMContentLoaded", function () {
             paginationNav.innerHTML += `<a href="?page=${currentPage + 1}&limit=${limit}" aria-label="Next Page">Next</a>`;
         }
 
-        // Re-attach the event listeners after updating the pagination links
         attachPaginationListeners();
     }
 
@@ -197,25 +196,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.popUp_three_dot = function(button) {
         const action = button.textContent.trim();
-        const beneficiaryId = document.querySelector('.menu-row').getAttribute('data-id');
+        const beneficiaryId = button.closest('.menu').querySelector('.delete-button').getAttribute('data-id');
 
-        if (action === 'Delete' && beneficiaryId) {
-
-            const confirmDeleteButton = document.getElementById('confirm-delete');
-            const cancelDeleteButton = document.getElementById('cancel-delete');
-            const pop_up_Delete = document.getElementById('delete-beneficiary');
-
-            pop_up_Delete.classList.add("visible");
-
-            confirmDeleteButton.addEventListener('click', function(){
-                deleteBeneficiary(beneficiaryId);
-                pop_up_Delete.classList.remove("visible");
-            })
-            cancelDeleteButton.addEventListener('click', function(){
-                pop_up_Delete.classList.remove("visible");
-            })
-        }
-    
         if (action === 'Update' && beneficiaryId) {
             fetch(`/pharmacy-records/beneficiary/${beneficiaryId}`)
                 .then(response => {
@@ -262,99 +244,50 @@ document.addEventListener("DOMContentLoaded", function () {
                     alert('Failed to fetch beneficiary data. Please try again.');
                 });
         }
-        if (action === 'Generate ID' && beneficiaryId){
-            const id_card = document.getElementById("id");
-            id_card.classList.add("visible");
-            console.log("asdd");
-
-            fetch(`/pharmacy-records/beneficiary/${beneficiaryId}`)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                // .then(beneficiaryData => {
-                //     document.getElementById('beneficiary_id').value = beneficiaryData.beneficiary_id || '';
-                //     document.getElementById('last_name').value = beneficiaryData.last_name || '';
-                //     document.getElementById('first_name').value = beneficiaryData.first_name || '';
-                //     document.getElementById('middle_name').value = beneficiaryData.middle_name || '';
-                //     document.getElementById('gender').value = beneficiaryData.gender || '';
-                //     document.getElementById('birthdate').value = beneficiaryData.birthdate.split('T')[0] || '';
-                //     document.getElementById('phone').value = beneficiaryData.phone || '';
-                //     document.getElementById('occupation').value = beneficiaryData.occupation || '';
-                //     document.getElementById('street').value = beneficiaryData.street || '';
-                //     document.getElementById('barangay').value = beneficiaryData.barangay || '';
-                //     document.getElementById('city').value = beneficiaryData.city || '';
-                //     document.getElementById('province').value = beneficiaryData.province || '';
-                //     document.getElementById('senior_citizen').value = beneficiaryData.senior_citizen || '';
-                //     document.getElementById('pwd').value = beneficiaryData.pwd || '';
-                //     document.getElementById('note').value = beneficiaryData.note || '';
-                //     document.getElementById('existing_picture').value = beneficiaryData.picture || '';
-
-    
-                //     const picturePath = beneficiaryData.picture ? `/uploads/beneficiary-img/${beneficiaryData.picture}` : '../icon/upload-img-default.svg';
-                //     const pictureElement = document.getElementById('pictureDisplay');
-                //     if (pictureElement) {
-                //         pictureElement.src = picturePath;
-                //     } else {
-                //         console.error('Image element not found');
-                //     }
-
-                //     const fileInput = document.getElementById('picture');
-                //     if (fileInput) {
-                //         fileInput.value = '';
-                //     }
-
-                //     update_beneficiary.classList.add("visible");
-                //     overlay.classList.add("visible");
-                // })
-                .catch(error => {
-                    console.error('Error fetching beneficiary data:', error);
-                    alert('Failed to fetch beneficiary data. Please try again.');
-                });
-        }
     };     
 
-    // document.getElementById('beneficiaryTableBody').addEventListener('click', function(event) {
-    //     if (event.target.classList.contains('delete-button')) {
-    //         const confirmDeleteButton = document.getElementById('confirm-delete');
-    //         const cancelDeleteButton = document.getElementById('cancel-delete');
-    //         const pop_up_Delete = document.getElementById('delete-beneficiary');
-    //         const beneficiaryId = event.target.getAttribute('data-id');
-
-    //         pop_up_Delete.classList.add("visible");
-
-    //         confirmDeleteButton.addEventListener('click', function(){
-    //             deleteBeneficiary(beneficiaryId);
-    //             pop_up_Delete.classList.remove("visible");
-    //         })
-    //         cancelDeleteButton.addEventListener('click', function(){
-    //             pop_up_Delete.classList.remove("visible");
-    //         })
-    //     }
-    // });
-
-    function deleteBeneficiary(beneficiaryId) {
+    document.getElementById('beneficiaryTableBody').addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-button')) {
+            const confirmDeleteButton = document.getElementById('confirm-delete');
+            const cancelDeleteButton = document.getElementById('cancel-delete');
+            const pop_up_Delete = document.getElementById('delete-beneficiary');
+            const beneficiaryId = event.target.getAttribute('data-id');
+    
+            pop_up_Delete.classList.add("visible");
+    
+            confirmDeleteButton.onclick = () => {
+                deleteBeneficiary(beneficiaryId);
+                pop_up_Delete.classList.remove("visible");
+            };
+    
+            cancelDeleteButton.onclick = () => {
+                pop_up_Delete.classList.remove("visible");
+            };
+        }
+    });
+    
+    async function deleteBeneficiary(beneficiaryId) {
         console.log('Sending DELETE request for ID:', beneficiaryId);
-        fetch(`/pharmacy-records/delete/${beneficiaryId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-        .then(response => {
+        try {
+            const response = await fetch(`/pharmacy-records/delete/${beneficiaryId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
             if (!response.ok) {
                 throw new Error('Failed to delete beneficiary');
             }
-
+    
             alert('Beneficiary deleted successfully.');
             fetchBeneficiaryUpdates();
-        })
-        .catch(error => {
+        } catch (error) {
             console.error('Error deleting beneficiary:', error);
-            alert('An error occurred while trying to delete the beneficiary: ' + error.message);
-        });
-    }
-
+            alert('An error occurred while trying to delete the beneficiary. Please try again.');
+        }
+    }    
+     
     // Initial setup
     attachPaginationListeners();
 });

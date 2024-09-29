@@ -202,7 +202,7 @@ router.get("/pharmacy-records/search", ensureAuthenticated, checkUserType("Pharm
   }
 });
 
-router.get("/pharmacy-records/beneficiary/:id", async (req, res) => {
+router.get("/pharmacy-records/beneficiary/:id", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   const beneficiaryId = parseInt(req.params.id);
 
   if (isNaN(beneficiaryId)) {
@@ -228,7 +228,6 @@ router.get("/pharmacy-records/beneficiary/:id", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch the beneficiary." });
   }
 });
-
 
 router.get("/pharmacy-dispense-request", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
   res.render("pharmacy/requests-for-dispense");
@@ -404,7 +403,6 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
     res.status(500).json({ message: 'Failed to delete the beneficiary.' });
   }
 });
-
 
 async function fetchInventoryList(page, limit, rhu_id) {
   const offset = (page - 1) * limit;
