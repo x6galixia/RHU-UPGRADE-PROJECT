@@ -215,7 +215,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 pop_up_Delete.classList.remove("visible");
             })
         }
-    
         if (action === 'Update' && beneficiaryId) {
             fetch(`/pharmacy-records/beneficiary/${beneficiaryId}`)
                 .then(response => {
@@ -272,41 +271,60 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (!response.ok) throw new Error('Network response was not ok');
                     return response.json();
                 })
-                // .then(beneficiaryData => {
-                //     document.getElementById('beneficiary_id').value = beneficiaryData.beneficiary_id || '';
-                //     document.getElementById('last_name').value = beneficiaryData.last_name || '';
-                //     document.getElementById('first_name').value = beneficiaryData.first_name || '';
-                //     document.getElementById('middle_name').value = beneficiaryData.middle_name || '';
-                //     document.getElementById('gender').value = beneficiaryData.gender || '';
-                //     document.getElementById('birthdate').value = beneficiaryData.birthdate.split('T')[0] || '';
-                //     document.getElementById('phone').value = beneficiaryData.phone || '';
-                //     document.getElementById('occupation').value = beneficiaryData.occupation || '';
-                //     document.getElementById('street').value = beneficiaryData.street || '';
-                //     document.getElementById('barangay').value = beneficiaryData.barangay || '';
-                //     document.getElementById('city').value = beneficiaryData.city || '';
-                //     document.getElementById('province').value = beneficiaryData.province || '';
-                //     document.getElementById('senior_citizen').value = beneficiaryData.senior_citizen || '';
-                //     document.getElementById('pwd').value = beneficiaryData.pwd || '';
-                //     document.getElementById('note').value = beneficiaryData.note || '';
-                //     document.getElementById('existing_picture').value = beneficiaryData.picture || '';
+                .then(beneficiaryData => {
+                    var full_name = beneficiaryData.last_name + ", " + beneficiaryData.first_name + " " + beneficiaryData.middle_name;
+                    var address = beneficiaryData.street + " " + beneficiaryData.barangay + " " + beneficiaryData.city + " " + beneficiaryData.province;
+                    var status;
+
+                    if (beneficiaryData.senior_citizen === "Yes"){
+                        status = "Senior Citizen";
+                    } else if (beneficiaryData.pwd === "Yes"){
+                        status = "PWD";
+                    } else{
+                        status = "ambot";
+                    }
+
+                    document.getElementById("beneficiary-name").innerText = full_name;
+                    document.getElementById("beneficiary-status").innerText = status;
+                    document.getElementById("beneficiary-address").innerText = address;
+                    document.getElementById("beneficiary-phone").innerText = beneficiaryData.phone;
+
+
+
+                    document.getElementById('beneficiary_id').value = beneficiaryData.beneficiary_id || '';
+                    document.getElementById('last_name').value = beneficiaryData.last_name || '';
+                    document.getElementById('first_name').value = beneficiaryData.first_name || '';
+                    document.getElementById('middle_name').value = beneficiaryData.middle_name || '';
+                    document.getElementById('gender').value = beneficiaryData.gender || '';
+                    document.getElementById('birthdate').value = beneficiaryData.birthdate.split('T')[0] || '';
+                    document.getElementById('phone').value = beneficiaryData.phone || '';
+                    document.getElementById('occupation').value = beneficiaryData.occupation || '';
+                    document.getElementById('street').value = beneficiaryData.street || '';
+                    document.getElementById('barangay').value = beneficiaryData.barangay || '';
+                    document.getElementById('city').value = beneficiaryData.city || '';
+                    document.getElementById('province').value = beneficiaryData.province || '';
+                    document.getElementById('senior_citizen').value = beneficiaryData.senior_citizen || '';
+                    document.getElementById('pwd').value = beneficiaryData.pwd || '';
+                    document.getElementById('note').value = beneficiaryData.note || '';
+                    document.getElementById('existing_picture').value = beneficiaryData.picture || '';
 
     
-                //     const picturePath = beneficiaryData.picture ? `/uploads/beneficiary-img/${beneficiaryData.picture}` : '../icon/upload-img-default.svg';
-                //     const pictureElement = document.getElementById('pictureDisplay');
-                //     if (pictureElement) {
-                //         pictureElement.src = picturePath;
-                //     } else {
-                //         console.error('Image element not found');
-                //     }
+                    // const picturePath = beneficiaryData.picture ? `/uploads/beneficiary-img/${beneficiaryData.picture}` : '../icon/upload-img-default.svg';
+                    // const pictureElement = document.getElementById('pictureDisplay');
+                    // if (pictureElement) {
+                    //     pictureElement.src = picturePath;
+                    // } else {
+                    //     console.error('Image element not found');
+                    // }
 
-                //     const fileInput = document.getElementById('picture');
-                //     if (fileInput) {
-                //         fileInput.value = '';
-                //     }
+                    // const fileInput = document.getElementById('picture');
+                    // if (fileInput) {
+                    //     fileInput.value = '';
+                    // }
 
-                //     update_beneficiary.classList.add("visible");
-                //     overlay.classList.add("visible");
-                // })
+                    // update_beneficiary.classList.add("visible");
+                    // overlay.classList.add("visible");
+                })
                 .catch(error => {
                     console.error('Error fetching beneficiary data:', error);
                     alert('Failed to fetch beneficiary data. Please try again.');
