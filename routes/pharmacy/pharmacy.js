@@ -202,7 +202,7 @@ router.get("/pharmacy-records/search", ensureAuthenticated, checkUserType("Pharm
   }
 });
 
-router.get("/pharmacy-records/beneficiary/:id", async (req, res) => {
+router.get("/pharmacy-records/beneficiary/:id", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   const beneficiaryId = parseInt(req.params.id);
 
   if (isNaN(beneficiaryId)) {
@@ -228,7 +228,6 @@ router.get("/pharmacy-records/beneficiary/:id", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch the beneficiary." });
   }
 });
-
 
 router.get("/pharmacy-dispense-request", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
   res.render("pharmacy/requests-for-dispense");
@@ -389,12 +388,41 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
 
 router.delete('/pharmacy-records/delete/:id', async (req, res) => {
   const beneficiaryId = parseInt(req.params.id);
+  
   if (isNaN(beneficiaryId)) {
     return res.status(400).json({ message: 'Invalid beneficiary ID' });
   }
+
   try {
-    const result = await pharmacyPool.query('DELETE FROM beneficiary WHERE beneficiary_id = $1', [beneficiaryId]);
-    if (result.rowCount > 0) {
+    const result = await pharmacyPool.query(
+      'SELECT picture FROM beneficiary WHERE beneficiary_id = $1', 
+      [beneficiaryId]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Beneficiary not found.' });
+    }
+
+    const picture = result.rows[0].picture;
+
+    const deleteResult = await pharmacyPool.query(
+      'DELETE FROM beneficiary WHERE beneficiary_id = $1', 
+      [beneficiaryId]
+    );
+    
+    if (deleteResult.rowCount > 0) {
+      if (picture) {
+        const filePath = path.join(__dirname, '../../uploads/beneficiary-img/', picture);
+
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.error('Failed to delete image file:', err);
+          } else {
+            console.log('Image file deleted:', filePath);
+          }
+        });
+      }
+      
       res.json({ message: 'Beneficiary deleted successfully.' });
     } else {
       res.status(404).json({ message: 'Beneficiary not found.' });
@@ -404,7 +432,6 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
     res.status(500).json({ message: 'Failed to delete the beneficiary.' });
   }
 });
-
 
 async function fetchInventoryList(page, limit, rhu_id) {
   const offset = (page - 1) * limit;

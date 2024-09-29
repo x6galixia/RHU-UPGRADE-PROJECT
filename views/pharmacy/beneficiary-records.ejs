@@ -7,8 +7,9 @@
     <meta name="keywords" content="Pharmacy, Records, Management">
     <link rel="shortcut icon" type="image/png" href=""/>
     <link rel="stylesheet" href="../css/global/general.css" />
-    <link rel="stylesheet" href="../css/local/beneficiary-records.css" />
     <link rel="stylesheet" href="../css/local/id.css" />
+    <link rel="stylesheet" href="../css/local/beneficiary-records.css" />
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <title>PHARMACY|RECORDS</title>
   </head>
   <body>
@@ -135,7 +136,7 @@
                     <img src="../icon/upload-img-default.svg" alt="">
                     <p id="upload-image-text">Upload Image Here</p>
                   </div>
-                  <input class="beneficiary-upload-image" type="file" aria-label="Select an image" name="picture">
+                  <input class="beneficiary-upload-image" type="file" aria-label="Select an image" accept="image/*" name="picture">
                 </div>
               </div>
             </div>
@@ -201,7 +202,7 @@
                   </div>
                   <div class="input-w8-label">
                       <label>Processed Date</label>
-                      <input type="date" aria-label="Processed Date" class="current-date" id="processed_date" name="processed_date" required>
+                      <input type="date" aria-label="Processed Date" id="processed_date" name="processed_date" required>
                   </div>
               </div>
               <div class="row">
@@ -250,10 +251,10 @@
                     <label for="">Select an image</label>
                     <div class="upload-image">
                         <div class="upload-section">
-                            <img id="pictureDisplay" src="../icon/upload-img-default.svg" alt="">
+                            <img id="pictureDisplay" src="../icon/upload-img-default.svg" alt="no image found">
                             <p id="upload-image-text">Upload Image Here</p>
                         </div>
-                        <input class="beneficiary-upload-image" type="file" id="picture" name="picture" aria-label="Select an image">
+                        <input class="beneficiary-upload-image" type="file" id="picture" name="picture" accept="image/*" aria-label="Select an image">
                     </div>
                 </div>
             </div>            
@@ -285,58 +286,75 @@
       </div>
       <h1 class="heading">MULTI-PURPOSE ID</h1>
       <main class="id-container">
-        <div class="all">
-          <div class="rec11">
-            <img class="rec1" src="../img/id-img/rec1.png" />
-          </div>
-          <div class="three">
-            <div class="prof">
-              <img class="profile" id="beneficiary-picture" src="../img/local/jr.png" />
+        <div id="id-container">
+          <div class="all">
+            <div class="rec11">
+              <img class="rec1" src="../img/id-img/rec1.png" />
             </div>
-    
-            <div class="info">
-              <p class="name" id="beneficiary-name">JOHN REY B. PAGASPAS</p>
-              <p class="status" id="beneficiary-status">Student</p>
-              <div class="rectangle"></div>
-    
-              <div class="i1-t">
-                <img class="icon1" src="../img/id-img/icon1.png" />
-                <p class="address" id="beneficiary-address">Maypangdan Borongan Eastern Samar</p>
+            <div class="three">
+              <div class="prof">
+                <img class="profile" id="beneficiary-picture" src="../img/local/jr.png" />
               </div>
-
-              <div class="i3-t">
-                <img class="icon3" src="../img/id-img/icon3.png" />
-                <p class="phoneno." id="beneficiary-phone">09970752488</p>
+      
+              <div class="info">
+                <p class="name" id="beneficiary-name">JOHN REY B. PAGASPAS</p>
+                <p class="status" id="beneficiary-status">Student</p>
+                <div class="rectangle"></div>
+      
+                <div class="i1-t">
+                  <img class="icon1" src="../img/id-img/icon1.png" />
+                  <p class="address" id="beneficiary-address">Maypangdan Borongan Eastern Samar</p>
+                </div>
+  
+                <div class="i3-t">
+                  <img class="icon3" src="../img/id-img/icon3.png" />
+                  <p class="phoneno." id="beneficiary-phone">09970752488</p>
+                </div>
               </div>
-            </div>
-    
-            <div class="qrr">
-              <img class="qr" src="../img/id-img/qr.jpg" />
-            </div>
-    
-            <div class="recd11">
-              <img class="recd1" src="../img/id-img/recd1.png" />
-            </div>
-    
-            <div class="recd22">
-              <img class="recd2" src="../img/id-img/recd2.png" />
-            </div>
-    
-            <div class="recd33">
-              <img class="recd3" src="../img/id-img/recd3.png" />
-            </div>
-    
-            <div class="recd44">
-              <img class="recd4" src="../img/id-img/recd4.png" />
+      
+              <div class="qrr" id="qrcode">
+              </div>
+      
+              <div class="recd11">
+                <img class="recd1" src="../img/id-img/recd1.png" />
+              </div>
+      
+              <div class="recd22">
+                <img class="recd2" src="../img/id-img/recd2.png" />
+              </div>
+      
+              <div class="recd33">
+                <img class="recd3" src="../img/id-img/recd3.png" />
+              </div>
+      
+              <div class="recd44">
+                <img class="recd4" src="../img/id-img/recd4.png" />
+              </div>
             </div>
           </div>
         </div>
-        <button class="button-green">PRINT</button>
+        <button class="button-green" onclick="printContainer('id-container')">PRINT</button>
       </main>
     </div>
     <script src="../../js/local/beneficiary/beneficiary-api.js"></script>
     <script src="../../js/local/beneficiary/beneficiary-local.js"></script>
     <script src="../../js/global/client-side-functions.js"></script>
     <script src="../../js/global/pop-up.js"></script>
+    <script>
+      function printContainer(containerId) {
+          var container = document.getElementById(containerId);
+          
+          var printWindow = window.open('', '', 'height=600,width=800');
+          printWindow.document.write('<html><head><title>Print</title>');
+          printWindow.document.write('<link rel="stylesheet" href="../css/global/general.css">');
+          printWindow.document.write('<link rel="stylesheet" href="../css/local/id.css">');
+          
+          printWindow.document.write('</head><body>');
+          printWindow.document.write(container.innerHTML);
+          printWindow.document.write('</body></html>');
+          printWindow.document.close();
+          printWindow.print();
+      }
+  </script>
   </body>
 </html>

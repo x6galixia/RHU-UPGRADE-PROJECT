@@ -92,8 +92,8 @@ document.addEventListener("DOMContentLoaded", function() {
                             <td>${patient.gender}</td>
                             <td>${patient.house_no} ${patient.street} ${patient.barangay} ${patient.town} ${patient.province}</td>
                             <td> 
-                                <select name="patientAction" class="patientActionDropdown">
-                                    <option value="">Vital Signs</option>
+                                <select name="patientAction" class="patientActionDropdown" id="selectMedicalRecords">
+                                    <option value="1">Vital Signs</option>
                                     <option value="">Request Laboratory</option>
                                     <option value="">Diagnosis</option>
                                     <option value="">Findings</option>

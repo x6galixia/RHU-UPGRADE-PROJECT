@@ -44,13 +44,13 @@
         </div>
 
         <!-- pop up for vital sign -->
-        <div class="pop-up">
+        <div class="pop-up" id="vital">
           <div class="head row just-bet">
             <div class="row gap">
               <img src="../icon/broken-hart.svg"/>
               <h2>Vitals sign</h2>
             </div>
-            <div>
+            <div class="exit">
               <img src="../icon/close.svg" alt="">
             </div>
           </div>
@@ -142,14 +142,14 @@
         </div>
 
         <!-- pop up for request lab -->
-        <div class="pop-up">
+        <div class="pop-up" id="reqLab">
           <div class="head row just-bet">
             <div class="row gap">
               <img src="../icon/bottle.svg"/>
               <h2>Request laboratory</h2>
             </div>
             <div>
-              <img src="../icon/close.svg" alt="">
+              <img src="../icon/close.svg" alt="" class="exit">
             </div>
           </div>
           <div class="info col gap">
@@ -213,14 +213,14 @@
         </div>
 
         <!-- pop up for diagnosis-->
-         <div class="pop-up">
+         <div class="pop-up" id="diagnosis">
           <div class="head row just-bet">
             <div class="row gap">
               <img src="../icon/micro-scope.svg"/>
               <h2>Request laboratory</h2>
             </div>
             <div>
-              <img src="../icon/close.svg" alt="">
+              <img src="../icon/close.svg" alt="" class="exit">
             </div>
           </div>
 
@@ -271,15 +271,14 @@
          </div>
 
          <!-- pop up for findings -->
-
-         <div class="pop-up">
+         <div class="pop-up" id="findings">
           <div class="head row just-bet">
             <div class="row gap">
               <img src="../icon/magnifying-glass.svg"/>
               <h2>Findings</h2>
             </div>
             <div>
-              <img src="../icon/close.svg" alt="">
+              <img src="../icon/close.svg" alt="" class="exit">
             </div>
           </div>
 
@@ -330,15 +329,15 @@
 
          </div>
 
-
-         <div class="pop-up" style="display: block;">
+         <!-- pop up for lab result -->
+         <div class="pop-up" id="labResult">
           <div class="head row just-bet">
             <div class="row gap">
               <img src="../icon/bottle.svg"/>
               <h2>Laboratory result</h2>
             </div>
             <div>
-              <img src="../icon/close.svg" alt="">
+              <img src="../icon/close.svg" alt="" class="exit">
             </div>
           </div>
 
@@ -407,8 +406,156 @@
 
          </div>
 
-        <div class="overlay" style="display: block;"></div> 
+         <!-- pop up for prescribe -->
+         <div class="pop-up" id="prescribed">
+          <div class="head row just-bet">
+            <div class="row gap">
+              <img src="../icon/Rx.svg"/>
+              <h2>Prescribe</h2>
+            </div>
+            <div>
+              <img src="../icon/close.svg" alt="" class="exit">
+            </div>
+          </div>
+
+          <div class="info col gap">
+            <div class="row gap">
+             <div class="row grow">
+               <label for="">Name:</label>
+               <input type="text" class="under-line-input">
+             </div>
+             <div class="row">
+               <label for="">Date:</label>
+               <input type="date" class="under-line-input">
+             </div>
+           </div>
+           <div class="row gap">
+             <div class="row">
+               <label for="">Age:</label>
+               <input type="number" class="under-line-input">
+             </div>
+             <div class="row">
+               <label for="">Sex:</label>
+               <input type="text" class="under-line-input">
+             </div>
+             <div class="row">
+               <label for="">Birth:</label>
+               <input type="date" class="under-line-input">
+             </div>
+           </div>
+           <div class="row gap">
+             <div class="row">
+               <label for="">Occupation:</label>
+               <input type="text" class="under-line-input">
+             </div>
+             <div class="row grow">
+               <label for="">Parent/s:</label>
+               <input type="text" class="under-line-input">
+             </div>
+           </div>
+           <hr>
+
+           <div class="col gap">
+
+            <div class="row gap just-bet">
+              <div class="col grow">
+                <label for="">Medicine:</label>
+                <input type="text">
+              </div>
+              <div class="col grow">
+                <label for="">Instruction:</label>
+                <input type="text">
+              </div>
+              <div class="col grow">
+                <label for="">Quantity:</label>
+                <input type="number">
+              </div>
+            </div>
+            <div class="row gap just-bet">
+              <div class=" col grow">
+                <label for="">Receiver:</label>
+                <input type="text">
+              </div>
+              <div class="col grow">
+                <label for="">Relationship:</label>
+                <input type="text">
+              </div>
+              <div class="col grow">
+                <label for="">Doctor:</label>
+                <input type="number">
+              </div>
+            </div>
+
+           </div>
+           <div class="btn-l">
+            <button>Print</button>
+            <button>Submit</button>
+          </div>
+         </div>
+
+         </div>
+
+        <div class="overlay"></div> 
+        <div>
+          <select name="" id="selectMedicalRecords">
+            <option value="" selected disabled>Medical records</option>
+            <option value="1">Vital signs</option>
+            <option value="2">Request Laboratory</option>
+            <option value="3">Diagnosis</option>
+            <option value="4">Findings</option>
+            <option value="5">Laboratory result</option>
+            <option value="6">Prescribe</option>
+          </select>
+        </div>
     </main>
     <script src="../../js/local/doctor-dashboard/patient-api.js"></script>
+    <!-- <script src="../../js/global/pop-up.js"></script> -->
+    <script>
+
+      const viewSelected = document.getElementById('selectMedicalRecords');
+      const over = document.querySelector(".overlay");
+      const vital = document.getElementById('vital');
+      const reqLab = document.getElementById('reqLab');
+      const diagnosis = document.getElementById('diagnosis');
+      const findings = document.getElementById('findings');
+      const labResult = document.getElementById('labResult');
+      const prescribed = document.getElementById('prescribed');
+
+      viewSelected.addEventListener('change', (event) => {
+        const selectedValue = event.target.value;
+        if (selectedValue === "1") {
+          vital.style.display = 'block';
+        }else if (selectedValue === "2"){
+          reqLab.style.display = 'block';
+        }else if (selectedValue === "3"){
+          diagnosis.style.display = 'block';
+        }else if (selectedValue === "4"){
+          findings.style.display = 'block';
+        }else if (selectedValue === "5"){
+          labResult.style.display = 'block';
+        }else{
+          prescribed.style.display = 'block';
+        }
+        over.classList.toggle('visible');
+      });
+
+      
+      // document.querySelector(".exit").addEventListener('click', function(){
+      //   const pop = document.querySelector(".pop-up");
+      //   pop.style.display = "none";
+      //   over.classList.toggle('visible');
+      // }); 
+
+      document.querySelectorAll(".exit").forEach((exitButton) => {
+    exitButton.addEventListener('click', () => {
+      const popUps = document.querySelectorAll(".pop-up");
+        popUps.forEach((pop) => {
+            pop.style.display = "none";
+            over.classList.remove('visible');
+        });
+    });
+});
+
+ </script>
 </body>
 </html>
