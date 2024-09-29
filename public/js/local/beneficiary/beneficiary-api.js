@@ -199,7 +199,6 @@ document.addEventListener("DOMContentLoaded", function () {
     window.popUp_three_dot = function(button) {
         const action = button.textContent.trim();
         const beneficiaryId = button.closest('.triple-dot').querySelector('.menu').getAttribute('data-id');
-        // const beneficiaryId = button.closest('.menu').querySelector('.delete-button').getAttribute('data-id');
 
         if (action === 'Delete' && beneficiaryId) {
 
@@ -217,7 +216,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 pop_up_Delete.classList.remove("visible");
             })
         }
-    
         if (action === 'Update' && beneficiaryId) {
             fetch(`/pharmacy-records/beneficiary/${beneficiaryId}`)
                 .then(response => {
@@ -232,7 +230,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById('gender').value = beneficiaryData.gender || '';
                     document.getElementById('birthdate').value = beneficiaryData.birthdate.split('T')[0] || '';
                     document.getElementById('phone').value = beneficiaryData.phone || '';
-                    
+                    document.getElementById('processed_date').value = beneficiaryData.processed_date.split('T')[0] || '';
                     document.getElementById('occupation').value = beneficiaryData.occupation || '';
                     document.getElementById('street').value = beneficiaryData.street || '';
                     document.getElementById('barangay').value = beneficiaryData.barangay || '';
@@ -243,12 +241,19 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById('note').value = beneficiaryData.note || '';
                     document.getElementById('existing_picture').value = beneficiaryData.picture || '';
 
-                    const picturePath = beneficiaryData.picture ? `/uploads/beneficiary-img/${beneficiaryData.picture}` : '../../../icon/upload-img-default.svg';
-                    const pictureElement = document.getElementById('pictureDisplay');
-                    if (pictureElement) {
-                        
-                        pictureElement.src = picturePath;
+                    var picture;
+                    if (beneficiaryData.gender === "Male"){
+                        picture = "/icon/upload-img-default.svg";
                     } else {
+                        picture = "/icon/upload-img-default-woman.svg";
+                    }
+
+
+                    const pictureElement = document.getElementById('pictureDisplay');
+                     if (pictureElement) {
+                        const picturePath = (beneficiaryData.picture && beneficiaryData.picture !== '0') ? `/uploads/beneficiary-img/${beneficiaryData.picture}` : picture;
+                         pictureElement.src = picturePath;
+                     } else {
                         console.error('Image element not found');
                     }
 
@@ -300,12 +305,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById("beneficiary-address").innerText = address;
                     document.getElementById("beneficiary-phone").innerText = phone;
 
-                    const picturePath = beneficiaryData.picture ? `/uploads/beneficiary-img/${beneficiaryData.picture}` : '../../icon/upload-img-default.svg';
-                    const pictureElement = document.getElementById('beneficiary-picture');
-                    if (pictureElement) {
-                        
-                        pictureElement.src = picturePath;
+                    
+                    var picture;
+                    if (beneficiaryData.gender === "Male"){
+                        picture = "/icon/upload-img-default.svg";
                     } else {
+                        picture = "/icon/upload-img-default-woman.svg";
+                    }
+
+
+                    const pictureElement = document.getElementById('beneficiary-picture');
+                     if (pictureElement) {
+                        const picturePath = (beneficiaryData.picture && beneficiaryData.picture !== '0') ? `/uploads/beneficiary-img/${beneficiaryData.picture}` : picture;
+                         pictureElement.src = picturePath;
+                     } else {
                         console.error('Image element not found');
                     }
 
