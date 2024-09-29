@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     <td> ${patient.gender} </td>
                     <td> ${patient.house_no} ${patient.street} ${patient.barangay} ${patient.town} ${patient.province}</td>
                     <td> 
-                        <select name="patientAction" class="patientActionDropdown">
+                         <select name="patientAction" class="patientActionDropdown" onchange="popUp_button(this)">
                             <option value="" selected disabled>Medical records</option>
                             <option value="1">Vital Signs</option>
                             <option value="2">Request Laboratory</option>
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             <option value="4">Findings</option>
                             <option value="5">Laboratory Result</option>
                             <option value="6">Prescribe</option>
-                        </select> 
+                        </select>
                     </td>
                     <td>
                          <img src="../icon/mata_ine.svg" alt="" />
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             <td>${patient.gender}</td>
                             <td>${patient.house_no} ${patient.street} ${patient.barangay} ${patient.town} ${patient.province}</td>
                             <td> 
-                                <select name="patientAction" class="patientActionDropdown">
+                                 <select name="patientAction" class="patientActionDropdown" onchange="popUp_button(this)">
                                     <option value="" selected disabled>Medical records</option>
                                     <option value="1">Vital Signs</option>
                                     <option value="2">Request Laboratory</option>
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <option value="4">Findings</option>
                                     <option value="5">Laboratory Result</option>
                                     <option value="6">Prescribe</option>
-                                </select> 
+                                </select>
                             </td>
                             <td>
                                 <img src="../icon/mata_ine.svg" alt="" />
@@ -185,62 +185,3 @@ function updatePaginationControls(currentPage, totalPages, limit) {
 attachPaginationListeners();
 });
 
-
-
-
-const over = document.querySelector(".overlay");
-const vital = document.getElementById('vital');
-const reqLab = document.getElementById('reqLab');
-const diagnosis = document.getElementById('diagnosis');
-const findings = document.getElementById('findings');
-const labResult = document.getElementById('labResult');
-const prescribed = document.getElementById('prescribed');
-
-function hideAll() {
-  vital.style.display = 'none';
-  reqLab.style.display = 'none';
-  diagnosis.style.display = 'none';
-  findings.style.display = 'none';
-  labResult.style.display = 'none';
-  prescribed.style.display = 'none';
-}
-
-document.getElementById("patientsTableBody").addEventListener('change', function(event) {
-    if (event.target && event.target.classList.contains('patientActionDropdown')) {
-        const selectedValue = event.target.value;
-        hideAll();
-
-        if (selectedValue === "1") {
-            vital.style.display = 'block';
-        } else if (selectedValue === "2") {
-            reqLab.style.display = 'block';
-        } else if (selectedValue === "3") {
-            diagnosis.style.display = 'block';
-        } else if (selectedValue === "4") {
-            findings.style.display = 'block';
-        } else if (selectedValue === "5") {
-            labResult.style.display = 'block';
-        } else {
-            prescribed.style.display = 'block';
-        }
-
-        over.classList.toggle('visible');
-    }
-});
-
-
-// document.querySelector(".exit").addEventListener('click', function(){
-//   const pop = document.querySelector(".pop-up");
-//   pop.style.display = "none";
-//   over.classList.toggle('visible');
-// }); 
-
-document.querySelectorAll(".exit").forEach((exitButton) => {
-exitButton.addEventListener('click', () => {
-const popUps = document.querySelectorAll(".pop-up");
-  popUps.forEach((pop) => {
-    hideAll();
-      over.classList.remove('visible');
-  });
-});
-});
