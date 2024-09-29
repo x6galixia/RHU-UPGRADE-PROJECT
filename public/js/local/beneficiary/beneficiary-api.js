@@ -199,9 +199,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const action = button.textContent.trim();
         const beneficiaryId = button.closest('.menu').querySelector('.delete-button').getAttribute('data-id');
 
-
-
-
         // if (action === 'Delete' && beneficiaryId) {
 
         //     // pop_up_Delete.classList.add("visible");
@@ -279,28 +276,34 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    function deleteBeneficiary(beneficiaryId) {
+    async function deleteBeneficiary(beneficiaryId) {
         console.log('Sending DELETE request for ID:', beneficiaryId);
-        fetch(`/pharmacy-records/delete/${beneficiaryId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to delete beneficiary');
+    
+        try {
+            const response = await fetch(`/pharmacy-records/delete/${beneficiaryId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (response.ok || response.status === 204) {
+                alert('Beneficiary deleted successfully.');
+                fetchBeneficiaryUpdates();
+            } else if (response.status === 404) {
+                const errorMessage = await response.json().catch(() => 'Beneficiary not found.');
+                console.error('Beneficiary not found:', errorMessage.message || errorMessage);
+                alert(`Beneficiary not found: ${errorMessage.message || errorMessage}`);
+            } else {
+                const errorMessage = await response.text().catch(() => 'Unexpected error');
+                throw new Error(`Failed to delete beneficiary: ${errorMessage || 'Unknown error'}`);
             }
-
-            alert('Beneficiary deleted successfully.');
-            fetchBeneficiaryUpdates();
-        })
-        .catch(error => {
+        } catch (error) {
             console.error('Error deleting beneficiary:', error);
-            alert('An error occurred while trying to delete the beneficiary: ' + error.message);
-        });
+            alert(`Error deleting beneficiary: ${error.message}`);
+        }
     }
-
+     
     // Initial setup
     attachPaginationListeners();
 });
