@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         pictureElement.src = picturePath;
                     } else {
                         console.error('Image element not found');
-                    }
+                    } 
 
                     const fileInput = document.getElementById('picture');
                     if (fileInput) {
