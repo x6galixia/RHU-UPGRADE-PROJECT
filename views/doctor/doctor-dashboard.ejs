@@ -50,8 +50,8 @@
               <img src="../icon/broken-hart.svg"/>
               <h2>Vitals sign</h2>
             </div>
-            <div class="exit">
-              <img src="../icon/close.svg" alt="">
+            <div>
+              <img src="../icon/close.svg" alt="" class="close_popUp">
             </div>
           </div>
           <div class="info col gap">
@@ -149,7 +149,7 @@
               <h2>Request laboratory</h2>
             </div>
             <div>
-              <img src="../icon/close.svg" alt="" class="exit">
+              <img src="../icon/close.svg" alt="" class="close_popUp">
             </div>
           </div>
           <div class="info col gap">
@@ -220,7 +220,7 @@
               <h2>Request laboratory</h2>
             </div>
             <div>
-              <img src="../icon/close.svg" alt="" class="exit">
+              <img src="../icon/close.svg" alt="" class="close_popUp">
             </div>
           </div>
 
@@ -278,7 +278,7 @@
               <h2>Findings</h2>
             </div>
             <div>
-              <img src="../icon/close.svg" alt="" class="exit">
+              <img src="../icon/close.svg" alt="" class="close_popUp">
             </div>
           </div>
 
@@ -337,7 +337,7 @@
               <h2>Laboratory result</h2>
             </div>
             <div>
-              <img src="../icon/close.svg" alt="" class="exit">
+              <img src="../icon/close.svg" alt="" class="close_popUp">
             </div>
           </div>
 
@@ -414,7 +414,7 @@
               <h2>Prescribe</h2>
             </div>
             <div>
-              <img src="../icon/close.svg" alt="" class="exit">
+              <img src="../icon/close.svg" alt="" class="close_popUp">
             </div>
           </div>
 
@@ -496,66 +496,8 @@
          </div>
 
         <div class="overlay"></div> 
-        <div>
-          <select name="" id="selectMedicalRecords">
-            <option value="" selected disabled>Medical records</option>
-            <option value="1">Vital signs</option>
-            <option value="2">Request Laboratory</option>
-            <option value="3">Diagnosis</option>
-            <option value="4">Findings</option>
-            <option value="5">Laboratory result</option>
-            <option value="6">Prescribe</option>
-          </select>
-        </div>
     </main>
     <script src="../../js/local/doctor-dashboard/patient-api.js"></script>
-    <!-- <script src="../../js/global/pop-up.js"></script> -->
-    <script>
-
-      const viewSelected = document.getElementById('selectMedicalRecords');
-      const over = document.querySelector(".overlay");
-      const vital = document.getElementById('vital');
-      const reqLab = document.getElementById('reqLab');
-      const diagnosis = document.getElementById('diagnosis');
-      const findings = document.getElementById('findings');
-      const labResult = document.getElementById('labResult');
-      const prescribed = document.getElementById('prescribed');
-
-      viewSelected.addEventListener('change', (event) => {
-        const selectedValue = event.target.value;
-        if (selectedValue === "1") {
-          vital.style.display = 'block';
-        }else if (selectedValue === "2"){
-          reqLab.style.display = 'block';
-        }else if (selectedValue === "3"){
-          diagnosis.style.display = 'block';
-        }else if (selectedValue === "4"){
-          findings.style.display = 'block';
-        }else if (selectedValue === "5"){
-          labResult.style.display = 'block';
-        }else{
-          prescribed.style.display = 'block';
-        }
-        over.classList.toggle('visible');
-      });
-
-      
-      // document.querySelector(".exit").addEventListener('click', function(){
-      //   const pop = document.querySelector(".pop-up");
-      //   pop.style.display = "none";
-      //   over.classList.toggle('visible');
-      // }); 
-
-      document.querySelectorAll(".exit").forEach((exitButton) => {
-    exitButton.addEventListener('click', () => {
-      const popUps = document.querySelectorAll(".pop-up");
-        popUps.forEach((pop) => {
-            pop.style.display = "none";
-            over.classList.remove('visible');
-        });
-    });
-});
-
- </script>
+    <script src="../../js/global/pop-up.js"></script>
 </body>
 </html>
