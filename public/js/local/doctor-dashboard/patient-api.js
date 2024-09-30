@@ -20,13 +20,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td> ${patient.gender} </td>
                     <td> ${patient.house_no} ${patient.street} ${patient.barangay} ${patient.town} ${patient.province}</td>
                     <td> 
-                        <select name="patientAction" class="patientActionDropdown">
-                            <option value="">Vital Signs</option>
-                            <option value="">Request Laboratory</option>
-                            <option value="">Diagnosis</option>
-                            <option value="">Findings</option>
-                            <option value="">Laboratory Result</option>
-                            <option value="">Prescribe</option>
+                        <select name="patientAction" class="patientActionDropdown" onchange="popUp_button(this)">
+                            <option value="" selected disabled>Medical records</option>
+                            <option value="1">Vital Signs</option>
+                            <option value="2">Request Laboratory</option>
+                            <option value="3">Diagnosis</option>
+                            <option value="4">Findings</option>
+                            <option value="5">Laboratory Result</option>
+                            <option value="6">Prescribe</option>
                         </select> 
                     </td>
                     <td>
@@ -87,18 +88,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     data.getPatientList.forEach(patient => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
+                            <td>${patient.rhu_name} </td>
                             <td>${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}</td>
                             <td>${patient.age}</td>
                             <td>${patient.gender}</td>
                             <td>${patient.house_no} ${patient.street} ${patient.barangay} ${patient.town} ${patient.province}</td>
                             <td> 
-                                <select name="patientAction" class="patientActionDropdown" id="selectMedicalRecords">
+                                <select name="patientAction" class="patientActionDropdown" id="selectMedicalRecords" onchange="popUp_button(this)">
+                                    <option value="" selected disabled>Medical records</option>
                                     <option value="1">Vital Signs</option>
-                                    <option value="">Request Laboratory</option>
-                                    <option value="">Diagnosis</option>
-                                    <option value="">Findings</option>
-                                    <option value="">Laboratory Result</option>
-                                    <option value="">Prescribe</option>
+                                    <option value="2">Request Laboratory</option>
+                                    <option value="3">Diagnosis</option>
+                                    <option value="4">Findings</option>
+                                    <option value="5">Laboratory Result</option>
+                                    <option value="6">Prescribe</option>
                                 </select> 
                             </td>
                             <td>
