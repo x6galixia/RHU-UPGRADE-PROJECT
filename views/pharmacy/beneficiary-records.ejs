@@ -1,344 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Pharmacy Records Management">
-    <meta name="keywords" content="Pharmacy, Records, Management">
-    <link rel="shortcut icon" type="image/png" href=""/>
-    <link rel="stylesheet" href="../css/global/general.css" />
-    <link rel="stylesheet" href="../css/local/id.css" />
-    <link rel="stylesheet" href="../css/local/beneficiary-records.css" />
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
-    <title>PHARMACY|RECORDS</title>
-  </head>
-  <body>
-    <%- include("../includes/header.ejs")  %>
-    <%- include("../includes/pharmacy-sub-head.ejs")  %>
-    <main>
-      <div class="buttons">
-        <div class="search">
-          <input type="text" id="searchInput" placeholder="Search..." aria-label="Search" />
-          <img src="../icon/search.svg" alt="" />
-        </div>
-        <div class="add-transfer">
-          <button id="add-beneficiary-button" onclick="popUp_button(this)">ADD BENEFICIARY</button>
-        </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Pharmacy Records Management">
+  <meta name="keywords" content="Pharmacy, Records, Management">
+  <link rel="shortcut icon" type="image/png" href="" />
+  <link rel="stylesheet" href="../css/global/general.css" />
+  <link rel="stylesheet" href="../css/local/id.css" />
+  <link rel="stylesheet" href="../css/local/beneficiary-records.css" />
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+  <title>PHARMACY | BENEFICIARY RECORDS</title>
+</head>
+
+<body>
+  <%- include("../includes/header.ejs")  %>
+  <%- include("../includes/pharmacy-sub-head.ejs")  %>
+  <main>
+    <div class="buttons">
+      <div class="search">
+        <input type="text" id="searchInput" placeholder="Search..." aria-label="Search" />
+        <img src="../icon/search.svg" alt="" />
       </div>
-      <div class="table-container">
-        <div id="loadingSpinner" style="display:none;">Loading...</div>
-        <table>
-          <thead>
-              <tr>
-                  <th>NAME</th>
-                  <th>GENDER</th>
-                  <th>ADDRESS</th>
-                  <th>CONTACT NO.</th>
-                  <th>AGE</th>
-                  <th>NOTE</th>
-                  <th>SENIOR CITIZEN</th>
-                  <th>PWD</th>
-                  <th></th>
-              </tr>
-          </thead>
-          <tbody id="beneficiaryTableBody"></tbody>
+      <div class="add-transfer">
+        <button id="add-beneficiary-button" onclick="popUp_button(this)">ADD BENEFICIARY</button>
+      </div>
+    </div>
+    <div class="table-container">
+      <div id="loadingSpinner" style="display:none;">Loading...</div>
+      <table>
+        <thead>
+          <tr>
+            <th>NAME</th>
+            <th>GENDER</th>
+            <th>ADDRESS</th>
+            <th>CONTACT NO.</th>
+            <th>AGE</th>
+            <th>NOTE</th>
+            <th>SENIOR CITIZEN</th>
+            <th>PWD</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="beneficiaryTableBody"></tbody>
       </table>
       <nav aria-label="Page navigation" id="paginationNav">
-          <% if (currentPage > 1) { %>
-          <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
-          <% } %>
-          <% if (currentPage < totalPages) { %>
-          <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
-          <% } %>
-      </nav>        
-      </div>
-    </main>
-    <div class="pop-up" id="add-beneficiary">
-      <div class="close-container">
-        <img src="../icon/close.svg" alt="" class="close_popUp">
-      </div>
-      <h1 class="heading">ADD BENEFICIARY</h1>
-      <main>
-        <form action="/pharmacy-records/add-beneficiary" class="dispense-med" method="POST" enctype="multipart/form-data">
+        <% if (currentPage > 1) { %>
+        <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
+        <% } %>
+        <% if (currentPage < totalPages) { %>
+        <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
+        <% } %>
+      </nav>
+    </div>
+  </main>
+  <div class="pop-up" id="add-beneficiary">
+    <div class="close-container">
+      <img src="../icon/close.svg" alt="" class="close_popUp">
+    </div>
+    <h1 class="heading">ADD BENEFICIARY</h1>
+    <main>
+      <form action="/pharmacy-records/add-beneficiary" class="dispense-med" method="POST" enctype="multipart/form-data">
+        <div>
+          <div class="row">
+            <div class="input-w8-label" id="surubadan">
+              <label>Last Name</label>
+              <input type="text" aria-label="Last Name" name="last_name" required>
+            </div>
+            <div class="input-w8-label">
+              <label>First Name</label>
+              <input type="text" aria-label="First Name" name="first_name" required>
+            </div>
+            <div class="input-w8-label">
+              <label>Middle Name</label>
+              <input type="text" aria-label="Middle Name" name="middle_name" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-w8-label" id="masubad">
+              <label>Gender</label>
+              <input type="text" aria-label="Gender" name="gender" required>
+            </div>
+            <div class="input-w8-label">
+              <label>Birthdate</label>
+              <input type="date" aria-label="Birthdate" name="birthdate" required>
+            </div>
+            <div class="input-w8-label">
+              <label>Processed Date</label>
+              <input type="date" aria-label="Processed Date" class="current-date" name="processed_date" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-w8-label">
+              <label>Phone No.</label>
+              <input type="text" aria-label="Phone No." name="phone" required>
+            </div>
+            <div class="input-w8-label">
+              <label>Occupation</label>
+              <input type="text" aria-label="Occupation" name="occupation" required>
+            </div>
+            <div class="row1">
+              <div class="input-w8-label">
+                <label>Senior</label>
+                <select name="senior_citizen" id="" aria-label="Senior">
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="input-w8-label">
+                <label>PWD</label>
+                <select name="pwd" id="" aria-label="PWD">
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <label>Address</label>
+            <div>
+              <input type="text" placeholder="Street" aria-label="Street" name="street">
+              <input type="text" placeholder="Barangay" aria-label="Barangay" name="barangay">
+              <input type="text" placeholder="City" aria-label="City" name="city">
+              <input type="text" placeholder="Province" aria-label="Province" name="province">
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-w8-label">
+              <label for="">Note</label>
+              <textarea name="note" id="" cols="30" rows="10" aria-label="Note"></textarea>
+            </div>
+            <div class="input-w8-label">
+              <label for="">Select an image</label>
+              <div class="upload-image">
+                <div class="upload-section">
+                  <img src="../icon/upload-img-default.svg" alt="">
+                  <p id="upload-image-text">Upload Image Here</p>
+                </div>
+                <input class="beneficiary-upload-image" type="file" aria-label="Select an image" accept="image/*" name="picture">
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="button-green" id="submit_dispense_button" onclick="popUp_button(this)">SUBMIT</button>
+        <div class="pop-up-confirm" id="reject_dispense">
           <div>
-            <div class="row">
-              <div class="input-w8-label" id="surubadan">
-                <label>Last Name</label>
-                <input type="text" aria-label="Last Name" name="last_name" required>
-              </div>
-              <div class="input-w8-label">
-                <label>First Name</label>
-                <input type="text" aria-label="First Name" name="first_name" required>
-              </div>
-              <div class="input-w8-label">
-                <label>Middle Name</label>
-                <input type="text" aria-label="Middle Name" name="middle_name" required>
-              </div>
+            <div class="reject-heading">
+              <img src="../icon/warning.svg" alt="">
+              <h2>Rejecting a dispense request will automatically delete from the list</h2>
             </div>
-            <div class="row">
-              <div class="input-w8-label" id="masubad">
-                <label>Gender</label>
-                <input type="text" aria-label="Gender" name="gender" required>
-              </div>
-              <div class="input-w8-label">
-                <label>Birthdate</label>
-                <input type="date" aria-label="Birthdate" name="birthdate" required>
-              </div>
-              <div class="input-w8-label">
-                <label>Processed Date</label>
-                <input type="date" aria-label="Processed Date" class="current-date" name="processed_date" required>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-w8-label">
-                <label>Phone No.</label>
-                <input type="text" aria-label="Phone No." name="phone" required>
-              </div>
-              <div class="input-w8-label">
-                <label>Occupation</label>
-                <input type="text" aria-label="Occupation" name="occupation" required>
-              </div>
-              <div class="row1">
-                <div class="input-w8-label">
-                  <label>Senior</label>
-                  <select name="senior_citizen" id="" aria-label="Senior">
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                  </select>
-                </div>
-                <div class="input-w8-label">
-                  <label>PWD</label>
-                  <select name="pwd" id="" aria-label="PWD">
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <label>Address</label>
+            <main>
+              <h2>Are sure you want to reject this dispense request?</h2>
               <div>
-                <input type="text" placeholder="Street" aria-label="Street" name="street">
-                <input type="text" placeholder="Barangay" aria-label="Barangay" name="barangay">
-                <input type="text" placeholder="City" aria-label="City" name="city">
-                <input type="text" placeholder="Province" aria-label="Province" name="province">
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-w8-label">
-                <label for="">Note</label>
-                <textarea name="note" id="" cols="30" rows="10" aria-label="Note"></textarea>
-              </div>
-              <div class="input-w8-label">
-                <label for="">Select an image</label>
-                <div class="upload-image">
-                  <div class="upload-section">
-                    <img src="../icon/upload-img-default.svg" alt="">
-                    <p id="upload-image-text">Upload Image Here</p>
-                  </div>
-                  <input class="beneficiary-upload-image" type="file" aria-label="Select an image" accept="image/*" name="picture">
-                </div>
-              </div>
-            </div>
-          </div>
-          <button type="button" class="button-green" id="submit_dispense_button" onclick="popUp_button(this)">SUBMIT</button>
-          <div class="pop-up-confirm" id="reject_dispense">
-            <div>
-              <div class="reject-heading">
-                <img src="../icon/warning.svg" alt="">
-                <h2>Rejecting a dispense request will automatically delete from the list</h2>
-              </div>
-              <main>
-                <h2>Are sure you want to reject this dispense request?</h2>
-                <div>
-                  <button type="button" class="button-bordered close_confirm">No</button>
-                  <button type="submit" class="button-bordered">Yes</button>
-                </div>
-              </main>
-            </div>
-          </div>
-          <div class="pop-up-confirm" id="submit_dispense">
-            <div>
-              <h2>Do you want to add this beneficiary?</h2>
-              <main>
                 <button type="button" class="button-bordered close_confirm">No</button>
-                <button type="submit" class="button-green">Yes</button>
-              </main>
-            </div>
+                <button type="submit" class="button-bordered">Yes</button>
+              </div>
+            </main>
           </div>
-        </form>
-      </main>
-    </div>
-    <div class="pop-up" id="update-beneficiary">
-      <div class="close-container">
-        <img src="../icon/close.svg" alt="" class="close_popUp">
-      </div>
-      <h1 class="heading">UPDATE BENEFICIARY</h1>
-      <main>
-        <form id="update_beneficiary" action="/pharmacy-records/update" class="dispense-med" method="POST" enctype="multipart/form-data">
+        </div>
+        <div class="pop-up-confirm" id="submit_dispense">
           <div>
-              <div class="row">
-                  <div class="input-w8-label" id="surubadan">
-                      <label>Last Name</label>
-                      <input type="text" aria-label="Last Name" id="last_name" name="last_name" required>
-                  </div>
-                  <div class="input-w8-label">
-                      <label>First Name</label>
-                      <input type="text" aria-label="First Name" id="first_name" name="first_name" required>
-                  </div>
-                  <div class="input-w8-label">
-                      <label>Middle Name</label>
-                      <input type="text" aria-label="Middle Name" id="middle_name" name="middle_name" required>
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="input-w8-label" id="masubad">
-                      <label>Gender</label>
-                      <input type="text" aria-label="Gender" id="gender" name="gender" required>
-                  </div>
-                  <div class="input-w8-label">
-                      <label>Birthdate</label>
-                      <input type="date" aria-label="Birthdate" id="birthdate" name="birthdate" required>
-                  </div>
-                  <div class="input-w8-label">
-                      <label>Processed Date</label>
-                      <input type="date" aria-label="Processed Date" id="processed_date" name="processed_date" required>
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="input-w8-label">
-                      <label>Phone No.</label>
-                      <input type="text" aria-label="Phone No." id="phone" name="phone" required>
-                  </div>
-                  <div class="input-w8-label">
-                      <label>Occupation</label>
-                      <input type="text" aria-label="Occupation" id="occupation" name="occupation" required>
-                  </div>
-                  <div class="row1">
-                      <div class="input-w8-label">
-                          <label>Senior</label>
-                          <select id="senior_citizen" name="senior_citizen" aria-label="Senior" required>
-                              <option value="Yes">Yes</option>
-                              <option value="No">No</option>
-                          </select>
-                      </div>
-                      <div class="input-w8-label">
-                          <label>PWD</label>
-                          <select id="pwd" name="pwd" aria-label="PWD" required>
-                              <option value="Yes">Yes</option>
-                              <option value="No">No</option>
-                          </select>
-                      </div>
-                  </div>
-              </div>
-              <div class="row">
-                  <label>Address</label>
-                  <div>
-                      <input type="text" placeholder="Street" aria-label="Street" id="street" name="street" required>
-                      <input type="text" placeholder="Barangay" aria-label="Barangay" id="barangay" name="barangay" required>
-                      <input type="text" placeholder="City" aria-label="City" id="city" name="city" required>
-                      <input type="text" placeholder="Province" aria-label="Province" id="province" name="province" required>
-                  </div>
-              </div>
-              <div class="row">
-                <div class="input-w8-label">
-                    <label for="">Note</label>
-                    <textarea name="note" id="note" cols="30" rows="10" aria-label="Note"></textarea>
-                </div>
-                <!-------------kuan la in place holder la------------->
-                <input type="hidden" id="existing_picture" name="existing_picture">
-                <div class="input-w8-label">
-                    <label for="">Select an image</label>
-                    <div class="upload-image">
-                        <div class="upload-section">
-                            <img id="pictureDisplay" src="../icon/upload-img-default.svg" alt="no image found">
-                            <p id="upload-image-text">Upload Image Here</p>
-                        </div>
-                        <input class="beneficiary-upload-image" type="file" id="picture" name="picture" accept="image/*" aria-label="Select an image">
-                    </div>
-                </div>
-            </div>            
+            <h2>Do you want to add this beneficiary?</h2>
+            <main>
+              <button type="button" class="button-bordered close_confirm">No</button>
+              <button type="submit" class="button-green">Yes</button>
+            </main>
           </div>
-          <input type="number" id="beneficiary_id" name="beneficiary_id" style="display: none;">
-          <button type="submit" class="button-green" id="submit_dispense_button">UPDATE</button>
+        </div>
       </form>
-      
-      </main>
+    </main>
+  </div>
+  <div class="pop-up" id="update-beneficiary">
+    <div class="close-container">
+      <img src="../icon/close.svg" alt="" class="close_popUp">
     </div>
-    <div class="pop-up-confirm" id="delete-beneficiary">
-      <div>
-        <div class="reject-heading">
-          <img src="../icon/warning.svg" alt="">
-          <h2>Deleting a Beneficiary will automatically delete from the list</h2>
-        </div>
-        <main> 
-          <h2>Are sure you want to delete this Beneficiary?</h2>
-          <div>
-            <button type="button" id="cancel-delete" class="button-bordered close_popUp1">No</button>
-            <button type="button" id="confirm-delete" class="button-bordered" style="color: red;">Yes</button>
-          </div>
-        </main>
-      </div>
-    </div>
-    <div class="pop-up" id="id">
-      <div class="close-container">
-        <img src="../icon/close.svg" alt="" class="close_popUp">
-      </div>
-      <h1 class="heading">MULTI-PURPOSE ID</h1>
-      <main class="id-container">
-        <div id="id-container">
-          <div class="all">
-            <div class="rec11">
-              <img class="rec1" src="../img/id-img/rec1.png" />
+    <h1 class="heading">UPDATE BENEFICIARY</h1>
+    <main>
+      <form id="update_beneficiary" action="/pharmacy-records/update" class="dispense-med" method="POST" enctype="multipart/form-data">
+        <div>
+          <div class="row">
+            <div class="input-w8-label" id="surubadan">
+              <label>Last Name</label>
+              <input type="text" aria-label="Last Name" id="last_name" name="last_name" required>
             </div>
-            <div class="three">
-              <div class="prof">
-                <img class="profile" id="beneficiary-picture" src="../img/local/jr.png" />
+            <div class="input-w8-label">
+              <label>First Name</label>
+              <input type="text" aria-label="First Name" id="first_name" name="first_name" required>
+            </div>
+            <div class="input-w8-label">
+              <label>Middle Name</label>
+              <input type="text" aria-label="Middle Name" id="middle_name" name="middle_name" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-w8-label" id="masubad">
+              <label>Gender</label>
+              <input type="text" aria-label="Gender" id="gender" name="gender" required>
+            </div>
+            <div class="input-w8-label">
+              <label>Birthdate</label>
+              <input type="date" aria-label="Birthdate" id="birthdate" name="birthdate" required>
+            </div>
+            <div class="input-w8-label">
+              <label>Processed Date</label>
+              <input type="date" aria-label="Processed Date" id="processed_date" name="processed_date" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-w8-label">
+              <label>Phone No.</label>
+              <input type="text" aria-label="Phone No." id="phone" name="phone" required>
+            </div>
+            <div class="input-w8-label">
+              <label>Occupation</label>
+              <input type="text" aria-label="Occupation" id="occupation" name="occupation" required>
+            </div>
+            <div class="row1">
+              <div class="input-w8-label">
+                <label>Senior</label>
+                <select id="senior_citizen" name="senior_citizen" aria-label="Senior" required>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
               </div>
-      
-              <div class="info">
-                <p class="name" id="beneficiary-name">JOHN REY B. PAGASPAS</p>
-                <p class="status" id="beneficiary-status">Student</p>
-                <div class="rectangle"></div>
-      
-                <div class="i1-t">
-                  <img class="icon1" src="../img/id-img/icon1.png" />
-                  <p class="address" id="beneficiary-address">Maypangdan Borongan Eastern Samar</p>
-                </div>
-  
-                <div class="i3-t">
-                  <img class="icon3" src="../img/id-img/icon3.png" />
-                  <p class="phoneno." id="beneficiary-phone">09970752488</p>
-                </div>
-              </div>
-      
-              <div class="qrr" id="qrcode">
-              </div>
-      
-              <div class="recd11">
-                <img class="recd1" src="../img/id-img/recd1.png" />
-              </div>
-      
-              <div class="recd22">
-                <img class="recd2" src="../img/id-img/recd2.png" />
-              </div>
-      
-              <div class="recd33">
-                <img class="recd3" src="../img/id-img/recd3.png" />
-              </div>
-      
-              <div class="recd44">
-                <img class="recd4" src="../img/id-img/recd4.png" />
+              <div class="input-w8-label">
+                <label>PWD</label>
+                <select id="pwd" name="pwd" aria-label="PWD" required>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
               </div>
             </div>
           </div>
+          <div class="row">
+            <label>Address</label>
+            <div>
+              <input type="text" placeholder="Street" aria-label="Street" id="street" name="street" required>
+              <input type="text" placeholder="Barangay" aria-label="Barangay" id="barangay" name="barangay" required>
+              <input type="text" placeholder="City" aria-label="City" id="city" name="city" required>
+              <input type="text" placeholder="Province" aria-label="Province" id="province" name="province" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-w8-label">
+              <label for="">Note</label>
+              <textarea name="note" id="note" cols="30" rows="10" aria-label="Note"></textarea>
+            </div>
+            <!-------------kuan la in place holder la------------->
+            <input type="hidden" id="existing_picture" name="existing_picture">
+            <div class="input-w8-label">
+              <label for="">Select an image</label>
+              <div class="upload-image">
+                <div class="upload-section">
+                  <img id="pictureDisplay" src="../icon/upload-img-default.svg" alt="no image found">
+                  <p id="upload-image-text">Upload Image Here</p>
+                </div>
+                <input class="beneficiary-upload-image" type="file" id="picture" name="picture" accept="image/*" aria-label="Select an image">
+              </div>
+            </div>
+          </div>
         </div>
-        <button class="button-green" onclick="printContainer('id-container')">PRINT</button>
+        <input type="number" id="beneficiary_id" name="beneficiary_id" style="display: none;">
+        <button type="submit" class="button-green" id="submit_dispense_button">UPDATE</button>
+      </form>
+
+    </main>
+  </div>
+  <div class="pop-up-confirm" id="delete-beneficiary">
+    <div>
+      <div class="reject-heading">
+        <img src="../icon/warning.svg" alt="">
+        <h2>Deleting a Beneficiary will automatically delete from the list</h2>
+      </div>
+      <main>
+        <h2>Are sure you want to delete this Beneficiary?</h2>
+        <div>
+          <button type="button" id="cancel-delete" class="button-bordered close_popUp1">No</button>
+          <button type="button" id="confirm-delete" class="button-bordered" style="color: red;">Yes</button>
+        </div>
       </main>
     </div>
-    <script src="../../js/local/beneficiary/beneficiary-api.js"></script>
-    <script src="../../js/local/beneficiary/beneficiary-local.js"></script>
-    <script src="../../js/global/client-side-functions.js"></script>
-    <script src="../../js/global/pop-up.js"></script>
-  </body>
+  </div>
+  <div class="pop-up" id="id">
+    <div class="close-container">
+      <img src="../icon/close.svg" alt="" class="close_popUp">
+    </div>
+    <h1 class="heading">MULTI-PURPOSE ID</h1>
+    <main class="id-container">
+      <div id="id-container">
+        <div class="all">
+          <div class="rec11">
+            <img class="rec1" src="../img/id-img/rec1.png" />
+          </div>
+          <div class="three">
+            <div class="prof">
+              <img class="profile" id="beneficiary-picture" src="../img/local/jr.png" />
+            </div>
+
+            <div class="info">
+              <p class="name" id="beneficiary-name">JOHN REY B. PAGASPAS</p>
+              <p class="status" id="beneficiary-status">Student</p>
+              <div class="rectangle"></div>
+
+              <div class="i1-t">
+                <img class="icon1" src="../img/id-img/icon1.png" />
+                <p class="address" id="beneficiary-address">Maypangdan Borongan Eastern Samar</p>
+              </div>
+
+              <div class="i3-t">
+                <img class="icon3" src="../img/id-img/icon3.png" />
+                <p class="phoneno." id="beneficiary-phone">09970752488</p>
+              </div>
+            </div>
+
+            <div class="qrr" id="qrcode">
+            </div>
+
+            <div class="recd11">
+              <img class="recd1" src="../img/id-img/recd1.png" />
+            </div>
+
+            <div class="recd22">
+              <img class="recd2" src="../img/id-img/recd2.png" />
+            </div>
+
+            <div class="recd33">
+              <img class="recd3" src="../img/id-img/recd3.png" />
+            </div>
+
+            <div class="recd44">
+              <img class="recd4" src="../img/id-img/recd4.png" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="button-green" onclick="printContainer('id-container')">PRINT</button>
+    </main>
+  </div>
+  <script src="../../js/local/beneficiary/beneficiary-api.js"></script>
+  <script src="../../js/local/beneficiary/beneficiary-local.js"></script>
+  <script src="../../js/global/client-side-functions.js"></script>
+  <script src="../../js/global/pop-up.js"></script>
+</body>
+
 </html>

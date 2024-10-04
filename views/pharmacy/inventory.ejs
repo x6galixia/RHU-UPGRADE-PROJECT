@@ -1,232 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="shortcut icon" type="image/png" href=""/>
-    <title>PHARMACY|INVENTORY</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/global/general.css" />
-    <link rel="stylesheet" href="../css/local/pharmacy-inventory.css" />
-  </head>
-  <body>
-    <%- include("../includes/header.ejs")  %>
-    <%- include("../includes/pharmacy-sub-head.ejs")  %>
-    <main>
-      <div class="buttons">
-        <div class="search">
-          <input type="text" id="searchInput" placeholder="Search..." />
-          <img src="../icon/search.svg" alt="" />
-        </div>
-        <div class="add-transfer">
-          <button id="restock" onclick="popUp_button(this)">RESTOCK</button>
-          <button id="transfer" onclick="popUp_button(this)">TRANSFER</button>
-          <button id="add" onclick="popUp_button(this)">ADD MEDICINE</button>
-        </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="shortcut icon" type="image/png" href="" />
+  <title>PHARMACY | INVENTORY</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/global/general.css" />
+  <link rel="stylesheet" href="../css/local/pharmacy-inventory.css" />
+</head>
+
+<body>
+  <%- include("../includes/header.ejs")  %>
+  <%- include("../includes/pharmacy-sub-head.ejs")  %>
+  <main>
+    <div class="buttons">
+      <div class="search">
+        <input type="text" id="searchInput" placeholder="Search..." />
+        <img src="../icon/search.svg" alt="" />
       </div>
-      <div class="table-container" id="inventoryTable">
-        <div id="loadingSpinner" style="display:none;">Loading...</div>
-        <table>
-          <thead>
-            <tr>
-              <th>PRODUCT ID</th>
-              <th>PRODUCT CODE</th>
-              <th>PRODUCT NAME</th>
-              <th>BRAND NAME</th>
-              <th>SUPPLIER</th>
-              <th>DOSAGE FORM</th>
-              <th>DOSAGE</th>
-              <th>REORDER LEVEL</th>
-              <th>BATCH NUMBER</th>
-              <th>QUANTITY</th>
-              <th>EXPIRATION DATE</th>
-            </tr>
-          </thead>
-          <tbody id="inventoryTableBody"></tbody>
-        </table>
-        <nav aria-label="Page navigation" id="paginationNav">
-          <% if (currentPage > 1) { %>
-          <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
-          <% } %>
-          <% if (currentPage < totalPages) { %>
-          <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
-          <% } %>
+      <div class="add-transfer">
+        <button id="restock" onclick="popUp_button(this)">RESTOCK</button>
+        <button id="transfer" onclick="popUp_button(this)">TRANSFER</button>
+        <button id="add" onclick="popUp_button(this)">ADD MEDICINE</button>
+      </div>
+    </div>
+    <div class="table-container" id="inventoryTable">
+      <div id="loadingSpinner" style="display:none;">Loading...</div>
+      <table>
+        <thead>
+          <tr>
+            <th>PRODUCT ID</th>
+            <th>PRODUCT CODE</th>
+            <th>PRODUCT NAME</th>
+            <th>BRAND NAME</th>
+            <th>SUPPLIER</th>
+            <th>DOSAGE FORM</th>
+            <th>DOSAGE</th>
+            <th>REORDER LEVEL</th>
+            <th>BATCH NUMBER</th>
+            <th>QUANTITY</th>
+            <th>EXPIRATION DATE</th>
+          </tr>
+        </thead>
+        <tbody id="inventoryTableBody"></tbody>
+      </table>
+      <nav aria-label="Page navigation" id="paginationNav">
+        <% if (currentPage > 1) { %>
+        <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
+        <% } %>
+        <% if (currentPage < totalPages) { %>
+        <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
+        <% } %>
       </nav>
-      </div>
-      <div class="download-CSV">
-        <button id="downloadbtn">Download CSV</button>
-      </div>
+    </div>
+    <div class="download-CSV">
+      <button id="downloadbtn">Download CSV</button>
+    </div>
+  </main>
+  <div class="pop-up" id="transfer-med">
+    <div class="close-container">
+      <img src="../icon/close.svg" alt="" class="close_popUp">
+    </div>
+    <h1 class="heading">TRANSFER MEDICINE</h1>
+    <main>
+      <form action="/pharmacy-inventory/transfer-medicine" method="POST" class="restock-transfer">
+        <div>
+          <label for="rhu">Select an RHU</label>
+          <select name="rhu_id" id="rhu">
+            <option value="1">Tabunan</option>
+            <option value="2">Maypangdan</option>
+            <option value="3">Songco</option>
+          </select>
+        </div>
+        <div>
+          <label for="product_id">Product ID</label>
+          <input type="text" placeholder="PRD0001" id="product_id" name="product_id">
+        </div>
+        <div>
+          <label for="quantity">Quantity</label>
+          <input type="number" id="quantity" name="product_quantity">
+        </div>
+        <button type="button" class="button-green" id="transfer_form" onclick="popUp_button(this)">SUBMIT</button>
+        <div class="pop-up-confirm" id="confirm-transfer">
+          <div>
+            <h2>Do you want to transfer medicine?</h2>
+            <main>
+              <button type="button" class="button-bordered close_confirm">No</button>
+              <button type="submit" class="button-green">Yes</button>
+            </main>
+          </div>
+        </div>
+      </form>
     </main>
-    <div class="pop-up" id="transfer-med">
-      <div class="close-container">
-        <img src="../icon/close.svg" alt="" class="close_popUp">
-      </div>
-      <h1 class="heading">TRANSFER MEDICINE</h1>
-      <main>
-        <form action="/pharmacy-inventory/transfer-medicine" method="POST" class="restock-transfer" >
-          <div>
-            <label for="rhu">Select an RHU</label>
-            <select name="rhu_id" id="rhu">
-              <option value="1">Tabunan</option>
-              <option value="2">Maypangdan</option>
-              <option value="3">Songco</option>
-            </select>
-          </div>
-          <div>
-            <label for="product_id">Product ID</label>
-            <input type="text" placeholder="PRD0001" id="product_id" name="product_id">
-          </div>
-          <div>
-            <label for="quantity">Quantity</label>
-            <input type="number" id="quantity" name="product_quantity">
-          </div>
-          <button type="button" class="button-green" id="transfer_form" onclick="popUp_button(this)">SUBMIT</button>
-          <div class="pop-up-confirm" id="confirm-transfer">
-            <div>
-              <h2>Do you want to transfer medicine?</h2>
-              <main>
-                <button type="button" class="button-bordered close_confirm">No</button>
-                <button type="submit" class="button-green">Yes</button>
-              </main>
-            </div>
-          </div>
-        </form>
-      </main>
+  </div>
+  <div class="pop-up" id="restock-med">
+    <div class="close-container">
+      <img src="../icon/close.svg" alt="" class="close_popUp">
     </div>
-    <div class="pop-up" id="restock-med">
-      <div class="close-container">
-        <img src="../icon/close.svg" alt=""class="close_popUp" >
-      </div>
-      <h1 class="heading">RESTOCK MEDICINE</h1>
-      <main>
-        <form action="/pharmacy-inventory/restock-medicine" class="restock" method="POST">
+    <h1 class="heading">RESTOCK MEDICINE</h1>
+    <main>
+      <form action="/pharmacy-inventory/restock-medicine" class="restock" method="POST">
+        <div>
           <div>
-            <div>
-              <div class="input-w8-label">
-                <label for="batch_number">Batch no</label>
-                <input type="text" placeholder="BATCH0001" id="batch_number" name="batch_number">
-              </div>
-              <div class="input-w8-label">
-                <label for="product_id">Product ID</label>
-                <input type="text" placeholder="PRD0001" id="product_id" name="product_id">
-              </div>
-              <div class="input-w8-label">
-                <label for="product_code">Product Code</label>
-                <input type="text" id="product_code" name="product_code">
-              </div>
+            <div class="input-w8-label">
+              <label for="batch_number">Batch no</label>
+              <input type="text" placeholder="BATCH0001" id="batch_number" name="batch_number">
             </div>
-            <div>
-              <div class="input-w8-label">
-                <label>Date Added</label>
-                <input type="date" class="current-date" name="date_added">
-              </div>
-              <div class="input-w8-label">
-                <label>Expiration Date</label>
-                <input type="date" name="expiration">
-              </div>
-              <div class="input-w8-label">
-                <label for="quantity">Quantity</label>
-                <input type="number" id="quantity" name="product_quantity">
-              </div>
+            <div class="input-w8-label">
+              <label for="product_id">Product ID</label>
+              <input type="text" placeholder="PRD0001" id="product_id" name="product_id">
+            </div>
+            <div class="input-w8-label">
+              <label for="product_code">Product Code</label>
+              <input type="text" id="product_code" name="product_code">
             </div>
           </div>
-          <button type="button" class="button-green" id="restock_form" onclick="popUp_button(this)">SUBMIT</button>
-          <div class="pop-up-confirm" id="confirm-restock">
-            <div>
-              <h2>Do you want to restock medicine?</h2>
-              <main>
-                <button type="button" class="button-bordered close_confirm">No</button>
-                <button type="submit" class="button-green">Yes</button>
-              </main>
-            </div>
-          </div>
-        </form>
-      </main>
-    </div>
-    <div class="pop-up" id="add-med">
-      <div class="close-container">
-        <img src="../icon/close.svg" alt="" class="close_popUp">
-      </div>
-      <h1 class="heading">ADD MEDICINE</h1>
-      <main>
-        <form action="/pharmacy-inventory/add-medicine" class="add-med-form" method="POST">
           <div>
-            <div class="col">
-              <div class="input-w8-label">
-                <label>Product ID</label>
-                <input type="text" name="product_id">
-              </div>
-              <div class="input-w8-label">
-                <label>Product Code</label>
-                <input type="text" name="product_code">
-              </div>
-              <div class="input-w8-label">
-                <label>Product Name</label>
-                <input type="text" name="product_name">
-              </div>
-              <div class="input-w8-label">
-                <label>Brand Name</label>
-                <input type="text" name="brand_name">
-              </div>
-              <div class="input-w8-label">
-                <label>Supplier</label>
-                <input type="text" name="supplier">
-              </div>
-              <div class="input-w8-label">
-                <label>Added Quantity</label>
-                <input type="number" name="product_quantity">
-              </div>
+            <div class="input-w8-label">
+              <label>Date Added</label>
+              <input type="date" class="current-date" name="date_added">
             </div>
-            <div class="col">
-              <div class="input-w8-label">
-                <label>Dosage Form</label>
-                <input type="text" name="dosage_form">
-              </div>
-              <div class="input-w8-label">
-                <label>Dosage</label>
-                <input type="text" name="dosage">
-              </div>
-              <div class="input-w8-label">
-                <label>Reorder Level</label>
-                <input type="text" name="reorder_level">
-              </div>
-              <div class="input-w8-label">
-                <label>Batch Number</label>
-                <input type="text" name="batch_number">
-              </div>
-              <div class="input-w8-label">
-                <label>Expiration Date</label>
-                <input type="date" name="expiration">
-              </div>
-              <div class="input-w8-label">
-                <label>Date Added</label>
-                <input type="date" name="date_added" class="current-date" readonly>
-              </div>
+            <div class="input-w8-label">
+              <label>Expiration Date</label>
+              <input type="date" name="expiration">
+            </div>
+            <div class="input-w8-label">
+              <label for="quantity">Quantity</label>
+              <input type="number" id="quantity" name="product_quantity">
             </div>
           </div>
-          <button type="button" class="button-green" id="add_med_form" onclick="popUp_button(this)">SUBMIT</button>
-          <div class="pop-up-confirm" id="confirm-add-med">
-            <div>
-              <h2>Confirm adding medicine?</h2>
-              <main>
-                <button type="button" class="button-bordered close_confirm">Cancel</button>
-                <button type="submit" class="button-green">Yes</button>
-              </main>
-            </div>
+        </div>
+        <button type="button" class="button-green" id="restock_form" onclick="popUp_button(this)">SUBMIT</button>
+        <div class="pop-up-confirm" id="confirm-restock">
+          <div>
+            <h2>Do you want to restock medicine?</h2>
+            <main>
+              <button type="button" class="button-bordered close_confirm">No</button>
+              <button type="submit" class="button-green">Yes</button>
+            </main>
           </div>
-        </form>
-      </main>
+        </div>
+      </form>
+    </main>
+  </div>
+  <div class="pop-up" id="add-med">
+    <div class="close-container">
+      <img src="../icon/close.svg" alt="" class="close_popUp">
     </div>
-    <script src="../../js/local/inventory/inventory-api.js"></script>
-    <script src="../../js/local/download-csv.js"></script>
-    <script src="../../js/global/pop-up.js"></script>
-    <script src="../../js/global/client-side-functions.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      var nav1 = document.querySelector(".nav1");
-      if (nav1) {
-        nav1.classList.toggle("selected");
-      }
-    });
-  </script>
-  </body>
+    <h1 class="heading">ADD MEDICINE</h1>
+    <main>
+      <form action="/pharmacy-inventory/add-medicine" class="add-med-form" method="POST">
+        <div>
+          <div class="col">
+            <div class="input-w8-label">
+              <label>Product ID</label>
+              <input type="text" name="product_id">
+            </div>
+            <div class="input-w8-label">
+              <label>Product Code</label>
+              <input type="text" name="product_code">
+            </div>
+            <div class="input-w8-label">
+              <label>Product Name</label>
+              <input type="text" name="product_name">
+            </div>
+            <div class="input-w8-label">
+              <label>Brand Name</label>
+              <input type="text" name="brand_name">
+            </div>
+            <div class="input-w8-label">
+              <label>Supplier</label>
+              <input type="text" name="supplier">
+            </div>
+            <div class="input-w8-label">
+              <label>Added Quantity</label>
+              <input type="number" name="product_quantity">
+            </div>
+          </div>
+          <div class="col">
+            <div class="input-w8-label">
+              <label>Dosage Form</label>
+              <input type="text" name="dosage_form">
+            </div>
+            <div class="input-w8-label">
+              <label>Dosage</label>
+              <input type="text" name="dosage">
+            </div>
+            <div class="input-w8-label">
+              <label>Reorder Level</label>
+              <input type="text" name="reorder_level">
+            </div>
+            <div class="input-w8-label">
+              <label>Batch Number</label>
+              <input type="text" name="batch_number">
+            </div>
+            <div class="input-w8-label">
+              <label>Expiration Date</label>
+              <input type="date" name="expiration">
+            </div>
+            <div class="input-w8-label">
+              <label>Date Added</label>
+              <input type="date" name="date_added" class="current-date" readonly>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="button-green" id="add_med_form" onclick="popUp_button(this)">SUBMIT</button>
+        <div class="pop-up-confirm" id="confirm-add-med">
+          <div>
+            <h2>Confirm adding medicine?</h2>
+            <main>
+              <button type="button" class="button-bordered close_confirm">Cancel</button>
+              <button type="submit" class="button-green">Yes</button>
+            </main>
+          </div>
+        </div>
+      </form>
+    </main>
+  </div>
+  <script src="../../js/local/inventory/inventory-api.js"></script>
+  <script src="../../js/local/download-csv.js"></script>
+  <script src="../../js/global/pop-up.js"></script>
+  <script src="../../js/global/client-side-functions.js"></script>
+</body>
+
 </html>

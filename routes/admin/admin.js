@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const rhuPool = require("../../models/rhudb");
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
 
@@ -15,7 +16,9 @@ const userSchema = Joi.object({
     user_type: Joi.string().required()
 });
 
-const rhuPool = require("../../models/rhudb");
+router.get("/sign-in", (req, res) => {
+    res.render("admin/sign-in");
+})
 
 router.get("/admin-dashboard", (req, res) => {
     res.render("admin/admin-dashboard");
@@ -45,9 +48,5 @@ router.post("/admin/create-user/submit", async (req, res) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 });
-
-router.get("/sign-in", (req, res) => {
-    res.render("admin/sign-in");
-})
 
 module.exports = router;

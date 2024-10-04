@@ -1,561 +1,562 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/global/general.css" />
-    <link rel="stylesheet" href="../css/local/doctor-dashboard.css"/>
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/global/general.css" />
+  <link rel="stylesheet" href="../css/local/doctor-dashboard.css" />
+  <title>Document</title>
 </head>
+
 <body>
-    <%- include("../includes/header.ejs") %>
-    <h1 class="headings">PATIENT RECORDS</h1>
-    <main>
-        <div class="buttons">
-            <div class="search">
-                <input type="text" id="searchInput" placeholder="Search..." aria-label="Search" />
-                <img src="../icon/search.svg" alt="Search Icon" />
-            </div>
-        </div>
-        <div class="table-container">
-            <div id="loadingSpinner" style="display:none;">Loading...</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>RHU</th>
-                        <th>Name</th>
-                        <th>Age</th>
-                        <th>Gender</th>
-                        <th>Address</th>
-                        <th>Medical Records</th>
-                        <th>More information</th>
-                    </tr>
-                </thead>
-                <tbody id="patientsTableBody"></tbody>
-            </table>
-            <nav aria-label="Page navigation" id="paginationNav">
-              <% if (currentPage > 1) { %>
-              <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
-              <% } %>
-              <% if (currentPage < totalPages) { %>
-              <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
-              <% } %>
-          </nav>     
-        </div>
+  <%- include("../includes/header.ejs") %>
+  <h1 class="headings">PATIENT RECORDS</h1>
+  <main>
+    <div class="buttons">
+      <div class="search">
+        <input type="text" id="searchInput" placeholder="Search..." aria-label="Search" />
+        <img src="../icon/search.svg" alt="Search Icon" />
+      </div>
+    </div>
+    <div class="table-container">
+      <div id="loadingSpinner" style="display:none;">Loading...</div>
+      <table>
+        <thead>
+          <tr>
+            <th>RHU</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Address</th>
+            <th>Medical Records</th>
+            <th>More information</th>
+          </tr>
+        </thead>
+        <tbody id="patientsTableBody"></tbody>
+      </table>
+      <nav aria-label="Page navigation" id="paginationNav">
+        <% if (currentPage > 1) { %>
+        <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
+        <% } %>
+        <% if (currentPage < totalPages) { %>
+        <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
+        <% } %>
+      </nav>
+    </div>
 
-        <!-- pop up for vital sign -->
-        <div class="pop-up" id="vital">
-          <div class="head row just-bet">
-            <div class="row gap">
-              <img src="../icon/broken-hart.svg"/>
-              <h2>Vitals sign</h2>
+    <!-- pop up for vital sign -->
+    <div class="pop-up" id="vital">
+      <div class="head row just-bet">
+        <div class="row gap">
+          <img src="../icon/broken-hart.svg" />
+          <h2>Vitals sign</h2>
+        </div>
+        <div class="exit">
+          <img src="../icon/close.svg" alt="">
+        </div>
+      </div>
+      <div class="info col gap">
+        <div class="row gap">
+          <div class="row grow">
+            <label for="">Name:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Date:</label>
+            <input type="date" class="under-line-input">
+          </div>
+        </div>
+        <div class="row gap">
+          <div class="row">
+            <label for="">Age:</label>
+            <input type="number" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Sex:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Birth:</label>
+            <input type="date" class="under-line-input">
+          </div>
+        </div>
+        <div class="row gap">
+          <div class="row">
+            <label for="">Occupation:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row grow">
+            <label for="">Parent/s:</label>
+            <input type="text" class="under-line-input">
+          </div>
+        </div>
+        <hr>
+        <div class="row lgap">
+          <div class="col gap">
+            <div class="col">
+              <label for="">BP Systolic:</label>
+              <input type="text">
             </div>
-            <div class="exit">
-              <img src="../icon/close.svg" alt="">
+            <div class="col">
+              <label for="">Height:</label>
+              <input type="text">
+            </div>
+            <div class="col">
+              <label for="">Temperature:</label>
+              <input type="text">
             </div>
           </div>
-          <div class="info col gap">
-            <div class="row gap">
-              <div class="row grow">
-                <label for="">Name:</label>
-                <input type="text" class="under-line-input">
-              </div>
-              <div class="row">
-                <label for="">Date:</label>
-                <input type="date" class="under-line-input">
-              </div>
+          <div class="col gap">
+            <div class="col">
+              <label for="">BP Diastolic:</label>
+              <input type="text">
             </div>
-            <div class="row gap">
-              <div class="row">
-                <label for="">Age:</label>
-                <input type="number" class="under-line-input">
-              </div>
-              <div class="row">
-                <label for="">Sex:</label>
-                <input type="text" class="under-line-input">
-              </div>
-              <div class="row">
-                <label for="">Birth:</label>
-                <input type="date" class="under-line-input">
-              </div>
+            <div class="col">
+              <label for="">Weight:</label>
+              <input type="text">
             </div>
-            <div class="row gap">
-              <div class="row">
-                <label for="">Occupation:</label>
-                <input type="text" class="under-line-input">
-              </div>
-              <div class="row grow">
-                <label for="">Parent/s:</label>
-                <input type="text" class="under-line-input">
-              </div>
+            <div class="col">
+              <label for="">Respiratory rate:</label>
+              <input type="text">
             </div>
-            <hr>
-            <div class="row lgap">
-              <div class="col gap">
-                <div class="col">
-                  <label for="">BP Systolic:</label>
-                  <input type="text">
-                </div>
-                <div class="col">
-                  <label for="">Height:</label>
-                  <input type="text">
-                </div>
-                <div class="col">
-                  <label for="">Temperature:</label>
-                  <input type="text">
-                </div>
-              </div>
-              <div class="col gap">
-                <div class="col">
-                  <label for="">BP Diastolic:</label>
-                  <input type="text">
-                </div>
-                <div class="col">
-                  <label for="">Weight:</label>
-                  <input type="text">
-                </div>
-                <div class="col">
-                  <label for="">Respiratory rate:</label>
-                  <input type="text">
-                </div>
-              </div>
-              <div class="col gap">
-                <div class="col">
-                  <label for="">Heart rate:</label>
-                  <input type="text">
-                </div>
-                <div class="col">
-                  <label for="">BMI:</label>
-                  <input type="text">
-                </div>
-                <div class="col">
-                  <label for="">Blood type:</label>
-                  <input type="text">
-                </div>
-              </div>
+          </div>
+          <div class="col gap">
+            <div class="col">
+              <label for="">Heart rate:</label>
+              <input type="text">
             </div>
-            <div class="col" style="height: 20vh;">
-              <label for="">Nurse note:</label>
-              <textarea name="" id="" class="grow"></textarea>
+            <div class="col">
+              <label for="">BMI:</label>
+              <input type="text">
+            </div>
+            <div class="col">
+              <label for="">Blood type:</label>
+              <input type="text">
             </div>
           </div>
         </div>
-
-        <!-- pop up for request lab -->
-        <div class="pop-up" id="reqLab">
-          <div class="head row just-bet">
-            <div class="row gap">
-              <img src="../icon/bottle.svg"/>
-              <h2>Request laboratory</h2>
-            </div>
-            <div>
-              <img src="../icon/close.svg" alt="" class="exit">
-            </div>
-          </div>
-          <div class="info col gap">
-            <div class="row gap">
-              <div class="row grow">
-                <label for="">Name:</label>
-                <input type="text" class="under-line-input">
-              </div>
-              <div class="row">
-                <label for="">Date:</label>
-                <input type="date" class="under-line-input">
-              </div>
-            </div>
-            <div class="row gap">
-              <div class="row">
-                <label for="">Age:</label>
-                <input type="number" class="under-line-input">
-              </div>
-              <div class="row">
-                <label for="">Sex:</label>
-                <input type="text" class="under-line-input">
-              </div>
-              <div class="row">
-                <label for="">Birth:</label>
-                <input type="date" class="under-line-input">
-              </div>
-            </div>
-            <div class="row gap">
-              <div class="row">
-                <label for="">Occupation:</label>
-                <input type="text" class="under-line-input">
-              </div>
-              <div class="row grow">
-                <label for="">Parent/s:</label>
-                <input type="text" class="under-line-input">
-              </div>
-            </div>
-            <hr>
-            <div class="row just-bet gap">
-              <div class="col grow">
-                <label for="">Categories</label>
-                <select name="" id="">
-                  <option value="" selected disabled>Select category</option>
-                </select>
-              </div>
-              <div class="col grow">
-                <label for="">Services</label>
-                <select name="" id="">
-                  <option value="" selected disabled>Select services</option>
-                </select>
-              </div>
-            </div>
-            <div>
-              <button>Add more</button>
-            </div>
-            <div class="btn-l">
-              <button>Print</button>
-              <button>Submit</button>
-            </div>
-          </div>
+        <div class="col" style="height: 20vh;">
+          <label for="">Nurse note:</label>
+          <textarea name="" id="" class="grow"></textarea>
         </div>
+      </div>
+    </div>
 
-        <!-- pop up for diagnosis-->
-         <div class="pop-up" id="diagnosis">
-          <div class="head row just-bet">
-            <div class="row gap">
-              <img src="../icon/micro-scope.svg"/>
-              <h2>Request laboratory</h2>
-            </div>
-            <div>
-              <img src="../icon/close.svg" alt="" class="exit">
-            </div>
-          </div>
-
-          <div class="info col gap">
-             <div class="row gap">
-              <div class="row grow">
-                <label for="">Name:</label>
-                <input type="text" class="under-line-input">
-              </div>
-              <div class="row">
-                <label for="">Date:</label>
-                <input type="date" class="under-line-input">
-              </div>
-            </div>
-            <div class="row gap">
-              <div class="row">
-                <label for="">Age:</label>
-                <input type="number" class="under-line-input">
-              </div>
-              <div class="row">
-                <label for="">Sex:</label>
-                <input type="text" class="under-line-input">
-              </div>
-              <div class="row">
-                <label for="">Birth:</label>
-                <input type="date" class="under-line-input">
-              </div>
-            </div>
-            <div class="row gap">
-              <div class="row">
-                <label for="">Occupation:</label>
-                <input type="text" class="under-line-input">
-              </div>
-              <div class="row grow">
-                <label for="">Parent/s:</label>
-                <input type="text" class="under-line-input">
-              </div>
-            </div>
-            <hr>
-            <div class="col" style="height: 20vh;">
-              <label for="">Diagnoses</label>
-              <textarea name="" id="" class="grow"></textarea>
-            </div>
-            <div class="left-btn">
-              <button>Submit</button>
-            </div>
-          </div>
-         </div>
-
-         <!-- pop up for findings -->
-         <div class="pop-up" id="findings">
-          <div class="head row just-bet">
-            <div class="row gap">
-              <img src="../icon/magnifying-glass.svg"/>
-              <h2>Findings</h2>
-            </div>
-            <div>
-              <img src="../icon/close.svg" alt="" class="exit">
-            </div>
-          </div>
-
-          <div class="info col gap">
-            <div class="row gap">
-             <div class="row grow">
-               <label for="">Name:</label>
-               <input type="text" class="under-line-input">
-             </div>
-             <div class="row">
-               <label for="">Date:</label>
-               <input type="date" class="under-line-input">
-             </div>
-           </div>
-           <div class="row gap">
-             <div class="row">
-               <label for="">Age:</label>
-               <input type="number" class="under-line-input">
-             </div>
-             <div class="row">
-               <label for="">Sex:</label>
-               <input type="text" class="under-line-input">
-             </div>
-             <div class="row">
-               <label for="">Birth:</label>
-               <input type="date" class="under-line-input">
-             </div>
-           </div>
-           <div class="row gap">
-             <div class="row">
-               <label for="">Occupation:</label>
-               <input type="text" class="under-line-input">
-             </div>
-             <div class="row grow">
-               <label for="">Parent/s:</label>
-               <input type="text" class="under-line-input">
-             </div>
-           </div>
-           <hr>
-           <div class="col" style="height: 20vh;">
-             <label for="">Findings</label>
-             <textarea name="" id="" class="grow"></textarea>
-           </div>
-           <div class="left-btn">
-             <button>Submit</button>
-           </div>
-         </div>
-
-         </div>
-
-         <!-- pop up for lab result -->
-         <div class="pop-up" id="labResult">
-          <div class="head row just-bet">
-            <div class="row gap">
-              <img src="../icon/bottle.svg"/>
-              <h2>Laboratory result</h2>
-            </div>
-            <div>
-              <img src="../icon/close.svg" alt="" class="exit">
-            </div>
-          </div>
-
-          <div class="info col gap">
-            <div class="row gap">
-             <div class="row grow">
-               <label for="">Name:</label>
-               <input type="text" class="under-line-input">
-             </div>
-             <div class="row">
-               <label for="">Date:</label>
-               <input type="date" class="under-line-input">
-             </div>
-           </div>
-           <div class="row gap">
-             <div class="row">
-               <label for="">Age:</label>
-               <input type="number" class="under-line-input">
-             </div>
-             <div class="row">
-               <label for="">Sex:</label>
-               <input type="text" class="under-line-input">
-             </div>
-             <div class="row">
-               <label for="">Birth:</label>
-               <input type="date" class="under-line-input">
-             </div>
-           </div>
-           <div class="row gap">
-             <div class="row">
-               <label for="">Occupation:</label>
-               <input type="text" class="under-line-input">
-             </div>
-             <div class="row grow">
-               <label for="">Parent/s:</label>
-               <input type="text" class="under-line-input">
-             </div>
-           </div>
-           <hr>
-           <div class="col gap">
-            <label for="">Laboratory Result:</label>
-            <div class="gap grid-two-col">
-              <div class="row grow gap lab">
-                <p id="" class="row">Lab result 1</p>
-                <p id="" class="trunc grow">img10231312gagoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.jpeg</p>
-              </div>
-              <div class="row grow gap lab">
-                <p id="" class="row">Lab result 1</p>
-                <p id="" class="trunc grow">imggggggggggggg.jpeg</p>
-              </div>
-              <div class="row grow gap lab">
-                <p id="" class="row">Lab result 1</p>
-                <p id="" class="trunc grow">imggggggggggggg.jpeg</p>
-              </div>
-              <div class="row grow gap lab">
-                <p id="" class="row">Lab result 1</p>
-                <p id="" class="trunc grow">imggggggggggggg.jpeg</p>
-              </div>
-              <div class="row grow gap lab">
-                <p id="" class="row">Lab result 1</p>
-                <p id="" class="trunc grow">imggggggggggggg.jpeg</p>
-              </div>
-            </div>
-           </div>
-         </div>
-
-         </div>
-
-         <!-- pop up for prescribe -->
-         <div class="pop-up" id="prescribed">
-          <div class="head row just-bet">
-            <div class="row gap">
-              <img src="../icon/Rx.svg"/>
-              <h2>Prescribe</h2>
-            </div>
-            <div>
-              <img src="../icon/close.svg" alt="" class="exit">
-            </div>
-          </div>
-
-          <div class="info col gap">
-            <div class="row gap">
-             <div class="row grow">
-               <label for="">Name:</label>
-               <input type="text" class="under-line-input">
-             </div>
-             <div class="row">
-               <label for="">Date:</label>
-               <input type="date" class="under-line-input">
-             </div>
-           </div>
-           <div class="row gap">
-             <div class="row">
-               <label for="">Age:</label>
-               <input type="number" class="under-line-input">
-             </div>
-             <div class="row">
-               <label for="">Sex:</label>
-               <input type="text" class="under-line-input">
-             </div>
-             <div class="row">
-               <label for="">Birth:</label>
-               <input type="date" class="under-line-input">
-             </div>
-           </div>
-           <div class="row gap">
-             <div class="row">
-               <label for="">Occupation:</label>
-               <input type="text" class="under-line-input">
-             </div>
-             <div class="row grow">
-               <label for="">Parent/s:</label>
-               <input type="text" class="under-line-input">
-             </div>
-           </div>
-           <hr>
-
-           <div class="col gap">
-
-            <div class="row gap just-bet">
-              <div class="col grow">
-                <label for="">Medicine:</label>
-                <input type="text">
-              </div>
-              <div class="col grow">
-                <label for="">Instruction:</label>
-                <input type="text">
-              </div>
-              <div class="col grow">
-                <label for="">Quantity:</label>
-                <input type="number">
-              </div>
-            </div>
-            <div class="row gap just-bet">
-              <div class=" col grow">
-                <label for="">Receiver:</label>
-                <input type="text">
-              </div>
-              <div class="col grow">
-                <label for="">Relationship:</label>
-                <input type="text">
-              </div>
-              <div class="col grow">
-                <label for="">Doctor:</label>
-                <input type="number">
-              </div>
-            </div>
-
-           </div>
-           <div class="btn-l">
-            <button>Print</button>
-            <button>Submit</button>
-          </div>
-         </div>
-
-         </div>
-
-        <div class="overlay"></div> 
+    <!-- pop up for request lab -->
+    <div class="pop-up" id="reqLab">
+      <div class="head row just-bet">
+        <div class="row gap">
+          <img src="../icon/bottle.svg" />
+          <h2>Request laboratory</h2>
+        </div>
         <div>
-          <select name="" id="selectMedicalRecords">
-            <option value="" selected disabled>Medical records</option>
-            <option value="1">Vital signs</option>
-            <option value="2">Request Laboratory</option>
-            <option value="3">Diagnosis</option>
-            <option value="4">Findings</option>
-            <option value="5">Laboratory result</option>
-            <option value="6">Prescribe</option>
-          </select>
+          <img src="../icon/close.svg" alt="" class="exit">
         </div>
-    </main>
-    <script src="../../js/local/doctor-dashboard/patient-api.js"></script>
-    <!-- <script src="../../js/global/pop-up.js"></script> -->
-    <script>
+      </div>
+      <div class="info col gap">
+        <div class="row gap">
+          <div class="row grow">
+            <label for="">Name:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Date:</label>
+            <input type="date" class="under-line-input">
+          </div>
+        </div>
+        <div class="row gap">
+          <div class="row">
+            <label for="">Age:</label>
+            <input type="number" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Sex:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Birth:</label>
+            <input type="date" class="under-line-input">
+          </div>
+        </div>
+        <div class="row gap">
+          <div class="row">
+            <label for="">Occupation:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row grow">
+            <label for="">Parent/s:</label>
+            <input type="text" class="under-line-input">
+          </div>
+        </div>
+        <hr>
+        <div class="row just-bet gap">
+          <div class="col grow">
+            <label for="">Categories</label>
+            <select name="" id="">
+              <option value="" selected disabled>Select category</option>
+            </select>
+          </div>
+          <div class="col grow">
+            <label for="">Services</label>
+            <select name="" id="">
+              <option value="" selected disabled>Select services</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <button>Add more</button>
+        </div>
+        <div class="btn-l">
+          <button>Print</button>
+          <button>Submit</button>
+        </div>
+      </div>
+    </div>
 
-      const viewSelected = document.getElementById('selectMedicalRecords');
-      const over = document.querySelector(".overlay");
-      const vital = document.getElementById('vital');
-      const reqLab = document.getElementById('reqLab');
-      const diagnosis = document.getElementById('diagnosis');
-      const findings = document.getElementById('findings');
-      const labResult = document.getElementById('labResult');
-      const prescribed = document.getElementById('prescribed');
+    <!-- pop up for diagnosis-->
+    <div class="pop-up" id="diagnosis">
+      <div class="head row just-bet">
+        <div class="row gap">
+          <img src="../icon/micro-scope.svg" />
+          <h2>Request laboratory</h2>
+        </div>
+        <div>
+          <img src="../icon/close.svg" alt="" class="exit">
+        </div>
+      </div>
 
-      viewSelected.addEventListener('change', (event) => {
-        const selectedValue = event.target.value;
-        if (selectedValue === "1") {
-          vital.style.display = 'block';
-        }else if (selectedValue === "2"){
-          reqLab.style.display = 'block';
-        }else if (selectedValue === "3"){
-          diagnosis.style.display = 'block';
-        }else if (selectedValue === "4"){
-          findings.style.display = 'block';
-        }else if (selectedValue === "5"){
-          labResult.style.display = 'block';
-        }else{
-          prescribed.style.display = 'block';
-        }
-        over.classList.toggle('visible');
-      });
+      <div class="info col gap">
+        <div class="row gap">
+          <div class="row grow">
+            <label for="">Name:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Date:</label>
+            <input type="date" class="under-line-input">
+          </div>
+        </div>
+        <div class="row gap">
+          <div class="row">
+            <label for="">Age:</label>
+            <input type="number" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Sex:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Birth:</label>
+            <input type="date" class="under-line-input">
+          </div>
+        </div>
+        <div class="row gap">
+          <div class="row">
+            <label for="">Occupation:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row grow">
+            <label for="">Parent/s:</label>
+            <input type="text" class="under-line-input">
+          </div>
+        </div>
+        <hr>
+        <div class="col" style="height: 20vh;">
+          <label for="">Diagnoses</label>
+          <textarea name="" id="" class="grow"></textarea>
+        </div>
+        <div class="left-btn">
+          <button>Submit</button>
+        </div>
+      </div>
+    </div>
 
-      
-      // document.querySelector(".exit").addEventListener('click', function(){
-      //   const pop = document.querySelector(".pop-up");
-      //   pop.style.display = "none";
-      //   over.classList.toggle('visible');
-      // }); 
+    <!-- pop up for findings -->
+    <div class="pop-up" id="findings">
+      <div class="head row just-bet">
+        <div class="row gap">
+          <img src="../icon/magnifying-glass.svg" />
+          <h2>Findings</h2>
+        </div>
+        <div>
+          <img src="../icon/close.svg" alt="" class="exit">
+        </div>
+      </div>
 
-      document.querySelectorAll(".exit").forEach((exitButton) => {
-    exitButton.addEventListener('click', () => {
-      const popUps = document.querySelectorAll(".pop-up");
-        popUps.forEach((pop) => {
-            pop.style.display = "none";
-            over.classList.remove('visible');
-        });
+      <div class="info col gap">
+        <div class="row gap">
+          <div class="row grow">
+            <label for="">Name:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Date:</label>
+            <input type="date" class="under-line-input">
+          </div>
+        </div>
+        <div class="row gap">
+          <div class="row">
+            <label for="">Age:</label>
+            <input type="number" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Sex:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Birth:</label>
+            <input type="date" class="under-line-input">
+          </div>
+        </div>
+        <div class="row gap">
+          <div class="row">
+            <label for="">Occupation:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row grow">
+            <label for="">Parent/s:</label>
+            <input type="text" class="under-line-input">
+          </div>
+        </div>
+        <hr>
+        <div class="col" style="height: 20vh;">
+          <label for="">Findings</label>
+          <textarea name="" id="" class="grow"></textarea>
+        </div>
+        <div class="left-btn">
+          <button>Submit</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- pop up for lab result -->
+    <div class="pop-up" id="labResult">
+      <div class="head row just-bet">
+        <div class="row gap">
+          <img src="../icon/bottle.svg" />
+          <h2>Laboratory result</h2>
+        </div>
+        <div>
+          <img src="../icon/close.svg" alt="" class="exit">
+        </div>
+      </div>
+
+      <div class="info col gap">
+        <div class="row gap">
+          <div class="row grow">
+            <label for="">Name:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Date:</label>
+            <input type="date" class="under-line-input">
+          </div>
+        </div>
+        <div class="row gap">
+          <div class="row">
+            <label for="">Age:</label>
+            <input type="number" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Sex:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Birth:</label>
+            <input type="date" class="under-line-input">
+          </div>
+        </div>
+        <div class="row gap">
+          <div class="row">
+            <label for="">Occupation:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row grow">
+            <label for="">Parent/s:</label>
+            <input type="text" class="under-line-input">
+          </div>
+        </div>
+        <hr>
+        <div class="col gap">
+          <label for="">Laboratory Result:</label>
+          <div class="gap grid-two-col">
+            <div class="row grow gap lab">
+              <p id="" class="row">Lab result 1</p>
+              <p id="" class="trunc grow">img10231312gagoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.jpeg</p>
+            </div>
+            <div class="row grow gap lab">
+              <p id="" class="row">Lab result 1</p>
+              <p id="" class="trunc grow">imggggggggggggg.jpeg</p>
+            </div>
+            <div class="row grow gap lab">
+              <p id="" class="row">Lab result 1</p>
+              <p id="" class="trunc grow">imggggggggggggg.jpeg</p>
+            </div>
+            <div class="row grow gap lab">
+              <p id="" class="row">Lab result 1</p>
+              <p id="" class="trunc grow">imggggggggggggg.jpeg</p>
+            </div>
+            <div class="row grow gap lab">
+              <p id="" class="row">Lab result 1</p>
+              <p id="" class="trunc grow">imggggggggggggg.jpeg</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- pop up for prescribe -->
+    <div class="pop-up" id="prescribed">
+      <div class="head row just-bet">
+        <div class="row gap">
+          <img src="../icon/Rx.svg" />
+          <h2>Prescribe</h2>
+        </div>
+        <div>
+          <img src="../icon/close.svg" alt="" class="exit">
+        </div>
+      </div>
+
+      <div class="info col gap">
+        <div class="row gap">
+          <div class="row grow">
+            <label for="">Name:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Date:</label>
+            <input type="date" class="under-line-input">
+          </div>
+        </div>
+        <div class="row gap">
+          <div class="row">
+            <label for="">Age:</label>
+            <input type="number" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Sex:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row">
+            <label for="">Birth:</label>
+            <input type="date" class="under-line-input">
+          </div>
+        </div>
+        <div class="row gap">
+          <div class="row">
+            <label for="">Occupation:</label>
+            <input type="text" class="under-line-input">
+          </div>
+          <div class="row grow">
+            <label for="">Parent/s:</label>
+            <input type="text" class="under-line-input">
+          </div>
+        </div>
+        <hr>
+
+        <div class="col gap">
+
+          <div class="row gap just-bet">
+            <div class="col grow">
+              <label for="">Medicine:</label>
+              <input type="text">
+            </div>
+            <div class="col grow">
+              <label for="">Instruction:</label>
+              <input type="text">
+            </div>
+            <div class="col grow">
+              <label for="">Quantity:</label>
+              <input type="number">
+            </div>
+          </div>
+          <div class="row gap just-bet">
+            <div class=" col grow">
+              <label for="">Receiver:</label>
+              <input type="text">
+            </div>
+            <div class="col grow">
+              <label for="">Relationship:</label>
+              <input type="text">
+            </div>
+            <div class="col grow">
+              <label for="">Doctor:</label>
+              <input type="number">
+            </div>
+          </div>
+
+        </div>
+        <div class="btn-l">
+          <button>Print</button>
+          <button>Submit</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="overlay"></div>
+    <div>
+      <select name="" id="selectMedicalRecords">
+        <option value="" selected disabled>Medical records</option>
+        <option value="1">Vital signs</option>
+        <option value="2">Request Laboratory</option>
+        <option value="3">Diagnosis</option>
+        <option value="4">Findings</option>
+        <option value="5">Laboratory result</option>
+        <option value="6">Prescribe</option>
+      </select>
+    </div>
+  </main>
+  <script src="../../js/local/doctor-dashboard/patient-api.js"></script>
+  <!-- <script src="../../js/global/pop-up.js"></script> -->
+  <script>
+    const viewSelected = document.getElementById('selectMedicalRecords');
+    const over = document.querySelector(".overlay");
+    const vital = document.getElementById('vital');
+    const reqLab = document.getElementById('reqLab');
+    const diagnosis = document.getElementById('diagnosis');
+    const findings = document.getElementById('findings');
+    const labResult = document.getElementById('labResult');
+    const prescribed = document.getElementById('prescribed');
+
+    viewSelected.addEventListener('change', (event) => {
+      const selectedValue = event.target.value;
+      if (selectedValue === "1") {
+        vital.style.display = 'block';
+      } else if (selectedValue === "2") {
+        reqLab.style.display = 'block';
+      } else if (selectedValue === "3") {
+        diagnosis.style.display = 'block';
+      } else if (selectedValue === "4") {
+        findings.style.display = 'block';
+      } else if (selectedValue === "5") {
+        labResult.style.display = 'block';
+      } else {
+        prescribed.style.display = 'block';
+      }
+      over.classList.toggle('visible');
     });
-});
 
- </script>
+
+    // document.querySelector(".exit").addEventListener('click', function(){
+    //   const pop = document.querySelector(".pop-up");
+    //   pop.style.display = "none";
+    //   over.classList.toggle('visible');
+    // }); 
+
+    document.querySelectorAll(".exit").forEach((exitButton) => {
+      exitButton.addEventListener('click', () => {
+        const popUps = document.querySelectorAll(".pop-up");
+        popUps.forEach((pop) => {
+          pop.style.display = "none";
+          over.classList.remove('visible');
+        });
+      });
+    });
+  </script>
 </body>
+
 </html>
