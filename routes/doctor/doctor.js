@@ -90,9 +90,9 @@ async function fetchPatientList(page, limit) {
     const getPatientList = await rhuPool.query(`
       SELECT
         p.patient_id, p.rhu_id, p.last_name, p.first_name, p.middle_name, p.suffix, p.phone, p.gender,
-        p.birthdate, p.house_no, p.street, p.barangay, p.town, p.province, p.occupation, p.email, p.philhealth_no, p.guardian,
+        p.birthdate, p.house_no, p.street, p.barangay, p.city, p.province, p.occupation, p.email, p.philhealth_no, p.guardian,
         nc.check_date, nc.height, nc.weight, nc.systolic, nc.diastolic, nc.temperature, nc.heart_rate, nc.respiratory_rate, nc.bmi, nc.comment,
-        dv.follow_date, dv.diagnoses, dv.findings, dv.category, dv.service, dv.medicine, dv.instruction, dv.quantity,
+        dv.follow_date, dv.diagnosis, dv.findings, dv.category, dv.service, dv.medicine, dv.instruction, dv.quantity,
         lr.lab_result, r.rhu_name, r.rhu_address
       FROM patients p
       LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
