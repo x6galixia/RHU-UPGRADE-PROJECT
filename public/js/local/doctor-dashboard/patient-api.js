@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const POLL_INTERVAL = 1000;
     let pollIntervalId;
     let isSearching = false;
-    let currentSearchQuery = ""; // Track current search query
+    let currentSearchQuery = "";
 
     const loadingSpinner = document.getElementById("loadingSpinner");
 
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (data.getPatientList.length === 0) {
                     tableBody.innerHTML = `
                         <tr>
-                            <td colspan="6">No matching records found</td>
+                            <td colspan="7">No matching records found</td>
                         </tr>`;
                 } else {
                     data.getPatientList.forEach(patient => {
