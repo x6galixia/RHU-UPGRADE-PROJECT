@@ -19,6 +19,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function createTableRow(beneficiary) {
         const row = document.createElement('tr');
+        row.setAttribute('onclick', `popUp_index(${beneficiary.beneficiary_id})`);
+        
         row.innerHTML = `
             <td>${beneficiary.first_name} ${beneficiary.middle_name || ''} ${beneficiary.last_name}</td>
             <td>${beneficiary.gender}</td>
@@ -41,6 +43,10 @@ document.addEventListener("DOMContentLoaded", function () {
             </td>
         `;
         return row;
+    }
+
+    window.popUp_index = function popUp_index(id){
+        console.log(id);
     }
 
     function attachDotEventListeners() {
@@ -71,6 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         });
+
     }
 
     function updateBeneficiaryTable(data) {
@@ -331,7 +338,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     async function generateQRCode() {
                         const json = `{ "beneficiary_id": "${beneficiaryData.beneficiary_id}" }`;
                     
-                        const secretKey = "yourSecretKey"; // Use a strong secret key for encryption
+                        const secretKey = "KimGalicia"; // Use a strong secret key for encryption
                         const encryptedData = encryptData(json, secretKey); // Encrypt the JSON data
                         console.log("Encrypted Data:", encryptedData);
                     

@@ -27,14 +27,14 @@
     flex: 1 1 43%;
 }
 
-.sub-con img {
+/* .sub-con img {
     position: absolute;
     top: 4px;
     right: 20px;
     padding: 10px;
     border-radius: 10px;
     background-color: var(--pink-color);
-}
+} */
 
 .patients-information-container {
     width: 100%;
@@ -182,13 +182,59 @@ input[type="button"] {
     gap: 12px;
     margin-top: 12px;
 }
-.check > button{
-    align-self: center;
-    width: 300px;
+.check > .generateID{
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
+.check > .generateID > .inputFile,
+.check > .generateID > button{
+    width: 50%;
+}
+
 .check > .checkbox{
     display: flex;
     align-items: center;
     gap: 12px;
 }
+.inputStyle{
+    display: flex;
+    border: 1px solid;
+    border-radius: 10px;
+    padding: 0 12px;
+    justify-content: space-between;
+    height: 40px;
+    align-items: center;
+    cursor: pointer;
+}
+.inputStyle > p{
+    margin: 0;
+    width: fit-content;
+}
+#recently-admitted-table{
+    width: 50%;
+    max-height: 65%;
+}
 
+#recently-admitted-table .table-container{
+    max-height: 45vh;
+    overflow: visible;
+    position:relative;
+}
+#recently-admitted-table .table-container thead{
+    position: sticky;
+    top: 0;
+}
+#recently-admitted-table .table-container tbody tr td:last-child{
+    font-weight: normal;
+}
+#recently-admitted-table .table-container tbody tr td:first-child{
+    font-weight: bold;
+}
+.triple-dot{
+    margin-bottom: -185px;
+    margin-left: -100px;
+}
+.pagination{
+    margin-top: 24px;
+}
