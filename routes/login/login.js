@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const rhuPool = require("../../models/rhudb");
 const passport = require("passport");
 const Joi = require("joi");
-const rhuPool = require("../../models/rhudb");
 
 const userSchema = Joi.object({
   username: Joi.string().required(),
@@ -15,18 +15,18 @@ router.get("/user/login", (req, res) => {
 });
 
 router.post("/login/user", async (req, res, next) => {
-  const {error, value} = userSchema.validate(req.body);
+  const { error, value } = userSchema.validate(req.body);
 
-  if(error){
+  if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
 
   try {
     passport.authenticate("local", (err, user, info) => {
-      if (err){
+      if (err) {
         console.error("Authentication error :", err);
         return next(err);
-      } if (!user){
+      } if (!user) {
         console.log("Authentication failed:", info.message);
         req.flash("error", info.message);
         return res.redirect("/user/login");
@@ -35,7 +35,7 @@ router.post("/login/user", async (req, res, next) => {
         return res.redirect("/user/login");
       }
       req.login(user, (err) => {
-        if (err){
+        if (err) {
           console.error("Login error:", err);
           return next(err);
         }

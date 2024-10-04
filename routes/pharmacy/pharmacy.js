@@ -6,19 +6,19 @@ const path = require('path');
 const router = express.Router();
 
 const pharmacyPool = require("../../models/pharmacydb");
-const {calculateAge, formatDate} = require("../../public/js/global/functions");
-const {setUserData, ensureAuthenticated, checkUserType} = require("../../middlewares/middleware");
+const { calculateAge, formatDate } = require("../../public/js/global/functions");
+const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
 
 router.use(setUserData);
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = 'uploads/beneficiary-img/';
-    
+
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
     }
-    
+
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
@@ -62,7 +62,7 @@ const beneficiarySchema = Joi.object({
   picture: Joi.string().allow('').optional(),
   note: Joi.string().allow('').optional(),
   processed_date: Joi.date().required(),
-  existing_picture: Joi.string().optional() 
+  existing_picture: Joi.string().optional()
 });
 const upload = multer({ storage: storage });
 router.use("/uploads/beneficiary-img", express.static("uploads"));
@@ -76,17 +76,17 @@ router.get("/pharmacy-inventory", ensureAuthenticated, checkUserType("Pharmacist
     const { getInventoryList, totalPages } = await fetchInventoryList(page, limit, req.user.rhu_id);
 
     if (isAjax) {
-      return res.json({ 
-          getInventoryList,
-          currentPage: page, 
-          totalPages,
-          limit 
-       });
+      return res.json({
+        getInventoryList,
+        currentPage: page,
+        totalPages,
+        limit
+      });
     }
-    
+
     res.render("pharmacy/inventory", {
-      getInventoryList, 
-      currentPage: page, 
+      getInventoryList,
+      currentPage: page,
       totalPages,
       limit
     });
@@ -118,7 +118,7 @@ router.get("/pharmacy-inventory/search", ensureAuthenticated, checkUserType("Pha
          OR brand_name ILIKE $1)
          LIMIT 10`,
         [`%${query}%`, req.user.rhu_id]
-      );          
+      );
     }
 
     const data = searchResult.rows.map(row => ({
@@ -137,22 +137,22 @@ router.get("/pharmacy-records", ensureAuthenticated, checkUserType("Pharmacist")
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const isAjax = req.query.ajax === "true";
-  
+
   try {
     const { getBeneficiaryList, totalPages } = await fetchBeneficiaryList(page, limit);
 
     if (isAjax) {
-      return res.json({ 
-          getBeneficiaryList, 
-          currentPage: page, 
-          totalPages,
-          limit 
+      return res.json({
+        getBeneficiaryList,
+        currentPage: page,
+        totalPages,
+        limit
       });
-  }
-    
-    res.render("pharmacy/beneficiary-records", { 
-      getBeneficiaryList, 
-      currentPage: page, 
+    }
+
+    res.render("pharmacy/beneficiary-records", {
+      getBeneficiaryList,
+      currentPage: page,
       totalPages,
       limit
     });
@@ -255,9 +255,9 @@ router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
   try {
     await pharmacyPool.query(`
       INSERT INTO inventory (product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added, rhu_id)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`, 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
       [value.product_id, value.product_code, value.product_name, value.brand_name, value.supplier, value.product_quantity, value.dosage_form, value.dosage, value.reorder_level, value.batch_number, value.expiration, value.date_added, 1]
-    );    
+    );
     res.redirect("/pharmacy-inventory");
   } catch (err) {
     console.error("Error: ", err);
@@ -315,7 +315,7 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
     await pharmacyPool.query(`
       UPDATE inventory 
       SET product_quantity = $1 
-      WHERE product_id = $2 AND rhu_id = $3`, 
+      WHERE product_id = $2 AND rhu_id = $3`,
       [newProductQuantity, trimmedProductId, 1]
     );
 
@@ -344,7 +344,7 @@ router.post("/pharmacy-records/add-beneficiary", upload.single('picture'), async
     await pharmacyPool.query(
       `INSERT INTO beneficiary (last_name, first_name, middle_name, phone, gender, birthdate, street, barangay, city, province, occupation, senior_citizen, pwd, picture, note, processed_date)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
-      [ value.last_name, value.first_name, value.middle_name, value.phone, value.gender, value.birthdate, value.street, value.barangay, value.city, value.province, value.occupation, value.senior_citizen, value.pwd, picture, value.note, value.processed_date ]
+      [value.last_name, value.first_name, value.middle_name, value.phone, value.gender, value.birthdate, value.street, value.barangay, value.city, value.province, value.occupation, value.senior_citizen, value.pwd, picture, value.note, value.processed_date]
     );
 
     res.redirect("/pharmacy-records");
@@ -372,7 +372,7 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
       `UPDATE beneficiary 
        SET last_name = $1, first_name = $2, middle_name = $3, gender = $4, birthdate = $5, processed_date = $6, phone = $7, occupation = $8, senior_citizen = $9, pwd = $10, street = $11, barangay = $12, city = $13, province = $14, note = $15, picture = $16
        WHERE beneficiary_id = $17`,
-      [ value.last_name, value.first_name, value.middle_name, value.gender, value.birthdate, value.processed_date, value.phone, value.occupation, value.senior_citizen, value.pwd, value.street, value.barangay, value.city, value.province, value.note, picture, value.beneficiary_id ]
+      [value.last_name, value.first_name, value.middle_name, value.gender, value.birthdate, value.processed_date, value.phone, value.occupation, value.senior_citizen, value.pwd, value.street, value.barangay, value.city, value.province, value.note, picture, value.beneficiary_id]
     );
 
     if (result.rowCount > 0) {
@@ -388,17 +388,17 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
 
 router.delete('/pharmacy-records/delete/:id', async (req, res) => {
   const beneficiaryId = parseInt(req.params.id);
-  
+
   if (isNaN(beneficiaryId)) {
     return res.status(400).json({ message: 'Invalid beneficiary ID' });
   }
 
   try {
     const result = await pharmacyPool.query(
-      'SELECT picture FROM beneficiary WHERE beneficiary_id = $1', 
+      'SELECT picture FROM beneficiary WHERE beneficiary_id = $1',
       [beneficiaryId]
     );
-    
+
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Beneficiary not found.' });
     }
@@ -406,10 +406,10 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
     const picture = result.rows[0].picture;
 
     const deleteResult = await pharmacyPool.query(
-      'DELETE FROM beneficiary WHERE beneficiary_id = $1', 
+      'DELETE FROM beneficiary WHERE beneficiary_id = $1',
       [beneficiaryId]
     );
-    
+
     if (deleteResult.rowCount > 0) {
       if (picture) {
         const filePath = path.join(__dirname, '../../uploads/beneficiary-img/', picture);
@@ -422,7 +422,7 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
           }
         });
       }
-      
+
       res.json({ message: 'Beneficiary deleted successfully.' });
     } else {
       res.status(404).json({ message: 'Beneficiary not found.' });
@@ -435,7 +435,7 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
 
 async function fetchInventoryList(page, limit, rhu_id) {
   const offset = (page - 1) * limit;
-  
+
   try {
     const totalItemsResult = await pharmacyPool.query("SELECT COUNT(*) FROM inventory WHERE rhu_id = $1", [rhu_id]);
     const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
@@ -459,7 +459,7 @@ async function fetchInventoryList(page, limit, rhu_id) {
 
 async function fetchBeneficiaryList(page, limit) {
   const offset = (page - 1) * limit;
-  
+
   try {
     const totalItemsResult = await pharmacyPool.query("SELECT COUNT(*) FROM beneficiary");
     const totalItems = parseInt(totalItemsResult.rows[0].count, 10);

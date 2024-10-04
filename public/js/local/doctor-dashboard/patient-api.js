@@ -1,9 +1,9 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const POLL_INTERVAL = 1000;
     let pollIntervalId;
     let isSearching = false;
     let currentSearchQuery = ""; // Track current search query
-    
+
     const loadingSpinner = document.getElementById("loadingSpinner");
 
     function updatePatientsTable(data) {
@@ -20,13 +20,14 @@ document.addEventListener("DOMContentLoaded", function() {
                     <td> ${patient.gender} </td>
                     <td> ${patient.house_no} ${patient.street} ${patient.barangay} ${patient.town} ${patient.province}</td>
                     <td> 
-                        <select name="patientAction" class="patientActionDropdown">
-                            <option value="">Vital Signs</option>
-                            <option value="">Request Laboratory</option>
-                            <option value="">Diagnosis</option>
-                            <option value="">Findings</option>
-                            <option value="">Laboratory Result</option>
-                            <option value="">Prescribe</option>
+                        <select name="patientAction" class="patientActionDropdown" onchange="popUp_button(this)">
+                            <option value="" selected disabled>Medical records</option>
+                            <option value="1">Vital Signs</option>
+                            <option value="2">Request Laboratory</option>
+                            <option value="3">Diagnosis</option>
+                            <option value="4">Findings</option>
+                            <option value="5">Laboratory Result</option>
+                            <option value="6">Prescribe</option>
                         </select> 
                     </td>
                     <td>
@@ -58,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
     pollIntervalId = setInterval(fetchPatientsUpdates, POLL_INTERVAL);
     fetchPatientsUpdates();
 
-    document.getElementById('searchInput').addEventListener('input', function(event) {
+    document.getElementById('searchInput').addEventListener('input', function (event) {
         event.preventDefault();
         const query = this.value;
 
@@ -87,18 +88,20 @@ document.addEventListener("DOMContentLoaded", function() {
                     data.getPatientList.forEach(patient => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
+                            <td>${patient.rhu_name} </td>
                             <td>${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}</td>
                             <td>${patient.age}</td>
                             <td>${patient.gender}</td>
                             <td>${patient.house_no} ${patient.street} ${patient.barangay} ${patient.town} ${patient.province}</td>
                             <td> 
-                                <select name="patientAction" class="patientActionDropdown" id="selectMedicalRecords">
+                                <select name="patientAction" class="patientActionDropdown" id="selectMedicalRecords" onchange="popUp_button(this)">
+                                    <option value="" selected disabled>Medical records</option>
                                     <option value="1">Vital Signs</option>
-                                    <option value="">Request Laboratory</option>
-                                    <option value="">Diagnosis</option>
-                                    <option value="">Findings</option>
-                                    <option value="">Laboratory Result</option>
-                                    <option value="">Prescribe</option>
+                                    <option value="2">Request Laboratory</option>
+                                    <option value="3">Diagnosis</option>
+                                    <option value="4">Findings</option>
+                                    <option value="5">Laboratory Result</option>
+                                    <option value="6">Prescribe</option>
                                 </select> 
                             </td>
                             <td>
@@ -117,13 +120,13 @@ document.addEventListener("DOMContentLoaded", function() {
             });
     });
 
-    document.addEventListener('focusin', function(event) {
+    document.addEventListener('focusin', function (event) {
         if (event.target && event.target.classList.contains('patientActionDropdown')) {
             clearInterval(pollIntervalId);
         }
     });
 
-    document.addEventListener('focusout', function(event) {
+    document.addEventListener('focusout', function (event) {
         if (event.target && event.target.classList.contains('patientActionDropdown')) {
             pollIntervalId = setInterval(fetchPatientsUpdates, POLL_INTERVAL);
         }
@@ -134,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function() {
         event.preventDefault();
         const url = new URL(event.target.href);
         const params = new URLSearchParams(url.search);
-        
+
         // Add search query to the pagination URL if a search is active
         if (currentSearchQuery) {
             params.set('query', currentSearchQuery);
@@ -154,30 +157,30 @@ document.addEventListener("DOMContentLoaded", function() {
             });
     }
 
-// Attach event listeners to pagination links
-function attachPaginationListeners() {
-    document.querySelectorAll('nav[aria-label="Page navigation"] a').forEach(link => {
-        link.addEventListener('click', handlePagination);
-    });
-}
-
-// Function to update pagination controls
-function updatePaginationControls(currentPage, totalPages, limit) {
-    const paginationNav = document.getElementById('paginationNav');
-    paginationNav.innerHTML = '';
-
-    if (currentPage > 1) {
-        paginationNav.innerHTML += `<a href="?page=${currentPage - 1}&limit=${limit}" aria-label="Previous Page">Previous</a>`;
+    // Attach event listeners to pagination links
+    function attachPaginationListeners() {
+        document.querySelectorAll('nav[aria-label="Page navigation"] a').forEach(link => {
+            link.addEventListener('click', handlePagination);
+        });
     }
 
-    if (currentPage < totalPages) {
-        paginationNav.innerHTML += `<a href="?page=${currentPage + 1}&limit=${limit}" aria-label="Next Page">Next</a>`;
+    // Function to update pagination controls
+    function updatePaginationControls(currentPage, totalPages, limit) {
+        const paginationNav = document.getElementById('paginationNav');
+        paginationNav.innerHTML = '';
+
+        if (currentPage > 1) {
+            paginationNav.innerHTML += `<a href="?page=${currentPage - 1}&limit=${limit}" aria-label="Previous Page">Previous</a>`;
+        }
+
+        if (currentPage < totalPages) {
+            paginationNav.innerHTML += `<a href="?page=${currentPage + 1}&limit=${limit}" aria-label="Next Page">Next</a>`;
+        }
+
+        // Re-attach the event listeners after updating the pagination links
+        attachPaginationListeners();
     }
 
-    // Re-attach the event listeners after updating the pagination links
+    // Initial setup
     attachPaginationListeners();
-}
-
-// Initial setup
-attachPaginationListeners();
 });

@@ -20,11 +20,21 @@
     const reject_dispense = document.getElementById("reject_dispense");
     const submit_dispense = document.getElementById("submit_dispense");
 
+    
+    //docotor dashboard id
+    const vital = document.getElementById('vital');
+    const reqLab = document.getElementById('reqLab');
+    const diagnosis = document.getElementById('diagnosis');
+    const findings = document.getElementById('findings');
+    const labResult = document.getElementById('labResult');
+    const prescribed = document.getElementById('prescribed');
+
 
     const overlay = document.querySelector(".overlay");
 
     function popUp_button(button) {
       var buttonId = button.id;
+      var select = button.value;
 
       //inventory
       if (buttonId === "restock"){
@@ -51,6 +61,27 @@
       else if (buttonId === "update-id"){
         update_beneficiary.classList.toggle("visible");
       }
+      
+      
+                //doctor dashboard reuse value
+                else if (select === "1"){
+                  vital.classList.toggle('visible');
+                }
+                else if (select === "2"){
+                  reqLab.classList.toggle('visible');
+                }
+                else if (select === "3"){
+                  diagnosis.classList.toggle('visible');
+                }
+                else if (select === "4"){
+                  findings.classList.toggle('visible');
+                }
+                else if (select === "5"){
+                  labResult.classList.toggle('visible');
+                }
+                else if (select === "6"){
+                  prescribed.classList.toggle('visible');
+                }
 
       // dispense
       else if (buttonId === "reject_dispense_button"){

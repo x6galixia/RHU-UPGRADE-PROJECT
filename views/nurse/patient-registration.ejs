@@ -6,7 +6,12 @@
     <link rel="stylesheet" href="../css/global/general.css" />
     <link rel="stylesheet" href="../css/local/patient-registration.css" />
     <link rel="stylesheet" href="../css/local/id.css" />
-    <title>Document</title>
+    <title>HealthSync</title>
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="../img/global/healthvector.png"
+    />
 </head>
 <body>
     <%- include("../includes/header.ejs")  %>
@@ -15,7 +20,7 @@
         <div class="buttons">
             <div class="add-transfer">
               <button>RECENTLY ADDED</button>
-              <button>HEALTH ASSESMENT</button>
+              <button>HEALTH ASSESSMENT</button>
             </div>
         </div>
 
@@ -25,7 +30,7 @@
             <!-- Patient information na container :) -->
             <div class="sub-con patients-information-container">
                 <div class="patient-head">
-                    <h2 class="form-header">PATIEN INFORMATION</h2>
+                    <h2 class="form-header">PATIENT INFORMATION</h2>
                 </div>
                 <div class="information">
                     <div class="r align">
@@ -33,16 +38,6 @@
                             <label for="uniqId">Unique ID:</label>
                             <input type="text">
                         </div>
-                        <!-- <div>
-                            <div class="btn-layout" id="hide-search">
-                                <input type="search" class="g" placeholder="Search ID">
-                                <input type="button" id="exit-search" value="X" style="color: white; cursor: pointer;">
-                            </div>
-                            <div class="btn-layout" id="show-btn">
-                                <button id="grrr">Generate ID</button>
-                                <input type="button" id="search-btn" style="cursor: pointer;">
-                            </div>
-                        </div> -->
                     </div>
                     <div class="r">
                         <div>
@@ -116,10 +111,10 @@
                     </div>
                     <div class="check">
                         <div class="checkbox">
-                            <input type="checkbox">
-                            <label for="">Bagohan ba in na user?</label>
+                            <input type="checkbox" id="newUserCheck">
+                            <label for="newUserCheck">Bagohan ba in na user?</label>
                         </div>
-                        <button class="button-pink">Generate ID</button>
+                        <button class="button-pink" id="generateIdButton" style="display: none;">Generate ID</button>
                     </div>
                 </div>
             </div>
@@ -239,25 +234,31 @@
               <button class="button-green" onclick="printContainer('id-container')">PRINT</button>
             </main>
           </div>
-        <script>
-            var showGenerateID = document.getElementById('show-btn');
-            var hideGenerateID = document.getElementById('hide-search');
-            document.getElementById('search-btn').addEventListener('click',
-                function(){
-                    showGenerateID.style.display = 'none';
-                    hideGenerateID.style.display = 'block';
-                    hideGenerateID.style.display = 'flex';
-                }
-            );
-            document.getElementById('exit-search').addEventListener('click',
-                function(){
-                    showGenerateID.style.display = "block";
-                    showGenerateID.style.display = "flex";
-                    hideGenerateID.style.display = "none";
-                }
-            );
-            
-        </script>
     </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('newUserCheck').addEventListener('change', function() {
+                const button = document.getElementById('generateIdButton');
+                if (this.checked) {
+                    button.style.display = 'block';
+                } else {
+                    button.style.display = 'none';
+                }
+            });
+
+            document.getElementById("generateIdButton").addEventListener('click', function(){
+                document.getElementById("generate-id").style.display = 'block';
+                document.querySelector(".overlay").style.display = 'block';
+
+
+                
+
+                document.querySelector(".close_popUp").addEventListener('click', function(){
+                    document.getElementById("generate-id").style.display = 'none';
+                    document.querySelector(".overlay").style.display = 'none';
+                })
+            })
+        });
+    </script>
 </body>
 </html>

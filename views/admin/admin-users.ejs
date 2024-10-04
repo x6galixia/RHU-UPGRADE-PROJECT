@@ -1,151 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="shortcut icon" type="image/png" href=""/>
-    <title>Doctors Laboratory Request</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/global/general.css" />
-    <link rel="stylesheet" href="../css/local/index-form.css" />
-    <link rel="stylesheet" href="../css/local/admin-users.css">
-  </head>
-  <body>
-    <%- include("../includes/header.ejs")  %>
-    <%- include("../includes/admin-sub-head.ejs")  %>
-    <main>
-      
-      <div class="search2">
-        <div class="search">
-          <input type="text" placeholder="Search..." />
-          <img src="../icon/search.svg" alt="" />
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="shortcut icon" type="image/png" href="" />
+  <title>HealthSync</title>
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="../img/global/healthvector.png"
+    />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/global/general.css" />
+  <link rel="stylesheet" href="../css/local/index-form.css" />
+  <link rel="stylesheet" href="../css/local/admin-users.css">
+</head>
+
+<body>
+  <%- include("../includes/header.ejs")  %>
+  <%- include("../includes/admin-sub-head.ejs")  %>
+  <main>
+
+    <div class="search2">
+      <div class="search">
+        <input type="text" placeholder="Search..." />
+        <img src="../icon/search.svg" alt="" />
+      </div>
+    </div>
+    <div class="table-container">
+      <div class="separate-sec">
+        <div class="res-btn">
+          <button class="btn-users button-green">USERS</button>
+          <button class="btn-users user-btn">RESTRICTED</button>
         </div>
       </div>
-      <div class="table-container">
-        <div class="separate-sec">
-          <div class="res-btn">
-            <button class="btn-users button-green">USERS</button>
-            <button class="btn-users user-btn">RESTRICTED</button>
-          </div>
+      <table>
+        <thead>
+          <tr>
+            <th>USER TYPE</th>
+            <th>NAME</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td>Doctor</td>
+            <td>Adriane Garcia</td>
+
+          </tr>
+          <tr>
+            <td>Pharmacy</td>
+            <td>Eugene Gerna</td>
+          </tr>
+          <tr>
+            <td>Nurse</td>
+            <td>Joel Magalay Carpio</td>
+          </tr>
+          <tr>
+            <td>Pharmacist</td>
+            <td>John Rey Pagaspas</td>
+          </tr>
+          <tr>
+            <td>Doctor</td>
+            <td>Galicia Kim</td>
+          </tr>
+          <tr>
+            <td>Nurse</td>
+            <td>Jhondrex Alde</td>
+          </tr>
+
+        </tbody>
+      </table>
+      <div class="create-user-btn">
+        <button id="create-user-btn" onclick="popUp_button(this)">CREATE USER</button>
+      </div>
+      <div class="pop-up" id="create-user">
+        <div class="close-container">
+          <img src="../icon/close.svg" alt="" class="close_popUp">
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>USER TYPE</th>
-              <th>NAME</th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td>Doctor</td>
-              <td>Adriane Garcia</td>
-              
-            </tr>
-            <tr>
-              <td>Pharmacy</td>
-              <td>Eugene Gerna</td>             
-            </tr>
-            <tr>
-              <td>Nurse</td>
-              <td>Joel Magalay Carpio</td>             
-            </tr>
-            <tr>
-              <td>Pharmacist</td>
-              <td>John Rey Pagaspas</td>             
-            </tr>
-            <tr>
-              <td>Doctor</td>
-              <td>Galicia Kim</td>             
-            </tr>
-            <tr>
-              <td>Nurse</td>
-              <td>Jhondrex Alde</td>             
-            </tr>
-            
-          </tbody>
-        </table>
-        <div class="create-user-btn">
-          <button id="create-user-btn" onclick="popUp_button(this)">CREATE USER</button>
-        </div>
-        <div class="pop-up" id="create-user">
-          <div class="close-container">
-            <img src="../icon/close.svg" alt="" class="close_popUp">
-          </div>
-          <h1 class="heading">CREATE USER</h1>
-          <main>
-            <form action="/admin/create-user/submit" method="POST">
-              <div class="selecter">
-                <select name="rhu_id" id="">
+        <h1 class="heading">CREATE USER</h1>
+        <main>
+          <form action="/admin/create-user/submit" method="POST">
+            <div class="selecter">
+              <select name="rhu_id" id="">
                 <option value="1" selected disabled>Select RHU</option>
                 <option value="2">Main</option>
                 <option value="3">Maypangdan</option>
                 <option value="4">Tabunan</option>
                 <option value="5">Songco</option>
-                </select>
-              </div>
-              <div class="gap-all">
-                <input type="text" placeholder="Surname" name="surname" required>
-                <input type="text" placeholder="Firstname" name="firstname" required>
-                <input type="text" placeholder="Middlename" name="middle_name">
-              </div>
-              <div class="gap-all">
-                <select name="profession" id="">
-                  <option value="Profession" selected disabled>Profession</option>
-                  <option value="Pediatrician">Pediatrician</option>
-                  <option value="Optalmologist">Optalmologist</option>
-                  <option value="Oncologist">Oncologist</option>
-                  <option value="Psychiatrist">Psychiatrist</option>
-                  <option value="Dermatologist">Dermatologist</option>
-                  <option value="Gynenacologist">Gynenacologist</option>
-                  <option value="Rn">Registered nurse</option>
-                  <option value="Mental Health Nursing">Mental Health Nursing</option>
-                  <option value="Pediatric nursing">Pediatric nursing</option>
-                  <option value="Oncology nursing">Oncology nursing</option>
-                  <option value="Pharmacist">Pharmacist</option>
-                  <option value="Medical Laboratory Scientist">Medical Laboratory Scientist</option>
-                  <option value="Radiographer">Radiographer</option>
-                  <option value="Clinical Laboratory Technologist">Clinical Laboratory Technologist</option>
+              </select>
+            </div>
+            <div class="gap-all">
+              <input type="text" placeholder="Surname" name="surname" required>
+              <input type="text" placeholder="Firstname" name="firstname" required>
+              <input type="text" placeholder="Middlename" name="middle_name">
+            </div>
+            <div class="gap-all">
+              <select name="profession" id="">
+                <option value="Profession" selected disabled>Profession</option>
+                <option value="Pediatrician">Pediatrician</option>
+                <option value="Optalmologist">Optalmologist</option>
+                <option value="Oncologist">Oncologist</option>
+                <option value="Psychiatrist">Psychiatrist</option>
+                <option value="Dermatologist">Dermatologist</option>
+                <option value="Gynenacologist">Gynenacologist</option>
+                <option value="Rn">Registered nurse</option>
+                <option value="Mental Health Nursing">Mental Health Nursing</option>
+                <option value="Pediatric nursing">Pediatric nursing</option>
+                <option value="Oncology nursing">Oncology nursing</option>
+                <option value="Pharmacist">Pharmacist</option>
+                <option value="Medical Laboratory Scientist">Medical Laboratory Scientist</option>
+                <option value="Radiographer">Radiographer</option>
+                <option value="Clinical Laboratory Technologist">Clinical Laboratory Technologist</option>
               </select>
               <input type="text" placeholder="License no." name="license_number">
               <input type="text" placeholder="Username" name="username" required>
-              </div>
-              <div class="gap-all">
-                <input type="password" placeholder="Password" name="password" required>
+            </div>
+            <div class="gap-all">
+              <input type="password" placeholder="Password" name="password" required>
               <input type="password" placeholder="Confirm password" name="password" required>
               <select name="user_type" id="" required>
-                  <option value="User" selected disabled>User Type</option>
-                  <option value="Doctor">Doctor</option>
-                  <option value="Nurse">Nurse</option>
-                  <option value="Med Tech">Med Tech</option>
-                  <option value="Pharmacist">Pharmacist</option>
+                <option value="User" selected disabled>User Type</option>
+                <option value="Doctor">Doctor</option>
+                <option value="Nurse">Nurse</option>
+                <option value="Med Tech">Med Tech</option>
+                <option value="Pharmacist">Pharmacist</option>
               </select>
-              </div>
-              <div class="create-all">
-                <button class="create-btn" type="submit">Create</button>
-              </div>
+            </div>
+            <div class="create-all">
+              <button class="create-btn" type="submit">Create</button>
+            </div>
           </form>
-          </main>
-        </div>
-    </main>
-    <script src="../../js/global/pop-up.js"></script>
-  </body>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
+        </main>
+      </div>
+  </main>
+  <script src="../../js/global/pop-up.js"></script>
+</body>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
     var nav2 = document.querySelector(".nav2");
     if (nav2) {
       nav2.classList.toggle("selected");
     }
   });
-  </script>
+</script>
+
 </html>
