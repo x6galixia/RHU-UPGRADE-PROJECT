@@ -196,3 +196,47 @@
   margin-top: 20px;
 }
 
+#beneficiary-index{
+  width: 70%;
+}
+
+#beneficiary-index .index-form{
+  overflow: scroll !important;
+}
+.beneficiary-info{
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #000;
+  height: fit-content;
+  padding: 20px;
+}
+#beneficiary-index input{
+  border: none;
+  border-bottom: 1px solid #000;
+  border-radius: 0;
+  box-shadow: none;
+  outline: none;
+  width: 100%;
+}
+#beneficiary-index .beneficiary-info img{
+  height: 200px;
+}
+#beneficiary-index main{
+  display: flex;
+  flex-direction: column;
+}
+#beneficiary-index main > button{
+  align-self: self-end;
+}
+.input1{
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  text-wrap: nowrap;
+}
+.info1{
+  flex: 1;
+}
+

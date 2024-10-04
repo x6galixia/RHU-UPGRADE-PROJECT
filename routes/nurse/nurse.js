@@ -9,8 +9,8 @@ router.get("/nurse/patient-registration", (req, res) => {
   res.render("nurse/patient-registration");
 });
 
-router.get("/nurse/individual-health-assesment", (req, res) => {
-  res.render("nurse/individual-health-assesment");
+router.get("/nurse/individual-health-assessment", (req, res) => {
+  res.render("nurse/individual-health-assessment");
 });
 
 module.exports = router;

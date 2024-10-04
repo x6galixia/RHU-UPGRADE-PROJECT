@@ -7,6 +7,10 @@
     padding: 0;
 }
 
+/* p {
+    font-size: 1.5rem;
+} */
+
 .col {
     display: flex;
     flex-direction: column;
@@ -60,9 +64,9 @@ button {
     flex-grow: 1;
 }
 
-.s {
-    width: 20%;
-}
+/* .s {
+    width: 24%
+} */
 
 .btn-l {
     text-align: end;
@@ -123,3 +127,136 @@ button {
     column-gap: 1em;
 }
 
+
+/* For print CSS */
+
+
+/* .logo-print {
+    height: auto;
+    width: auto;
+} */
+
+
+@page {
+    size: A4;
+    margin: .2in;
+}
+
+#labReqPrint {
+    padding: 2em 2em;
+    height: auto;
+    border-radius: 0;
+    border: 1px solid black;
+    display: flex;
+}
+
+#resetaPrint {
+    padding: 2em 2em;
+    height: auto;
+    border-radius: 0;
+    border: 1px solid black;
+    display: flex;
+}
+
+
+@media print {
+
+    .buttons, .table-container, .headings, header, button, .pop-up, .overlay {
+        display: none !important;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .show {
+        display: block !important;
+    }
+
+    .LabReqPrint {
+        /* display: block !important; */
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        box-sizing: border-box;  
+        page-break-before: always;
+    }
+
+
+    .ResetaPrint {
+        /* display: block !important; */
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        box-sizing: border-box;  
+        page-break-before: always;
+    }
+
+}
+
+
+.head1 {
+    font-size: 2rem;
+}
+
+.head2 {
+    font-size: 1.8rem;
+}
+
+.b {
+    /* border: 1px solid black; */
+    display: flex;
+    justify-content: center;
+}
+
+.m-top {
+    margin-top: 2em;
+}
+
+
+.b-p {
+    color: #4F33FF;
+}
+
+.infoooo  {
+    padding-top: 2em;
+    gap: .5em;
+}   
+
+
+.s {
+    width: 25%
+}
+
+
+input[type="checkbox"] {
+    height: auto;
+    box-shadow: none;
+}
+
+.p-s {
+    color: red;
+}
+
+
+.h-line {
+    border: 1px solid black;
+    margin: 1em 0;
+}
+
+.cat {
+    margin: 3em 0;
+}
+
+.d {
+    margin-top: 6em;
+}
+
+span {
+    color: black;
+}
+
+.ha {
+    font-size: 4rem;
+}

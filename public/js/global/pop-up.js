@@ -20,8 +20,11 @@
     const reject_dispense = document.getElementById("reject_dispense");
     const submit_dispense = document.getElementById("submit_dispense");
 
+    //nurse
+    const recently_admitted = document.getElementById("recently-admitted-table");
+
     
-    //docotor dashboard id
+    //doctor dashboard id
     const vital = document.getElementById('vital');
     const reqLab = document.getElementById('reqLab');
     const diagnosis = document.getElementById('diagnosis');
@@ -63,25 +66,25 @@
       }
       
       
-                //doctor dashboard reuse value
-                else if (select === "1"){
-                  vital.classList.toggle('visible');
-                }
-                else if (select === "2"){
-                  reqLab.classList.toggle('visible');
-                }
-                else if (select === "3"){
-                  diagnosis.classList.toggle('visible');
-                }
-                else if (select === "4"){
-                  findings.classList.toggle('visible');
-                }
-                else if (select === "5"){
-                  labResult.classList.toggle('visible');
-                }
-                else if (select === "6"){
-                  prescribed.classList.toggle('visible');
-                }
+      //doctor dashboard reuse value
+      else if (select === "1"){
+        vital.classList.toggle('visible');
+      }
+      else if (select === "2"){
+        reqLab.classList.toggle('visible');
+      }
+      else if (select === "3"){
+        diagnosis.classList.toggle('visible');
+      }
+      else if (select === "4"){
+        findings.classList.toggle('visible');
+      }
+      else if (select === "5"){
+        labResult.classList.toggle('visible');
+      }
+      else if (select === "6"){
+        prescribed.classList.toggle('visible');
+      }
 
       // dispense
       else if (buttonId === "reject_dispense_button"){
@@ -98,6 +101,12 @@
       else if (buttonId === "create-user-btn"){
         createUser.classList.toggle("visible");
       }
+
+      //nurse
+      else if (buttonId == "recently-admitted"){
+        recently_admitted.classList.toggle("visible");
+      }
+
       overlay.classList.add("visible");
     }
     

@@ -27,6 +27,10 @@ header > .logo-menu > .menu > img {
 header > .profile1 > img {
   width: 40px;
 }
+header > .logo > img {
+  width: auto;
+  height: 45px;
+}
 
 .headings {
   color: var(--pink-color);
@@ -83,7 +87,7 @@ textarea{
 
 
 button {
-  width: 200px;
+  width: 210px;
   height: 40px;
   outline: none;
   border: none;
@@ -95,6 +99,7 @@ button {
   cursor: pointer;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   letter-spacing: 2px;
+  text-wrap: nowrap;
 }
 
 .button-bordered{
@@ -111,7 +116,7 @@ button {
 }
 
 button:hover {
-  width: 202px;
+  width: 212px;
   height: 42px;
 }
 
