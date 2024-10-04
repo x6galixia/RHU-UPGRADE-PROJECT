@@ -138,12 +138,12 @@ button {
 
 
 @page {
-    size: A4;
-    margin: .2in;
+    size: Letter;
+    margin: .1in;
 }
 
 #labReqPrint {
-    padding: 2em 2em;
+    padding: 1em 1em;
     height: auto;
     border-radius: 0;
     border: 1px solid black;
@@ -151,11 +151,15 @@ button {
 }
 
 #resetaPrint {
-    padding: 2em 2em;
+    padding: 1em 1em;
     height: auto;
     border-radius: 0;
     border: 1px solid black;
     display: flex;
+}
+
+#resetaPrint, #labReqPrint  p {
+    font-size: 1.5rem;
 }
 
 
@@ -180,7 +184,7 @@ button {
         height: 100%;
         margin: 0;
         box-sizing: border-box;  
-        page-break-before: always;
+        page-break-before: auto;
     }
 
 
@@ -197,11 +201,11 @@ button {
 
 
 .head1 {
-    font-size: 2rem;
+    font-size: 2rem !important;
 }
 
 .head2 {
-    font-size: 1.8rem;
+    font-size: 1.8rem !important;
 }
 
 .b {
@@ -250,7 +254,7 @@ input[type="checkbox"] {
 }
 
 .d {
-    margin-top: 6em;
+    margin-top: 3em;
 }
 
 span {
