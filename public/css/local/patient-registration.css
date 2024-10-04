@@ -167,3 +167,28 @@ input[type="button"] {
     flex-grow: 0 !important;
 }
 
+#generate-id > main {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+#generate-id > main > button {
+    align-self: self-end;
+}
+
+.check{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 12px;
+}
+.check > button{
+    align-self: center;
+    width: 300px;
+}
+.check > .checkbox{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
