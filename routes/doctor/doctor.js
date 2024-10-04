@@ -79,11 +79,16 @@ async function fetchPatientList(page, limit) {
     const totalItemsResult = await rhuPool.query(`
       SELECT COUNT(*) as count
       FROM patients p
-      LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
-      LEFT JOIN doctor_visits dv ON p.patient_id = dv.patient_id
-      LEFT JOIN medtech_labs lr ON p.patient_id = lr.patient_id
-      LEFT JOIN rhu r ON p.rhu_id = r.rhu_id;
+      LEFT JOIN nurse_checks nc 
+        ON p.patient_id = nc.patient_id OR p.outsider_id = nc.outsider_id
+      LEFT JOIN doctor_visits dv 
+        ON p.patient_id = dv.patient_id OR p.outsider_id = dv.outsider_id
+      LEFT JOIN medtech_labs lr 
+        ON p.patient_id = lr.patient_id OR p.outsider_id = lr.outsider_id
+      LEFT JOIN rhu r 
+        ON p.rhu_id = r.rhu_id;
     `);
+
     const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
     const totalPages = Math.ceil(totalItems / limit);
 
@@ -95,11 +100,16 @@ async function fetchPatientList(page, limit) {
         dv.follow_date, dv.diagnosis, dv.findings, dv.category, dv.service, dv.medicine, dv.instruction, dv.quantity,
         lr.lab_result, r.rhu_name, r.rhu_address
       FROM patients p
-      LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
-      LEFT JOIN doctor_visits dv ON p.patient_id = dv.patient_id
-      LEFT JOIN medtech_labs lr ON p.patient_id = lr.patient_id
-      LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
-      ORDER BY p.first_name LIMIT $1 OFFSET $2`, [limit, offset]
+      LEFT JOIN nurse_checks nc 
+        ON p.patient_id = nc.patient_id OR p.outsider_id = nc.outsider_id
+      LEFT JOIN doctor_visits dv 
+        ON p.patient_id = dv.patient_id OR p.outsider_id = dv.outsider_id
+      LEFT JOIN medtech_labs lr 
+        ON p.patient_id = lr.patient_id OR p.outsider_id = lr.outsider_id
+      LEFT JOIN rhu r 
+        ON p.rhu_id = r.rhu_id
+      ORDER BY p.first_name 
+      LIMIT $1 OFFSET $2`, [limit, offset]
     );
 
     const data = formatPatientData(getPatientList.rows);

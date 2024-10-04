@@ -19,7 +19,7 @@ CREATE TABLE users (
 
 CREATE TABLE patients (
     patient_id SERIAL PRIMARY KEY NOT NULL,
-    outsider_id VARCHAR(255) NULL,
+    outsider_id VARCHAR(255) UNIQUE,
     rhu_id INTEGER REFERENCES rhu(rhu_id) ON DELETE CASCADE,
     last_name VARCHAR(50) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
@@ -42,6 +42,7 @@ CREATE TABLE patients (
 CREATE TABLE nurse_checks (
     id SERIAL PRIMARY KEY NOT NULL,
     patient_id INTEGER REFERENCES patients(patient_id) ON DELETE CASCADE,
+    outsider_id VARCHAR(255) NULL REFERENCES patients(outsider_id) ON DELETE CASCADE, 
     age INT NULL,
     check_date DATE NULL DEFAULT CURRENT_DATE,
     height INT NULL,
@@ -58,6 +59,7 @@ CREATE TABLE nurse_checks (
 CREATE TABLE doctor_visits (
     id SERIAL PRIMARY KEY NOT NULL,
     patient_id INTEGER REFERENCES patients(patient_id) ON DELETE CASCADE,
+    outsider_id VARCHAR(255) NULL REFERENCES patients(outsider_id) ON DELETE CASCADE,
     follow_date DATE NULL,
     diagnosis TEXT NULL,
     findings TEXT NULL,
@@ -71,6 +73,7 @@ CREATE TABLE doctor_visits (
 CREATE TABLE medtech_labs (
     id SERIAL PRIMARY KEY NOT NULL,
     patient_id INTEGER REFERENCES patients(patient_id) ON DELETE CASCADE,
+    outsider_id VARCHAR(255) NULL REFERENCES patients(outsider_id) ON DELETE CASCADE,
     lab_result TEXT NULL
 );
 

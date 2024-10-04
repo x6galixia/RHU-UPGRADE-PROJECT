@@ -77,13 +77,13 @@ router.post("/nurse/admit-patient", async (req, res) => {
     await rhuPool.query(
       `INSERT INTO patients (patient_id, outsider_id, rhu_id, last_name, first_name, middle_name, suffix, phone, gender, birthdate, house_no, street, barangay, city, province, occupation, email, philhealth_no, guardian) 
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)`,
-      [value.patient_id, value.outsider_id, rhu_id, value.last_name, value.first_name, value.middle_name, value.suffix, value.phone, value.gender, value.birthdate, value.house_no, value.street, value.barangay, value.city, value.province, value.occupation, value.email, value.philhealth_no, value.guardian]
+      [value.patient_id || null, value.outsider_id || null, rhu_id, value.last_name, value.first_name, value.middle_name || null, value.suffix || null, value.phone || null, value.gender, value.birthdate, value.house_no || null, value.street || null, value.barangay, value.city, value.province, value.occupation || null, value.email || null, value.philhealth_no || null, value.guardian || null]
     );
 
     await rhuPool.query(
-      `INSERT INTO nurse_checks (patient_id, age, check_date, height, weight, systolic, diastolic, temperature, heart_rate, respiratory_rate, bmi, comment) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
-      [value.patient_id, value.age, value.check_date || 'DEFAULT', value.height, value.weight, value.systolic, value.diastolic, value.temperature, value.heart_rate, value.respiratory_rate, value.bmi, value.comment]
+      `INSERT INTO nurse_checks (patient_id, outsider_id, age, check_date, height, weight, systolic, diastolic, temperature, heart_rate, respiratory_rate, bmi, comment) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+      [value.patient_id || null, value.outsider_id || null, value.age || null, value.check_date || 'DEFAULT', value.height, value.weight, value.systolic, value.diastolic, value.temperature, value.heart_rate, value.respiratory_rate, value.bmi, value.comment || null]
     );
 
     res.redirect("/nurse-dashboard");
