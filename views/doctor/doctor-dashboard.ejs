@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="table-container">
-            <div id="loadingSpinner" style="display:none;">Loading...</div>
+            <div id="loadingSpinner">Loading...</div>
             <table>
                 <thead>
                     <tr>
@@ -206,11 +206,13 @@
               <button>Add more</button>
             </div>
             <div class="btn-l">
-              <button>Print</button>
+              <button onclick="printingReqReseta('labReqPrint')">Print</button>
               <button>Submit</button>
             </div>
           </div>
         </div>
+
+        <!-- Nasa pinakababa yung printtt -->
 
         <!-- pop up for diagnosis-->
          <div class="pop-up" id="diagnosis">
@@ -488,16 +490,136 @@
 
            </div>
            <div class="btn-l">
-            <button>Print</button>
+            <button onclick="printingReqReseta('resetaPrint')">Print</button>
             <button>Submit</button>
           </div>
          </div>
 
          </div>
 
-        <div class="overlay"></div> 
+        <div class="overlay"></div>
+        
+        
+
+        <!-- print lab request!!! -->
+         <div class="LabReqPrint b" id="labReqPrint" style="display: none;">
+          <div class="row gap b">
+            <img src="../img/global/lgu-logo.png" alt="" class="logo-print" height="100">
+            <div class="col align-item">
+              <p class="head2">City of Borongan</p>
+              <p class="head1">CITY HEALTH OFFICE</p>
+            </div>
+            <img src="../img/global/DA-logo.png" alt="" class="logo-print" height="100">
+          </div>
+          <div class="b m-top">
+            <p class="head1 b-p">LABORATORY REQUEST</p>
+          </div>
+          <div class="infoooo col">
+            <p>Name: <span></span></p>
+            <div class="row">
+              <p class="s">Age: <span></span></p>
+              <p class="s">Sex: <span></span></p>
+              <p class="grow">Date: <span></span></p>
+            </div>
+            <p>Address: <span></span></p>
+            <div class="row">
+              <p class="grow">Birth: <span></span></p>
+              <p class="grow">Occ: <span></span></p>
+            </div>
+            <p>Parent/s: <span></span></p>
+          </div>
+          <div class="h-line"></div>
+          <div class="row align-item p-s gap">
+            <p>Fasting: <input type="checkbox"></p>
+            <p>None: <input type="checkbox"></p>
+            <p>8-10 Hours: <input type="checkbox"></p>
+            <p>10-12 Hours: <input type="checkbox"></p>
+          </div>
+          <div class="row lgap grid-two-col cat">
+            <div style="align-self: start;">
+              <p>Categories</p>
+              <ul>
+                <li>Hematology</li>
+              </ul>
+            </div>
+            <div style="align-self: start;">
+              <p>Services</p>
+              <ul>
+                <li>Plateletes</li>
+              </ul>
+            </div>
+          </div>
+          <div class="btn-l cat d">
+            <p class="h2"><strong>DR. JOHN KELLY B. CAINDAY, JD</strong></p>
+            <p>Lic No: 0127303</p>
+            <p><strong>Rural Health Physician</strong></p>
+          </div>
+
+         </div>
+
+
+        <!-- print Reseta -->
+         <div class="ResetaPrint b" id="resetaPrint" style="display: none;">
+          <div class="row gap b">
+            <img src="../img/global/lgu-logo.png" alt="" class="logo-print" height="100">
+            <div class="col align-item">
+              <p class="head2">City of Borongan</p>
+              <p class="head1">CITY HEALTH OFFICE</p>
+            </div>
+            <img src="../img/global/DA-logo.png" alt="" class="logo-print" height="100">
+          </div>
+          <div class="m-top">
+            <p class="b-p head2">HCVD; T2DM: dvslipidemia</p>
+          </div>
+          <div class="infoooo col">
+            <p>Name: <span></span></p>
+            <div class="row">
+              <p class="s">Age: <span></span></p>
+              <p class="s">Sex: <span></span></p>
+              <p class="grow">Date: <span></span></p>
+            </div>
+            <p>Address: <span></span></p>
+            <div class="row">
+              <p class="grow">Birth: <span></span></p>
+              <p class="grow">Occ: <span></span></p>
+            </div>
+            <p>Parent/s: <span></span></p>
+          </div>
+          <div class="h-line"></div>
+          <div>
+            <p>Prescription for date:</p>
+            <h1 class="ha">Rx</h1>
+            <p class="b-p">1. Amlodipine 5mg <span>#100</span></p>
+            <p>Sig. Take every morning</p>
+            <p class="b-p">2. Losartan 50mg <span>#100</span></p>
+            <p>Sig. Take every morning</p>
+          </div>
+          <div class="btn-l cat d">
+            <p class="h2"><strong>DR. JOHN KELLY B. CAINDAY, JD</strong></p>
+            <p>Lic No: 0127303</p>
+            <p><strong>Rural Health Physician</strong></p>
+          </div>
+
+         </div>
+
     </main>
     <script src="../../js/local/doctor-dashboard/patient-api.js"></script>
     <script src="../../js/global/pop-up.js"></script>
+    <script>
+      function printingReqReseta (containerID) {
+        var reseta = document.getElementById('resetaPrint');
+        var reqLab = document.getElementById('labReqPrint');
+
+        if (containerID === 'resetaPrint'){
+          reseta.classList.add('show');
+          reqLab.classList.remove('show');
+        }else if (containerID === 'labReqPrint'){
+          reqLab.classList.add('show');
+          reseta.classList.remove('show');
+        }
+        window.print();
+        
+      }
+    </script>
 </body>
 </html>
