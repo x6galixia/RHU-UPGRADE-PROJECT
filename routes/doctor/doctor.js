@@ -12,9 +12,9 @@ router.get("/doctor-dashboard", async (req, res) => {
     const { getPatientList, totalPages } = await fetchPatientList(page, limit);
 
     if (isAjax) {
-      return res.json({ 
+      return res.json({
         getPatientList,
-        currentPage: page, 
+        currentPage: page,
         totalPages,
         limit
       });

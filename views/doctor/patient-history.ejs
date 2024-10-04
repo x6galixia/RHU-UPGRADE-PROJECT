@@ -1,180 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/global/general.css" />
-    <link rel="stylesheet" href="../css/local/patient-history.css" />
-    <title>Patient History</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/global/general.css" />
+  <link rel="stylesheet" href="../css/local/patient-history.css" />
+  <title>Patient History</title>
 </head>
+
 <body>
-    <%- include("../includes/header.ejs")  %>
-    <main>
-        <h1 class="headings">PATIENT HISTORY</h1>
-        <div class="health-btn-div">
-            <button class="health-btn">HEALTH ASSESMENT</button>
+  <%- include("../includes/header.ejs")  %>
+  <main>
+    <h1 class="headings">PATIENT HISTORY</h1>
+    <div class="health-btn-div">
+      <button class="health-btn">HEALTH ASSESMENT</button>
+    </div>
+    <div class="history-container">
+      <div class="b date-container">
+        <h1 class="form-header">Date</h1>
+        <p>bruh</p>
+      </div>
+      <div class="b info-container">
+        <!-- Patient information -->
+        <h1 class="form-header">PATIENT INFORMATION</h1>
+        <div class="patient-info">
+          <div class="inputs">
+            <label for="">Name:</label>
+            <input type="text">
+          </div>
+          <div class="inputs">
+            <label for="">Philhealth No:</label>
+            <input type="text">
+          </div>
+          <div class="inputs">
+            <label for="">Suffix:</label>
+            <input type="text">
+          </div>
+          <div class="inputs">
+            <label for="">Mobile No.</label>
+            <input type="text">
+          </div>
+          <div class="inputs">
+            <label for="">Birthdate:</label>
+            <input type="date">
+          </div>
+          <div class="inputs">
+            <label for="">Email:</label>
+            <input type="text">
+          </div>
+          <div class="inputs">
+            <label for="">Gender:</label>
+            <select name="" id="">
+              <option value="">Male</option>
+              <option value="">Female</option>
+            </select>
+          </div>
+          <div class="inputs">
+            <label for="">Occupation:</label>
+            <input type="text">
+          </div>
+          <div class="inputs">
+            <label for="">Guardian:</label>
+            <input type="text">
+          </div>
+          <div class="inputs">
+            <label for="">Address:</label>
+            <input type="text">
+          </div>
         </div>
-        <div class="history-container">
-            <div class="b date-container">
-                <h1 class="form-header">Date</h1>
-                <p>bruh</p>
-            </div>
-            <div class="b info-container">
-                <!-- Patient information -->
-                <h1 class="form-header">PATIENT INFORMATION</h1>
-                <div class="patient-info">
-                    <div class="inputs">
-                        <label for="">Name:</label>
-                        <input type="text">
-                    </div>
-                    <div class="inputs">
-                        <label for="">Philhealth No:</label>
-                        <input type="text">
-                    </div>
-                    <div class="inputs">
-                        <label for="">Suffix:</label>
-                        <input type="text">
-                    </div>
-                    <div class="inputs">
-                        <label for="">Mobile No.</label>
-                        <input type="text">
-                    </div>
-                    <div class="inputs">
-                        <label for="">Birthdate:</label>
-                        <input type="date">
-                    </div>
-                    <div class="inputs">
-                        <label for="">Email:</label>
-                        <input type="text">
-                    </div>
-                    <div class="inputs">
-                        <label for="">Gender:</label>
-                        <select name="" id="">
-                            <option value="">Male</option>
-                            <option value="">Female</option>
-                        </select>
-                    </div>
-                    <div class="inputs">
-                        <label for="">Occupation:</label>
-                        <input type="text">
-                    </div>
-                    <div class="inputs">
-                        <label for="">Guardian:</label>
-                        <input type="text">
-                    </div>
-                    <div class="inputs">
-                        <label for="">Address:</label>
-                        <input type="text">
-                    </div>
-                </div>
 
-                <!-- Medical records -->
-                <h1 class="form-header m">MEDICAL RECORDS</h1>
-                <div class="patient-info">
-                    <div class="inputs">
-                        <label for="">Height:</label>
-                        <input type="number">
-                    </div>
-                    <div class="inputs">
-                        <label for="">Temperature:</label>
-                        <input type="text">
-                    </div>
-                    <div class="inputs">
-                        <label for="">Weight:</label>
-                        <input type="text">
-                    </div>
-                    <div class="inputs">
-                        <label for="">Heart Rate:</label>
-                        <input type="text">
-                    </div>
-                    <div class="inputs">
-                        <label for="">Systolic:</label>
-                        <input type="text">
-                    </div>
-                    <div class="inputs">
-                        <label for="">BMI:</label>
-                        <input type="text">
-                    </div>
-                    <div class="inputs">
-                        <label for="">Temperature:</label>
-                        <select name="" id="">
-                            <option value="">Male</option>
-                            <option value="">Female</option>
-                        </select>
-                    </div>
-                    <div class="inputs">
-                        <label for="">Blood Type:</label>
-                        <input type="text">
-                    </div>
-                    <div class="wide-inputs">
-                        <label for="">Comment:</label>
-                        <Textarea></Textarea>
-                    </div>
-                </div>
+        <!-- Medical records -->
+        <h1 class="form-header m">MEDICAL RECORDS</h1>
+        <div class="patient-info">
+          <div class="inputs">
+            <label for="">Height:</label>
+            <input type="number">
+          </div>
+          <div class="inputs">
+            <label for="">Temperature:</label>
+            <input type="text">
+          </div>
+          <div class="inputs">
+            <label for="">Weight:</label>
+            <input type="text">
+          </div>
+          <div class="inputs">
+            <label for="">Heart Rate:</label>
+            <input type="text">
+          </div>
+          <div class="inputs">
+            <label for="">Systolic:</label>
+            <input type="text">
+          </div>
+          <div class="inputs">
+            <label for="">BMI:</label>
+            <input type="text">
+          </div>
+          <div class="inputs">
+            <label for="">Temperature:</label>
+            <select name="" id="">
+              <option value="">Male</option>
+              <option value="">Female</option>
+            </select>
+          </div>
+          <div class="inputs">
+            <label for="">Blood Type:</label>
+            <input type="text">
+          </div>
+          <div class="wide-inputs">
+            <label for="">Comment:</label>
+            <Textarea></Textarea>
+          </div>
+        </div>
 
-                <!-- laboratories -->
-                <h1 class="form-header m">Laboratories  </h1>
-                <div class="patient-info">
-                    <div class="listing">
-                        <p>Categories</p>
-                        <ul>
-                            <li>Blood Gasses</li>
-                        </ul>
-                    </div>
-                    <div class="listing">
-                        <p>Services</p>
-                        <ul>
-                            <li>Oxygen(02)</li>
-                        </ul>
-                    </div>
-                    <div class="listing ">
-                        <p>Lab. Result</p>
-                        <ul>
-                            <li>Lab result image</li>
-                        </ul>
-                    </div>
-                </div>
+        <!-- laboratories -->
+        <h1 class="form-header m">Laboratories </h1>
+        <div class="patient-info">
+          <div class="listing">
+            <p>Categories</p>
+            <ul>
+              <li>Blood Gasses</li>
+            </ul>
+          </div>
+          <div class="listing">
+            <p>Services</p>
+            <ul>
+              <li>Oxygen(02)</li>
+            </ul>
+          </div>
+          <div class="listing ">
+            <p>Lab. Result</p>
+            <ul>
+              <li>Lab result image</li>
+            </ul>
+          </div>
+        </div>
 
-                <!-- Prescriptions -->
-                <h1 class="form-header m">Prescriptions</h1>
-                <div class="patient-info">
-                    <div class="inputs">
-                        <label for="">Height:</label>
-                        <input type="number">
-                    </div>
-                    <div class="inputs">
-                        <label for="">Temperature:</label>
-                        <input type="text">
-                    </div>
-                </div>
+        <!-- Prescriptions -->
+        <h1 class="form-header m">Prescriptions</h1>
+        <div class="patient-info">
+          <div class="inputs">
+            <label for="">Height:</label>
+            <input type="number">
+          </div>
+          <div class="inputs">
+            <label for="">Temperature:</label>
+            <input type="text">
+          </div>
+        </div>
 
-                <div class="m patient-info">
-                    <div class="listing">
-                        <p><u>Medicines</u></p>
-                        <ul>
-                            <li>Paracetamol</li>
-                        </ul>
-                    </div>
-                    <div class="listing">
-                        <p><u>Quantity</u></p>
-                        <ul>
-                            <li>5</li>
-                        </ul>
-                    </div>
-                    <div class="listing ">
-                        <p><u>Instruction</u></p>
-                        <ul>
-                            <li>2 tabs a day until okay, mwah</li>
-                        </ul>
-                    </div>
-                </div>
+        <div class="m patient-info">
+          <div class="listing">
+            <p><u>Medicines</u></p>
+            <ul>
+              <li>Paracetamol</li>
+            </ul>
+          </div>
+          <div class="listing">
+            <p><u>Quantity</u></p>
+            <ul>
+              <li>5</li>
+            </ul>
+          </div>
+          <div class="listing ">
+            <p><u>Instruction</u></p>
+            <ul>
+              <li>2 tabs a day until okay, mwah</li>
+            </ul>
+          </div>
+        </div>
 
 
-                <!-- End of info-container-->
-            </div>
+        <!-- End of info-container-->
+      </div>
 
-            <!-- end of history container -->
-        </div>   
-    </main>
+      <!-- end of history container -->
+    </div>
+  </main>
 </body>
+
 </html>

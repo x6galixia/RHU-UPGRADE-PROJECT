@@ -1,60 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link
-    rel="shortcut icon"
-    type="image/png"
-    href=""
-  />
-    <title>PHARMACY|Inventory</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/global/general.css" />
-    <link rel="stylesheet" href="../css/local/index-form.css" />
-  </head>
-  <body>
-    <%- include("../includes/header.ejs")  %>
-    <h1 class="headings">BENEFICIARY INDEX FORM</h1>
-    <main>
-      <div class="beneficiary-info">
-        <div class="info">
-          <div>
-            Beneficiary Name: <input type="text">
-          </div>
-          <div>
-            Gender: <input type="text"> Age: <input type="number">
-          </div>
-          <div>
-            Address: <input type="text">
-          </div>
-          <div>
-            Contact Number: <input type="text"> Senior Citizen: <input type="text"> PWD: <input type="text">
-          </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="shortcut icon" type="image/png" href="" />
+  <title>PHARMACY | INVENTORY</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/global/general.css" />
+  <link rel="stylesheet" href="../css/local/index-form.css" />
+</head>
+
+<body>
+  <%- include("../includes/header.ejs")  %>
+  <h1 class="headings">BENEFICIARY INDEX FORM</h1>
+  <main>
+    <div class="beneficiary-info">
+      <div class="info">
+        <div>
+          Beneficiary Name: <input type="text">
         </div>
         <div>
-          <img src="../img/local/jr.png" alt="">
+          Gender: <input type="text"> Age: <input type="number">
+        </div>
+        <div>
+          Address: <input type="text">
+        </div>
+        <div>
+          Contact Number: <input type="text"> Senior Citizen: <input type="text"> PWD: <input type="text">
         </div>
       </div>
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>TRANSACTION #</th>
-              <th>PRODUCT DETAILS</th>
-              <th>QUANTITY</th>
-              <th>BATCH NO.</th>
-              <th>EXPIRATION DATE</th>
-              <th>PRESCRIBING DOCTOR</th>
-              <th>REQUESTING PERSON</th>
-              <th>RELATIONSHIP TO BENEFICIARY</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+      <div>
+        <img src="../img/local/jr.png" alt="">
       </div>
-      <div class="print">
-        <button>PRINT</button>
-      </div>
-    </main>
-  </body>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>TRANSACTION #</th>
+            <th>PRODUCT DETAILS</th>
+            <th>QUANTITY</th>
+            <th>BATCH NO.</th>
+            <th>EXPIRATION DATE</th>
+            <th>PRESCRIBING DOCTOR</th>
+            <th>REQUESTING PERSON</th>
+            <th>RELATIONSHIP TO BENEFICIARY</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="print">
+      <button>PRINT</button>
+    </div>
+  </main>
+</body>
+
 </html>
