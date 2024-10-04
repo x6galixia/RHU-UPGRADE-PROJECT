@@ -24,8 +24,12 @@ header {
 header > .logo-menu > .menu > img {
   width: 24px;
 }
-header > .profile > img {
+header > .profile1 > img {
   width: 40px;
+}
+header > .logo > img {
+  width: auto;
+  height: 45px;
 }
 
 .headings {
