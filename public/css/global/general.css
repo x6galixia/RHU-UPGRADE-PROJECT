@@ -27,6 +27,12 @@ header > .logo-menu > .menu > img {
 header > .profile1 > img {
   width: 40px;
 }
+header > .profile1 > .notif {
+  width: 40px;
+  height: 35px;
+  margin-right: 12px;
+}
+
 header > .logo > img {
   width: auto;
   height: 45px;
