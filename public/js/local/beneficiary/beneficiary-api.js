@@ -182,11 +182,11 @@ document.addEventListener("DOMContentLoaded", function () {
         paginationNav.innerHTML = '';
 
         if (currentPage > 1) {
-            paginationNav.innerHTML += `<a href="?page=${currentPage - 1}&limit=${limit}" aria-label="Previous Page">Previous</a>`;
+            paginationNav.innerHTML += `<a class="prev" href="?page=${currentPage - 1}&limit=${limit}" aria-label="Previous Page">Previous</a>`;
         }
 
         if (currentPage < totalPages) {
-            paginationNav.innerHTML += `<a href="?page=${currentPage + 1}&limit=${limit}" aria-label="Next Page">Next</a>`;
+            paginationNav.innerHTML += `<a class="next" href="?page=${currentPage + 1}&limit=${limit}" aria-label="Next Page">Next</a>`;
         }
 
      // Re-attach the event listeners after updating the pagination links
