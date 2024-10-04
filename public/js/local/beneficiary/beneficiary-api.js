@@ -327,14 +327,28 @@ document.addEventListener("DOMContentLoaded", function () {
                         fileInput.value = '';
                     }
 
-                    const jsonString = `{ "beneficiary_id": "${beneficiaryData.beneficiary_id}" }`;
 
-                    const qr = qrcode(0, 'L');
-                    qr.addData(jsonString);
-                    qr.make();
+                    async function generateQRCode() {
+                        const json = `{ "beneficiary_id": "${beneficiaryData.beneficiary_id}" }`;
+                    
+                        const secretKey = "yourSecretKey"; // Use a strong secret key for encryption
+                        const encryptedData = encryptData(json, secretKey); // Encrypt the JSON data
+                        console.log("Encrypted Data:", encryptedData);
+                    
+                        // Now proceed with the QR code generation
+                        const qr = qrcode(0, 'L');
+                        qr.addData(encryptedData); // Add encrypted data to QR code
+                        qr.make();
+                    
+                        const size = 4;
+                        document.getElementById('qrcode').innerHTML = qr.createImgTag(size, size);
+                        const decryptedData = decryptData(encryptedData, secretKey);
 
-                    const size = 6;
-                    document.getElementById('qrcode').innerHTML = qr.createImgTag(size, size);
+                        // Log the decrypted data to the console
+                        console.log("Decrypted Data:", decryptedData);
+                    }
+                    
+                    generateQRCode();
                     
                 })
                 .catch(error => {
@@ -342,7 +356,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     alert('Failed to fetch beneficiary data. Please try again.');
                 });
         }
-    };     
+    };    
+    
+    function encryptData(data, secretKey) {
+        return CryptoJS.AES.encrypt(data, secretKey).toString();
+    }
+    
+    // Decrypt function
+    function decryptData(cipherText, secretKey) {
+        const bytes = CryptoJS.AES.decrypt(cipherText, secretKey);
+        return bytes.toString(CryptoJS.enc.Utf8);
+    }
+    
 
     function deleteBeneficiary(beneficiaryId) {
         console.log('Sending DELETE request for ID:', beneficiaryId);

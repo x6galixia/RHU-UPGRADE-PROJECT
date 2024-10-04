@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/global/general.css" />
     <link rel="stylesheet" href="../css/local/patient-registration.css" />
+    <link rel="stylesheet" href="../css/local/id.css" />
     <title>Document</title>
 </head>
 <body>
@@ -23,7 +24,6 @@
 
             <!-- Patient information na container :) -->
             <div class="sub-con patients-information-container">
-                <img src="../icon/qr.svg" alt="">
                 <div class="patient-head">
                     <h2 class="form-header">PATIEN INFORMATION</h2>
                 </div>
@@ -33,16 +33,16 @@
                             <label for="uniqId">Unique ID:</label>
                             <input type="text">
                         </div>
-                        <div>
+                        <!-- <div>
                             <div class="btn-layout" id="hide-search">
                                 <input type="search" class="g" placeholder="Search ID">
-                                <input type="button" id="exit-search" value="X" style="color: white;">
+                                <input type="button" id="exit-search" value="X" style="color: white; cursor: pointer;">
                             </div>
                             <div class="btn-layout" id="show-btn">
                                 <button id="grrr">Generate ID</button>
-                                <input type="button" id="search-btn">
+                                <input type="button" id="search-btn" style="cursor: pointer;">
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="r">
                         <div>
@@ -114,6 +114,13 @@
                             <input type="number">
                         </div>
                     </div>
+                    <div class="check">
+                        <div class="checkbox">
+                            <input type="checkbox">
+                            <label for="">Bagohan ba in na user?</label>
+                        </div>
+                        <button class="button-pink">Generate ID</button>
+                    </div>
                 </div>
             </div>
 
@@ -172,10 +179,66 @@
                     </div>
                 </div>
                 <div>
-                    <button class="submit-button">Submit</button>
+                    <button class="submit-button">SUBMIT</button>
                 </div>
             </div>
         </div>
+        <div class="pop-up" id="generate-id" style="display: none;">
+            <div class="close-container">
+              <img src="../icon/close.svg" alt="" class="close_popUp">
+            </div>
+            <h1 class="heading">MULTI-PURPOSE ID</h1>
+            <main class="id-container">
+              <div id="id-container">
+                <div class="all">
+                  <div class="rec11">
+                    <img class="rec1" src="../img/id-img/rec1.png" />
+                  </div>
+                  <div class="three">
+                    <div class="prof">
+                      <img class="profile" id="beneficiary-picture" src="../img/local/jr.png" />
+                    </div>
+            
+                    <div class="info">
+                      <p class="name" id="beneficiary-name">JOHN REY B. PAGASPAS</p>
+                      <p class="status" id="beneficiary-status">Student</p>
+                      <div class="rectangle"></div>
+            
+                      <div class="i1-t">
+                        <img class="icon1" src="../img/id-img/icon1.png" />
+                        <p class="address" id="beneficiary-address">Maypangdan Borongan Eastern Samar</p>
+                      </div>
+        
+                      <div class="i3-t">
+                        <img class="icon3" src="../img/id-img/icon3.png" />
+                        <p class="phoneno." id="beneficiary-phone">09970752488</p>
+                      </div>
+                    </div>
+            
+                    <div class="qrr" id="qrcode">
+                    </div>
+            
+                    <div class="recd11">
+                      <img class="recd1" src="../img/id-img/recd1.png" />
+                    </div>
+            
+                    <div class="recd22">
+                      <img class="recd2" src="../img/id-img/recd2.png" />
+                    </div>
+            
+                    <div class="recd33">
+                      <img class="recd3" src="../img/id-img/recd3.png" />
+                    </div>
+            
+                    <div class="recd44">
+                      <img class="recd4" src="../img/id-img/recd4.png" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button class="button-green" onclick="printContainer('id-container')">PRINT</button>
+            </main>
+          </div>
         <script>
             var showGenerateID = document.getElementById('show-btn');
             var hideGenerateID = document.getElementById('hide-search');
