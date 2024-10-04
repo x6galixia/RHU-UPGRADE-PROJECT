@@ -466,14 +466,21 @@ async function fetchBeneficiaryList(page, limit) {
     const totalPages = Math.ceil(totalItems / limit);
 
     const beneficiaryList = await pharmacyPool.query(
-      `SELECT * FROM beneficiary ORDER BY first_name LIMIT $1 OFFSET $2`, [limit, offset]
+      `SELECT b.*, 
+              COALESCE(json_agg(t) FILTER (WHERE t.id IS NOT NULL), '[]') AS transaction_records 
+       FROM beneficiary b
+       LEFT JOIN transaction_records t ON b.beneficiary_id = t.beneficiary_id
+       GROUP BY b.beneficiary_id
+       ORDER BY b.first_name 
+       LIMIT $1 OFFSET $2`, [limit, offset]
     );
 
     const data = beneficiaryList.rows.map(row => ({
       ...row,
       middle_name: row.middle_name ? row.middle_name : '',
       age: calculateAge(row.birthdate),
-      senior_citizen: isSeniorCitizen(row.age)
+      senior_citizen: isSeniorCitizen(row.age),
+      transaction_records: row.transaction_records ? row.transaction_records : []
     }));
 
     return { getBeneficiaryList: data, totalPages };

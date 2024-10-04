@@ -11,13 +11,9 @@
   <link rel="stylesheet" href="../css/local/id.css" />
   <link rel="stylesheet" href="../css/local/pharmacy-beneficiary-records.css" />
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <title>HealthSync</title>
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="../img/global/healthvector.png"
-    />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <title>HealthSync</title>
+  <link rel="shortcut icon" type="image/png" href="../img/global/healthvector.png" />
 </head>
 
 <body>
@@ -86,7 +82,10 @@
           <div class="row">
             <div class="input-w8-label" id="masubad">
               <label>Gender</label>
-              <input type="text" aria-label="Gender" name="gender" required>
+              <select name="gender" aria-label="Gender" id="" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
             </div>
             <div class="input-w8-label">
               <label>Birthdate</label>
@@ -202,7 +201,10 @@
           <div class="row">
             <div class="input-w8-label" id="masubad">
               <label>Gender</label>
-              <input type="text" aria-label="Gender" id="gender" name="gender" required>
+              <select name="gender" aria-label="Gender" id="gender" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
             </div>
             <div class="input-w8-label">
               <label>Birthdate</label>

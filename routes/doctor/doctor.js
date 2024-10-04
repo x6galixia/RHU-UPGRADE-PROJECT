@@ -79,11 +79,16 @@ async function fetchPatientList(page, limit) {
     const totalItemsResult = await rhuPool.query(`
       SELECT COUNT(*) as count
       FROM patients p
-      LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
-      LEFT JOIN doctor_visits dv ON p.patient_id = dv.patient_id
-      LEFT JOIN medtech_labs lr ON p.patient_id = lr.patient_id
-      LEFT JOIN rhu r ON p.rhu_id = r.rhu_id;
+      LEFT JOIN nurse_checks nc 
+        ON p.patient_id = nc.patient_id OR p.outsider_id = nc.outsider_id
+      LEFT JOIN doctor_visits dv 
+        ON p.patient_id = dv.patient_id OR p.outsider_id = dv.outsider_id
+      LEFT JOIN medtech_labs lr 
+        ON p.patient_id = lr.patient_id OR p.outsider_id = lr.outsider_id
+      LEFT JOIN rhu r 
+        ON p.rhu_id = r.rhu_id;
     `);
+
     const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
     const totalPages = Math.ceil(totalItems / limit);
 
@@ -91,15 +96,20 @@ async function fetchPatientList(page, limit) {
       SELECT
         p.patient_id, p.rhu_id, p.last_name, p.first_name, p.middle_name, p.suffix, p.phone, p.gender,
         p.birthdate, p.house_no, p.street, p.barangay, p.city, p.province, p.occupation, p.email, p.philhealth_no, p.guardian,
-        nc.check_date, nc.height, nc.weight, nc.systolic, nc.diastolic, nc.temperature, nc.heart_rate, nc.respiratory_rate, nc.bmi, nc.comment,
+        nc.age, nc.check_date, nc.height, nc.weight, nc.systolic, nc.diastolic, nc.temperature, nc.heart_rate, nc.respiratory_rate, nc.bmi, nc.comment,
         dv.follow_date, dv.diagnosis, dv.findings, dv.category, dv.service, dv.medicine, dv.instruction, dv.quantity,
         lr.lab_result, r.rhu_name, r.rhu_address
       FROM patients p
-      LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
-      LEFT JOIN doctor_visits dv ON p.patient_id = dv.patient_id
-      LEFT JOIN medtech_labs lr ON p.patient_id = lr.patient_id
-      LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
-      ORDER BY p.first_name LIMIT $1 OFFSET $2`, [limit, offset]
+      LEFT JOIN nurse_checks nc 
+        ON p.patient_id = nc.patient_id OR p.outsider_id = nc.outsider_id
+      LEFT JOIN doctor_visits dv 
+        ON p.patient_id = dv.patient_id OR p.outsider_id = dv.outsider_id
+      LEFT JOIN medtech_labs lr 
+        ON p.patient_id = lr.patient_id OR p.outsider_id = lr.outsider_id
+      LEFT JOIN rhu r 
+        ON p.rhu_id = r.rhu_id
+      ORDER BY p.first_name 
+      LIMIT $1 OFFSET $2`, [limit, offset]
     );
 
     const data = formatPatientData(getPatientList.rows);
@@ -118,7 +128,6 @@ function formatPatientData(rows) {
     check_date: formatDate(row.check_date),
     birthdate: formatDate(row.birthdate),
     follow_date: formatDate(row.follow_date),
-    age: calculateAge(row.birthdate),
   }));
 }
 
