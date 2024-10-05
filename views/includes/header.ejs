@@ -1,8 +1,24 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <header>
   <div class="logo" id="logo"><img src="../img/global/logohealth.png" alt=""></div>
   <div class="profile1">
     <img class="notif" src="../icon/notif.svg" alt="">
-    <img src="../icon/profile.svg" alt="" />
+    <img src="../icon/profile.svg" alt="Profile" class="icon" onclick="toggleDropdown()"/>
+    <div id="dropdown-menu" class="dropdown-content">
+      <div class="sectors">
+        <div class="iconing">
+          <img class="sub-icon" src="../icon/profile.svg" alt="">
+        </div>
+        <div class="sheesh">
+          <p>Adriane Garcia</p>
+          <p class="userT">Doctor</p>
+        </div>
+      </div>
+      <hr>
+      <a href="/"> <i class="fas fa-sign-out-alt"></i> Logout</a>
+   </div>
   </div>
 </header>
 <div class="overlay"></div>
+<script src="../js/global/logout.js"></script>
+<link rel="stylesheet" href="../css/global/general.css">
