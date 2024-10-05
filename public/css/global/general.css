@@ -362,3 +362,56 @@ input[type="checkbox"] {
   background-color: #44a130;
   color: #FFF;
 }
+/*LOGOUT BUTTON*/
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown .icon {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 240px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 4px;
+  overflow: hidden;
+  right: 20px;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #f40ebbc0;
+  color: white;
+}
+.sectors{
+  display: flex;
+  padding: 10px;
+  gap: 10px;
+}
+.sub-icon{
+  height: 43px;
+}
+.userT{
+  color: #696969;
+}
+.fas{
+  margin-right: 20px;
+}
+.icon{
+  cursor: pointer;
+}
