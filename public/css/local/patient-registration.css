@@ -213,11 +213,10 @@ input[type="button"] {
 }
 #recently-admitted-table{
     width: 50%;
-    max-height: 65%;
 }
 
 #recently-admitted-table .table-container{
-    max-height: 45vh;
+    max-height: 370px;
     overflow: visible;
     position:relative;
 }

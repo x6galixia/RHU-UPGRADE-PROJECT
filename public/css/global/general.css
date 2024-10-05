@@ -36,6 +36,7 @@ header > .profile1 > .notif {
 header > .logo > img {
   width: auto;
   height: 45px;
+  cursor: pointer;
 }
 
 .headings {
@@ -197,7 +198,8 @@ table >tbody > tr{
 }
 .sub-head > .nav1 > h2,
 .sub-head > .nav2 >h2,
-.sub-head > .nav3 >h2{
+.sub-head > .nav3 >h2,
+.sub-head > .nav4 >h2{
   padding: 10px;
   cursor: pointer;
 }
