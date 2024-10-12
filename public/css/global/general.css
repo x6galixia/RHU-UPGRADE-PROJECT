@@ -378,7 +378,12 @@ input[type="checkbox"] {
   overflow: hidden;
   right: 20px;
 }
-
+.logout-drop p {
+  font-size: 16px;
+}
+.logout-drop hr {
+  margin: 0 !important;
+}
 .logout-drop a {
   color: black;
   padding: 12px 16px;
@@ -421,18 +426,23 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
+/*NOTIFICATION DROPDOWN */
+
 .notification-drop {
-  display: none; /* Hidden by default */
+  display: none; 
   position: absolute;
-  top: 40px; /* Adjust this based on your layout */
+  top: 40px; 
   right: 80px;
   background-color: white;
   border: 1px solid #ddd;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  width: 400px; /* Set width as per your requirement */
-  margin-top: 10px;
+  width: 400px;
+  margin-top: 9px;
   z-index: 1000;
   border-radius: 10px;
+}
+.notification-drop hr{
+  margin: 0 !important;
 }
 
 .notif-separate {
@@ -443,7 +453,6 @@ input[type="checkbox"] {
 }
 .notif-separate:hover{
   background-color: #c2c2c2c0;
-  border-radius: 10px;
 }
 
 .notif-separate img {
@@ -471,6 +480,8 @@ input[type="checkbox"] {
 }
 .see-all:hover{
   background-color: #c2c2c2c0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 .notif-center{
   display: flex;
@@ -487,3 +498,23 @@ input[type="checkbox"] {
 .p-body{
   color: rgb(97, 97, 97);
 }
+.notif-head{
+  display: flex;
+  padding: 10px 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+.circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25px;   /* Set the width of the circle */
+  height: 25px;  /* Set the height of the circle */
+  background-color: red; /* Set the background color */
+  border-radius: 50%;
+  color: white;   /* This makes the div a circle */
+}
+
