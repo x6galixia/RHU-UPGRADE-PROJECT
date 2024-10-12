@@ -2,9 +2,56 @@
 <header>
   <div class="logo" id="logo"><img src="../img/global/logohealth.png" alt=""></div>
 
+  
   <div class="profile1">
-    
-    <img class="notif" src="../icon/notif.svg" alt="">
+    <img src="../icon/notif.svg" alt="Notification" class="notif" onclick="notifDropdown()"/>
+    <div id="notif-drop" class="notification-drop">
+      <div class="notif-separate">
+        <div class="notif-center">
+          <img class="icon-p" src="../icon/profile.svg" alt="">
+        </div>
+        <div>
+          <p class="p-head">
+            Doctor Adriane Garcia
+          </p>
+          <p class="p-body">
+            Send a laboratory request for patient Emma Silvero.
+          </p>
+        </div>
+        
+      </div> 
+      <div class="notif-separate">
+        <div class="notif-center">
+          <img class="icon-p" src="../icon/profile.svg" alt="">
+        </div>
+        <div>
+          <p class="p-head">
+            Nurse Eugene Gerna
+          </p>
+          <p class="p-body">
+            Sends a new patient.
+          </p>
+        </div>
+        
+      </div> 
+      <div class="notif-separate">
+        <div class="notif-center">
+          <img class="icon-p" src="../icon/profile.svg" alt="">
+        </div>
+        <div>
+          <p class="p-head">
+            Medtech Joel Carpio
+          </p>
+          <p class="p-body">
+            Sends laboratory results to doctor Garcia.
+          </p>
+        </div>
+        
+      </div>     
+      <div class="see-all">
+        <a  href="">See all</a>
+      </div>
+    </div>
 
     <img src="../icon/profile.svg" alt="Profile" class="icon" onclick="toggleDropdown()"/>
     <div id="log-drop" class="logout-drop">
@@ -19,10 +66,11 @@
       </div>
       <hr>
       <a href="/"> <i class="fas fa-sign-out-alt"></i> Logout</a>
-   </div>
+    </div>
   </div>
 
 </header>
 <div class="overlay"></div>
 <script src="../js/global/logout.js"></script>
+<script src="../js/global/notif.js"></script>
 <link rel="stylesheet" href="../css/global/general.css">
