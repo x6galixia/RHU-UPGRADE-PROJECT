@@ -36,6 +36,7 @@ header > .profile1 > .notif {
 header > .logo > img {
   width: auto;
   height: 45px;
+  cursor: pointer;
 }
 
 .headings {
@@ -197,7 +198,8 @@ table >tbody > tr{
 }
 .sub-head > .nav1 > h2,
 .sub-head > .nav2 >h2,
-.sub-head > .nav3 >h2{
+.sub-head > .nav3 >h2,
+.sub-head > .nav4 >h2{
   padding: 10px;
   cursor: pointer;
 }
@@ -361,4 +363,52 @@ input[type="checkbox"] {
 .menu button:hover{
   background-color: #44a130;
   color: #FFF;
+}
+/*LOGOUT BUTTON*/
+
+
+.logout-drop {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 240px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 4px;
+  overflow: hidden;
+  right: 20px;
+}
+
+.logout-drop a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.logout-drop a:hover {
+  background-color: #f40ebbc0;
+  color: white;
+}
+.sectors{
+  display: flex;
+  padding: 10px;
+  gap: 10px;
+}
+.sub-icon{
+  height: 43px;
+}
+.userT{
+  color: #696969;
+}
+.fas{
+  margin-right: 20px;
+}
+.icon{
+  cursor: pointer;
+}
+.sheesh > p{
+  margin: 0 !important;
+  width: 0 !important;
+  text-wrap: nowrap;
 }

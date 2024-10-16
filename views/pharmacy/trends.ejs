@@ -16,7 +16,7 @@
 
 <body>
   <%- include("../includes/header.ejs")  %>
-  <h1 class="headings">MAJOR ACCOMPLISHMENTS</h1>
+  <%- include("../includes/pharmacy-sub-head.ejs")  %>
   <main>
     <select name="" id="">
       <option value="">YEARLY</option>
@@ -312,6 +312,17 @@
       </div>
     </div>
   </main>
+  <script>
+    document.getElementById("logo").addEventListener('click', function(){
+      window.location.href = "/pharmacy-inventory";
+    })
+    document.addEventListener("DOMContentLoaded", function() {
+    var nav3 = document.querySelector(".nav4");
+    if (nav3) {
+      nav3.classList.toggle("selected");
+    }
+  });
+  </script>
 </body>
 
 </html>

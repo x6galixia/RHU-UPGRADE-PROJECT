@@ -61,8 +61,8 @@ router.get("/nurse/patient-registration", ensureAuthenticated, checkUserType("Nu
   res.render("nurse/patient-registration");
 });
 
-router.get("/nurse/individual-health-assesment", ensureAuthenticated, checkUserType("Nurse"), (req, res) => {
-  res.render("nurse/individual-health-assesment");
+router.get("/nurse/individual-health-assessment", ensureAuthenticated, checkUserType("Nurse"), (req, res) => {
+  res.render("nurse/individual-health-assessment");
 });
 
 router.post("/nurse/admit-patient", async (req, res) => {
