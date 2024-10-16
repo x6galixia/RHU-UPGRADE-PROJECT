@@ -86,7 +86,7 @@ router.post("/nurse/admit-patient", async (req, res) => {
       [value.patient_id || null, value.outsider_id || null, value.age || null, value.check_date || 'DEFAULT', value.height, value.weight, value.systolic, value.diastolic, value.temperature, value.heart_rate, value.respiratory_rate, value.bmi, value.comment || null]
     );
 
-    res.redirect("/nurse-dashboard");
+    res.redirect("/nurse/patient-registration");
   } catch (err) {
     console.error("Error: ", err);
     res.status(500).json({ error: "An internal server error occurred" });

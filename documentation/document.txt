@@ -125,7 +125,7 @@ CREATE TABLE transaction_records (
     relationship_beneficiary VARCHAR(100) NULL
 );
 
-CREATE TABLE inventory (
+CREATE TABLE inventory (-
     id SERIAL PRIMARY KEY NOT NULL,
     rhu_id INTEGER REFERENCES rhu(rhu_id) ON DELETE CASCADE,
     product_id VARCHAR(255) NOT NULL,
