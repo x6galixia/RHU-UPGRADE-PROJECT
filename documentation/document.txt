@@ -77,6 +77,49 @@ CREATE TABLE medtech_labs (
     lab_result TEXT NULL
 );
 
+CREATE TABLE patient_history (
+    id SERIAL PRIMARY KEY NOT NULL,
+    patient_id INTEGER REFERENCES patients(patient_id) ON DELETE CASCADE,
+    outsider_id VARCHAR(255) NULL REFERENCES patients(outsider_id) ON DELETE CASCADE,
+    rhu_id INTEGER REFERENCES rhu(rhu_id) ON DELETE CASCADE,
+    last_name VARCHAR(50) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    middle_name VARCHAR(50) NULL,
+    suffix VARCHAR(50) NULL,
+    phone VARCHAR(20) NULL,
+    gender VARCHAR(10) NULL CHECK (gender IN ('Male', 'Female')),
+    birthdate DATE NULL,
+    house_no VARCHAR(100) NULL, 
+    street VARCHAR(100) NULL,
+    barangay VARCHAR(100) NULL,
+    city VARCHAR(100) NULL,
+    province VARCHAR(100) NULL,
+    occupation VARCHAR(250) NULL,
+    email VARCHAR(50) NULL,
+    philhealth_no VARCHAR(100) NULL,
+    guardian VARCHAR(250) NULL,
+    age INT NULL,
+    check_date DATE NULL DEFAULT CURRENT_DATE,
+    height INT NULL,
+    weight INT NULL,
+    systolic INT NULL,
+    diastolic INT NULL,
+    temperature INT NULL,
+    heart_rate INT NULL,
+    respiratory_rate INT NULL,
+    bmi DECIMAL(5, 2) NULL,
+    comment TEXT NULL,
+    follow_date DATE NULL,
+    diagnosis TEXT NULL,
+    findings TEXT NULL,
+    category TEXT NULL,
+    service TEXT NULL,
+    medicine TEXT NULL,
+    instruction TEXT NULL,
+    quantity INT NULL,
+    lab_result TEXT NULL
+);
+
 CREATE INDEX idx_patient_id_nurse_checks ON nurse_checks(patient_id);
 CREATE INDEX idx_patient_id_doctor_visits ON doctor_visits(patient_id);
 CREATE INDEX idx_patient_id_medtech_labs ON medtech_labs(patient_id);
