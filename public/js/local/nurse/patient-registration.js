@@ -112,4 +112,46 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+
+    // qr scanning
+    const qrInputField = document.getElementById('qrInput');
+    
+    let scanning = false;
+    
+    document.addEventListener('keydown', function (event) {
+        if (event.key.length === 1) {
+            scanning = true;
+            qrInputField.focus();
+        }
+    });
+    
+    qrInputField.addEventListener('keypress', function (event) {
+        if (event.key === 'Enter') {
+            const scannedData = event.target.value;
+    
+            fetch('/nurse/scannedQR', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ qrCode: scannedData })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    
+            event.target.value = '';
+        }
+    });
+    
+    qrInputField.focus();
+    
+    qrInputField.addEventListener('focus', () => {
+        scanning = false;
+    });
 });
