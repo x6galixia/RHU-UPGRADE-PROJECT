@@ -7,9 +7,7 @@ const Joi = require("joi");
 router.use(setUserData);
 
 const patientSchema = Joi.object({
-
   patient_id: Joi.number().integer().optional(),
-  outsider_id: Joi.string().allow('').optional(),
   rhu_id: Joi.number().integer(),
   //nurse
   last_name: Joi.string().required(),
@@ -78,66 +76,42 @@ router.post("/nurse/admit-patient", async (req, res) => {
   try {
     await client.query('BEGIN');
 
-    // Step 1: Check if the patient exists based on either `patient_id` or `outsider_id`
-    let patientId = value.patient_id || null;
-    let outsiderId = value.outsider_id || null;
-
-    let patientResult;
-    if (patientId) {
-      patientResult = await client.query(
-        `SELECT patient_id FROM patients WHERE patient_id = $1`,
-        [patientId]
-      );
-    } else if (outsiderId) {
-      patientResult = await client.query(
-        `SELECT patient_id FROM patients WHERE outsider_id = $1`,
-        [outsiderId]
-      );
-    }
-
-    patientId = patientResult?.rows[0]?.patient_id || null;
-
-    // Step 2: If patient doesn't exist, insert into `patients`
-    if (!patientId) {
-      const newPatient = await client.query(
-        `INSERT INTO patients (outsider_id, rhu_id, last_name, first_name, middle_name, suffix, phone, gender, birthdate, house_no, street, barangay, city, province, occupation, email, philhealth_no, guardian) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING patient_id`,
-        [
-          outsiderId, rhu_id, value.last_name, value.first_name, 
-          value.middle_name || null, value.suffix || null, value.phone || null, 
-          value.gender, value.birthdate, value.house_no || null, value.street || null, 
-          value.barangay, value.city, value.province, value.occupation || null, 
-          value.email || null, value.philhealth_no || null, value.guardian || null
-        ]
-      );
-      patientId = newPatient.rows[0].patient_id;
-    }
-
-    // Step 3: Check if the patient has a record in `patient_history`
-    const historyResult = await client.query(
-      `SELECT * FROM patient_history WHERE patient_id = $1 OR outsider_id = $2`,
-      [patientId, outsiderId]
+    // Step 1: Check if the patient exists by looking up both `patient_id` and `outsider_id`
+    const patientResult = await client.query(
+      `SELECT patient_id, outsider_id FROM patients WHERE (patient_id = $1 AND patient_id IS NOT NULL) OR (outsider_id = $2 AND outsider_id IS NOT NULL)`,
+      [value.patient_id, value.outsider_id]
     );
 
-    // Step 4: Gather existing records from `nurse_checks`, `doctor_visits`, and `medtech_labs`
+    let patientId = null;
+    let outsiderId = null;
+
+    if (patientResult.rows.length > 0) {
+      // Set patientId and outsiderId based on the result from the database
+      patientId = patientResult.rows[0].patient_id;
+      outsiderId = patientResult.rows[0].outsider_id;
+    } else {
+      return res.status(400).json({ error: "Patient not found" });
+    }
+
+    // Step 2: Check for existing records in `nurse_checks`, `doctor_visits`, and `medtech_labs`
     const nurseCheckResult = await client.query(
-      `SELECT * FROM nurse_checks WHERE patient_id = $1 OR outsider_id = $2`,
+      `SELECT * FROM nurse_checks WHERE (patient_id = $1 AND patient_id IS NOT NULL) OR (outsider_id = $2 AND outsider_id IS NOT NULL)`,
       [patientId, outsiderId]
     );
 
     const doctorVisitResult = await client.query(
-      `SELECT * FROM doctor_visits WHERE patient_id = $1 OR outsider_id = $2`,
+      `SELECT * FROM doctor_visits WHERE (patient_id = $1 AND patient_id IS NOT NULL) OR (outsider_id = $2 AND outsider_id IS NOT NULL)`,
       [patientId, outsiderId]
     );
 
     const medtechLabResult = await client.query(
-      `SELECT * FROM medtech_labs WHERE patient_id = $1 OR outsider_id = $2`,
+      `SELECT * FROM medtech_labs WHERE (patient_id = $1 AND patient_id IS NOT NULL) OR (outsider_id = $2 AND outsider_id IS NOT NULL)`,
       [patientId, outsiderId]
     );
 
-    // Step 5: Move data from `nurse_checks`, `doctor_visits`, and `medtech_labs` to `patient_history` if records exist
+    // Step 3: Move records to `patient_history`
     if (nurseCheckResult.rows.length > 0 || doctorVisitResult.rows.length > 0 || medtechLabResult.rows.length > 0) {
-      // Move `nurse_checks` data
+      // Move `nurse_checks` data if it exists
       if (nurseCheckResult.rows.length > 0) {
         const checkData = nurseCheckResult.rows[0];
         await client.query(
@@ -154,10 +128,10 @@ router.post("/nurse/admit-patient", async (req, res) => {
             checkData.bmi, checkData.comment || null
           ]
         );
-        await client.query(`DELETE FROM nurse_checks WHERE patient_id = $1 OR outsider_id = $2`, [patientId, outsiderId]);
+        await client.query(`DELETE FROM nurse_checks WHERE (patient_id = $1 AND patient_id IS NOT NULL) OR (outsider_id = $2 AND outsider_id IS NOT NULL)`, [patientId, outsiderId]);
       }
 
-      // Move `doctor_visits` data
+      // Move `doctor_visits` data if it exists
       if (doctorVisitResult.rows.length > 0) {
         const visitData = doctorVisitResult.rows[0];
         await client.query(
@@ -170,10 +144,10 @@ router.post("/nurse/admit-patient", async (req, res) => {
             visitData.medicine || null, visitData.instruction || null, visitData.quantity || null
           ]
         );
-        await client.query(`DELETE FROM doctor_visits WHERE patient_id = $1 OR outsider_id = $2`, [patientId, outsiderId]);
+        await client.query(`DELETE FROM doctor_visits WHERE (patient_id = $1 AND patient_id IS NOT NULL) OR (outsider_id = $2 AND outsider_id IS NOT NULL)`, [patientId, outsiderId]);
       }
 
-      // Move `medtech_labs` data
+      // Move `medtech_labs` data if it exists
       if (medtechLabResult.rows.length > 0) {
         const labData = medtechLabResult.rows[0];
         await client.query(
@@ -181,15 +155,15 @@ router.post("/nurse/admit-patient", async (req, res) => {
           VALUES ($1, $2, $3)`,
           [labData.patient_id, labData.outsider_id, labData.lab_result || null]
         );
-        await client.query(`DELETE FROM medtech_labs WHERE patient_id = $1 OR outsider_id = $2`, [patientId, outsiderId]);
+        await client.query(`DELETE FROM medtech_labs WHERE (patient_id = $1 AND patient_id IS NOT NULL) OR (outsider_id = $2 AND outsider_id IS NOT NULL)`, [patientId, outsiderId]);
       }
     }
 
-    // Step 6: Insert new data into `nurse_checks`
+    // Step 4: Insert new data into `nurse_checks`
     await client.query(
       `INSERT INTO nurse_checks (patient_id, outsider_id, age, check_date, height, weight, systolic, diastolic, temperature, heart_rate, respiratory_rate, bmi, comment) 
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
-      [patientId, outsiderId, value.age || null, value.check_date || 'DEFAULT', value.height, value.weight, value.systolic, value.diastolic, value.temperature, value.heart_rate, value.respiratory_rate, value.bmi, value.comment || null]
+      [patientId || null, outsiderId || null, value.age || null, value.check_date || 'DEFAULT', value.height, value.weight, value.systolic, value.diastolic, value.temperature, value.heart_rate, value.respiratory_rate, value.bmi, value.comment || null]
     );
 
     await client.query('COMMIT');
@@ -202,7 +176,6 @@ router.post("/nurse/admit-patient", async (req, res) => {
     client.release();
   }
 });
-
 
 router.get('/scanner', (req, res) => {
   res.render('nurse/qrScanner');
