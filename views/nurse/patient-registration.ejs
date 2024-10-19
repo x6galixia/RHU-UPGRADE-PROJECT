@@ -18,6 +18,7 @@
 <body>
     <%- include("../includes/header.ejs")  %>
     <h1 class="headings">PATIENT REGISTRATION</h1>
+    <input type="text" id="qrInput" autofocus style="opacity: 0;" />
     <main>
         <div class="buttons">
             <div class="add-transfer">
@@ -27,170 +28,171 @@
         </div>
 
         <!-- Parent container ./. -->
-        <div class="container">
 
             <!-- Patient information na container :) -->
-             <form action="/nurse/admit-patient">x
-                <div class="sub-con patients-information-container">
-                    <div class="patient-head">
-                        <h2 class="form-header">PATIENT INFORMATION</h2>
-                    </div>
-                    <div class="information">
-                        <div class="r align">
-                            <div>
-                                <label for="uniqId">Unique ID:</label>
-                                <input type="text" id="outsiderID" required>
-                            </div>
+            <form action="/nurse/admit-patient">
+                <div class="container">
+                    <div class="sub-con patients-information-container">
+                        <div class="patient-head">
+                            <h2 class="form-header">PATIENT INFORMATION</h2>
                         </div>
-                        <div class="r">
-                            <div>
-                                <label for="lastName">Last Name</label>
-                                <input type="text" id="lastname" required>
-                            </div>
-                            <div>
-                                <label for="firstName">First Name</label>
-                                <input type="text" id="firstname" required>
-                            </div>
-                        </div>
-                        <div class="r">
-                            <div>
-                                <label for="middleName">Middle Name</label>
-                                <input type="text" id="middlename">
-                            </div>
-                            <div>
-                                <label for="suffix">Suffix</label>
-                                <input type="text" id="suffix">
-                            </div>
-                        </div>
-                        <div class="r">
-                            <div>
-                                <label for="address">Address: <span class="add">House no, Purok, Brgy, Municipality</span></label>
-                                <input type="text" required id="address">
-                            </div>
-                        </div>
-                        <div class="r">
-                            <div>
-                                <label for="birthDate">Birth date</label>
-                                <input type="date" required>
-                            </div>
-                            <div>
-                                <label for="Email">Email Address</label>
-                                <input type="text" required>
-                            </div>
-                        </div>
-                        <div class="r">
-                            <div>
-                                <label for="gender">Gender</label>
-                                <select name="" id="">
-                                    <option value="gender" selected disabled>Gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="guardian">Guardian</label>
-                                <input type="text" required>
-                            </div>
-                        </div>
-                        <div class="r">
-                            <div>
-                                <label for="date">Date</label>
-                                <input type="date" required>
-                            </div>
-                            <div>
-                                <label for="phoneNumber">Phone Number</label>
-                                <input type="number" id="phone" required>
-                            </div>
-                        </div>
-                        <div class="r">
-                            <div>
-                                <label for="philhealth">PhilHealth No.</label>
-                                <input type="number" required>
-                            </div>
-                            <div>
-                                <label for="occupation">Occupation</label>
-                                <input type="number" required>
-                            </div>
-                        </div>
-                        <div class="check">
-                            <div class="checkbox">
-                                <input type="checkbox" id="newUserCheck">
-                                <label for="newUserCheck">Bagohan ba in na user?</label>
-                            </div>
-                            <div class="generateID" style="display: none;">
-                                <div class="inputFile">
-                                    <input type="file" style="display: none;" id="ousiderPicture">
-                                    <div class="inputStyle" id="uploadArea">
-                                        <p>upload picture here</p>
-                                        <img src="../icon/upload.svg" alt="">
-                                    </div>
+                        <div class="information">
+                            <div class="r align">
+                                <div>
+                                    <label for="uniqId">Unique ID:</label>
+                                    <input type="text" id="outsiderID" required>
                                 </div>
-                                <button class="button-pink" id="generateIdButton" >Generate ID</button>
+                            </div>
+                            <div class="r">
+                                <div>
+                                    <label for="lastName">Last Name</label>
+                                    <input type="text" id="lastname" required>
+                                </div>
+                                <div>
+                                    <label for="firstName">First Name</label>
+                                    <input type="text" id="firstname" required>
+                                </div>
+                            </div>
+                            <div class="r">
+                                <div>
+                                    <label for="middleName">Middle Name</label>
+                                    <input type="text" id="middlename">
+                                </div>
+                                <div>
+                                    <label for="suffix">Suffix</label>
+                                    <input type="text" id="suffix">
+                                </div>
+                            </div>
+                            <div class="r">
+                                <div>
+                                    <label for="address">Address: <span class="add">House no, Purok, Brgy, Municipality</span></label>
+                                    <input type="text" required id="address">
+                                </div>
+                            </div>
+                            <div class="r">
+                                <div>
+                                    <label for="birthDate">Birth date</label>
+                                    <input type="date" required>
+                                </div>
+                                <div>
+                                    <label for="Email">Email Address</label>
+                                    <input type="text" required>
+                                </div>
+                            </div>
+                            <div class="r">
+                                <div>
+                                    <label for="gender">Gender</label>
+                                    <select name="" id="">
+                                        <option value="gender" selected disabled>Gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="guardian">Guardian</label>
+                                    <input type="text" required>
+                                </div>
+                            </div>
+                            <div class="r">
+                                <div>
+                                    <label for="date">Date</label>
+                                    <input type="date" required>
+                                </div>
+                                <div>
+                                    <label for="phoneNumber">Phone Number</label>
+                                    <input type="number" id="phone" required>
+                                </div>
+                            </div>
+                            <div class="r">
+                                <div>
+                                    <label for="philhealth">PhilHealth No.</label>
+                                    <input type="number" required>
+                                </div>
+                                <div>
+                                    <label for="occupation">Occupation</label>
+                                    <input type="number" required>
+                                </div>
+                            </div>
+                            <div class="check">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="newUserCheck">
+                                    <label for="newUserCheck">Bagohan ba in na user?</label>
+                                </div>
+                                <div class="generateID" style="display: none;">
+                                    <div class="inputFile">
+                                        <input type="file" style="display: none;" id="ousiderPicture">
+                                        <div class="inputStyle" id="uploadArea">
+                                            <p>upload picture here</p>
+                                            <img src="../icon/upload.svg" alt="">
+                                        </div>
+                                    </div>
+                                    <button class="button-pink" id="generateIdButton" >Generate ID</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
 
-                <!-- Vital sign na container :) -->
-                <div class="sub-con vital-sign-container">
-                    <div class="patient-head">
-                        <h2 class="form-header">VITALS SIGN</h2> 
-                    </div>
-                    <div class="information">
-                        <div class="r">
-                            <div>
-                                <label for="height">Height in cm <span>*</span></label>
-                                <input type="number">
+                    <!-- Vital sign na container :) -->
+                    <div class="sub-con vital-sign-container">
+                        <div class="patient-head">
+                            <h2 class="form-header">VITALS SIGN</h2> 
+                        </div>
+                        <div class="information">
+                            <div class="r">
+                                <div>
+                                    <label for="height">Height in cm <span>*</span></label>
+                                    <input type="number">
+                                </div>
+                                <div>
+                                    <label for="weight">Weight in cm <span>*</span></label>
+                                    <input type="number">
+                                </div>
                             </div>
-                            <div>
-                                <label for="weight">Weight in cm <span>*</span></label>
-                                <input type="number">
+                            <div class="r">
+                                <div>
+                                    <label for="temperature">Temperature c <span>*</span></label>
+                                    <input type="number">
+                                </div>
+                                <div>
+                                    <label for="pulse">Pulse rate <span>*</span></label>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="r">
+                                <div>
+                                    <label for="bpSystolic">BP Systolic <span>*</span></label>
+                                    <input type="text">
+                                </div>
+                                <div>
+                                    <label for="bpDiastolic">BP Diastolic <span>*</span></label>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="r">
+                                <div>
+                                    <label for="respiratoryRate">Respiratory Rate <span>*</span></label>
+                                    <input type="text">
+                                </div>
+                                <div>
+                                    <label for="BMI">BMI <span>*</span></label>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="r">
+                                <div>
+                                    <label for="complain">Chief Complain <span>*</span></label>
+                                    <textarea name="" id=""></textarea>
+                                </div>
                             </div>
                         </div>
-                        <div class="r">
-                            <div>
-                                <label for="temperature">Temperature c <span>*</span></label>
-                                <input type="number">
-                            </div>
-                            <div>
-                                <label for="pulse">Pulse rate <span>*</span></label>
-                                <input type="text">
-                            </div>
+                        <div class="submit-button">
+                            <button>Submit</button>
                         </div>
-                        <div class="r">
-                            <div>
-                                <label for="bpSystolic">BP Systolic <span>*</span></label>
-                                <input type="text">
-                            </div>
-                            <div>
-                                <label for="bpDiastolic">BP Diastolic <span>*</span></label>
-                                <input type="text">
-                            </div>
-                        </div>
-                        <div class="r">
-                            <div>
-                                <label for="respiratoryRate">Respiratory Rate <span>*</span></label>
-                                <input type="text">
-                            </div>
-                            <div>
-                                <label for="BMI">BMI <span>*</span></label>
-                                <input type="text">
-                            </div>
-                        </div>
-                        <div class="r">
-                            <div>
-                                <label for="complain">Chief Complain <span>*</span></label>
-                                <textarea name="" id=""></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="submit-button">
-                        <button>Submit</button>
                     </div>
                 </div>
             </form>
-        </div>
+
         <div class="pop-up" id="generate-id" style="display: none;">
             <div class="close-container">
               <img src="../icon/close.svg" alt="" class="close_popUp">
