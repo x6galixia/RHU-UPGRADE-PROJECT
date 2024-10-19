@@ -63,23 +63,64 @@ router.get('/scanner', (req, res) => {
   res.render('nurse/qrScanner');
 });
 
+// router.get('/nurse/fetchScannedData', async (req, res) => {
+//   const { qrCode } = req.query;
+//   console.log('Received scanned QR Code:', qrCode);
+
+//   try {
+//     const queryText = `
+//       SELECT * FROM beneficiary
+//       WHERE beneficiary_id = $1
+//     `;
+
+//     const result = await pharmacyPool.query(queryText, [qrCode]);
+
+//     if (result.rows.length > 0) {
+//       res.json(result.rows[0]);
+//     } else {
+//       console.log(`User not found for beneficiary_id=${qrCode}`);
+//       res.status(404).send("User not found");
+//     }
+//   } catch (err) {
+//     console.error("Error querying database:", err.message);
+//     res.status(500).send("Server error");
+//   }
+// });
+
 router.get('/nurse/fetchScannedData', async (req, res) => {
   const { qrCode } = req.query;
   console.log('Received scanned QR Code:', qrCode);
 
   try {
-    const queryText = `
+    // First query for the beneficiary table in the pharmacy database
+    const beneficiaryQueryText = `
       SELECT * FROM beneficiary
       WHERE beneficiary_id = $1
     `;
 
-    const result = await pharmacyPool.query(queryText, [qrCode]);
+    const beneficiaryResult = await pharmacyPool.query(beneficiaryQueryText, [qrCode]);
 
-    if (result.rows.length > 0) {
-      res.json(result.rows[0]);
+    if (beneficiaryResult.rows.length > 0) {
+      // If found in beneficiary table
+      res.json(beneficiaryResult.rows[0]);
     } else {
       console.log(`User not found for beneficiary_id=${qrCode}`);
-      res.status(404).send("User not found");
+
+      // If not found in beneficiary table, query the patients table in the patients database
+      const patientQueryText = `
+        SELECT * FROM patients
+        WHERE patient_id = $1
+      `;
+
+      const patientResult = await rhuPool.query(patientQueryText, [qrCode]);
+
+      if (patientResult.rows.length > 0) {
+        // If found in patients table
+        res.json(patientResult.rows[0]);
+      } else {
+        // If not found in both tables
+        res.status(404).send("User not found");
+      }
     }
   } catch (err) {
     console.error("Error querying database:", err.message);
