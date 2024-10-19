@@ -18,8 +18,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE patients (
-    patient_id SERIAL PRIMARY KEY NOT NULL,
-    outsider_id VARCHAR(255) UNIQUE,
+    patient_id VARCHAR(255) PRIMARY KEY NOT NULL,
     rhu_id INTEGER REFERENCES rhu(rhu_id) ON DELETE CASCADE,
     last_name VARCHAR(50) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
@@ -41,8 +40,7 @@ CREATE TABLE patients (
 
 CREATE TABLE nurse_checks (
     id SERIAL PRIMARY KEY NOT NULL,
-    patient_id INTEGER REFERENCES patients(patient_id) ON DELETE CASCADE,
-    outsider_id VARCHAR(255) NULL REFERENCES patients(outsider_id) ON DELETE CASCADE, 
+    patient_id VARCHAR(255) REFERENCES patients(patient_id) ON DELETE CASCADE,
     age INT NULL,
     check_date DATE NULL DEFAULT CURRENT_DATE,
     height INT NULL,
@@ -58,8 +56,7 @@ CREATE TABLE nurse_checks (
 
 CREATE TABLE doctor_visits (
     id SERIAL PRIMARY KEY NOT NULL,
-    patient_id INTEGER REFERENCES patients(patient_id) ON DELETE CASCADE,
-    outsider_id VARCHAR(255) NULL REFERENCES patients(outsider_id) ON DELETE CASCADE,
+    patient_id VARCHAR(255) REFERENCES patients(patient_id) ON DELETE CASCADE,
     follow_date DATE NULL,
     diagnosis TEXT NULL,
     findings TEXT NULL,
@@ -72,15 +69,13 @@ CREATE TABLE doctor_visits (
 
 CREATE TABLE medtech_labs (
     id SERIAL PRIMARY KEY NOT NULL,
-    patient_id INTEGER REFERENCES patients(patient_id) ON DELETE CASCADE,
-    outsider_id VARCHAR(255) NULL REFERENCES patients(outsider_id) ON DELETE CASCADE,
+    patient_id VARCHAR(255) REFERENCES patients(patient_id) ON DELETE CASCADE,
     lab_result TEXT NULL
 );
 
 CREATE TABLE patient_history (
     id SERIAL PRIMARY KEY NOT NULL,
-    patient_id INTEGER REFERENCES patients(patient_id) ON DELETE CASCADE,
-    outsider_id VARCHAR(255) NULL REFERENCES patients(outsider_id) ON DELETE CASCADE,
+    patient_id VARCHAR(255) REFERENCES patients(patient_id) ON DELETE CASCADE,
     rhu_id INTEGER REFERENCES rhu(rhu_id) ON DELETE CASCADE,
     last_name VARCHAR(50) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
@@ -119,11 +114,6 @@ CREATE TABLE patient_history (
     quantity INT NULL,
     lab_result TEXT NULL
 );
-
-CREATE INDEX idx_patient_id_nurse_checks ON nurse_checks(patient_id);
-CREATE INDEX idx_patient_id_doctor_visits ON doctor_visits(patient_id);
-CREATE INDEX idx_patient_id_medtech_labs ON medtech_labs(patient_id);
-CREATE INDEX idx_outsider_id ON patients(outsider_id);
 
 //---------------------------------------------------------------------------------//
 CREATE TABLE rhu (

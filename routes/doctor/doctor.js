@@ -80,11 +80,11 @@ async function fetchPatientList(page, limit) {
       SELECT COUNT(*) as count
       FROM patients p
       LEFT JOIN nurse_checks nc 
-        ON p.patient_id = nc.patient_id OR p.outsider_id = nc.outsider_id
+        ON p.patient_id = nc.patient_id
       LEFT JOIN doctor_visits dv 
-        ON p.patient_id = dv.patient_id OR p.outsider_id = dv.outsider_id
+        ON p.patient_id = dv.patient_id
       LEFT JOIN medtech_labs lr 
-        ON p.patient_id = lr.patient_id OR p.outsider_id = lr.outsider_id
+        ON p.patient_id = lr.patient_id
       LEFT JOIN rhu r 
         ON p.rhu_id = r.rhu_id;
     `);
@@ -101,11 +101,11 @@ async function fetchPatientList(page, limit) {
         lr.lab_result, r.rhu_name, r.rhu_address
       FROM patients p
       LEFT JOIN nurse_checks nc 
-        ON p.patient_id = nc.patient_id OR p.outsider_id = nc.outsider_id
+        ON p.patient_id = nc.patient_id
       LEFT JOIN doctor_visits dv 
-        ON p.patient_id = dv.patient_id OR p.outsider_id = dv.outsider_id
+        ON p.patient_id = dv.patient_id
       LEFT JOIN medtech_labs lr 
-        ON p.patient_id = lr.patient_id OR p.outsider_id = lr.outsider_id
+        ON p.patient_id = lr.patient_id
       LEFT JOIN rhu r 
         ON p.rhu_id = r.rhu_id
       ORDER BY p.first_name 

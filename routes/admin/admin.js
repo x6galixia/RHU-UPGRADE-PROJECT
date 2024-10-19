@@ -13,8 +13,13 @@ const userSchema = Joi.object({
     license_number: Joi.string().optional(),
     username: Joi.string().required(),
     password: Joi.string().required(),
+    confirm_password: Joi.string().valid(Joi.ref('password')).required().messages({
+        'any.only': 'Passwords do not match',
+    }),
     user_type: Joi.string().required()
 });
+
+router.use(express.json());
 
 router.get("/sign-in", (req, res) => {
     res.render("admin/sign-in");
@@ -30,13 +35,21 @@ router.get("/admin-users", (req, res) => {
 
 router.post("/admin/create-user/submit", async (req, res) => {
     const { error, value } = userSchema.validate(req.body);
-
+    
     if (error) {
         return res.status(400).json({ error: error.details[0].message });
     }
 
-    const hashedPassword = await bcrypt.hash(value.password, 10);
     try {
+        const existingUser = await rhuPool.query(
+            `SELECT * FROM users WHERE username = $1`, [value.username]
+        );
+
+        if (existingUser.rows.length > 0) {
+            return res.status(400).json({ error: "Username already exists" });
+        }
+
+        const hashedPassword = await bcrypt.hash(value.password, 10);
         await rhuPool.query(
             `INSERT INTO users (rhu_id, surname, firstname, middle_name, profession, license_number, username, password, user_type)
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
