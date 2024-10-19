@@ -378,7 +378,12 @@ input[type="checkbox"] {
   overflow: hidden;
   right: 20px;
 }
-
+.logout-drop p {
+  font-size: 16px;
+}
+.logout-drop hr {
+  margin: 0 !important;
+}
 .logout-drop a {
   color: black;
   padding: 12px 16px;
@@ -387,8 +392,8 @@ input[type="checkbox"] {
 }
 
 .logout-drop a:hover {
-  background-color: #f40ebbc0;
-  color: white;
+  background-color: #c2c2c2c0;
+  color: rgb(0, 0, 0);
 }
 .sectors{
   display: flex;
@@ -412,3 +417,104 @@ input[type="checkbox"] {
   width: 0 !important;
   text-wrap: nowrap;
 }
+
+.notif-separate{
+  display: flex;
+}
+
+.notif {
+  cursor: pointer;
+}
+
+/*NOTIFICATION DROPDOWN */
+
+.notification-drop {
+  display: none; 
+  position: absolute;
+  top: 40px; 
+  right: 80px;
+  background-color: white;
+  border: 1px solid #ddd;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  margin-top: 9px;
+  z-index: 1000;
+  border-radius: 10px;
+}
+.notification-drop hr{
+  margin: 0 !important;
+}
+
+.notif-separate {
+  display: flex;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+.notif-separate:hover{
+  background-color: #c2c2c2c0;
+}
+
+.notif-separate img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.notif-separate p {
+  margin: 0;
+  color: #333;
+  font-size: 14px;
+}
+
+.notif-separate:last-child {
+  border-bottom: none;
+}
+.see-all{
+  display: flex;
+  justify-content: center;
+  padding: 5px;
+}
+.see-all a{
+  text-decoration: none;
+}
+.see-all:hover{
+  background-color: #c2c2c2c0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.notif-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.notif-separate img{
+  height: 60px;
+  width: 60px;
+}
+.p-head{
+  font-weight: bolder;
+}
+.p-body{
+  color: rgb(97, 97, 97);
+}
+.notif-head{
+  display: flex;
+  padding: 10px 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+.circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25px;   /* Set the width of the circle */
+  height: 25px;  /* Set the height of the circle */
+  background-color: red; /* Set the background color */
+  border-radius: 50%;
+  color: white;   /* This makes the div a circle */
+}
+
