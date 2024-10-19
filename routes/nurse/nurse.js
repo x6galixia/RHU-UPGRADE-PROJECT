@@ -193,14 +193,48 @@ router.post("/nurse/admit-patient", async (req, res) => {
         value.service, value.medicine, value.instruction, value.quantity, value.lab_result
       ]);
 
-      // delete the records from the original tables
+      // Delete the records from the original tables
       await rhuPool.query(`
         DELETE FROM nurse_checks WHERE patient_id = $1;
         DELETE FROM doctor_visits WHERE patient_id = $1;
         DELETE FROM medtech_labs WHERE patient_id = $1;
       `, [value.patient_id]);
 
-      return res.status(200).send("Patient data moved to history successfully.");
+      // Insert new data into nurse_checks, doctor_visits, and medtech_labs
+      if (value.age !== undefined) { // Check if age is provided
+        await rhuPool.query(`
+          INSERT INTO nurse_checks (patient_id, age, check_date, height, weight, systolic, diastolic, temperature,
+              heart_rate, respiratory_rate, bmi, comment)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+        `, [
+          value.patient_id, value.age, value.check_date, 
+          value.height, value.weight, value.systolic, value.diastolic, 
+          value.temperature, value.heart_rate, value.respiratory_rate, 
+          value.bmi, value.comment
+        ]);
+      }
+
+      if (value.diagnosis) { // Check if diagnosis is provided
+        await rhuPool.query(`
+          INSERT INTO doctor_visits (patient_id, follow_date, diagnosis, findings, category, service, medicine, instruction, quantity)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        `, [
+          value.patient_id, value.follow_date, value.diagnosis, 
+          value.findings, value.category, value.service, 
+          value.medicine, value.instruction, value.quantity
+        ]);
+      }
+
+      if (value.lab_result) { // Check if lab_result is provided
+        await rhuPool.query(`
+          INSERT INTO medtech_labs (patient_id, lab_result)
+          VALUES ($1, $2)
+        `, [
+          value.patient_id, value.lab_result
+        ]);
+      }
+
+      return res.status(200).send("Patient data moved to history successfully and new data added.");
     } else {
       // Patient does not exist, insert new patient and vital signs
       await rhuPool.query(`
