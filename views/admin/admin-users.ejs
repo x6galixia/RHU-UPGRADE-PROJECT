@@ -129,7 +129,7 @@
             </div>
             <div class="gap-all">
               <input type="password" placeholder="Password" name="password" required>
-              <input type="password" placeholder="Confirm password" name="password" required>
+              <input type="password" placeholder="Confirm password" name="confirm_password" required>
               <select name="user_type" id="" required>
                 <option value="User" selected disabled>User Type</option>
                 <option value="Doctor">Doctor</option>
@@ -155,5 +155,17 @@
     }
   });
 </script>
+
+<script>
+  document.querySelector("form").addEventListener("submit", function(event) {
+      const password = document.querySelector('input[name="password"]').value;
+      const confirmPassword = document.querySelector('input[name="confirm_password"]').value;
+      
+      if (password !== confirmPassword) {
+          event.preventDefault(); // Prevent form submission
+          alert("Passwords do not match!");
+      }
+  });
+  </script>  
 
 </html>
