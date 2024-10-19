@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,108 +10,109 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <title>HealthSync</title>
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="../img/global/healthvector.png"
-    />
+    <link rel="shortcut icon" type="image/png" href="../img/global/healthvector.png" />
 </head>
-<body>
-    <%- include("../includes/header.ejs")  %>
-    <h1 class="headings">PATIENT REGISTRATION</h1>
-    <input type="text" id="qrInput" autofocus style="opacity: 0;" />
-    <main>
-        <div class="buttons">
-            <div class="add-transfer">
-              <button id="recently-admitted" onclick="popUp_button(this)">RECENTLY ADDED</button>
-              <button onclick="window.location.href='/nurse/individual-health-assessment'">HEALTH ASSESSMENT</button>
-            </div>
-        </div>
 
-        <!-- Parent container ./. -->
+<body>
+    <%- include("../includes/header.ejs") %>
+        <h1 class="headings">PATIENT REGISTRATION</h1>
+        <input type="text" id="qrInput" required style="opacity: 0; position: absolute;">
+        <main>
+            <div class="buttons">
+                <div class="add-transfer">
+                    <button id="recently-admitted" onclick="popUp_button(this)">RECENTLY ADDED</button>
+                    <button onclick="window.location.href='/nurse/individual-health-assessment'">HEALTH
+                        ASSESSMENT</button>
+                </div>
+            </div>
+
+            <!-- Parent container ./. -->
 
             <!-- Patient information na container :) -->
-            <form action="/nurse/admit-patient">
+            <form action="/nurse/admit-patient" method="POST">
                 <div class="container">
                     <div class="sub-con patients-information-container">
                         <div class="patient-head">
                             <h2 class="form-header">PATIENT INFORMATION</h2>
                         </div>
+                        <div class="scanSwitch">
+                            Scan QR
+                            <label class="switch">
+                                <input type="checkbox" id="scanSwitch">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <input type="number" id="qrOutput" name="patient_id" style="display: none; position: absolute;">
                         <div class="information">
-                            <div class="r align">
-                                <div>
-                                    <label for="uniqId">Unique ID:</label>
-                                    <input type="text" id="outsiderID" required>
-                                </div>
-                            </div>
                             <div class="r">
                                 <div>
                                     <label for="lastName">Last Name</label>
-                                    <input type="text" id="lastname" required>
+                                    <input type="text" id="lastname" name="last_name" required>
                                 </div>
                                 <div>
                                     <label for="firstName">First Name</label>
-                                    <input type="text" id="firstname" required>
+                                    <input type="text" id="firstname" name="first_name" required>
                                 </div>
                             </div>
                             <div class="r">
                                 <div>
                                     <label for="middleName">Middle Name</label>
-                                    <input type="text" id="middlename">
+                                    <input type="text" id="middlename" name="middle_name">
                                 </div>
                                 <div>
                                     <label for="suffix">Suffix</label>
-                                    <input type="text" id="suffix">
+                                    <input type="text" id="suffix" name="suffix">
                                 </div>
                             </div>
                             <div class="r">
                                 <div>
-                                    <label for="address">Address: <span class="add">House no, Purok, Brgy, Municipality</span></label>
-                                    <input type="text" required id="address">
+                                    <label for="address">Address: <span class="add">House no, Purok, Brgy,
+                                            Municipality</span></label>
+                                    <input type="text" required id="address" name="completeAddress">
                                 </div>
                             </div>
                             <div class="r">
                                 <div>
                                     <label for="birthDate">Birth date</label>
-                                    <input type="date" required>
+                                    <input type="date" id="birthdate" required name="birthdate">
                                 </div>
                                 <div>
                                     <label for="Email">Email Address</label>
-                                    <input type="text" required>
+                                    <input type="text" id="email" required name="email">
                                 </div>
                             </div>
                             <div class="r">
                                 <div>
                                     <label for="gender">Gender</label>
-                                    <select name="" id="">
+                                    <select name="gender" id="gender">
                                         <option value="gender" selected disabled>Gender</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label for="guardian">Guardian</label>
-                                    <input type="text" required>
+                                    <input type="text" id="guardian" required name="guardian">
                                 </div>
                             </div>
                             <div class="r">
                                 <div>
                                     <label for="date">Date</label>
-                                    <input type="date" required>
+                                    <input type="date" id="check_date" required name="check_date">
                                 </div>
                                 <div>
                                     <label for="phoneNumber">Phone Number</label>
-                                    <input type="number" id="phone" required>
+                                    <input type="number" id="phone" required name="phone">
                                 </div>
                             </div>
                             <div class="r">
                                 <div>
                                     <label for="philhealth">PhilHealth No.</label>
-                                    <input type="number" required>
+                                    <input type="number" id="philhealth_no" required name="philhealth_no">
                                 </div>
                                 <div>
                                     <label for="occupation">Occupation</label>
-                                    <input type="number" required>
+                                    <input type="text" id="occupation" required name="occupation">
                                 </div>
                             </div>
                             <div class="check">
@@ -126,7 +128,7 @@
                                             <img src="../icon/upload.svg" alt="">
                                         </div>
                                     </div>
-                                    <button class="button-pink" id="generateIdButton" >Generate ID</button>
+                                    <button class="button-pink" id="generateIdButton">Generate ID</button>
                                 </div>
                             </div>
                         </div>
@@ -136,224 +138,323 @@
                     <!-- Vital sign na container :) -->
                     <div class="sub-con vital-sign-container">
                         <div class="patient-head">
-                            <h2 class="form-header">VITALS SIGN</h2> 
+                            <h2 class="form-header">VITALS SIGN</h2>
                         </div>
                         <div class="information">
                             <div class="r">
                                 <div>
                                     <label for="height">Height in cm <span>*</span></label>
-                                    <input type="number">
+                                    <input type="number" id="height" name="height" required oninput="computeBMI()">
                                 </div>
                                 <div>
-                                    <label for="weight">Weight in cm <span>*</span></label>
-                                    <input type="number">
+                                    <label for="weight">Weight in kg <span>*</span></label>
+                                    <input type="number" id="weight" name="weight" required oninput="computeBMI()">
                                 </div>
                             </div>
                             <div class="r">
                                 <div>
                                     <label for="temperature">Temperature c <span>*</span></label>
-                                    <input type="number">
+                                    <input type="number" id="temperature" name="temperature" required>
                                 </div>
                                 <div>
-                                    <label for="pulse">Pulse rate <span>*</span></label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="r">
-                                <div>
-                                    <label for="bpSystolic">BP Systolic <span>*</span></label>
-                                    <input type="text">
-                                </div>
-                                <div>
-                                    <label for="bpDiastolic">BP Diastolic <span>*</span></label>
-                                    <input type="text">
+                                    <label for="pulse_rate">Pulse rate <span>*</span></label>
+                                    <input type="number" id="pulse_rate" name="heart_rate" required>
                                 </div>
                             </div>
                             <div class="r">
                                 <div>
-                                    <label for="respiratoryRate">Respiratory Rate <span>*</span></label>
-                                    <input type="text">
+                                    <label for="systolic">BP Systolic <span>*</span></label>
+                                    <input type="number" id="systolic" name="systolic" required>
                                 </div>
                                 <div>
-                                    <label for="BMI">BMI <span>*</span></label>
-                                    <input type="text">
+                                    <label for="diastolic">BP Diastolic <span>*</span></label>
+                                    <input type="number" id="diastolic" name="diastolic" required>
+                                </div>
+                            </div>
+                            <div class="r">
+                                <div>
+                                    <label for="respiratory_rate">Respiratory Rate <span>*</span></label>
+                                    <input type="number" id="respiratory_rate" name="respiratory_rate" required>
+                                </div>
+                                <div>
+                                    <label for="bmi">BMI <span>*</span></label>
+                                    <input type="text" id="bmi" name="bmi">
                                 </div>
                             </div>
                             <div class="r">
                                 <div>
                                     <label for="complain">Chief Complain <span>*</span></label>
-                                    <textarea name="" id=""></textarea>
+                                    <textarea id="comment" name="comment"></textarea>
                                 </div>
                             </div>
                         </div>
                         <div class="submit-button">
-                            <button>Submit</button>
+                            <button type="submit" id="submit">Submit</button>
                         </div>
                     </div>
                 </div>
             </form>
 
-        <div class="pop-up" id="generate-id" style="display: none;">
-            <div class="close-container">
-              <img src="../icon/close.svg" alt="" class="close_popUp">
+            <div class="pop-up" id="generate-id" style="display: none;">
+                <div class="close-container">
+                    <img src="../icon/close.svg" alt="" class="close_popUp">
+                </div>
+                <h1 class="heading">OUTSIDER ID</h1>
+                <main class="id-container">
+                    <div id="id-container">
+                        <div class="all">
+                            <div class="rec11">
+                                <img class="rec1" src="../img/id-img/rec1.png" />
+                            </div>
+                            <div class="three">
+                                <div class="prof">
+                                    <img class="profile" id="beneficiary-picture"
+                                        src="../icon/upload-img-default.svg" />
+                                </div>
+
+                                <div class="info">
+                                    <p class="name" id="beneficiary-name">JOHN REY B. PAGASPAS</p>
+                                    <p class="status" id="beneficiary-status">Outsider</p>
+                                    <div class="rectangle"></div>
+
+                                    <div class="i1-t">
+                                        <img class="icon1" src="../img/id-img/icon1.png" />
+                                        <p class="address" id="beneficiary-address">Maypangdan Borongan Eastern Samar
+                                        </p>
+                                    </div>
+
+                                    <div class="i3-t">
+                                        <img class="icon3" src="../img/id-img/icon3.png" />
+                                        <p class="phoneno." id="beneficiary-phone">09970752488</p>
+                                    </div>
+                                </div>
+
+                                <div class="qrr" id="qrcode">
+                                </div>
+
+                                <div class="recd11">
+                                    <img class="recd1" src="../img/id-img/recd1.png" />
+                                </div>
+
+                                <div class="recd22">
+                                    <img class="recd2" src="../img/id-img/recd2.png" />
+                                </div>
+
+                                <div class="recd33">
+                                    <img class="recd3" src="../img/id-img/recd3.png" />
+                                </div>
+
+                                <div class="recd44">
+                                    <img class="recd4" src="../img/id-img/recd4.png" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="button-green" onclick="printContainer('id-container')">PRINT</button>
+                </main>
             </div>
-            <h1 class="heading">OUTSIDER ID</h1>
-            <main class="id-container">
-              <div id="id-container">
-                <div class="all">
-                  <div class="rec11">
-                    <img class="rec1" src="../img/id-img/rec1.png" />
-                  </div>
-                  <div class="three">
-                    <div class="prof">
-                      <img class="profile" id="beneficiary-picture" src="../icon/upload-img-default.svg" />
-                    </div>
-            
-                    <div class="info">
-                      <p class="name" id="beneficiary-name">JOHN REY B. PAGASPAS</p>
-                      <p class="status" id="beneficiary-status">Outsider</p>
-                      <div class="rectangle"></div>
-            
-                      <div class="i1-t">
-                        <img class="icon1" src="../img/id-img/icon1.png" />
-                        <p class="address" id="beneficiary-address">Maypangdan Borongan Eastern Samar</p>
-                      </div>
-        
-                      <div class="i3-t">
-                        <img class="icon3" src="../img/id-img/icon3.png" />
-                        <p class="phoneno." id="beneficiary-phone">09970752488</p>
-                      </div>
-                    </div>
-            
-                    <div class="qrr" id="qrcode">
-                    </div>
-            
-                    <div class="recd11">
-                      <img class="recd1" src="../img/id-img/recd1.png" />
-                    </div>
-            
-                    <div class="recd22">
-                      <img class="recd2" src="../img/id-img/recd2.png" />
-                    </div>
-            
-                    <div class="recd33">
-                      <img class="recd3" src="../img/id-img/recd3.png" />
-                    </div>
-            
-                    <div class="recd44">
-                      <img class="recd4" src="../img/id-img/recd4.png" />
-                    </div>
-                  </div>
+            <div class="pop-up" id="recently-admitted-table">
+                <div class="close-container">
+                    <img src="../icon/close.svg" alt="" class="close_popUp">
                 </div>
-              </div>
-              <button class="button-green" onclick="printContainer('id-container')">PRINT</button>
-            </main>
-        </div>
-        <div class="pop-up" id="recently-admitted-table">
-            <div class="close-container">
-                <img src="../icon/close.svg" alt="" class="close_popUp">
+                <h1 class="heading">RECENTLY ADMITTED</h1>
+                <main>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Date</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Kim Galicia</td>
+                                    <td>October 4, 2024</td>
+                                    <td class="menu-row">
+                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
+                                        <div class="triple-dot">
+                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
+                                                <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
+                                                <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Kim Galicia</td>
+                                    <td>October 4, 2024</td>
+                                    <td class="menu-row">
+                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
+                                        <div class="triple-dot">
+                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
+                                                <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
+                                                <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Kim Galicia</td>
+                                    <td>October 4, 2024</td>
+                                    <td class="menu-row">
+                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
+                                        <div class="triple-dot">
+                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
+                                                <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
+                                                <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Kim Galicia</td>
+                                    <td>October 4, 2024</td>
+                                    <td class="menu-row">
+                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
+                                        <div class="triple-dot">
+                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
+                                                <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
+                                                <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Kim Galicia</td>
+                                    <td>October 4, 2024</td>
+                                    <td class="menu-row">
+                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
+                                        <div class="triple-dot">
+                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
+                                                <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
+                                                <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Kim Galicia</td>
+                                    <td>October 4, 2024</td>
+                                    <td class="menu-row">
+                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
+                                        <div class="triple-dot">
+                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
+                                                <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
+                                                <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination">
+                        <button class="button-green">Previous</button>
+                        <button class="button-green">Next</button>
+                    </div>
+                </main>
             </div>
-              <h1 class="heading">RECENTLY ADMITTED</h1>
-            <main>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Date</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Kim Galicia</td>
-                                <td>October 4, 2024</td>
-                                <td class="menu-row">
-                                    <img class="dot" src="../icon/triple-dot.svg" alt="">
-                                    <div class="triple-dot">
-                                        <div class="menu" data-id="${beneficiary.beneficiary_id}">
-                                            <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
-                                            <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Kim Galicia</td>
-                                <td>October 4, 2024</td>
-                                <td class="menu-row">
-                                    <img class="dot" src="../icon/triple-dot.svg" alt="">
-                                    <div class="triple-dot">
-                                        <div class="menu" data-id="${beneficiary.beneficiary_id}">
-                                            <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
-                                            <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Kim Galicia</td>
-                                <td>October 4, 2024</td>
-                                <td class="menu-row">
-                                    <img class="dot" src="../icon/triple-dot.svg" alt="">
-                                    <div class="triple-dot">
-                                        <div class="menu" data-id="${beneficiary.beneficiary_id}">
-                                            <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
-                                            <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Kim Galicia</td>
-                                <td>October 4, 2024</td>
-                                <td class="menu-row">
-                                    <img class="dot" src="../icon/triple-dot.svg" alt="">
-                                    <div class="triple-dot">
-                                        <div class="menu" data-id="${beneficiary.beneficiary_id}">
-                                            <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
-                                            <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Kim Galicia</td>
-                                <td>October 4, 2024</td>
-                                <td class="menu-row">
-                                    <img class="dot" src="../icon/triple-dot.svg" alt="">
-                                    <div class="triple-dot">
-                                        <div class="menu" data-id="${beneficiary.beneficiary_id}">
-                                            <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
-                                            <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Kim Galicia</td>
-                                <td>October 4, 2024</td>
-                                <td class="menu-row">
-                                    <img class="dot" src="../icon/triple-dot.svg" alt="">
-                                    <div class="triple-dot">
-                                        <div class="menu" data-id="${beneficiary.beneficiary_id}">
-                                            <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
-                                            <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="pagination">
-                    <button class="button-green">Previous</button>
-                    <button class="button-green">Next</button>
-                </div>
-            </main>
-        </div>
-    </main>
-    <script src="../js/local/nurse/patient-registration.js"></script>
-    <script src="../../js/global/pop-up.js"></script>
+        </main>
+        <script src="../js/local/nurse/patient-registration.js"></script>
+        <script src="../../js/global/pop-up.js"></script>
+        <script>
+            document.getElementById('scanSwitch').addEventListener('change', function () {
+                const qrInputField = document.getElementById('qrInput');
+                let scanning = false;
+
+                if (this.checked) {
+                    console.log("Scanning started");
+
+                    // Enable scanning and focus the QR input field
+                    document.addEventListener('keydown', handleKeyDown);
+                    qrInputField.addEventListener('keypress', handleKeyPress);
+                    qrInputField.focus(); // Focus on the QR input field when scanning is enabled
+                } else {
+                    console.log("Scanning stopped");
+
+                    // Disable scanning and remove focus from the QR input field
+                    document.removeEventListener('keydown', handleKeyDown);
+                    qrInputField.removeEventListener('keypress', handleKeyPress);
+                    qrInputField.blur(); // Remove focus from the QR input field
+                }
+
+                // Function to handle keydown event
+                function handleKeyDown(event) {
+                    // Only focus the input if scanning is active and a character key was pressed
+                    if (scanning === false && event.key.length === 1) {
+                        scanning = true;
+                        qrInputField.focus();
+                    }
+                }
+
+                // Function to handle keypress event when 'Enter' is pressed
+                function handleKeyPress(event) {
+                    if (event.key === 'Enter') {
+                        const scannedData = event.target.value;
+                        const secretKey = "KimGalicia";
+
+                        // Decrypt function
+                        function decryptData(cipherText, secretKey) {
+                            const bytes = CryptoJS.AES.decrypt(cipherText, secretKey);
+                            return bytes.toString(CryptoJS.enc.Utf8);
+                        }
+
+                        const decryptedData = decryptData(scannedData, secretKey);
+
+                        console.log(document.getElementById("qrOutput").value);
+                        console.log(decryptedData);
+
+                        // Set scanned data to the QR output field
+                        document.getElementById("qrOutput").value = decryptedData;
+
+                        // Send the scanned QR code data to the server
+                        fetch(`/nurse/fetchScannedData?qrCode=${decryptedData}`, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok ' + response.statusText);
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log('Success:', data);
+                                populateFormFields(data); // Call function to populate fields
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                            });
+
+                        // Clear the input after scanning
+                        event.target.value = '';
+                    }
+                }
+
+
+            });
+
+
+            function populateFormFields(data) {
+                document.getElementById("lastname").value = data.last_name || '';
+                document.getElementById("firstname").value = data.first_name || '';
+                document.getElementById("middlename").value = data.middle_name || '';
+                document.getElementById("address").value = data.street + ', ' + 'None, ' + data.barangay + ', ' + data.city + ', ' + data.province || '';
+                document.getElementById("birthdate").value = new Date(data.birthdate)
+                    .toISOString()
+                    .split("T")[0] || '';
+                document.getElementById("gender").value = data.gender || '';
+                document.getElementById("phone").value = data.phone || '';
+                document.getElementById("occupation").value = data.occupation || '';
+            }
+
+
+
+        </script>
 </body>
+
 </html>

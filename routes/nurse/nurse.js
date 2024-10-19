@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const rhuPool = require("../../models/rhudb");
+const pharmacyPool = require("../../models/pharmacydb");
 const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
 const Joi = require("joi");
 
@@ -23,6 +24,7 @@ const patientSchema = Joi.object({
   barangay: Joi.string().required(),
   city: Joi.string().required(),
   province: Joi.string().required(),
+  completeAddress: Joi.string().required(),
   occupation: Joi.string().allow('').optional(),
   email: Joi.string().allow('').optional(),
   philhealth_no: Joi.string().allow('').optional(),
@@ -51,6 +53,15 @@ const patientSchema = Joi.object({
 
 });
 
+const addressSchema = Joi.object({
+  house_no: Joi.number().integer().allow('').optional(),
+  street: Joi.string().allow('').optional(),
+  barangay: Joi.string().required(),
+  city: Joi.string().required(),
+  province: Joi.string().required(),
+  completeAddress: Joi.string().required(),
+});
+
 router.get("/nurse-dashboard", ensureAuthenticated, checkUserType("Nurse"), (req, res) => {
   res.render("nurse/nurse-dashboard");
 });
@@ -66,6 +77,46 @@ router.get("/nurse/individual-health-assessment", ensureAuthenticated, checkUser
 router.post("/nurse/admit-patient", async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
   const rhu_id = req.user.rhu_id;
+
+  const addressParts = value.completeAddress.split(',');
+
+
+  if (addressParts.length !== 5) {
+    return res.status(400).json({ error: "Please enter the address in the correct format: house_no, street, barangay, city, province" });
+  }
+
+  const [house_no, street, barangay, city, province] = addressParts.map(part => part.trim());
+
+  const address = {
+    house_no: house_no === '' ? null : Number(house_no),
+    street: street || '', // Allow empty string
+    barangay: barangay,
+    city: city,
+    province: province,
+    completeAddress: value.completeAddress, // Include the complete address if needed
+  };
+
+  console.log(value.house_no);
+  console.log(value.street);
+  console.log(value.patient_id);
+  console.log(value.barangay);
+  console.log(value.city);
+  console.log(value.province);
+
+  const { error: addressError } = addressSchema.validate(address);
+  if (addressError) {
+    return res.status(400).json({ error: 'Invalid address: ' + addressError.details[0].message });
+  }
+
+
+  if (error) {
+    return res.status(400).json({ error: 'Invalid patient data: ' + error.details[0].message });
+  }
+
+  if (error) {
+    return res.status(400).json({ error: 'Invalid address: ' + error.details[0].message });
+  }
+
 
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
@@ -118,13 +169,13 @@ router.post("/nurse/admit-patient", async (req, res) => {
           `INSERT INTO patient_history (patient_id, outsider_id, rhu_id, last_name, first_name, middle_name, phone, gender, birthdate, house_no, street, barangay, city, province, occupation, philhealth_no, guardian, age, check_date, height, weight, systolic, diastolic, temperature, heart_rate, respiratory_rate, bmi, comment) 
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26)`,
           [
-            checkData.patient_id, checkData.outsider_id, rhu_id, value.last_name, 
-            value.first_name, value.middle_name || null, value.phone || null, value.gender, 
-            value.birthdate, value.house_no || null, value.street || null, value.barangay, 
-            value.city, value.province, value.occupation || null, value.philhealth_no || null, 
-            value.guardian || null, checkData.age || null, checkData.check_date, 
-            checkData.height, checkData.weight, checkData.systolic, checkData.diastolic, 
-            checkData.temperature, checkData.heart_rate, checkData.respiratory_rate, 
+            checkData.patient_id, checkData.outsider_id, rhu_id, value.last_name,
+            value.first_name, value.middle_name || null, value.phone || null, value.gender,
+            value.birthdate, value.house_no || null, value.street || null, value.barangay,
+            value.city, value.province, value.occupation || null, value.philhealth_no || null,
+            value.guardian || null, checkData.age || null, checkData.check_date,
+            checkData.height, checkData.weight, checkData.systolic, checkData.diastolic,
+            checkData.temperature, checkData.heart_rate, checkData.respiratory_rate,
             checkData.bmi, checkData.comment || null
           ]
         );
@@ -138,9 +189,9 @@ router.post("/nurse/admit-patient", async (req, res) => {
           `INSERT INTO patient_history (patient_id, outsider_id, follow_date, diagnosis, findings, category, service, medicine, instruction, quantity) 
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
           [
-            visitData.patient_id, visitData.outsider_id, visitData.follow_date, 
-            visitData.diagnosis || null, visitData.findings || null, 
-            visitData.category || null, visitData.service || null, 
+            visitData.patient_id, visitData.outsider_id, visitData.follow_date,
+            visitData.diagnosis || null, visitData.findings || null,
+            visitData.category || null, visitData.service || null,
             visitData.medicine || null, visitData.instruction || null, visitData.quantity || null
           ]
         );
@@ -177,16 +228,32 @@ router.post("/nurse/admit-patient", async (req, res) => {
   }
 });
 
-router.get('/scanner', (req, res) => {
-  res.render('nurse/qrScanner');
-});
 
-
-
-router.post('/nurse/scannedQR', (req, res) => {
-  const { qrCode } = req.body;
+router.get('/nurse/fetchScannedData', async (req, res) => {
+  const { qrCode } = req.query;
   console.log('Received scanned QR Code:', qrCode);
-  res.json({ success: true, message: 'Data received' });
+  // res.json({ success: true, message: 'Data received' });
+
+  try {
+    const queryText = `
+      SELECT * FROM beneficiary
+      WHERE beneficiary_id = $1
+    `;
+
+    console.log('Received scanned QR Code:', queryText);
+    const result = await pharmacyPool.query(queryText, [qrCode]);
+
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]);
+    } else {
+      console.log(`User not found for unq_id=${unq_id}`);
+      res.status(404).send("User not found");
+    }
+  } catch (err) {
+    console.error("Error querying database:", err.message);
+    res.status(500).send("Server error");
+  }
+
 });
 
 

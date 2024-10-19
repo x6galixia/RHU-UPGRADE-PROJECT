@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function createTableRow(beneficiary) {
         const row = document.createElement('tr');
         row.setAttribute('onclick', `popUp_index(${beneficiary.beneficiary_id})`);
-        
+
         row.innerHTML = `
             <td>${beneficiary.first_name} ${beneficiary.middle_name || ''} ${beneficiary.last_name}</td>
             <td>${beneficiary.gender}</td>
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return row;
     }
 
-    window.popUp_index = function popUp_index(id){
+    window.popUp_index = function popUp_index(id) {
         console.log(id);
     }
 
@@ -64,8 +64,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 }
             });
-            
-            document.addEventListener("click", function(event) {
+
+            document.addEventListener("click", function (event) {
                 // Check if the click was outside the dot container
                 if (!dot.contains(event.target)) {
                     const tripleDotContainer = dot.closest("td").querySelector(".triple-dot");
@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function handlePagination(event) {
         event.preventDefault();
         const url = new URL(event.target.href);
-        const params = new URLSearchParams(url.search);        
+        const params = new URLSearchParams(url.search);
         // Add search query to the pagination URL if a search is active
         if (currentSearchQuery) {
             params.set('query', currentSearchQuery);
@@ -196,14 +196,14 @@ document.addEventListener("DOMContentLoaded", function () {
             paginationNav.innerHTML += `<a class="next" href="?page=${currentPage + 1}&limit=${limit}" aria-label="Next Page">Next</a>`;
         }
 
-     // Re-attach the event listeners after updating the pagination links
+        // Re-attach the event listeners after updating the pagination links
         attachPaginationListeners();
     }
 
     const update_beneficiary = document.getElementById("update-beneficiary");
     const overlay = document.querySelector(".overlay");
 
-    window.popUp_three_dot = function(button) {
+    window.popUp_three_dot = function (button) {
         const action = button.textContent.trim();
         const beneficiaryId = button.closest('.triple-dot').querySelector('.menu').getAttribute('data-id');
 
@@ -215,11 +215,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
             pop_up_Delete.classList.add("visible");
 
-            confirmDeleteButton.addEventListener('click', function(){
+            confirmDeleteButton.addEventListener('click', function () {
                 deleteBeneficiary(beneficiaryId);
                 pop_up_Delete.classList.remove("visible");
             })
-            cancelDeleteButton.addEventListener('click', function(){
+            cancelDeleteButton.addEventListener('click', function () {
                 pop_up_Delete.classList.remove("visible");
             })
         }
@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById('existing_picture').value = beneficiaryData.picture || '';
 
                     var picture;
-                    if (beneficiaryData.gender === "Male"){
+                    if (beneficiaryData.gender === "Male") {
                         picture = "/icon/upload-img-default.svg";
                     } else {
                         picture = "/icon/upload-img-default-woman.svg";
@@ -257,12 +257,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
                     const pictureElement = document.getElementById('pictureDisplay');
-                     if (pictureElement) {
+                    if (pictureElement) {
                         const picturePath = (beneficiaryData.picture && beneficiaryData.picture !== '0') ? `/uploads/beneficiary-img/${beneficiaryData.picture}` : picture;
-                         pictureElement.src = picturePath;
-                     } else {
+                        pictureElement.src = picturePath;
+                    } else {
                         console.error('Image element not found');
-                    } 
+                    }
 
                     const fileInput = document.getElementById('picture');
                     if (fileInput) {
@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     alert('Failed to fetch beneficiary data. Please try again.');
                 });
         }
-        if (action === 'Generate ID' && beneficiaryId){
+        if (action === 'Generate ID' && beneficiaryId) {
             const id_card = document.getElementById("id");
             id_card.classList.add("visible");
 
@@ -290,20 +290,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.log(beneficiaryData.beneficiary_id);
                     var full_name = beneficiaryData.last_name + ", " + beneficiaryData.first_name + " " + beneficiaryData.middle_name;
                     var address = beneficiaryData.street + " " + beneficiaryData.barangay + " " + beneficiaryData.city + " " + beneficiaryData.province;
-                    var status; 
+                    var status;
                     var phone;
 
-                    if(!beneficiaryData.phone || isNaN(beneficiaryData.phone) || beneficiaryData.phone.length < 11){
+                    if (!beneficiaryData.phone || isNaN(beneficiaryData.phone) || beneficiaryData.phone.length < 11) {
                         phone = "None";
                     } else {
                         phone = beneficiaryData.phone;
                     }
 
-                    if (beneficiaryData.senior_citizen === "Yes"){
+                    if (beneficiaryData.senior_citizen === "Yes") {
                         status = "Senior Citizen";
-                    } else if (beneficiaryData.pwd === "Yes"){
+                    } else if (beneficiaryData.pwd === "Yes") {
                         status = "PWD";
-                    } else{
+                    } else {
                         status = "";
                     }
 
@@ -312,9 +312,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById("beneficiary-address").innerText = address;
                     document.getElementById("beneficiary-phone").innerText = phone;
 
-                    
+
                     var picture;
-                    if (beneficiaryData.gender === "Male"){
+                    if (beneficiaryData.gender === "Male") {
                         picture = "/icon/upload-img-default.svg";
                     } else {
                         picture = "/icon/upload-img-default-woman.svg";
@@ -322,10 +322,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
                     const pictureElement = document.getElementById('beneficiary-picture');
-                     if (pictureElement) {
+                    if (pictureElement) {
                         const picturePath = (beneficiaryData.picture && beneficiaryData.picture !== '0') ? `/uploads/beneficiary-img/${beneficiaryData.picture}` : picture;
-                         pictureElement.src = picturePath;
-                     } else {
+                        pictureElement.src = picturePath;
+                    } else {
                         console.error('Image element not found');
                     }
 
@@ -336,17 +336,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
                     async function generateQRCode() {
-                        const json = `{ "beneficiary_id": "${beneficiaryData.beneficiary_id}" }`;
-                    
+                        const json = `${beneficiaryData.beneficiary_id}`;
+
                         const secretKey = "KimGalicia"; // Use a strong secret key for encryption
                         const encryptedData = encryptData(json, secretKey); // Encrypt the JSON data
                         console.log("Encrypted Data:", encryptedData);
-                    
+
                         // Now proceed with the QR code generation
                         const qr = qrcode(0, 'L');
                         qr.addData(encryptedData); // Add encrypted data to QR code
                         qr.make();
-                    
+
                         const size = 4;
                         document.getElementById('qrcode').innerHTML = qr.createImgTag(size, size);
                         const decryptedData = decryptData(encryptedData, secretKey);
@@ -354,50 +354,50 @@ document.addEventListener("DOMContentLoaded", function () {
                         // Log the decrypted data to the console
                         console.log("Decrypted Data:", decryptedData);
                     }
-                    
+
                     generateQRCode();
-                    
+
                 })
                 .catch(error => {
                     console.error('Error fetching beneficiary data:', error);
                     alert('Failed to fetch beneficiary data. Please try again.');
                 });
         }
-    };    
-    
+    };
+
     function encryptData(data, secretKey) {
         return CryptoJS.AES.encrypt(data, secretKey).toString();
     }
-    
+
     // Decrypt function
     function decryptData(cipherText, secretKey) {
         const bytes = CryptoJS.AES.decrypt(cipherText, secretKey);
         return bytes.toString(CryptoJS.enc.Utf8);
     }
-    
+
 
     function deleteBeneficiary(beneficiaryId) {
         console.log('Sending DELETE request for ID:', beneficiaryId);
-    fetch(`/pharmacy-records/delete/${beneficiaryId}`, {
+        fetch(`/pharmacy-records/delete/${beneficiaryId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
             },
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to delete beneficiary');
-            }
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to delete beneficiary');
+                }
 
-            alert('Beneficiary deleted successfully.');
-            fetchBeneficiaryUpdates();
-        
-        })
-        .catch(error => {
-            console.error('Error deleting beneficiary:', error);
-            
-            alert('An error occurred while trying to delete the beneficiary: ' + error.message);
-        });
+                alert('Beneficiary deleted successfully.');
+                fetchBeneficiaryUpdates();
+
+            })
+            .catch(error => {
+                console.error('Error deleting beneficiary:', error);
+
+                alert('An error occurred while trying to delete the beneficiary: ' + error.message);
+            });
     }
 
     // Initial setup
