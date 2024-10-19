@@ -63,6 +63,10 @@ router.get("/nurse/individual-health-assessment", ensureAuthenticated, checkUser
   res.render("nurse/individual-health-assessment");
 });
 
+router.get('/scanner', (req, res) => {
+  res.render('nurse/qrScanner');
+});
+
 router.post("/nurse/admit-patient", async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
   const rhu_id = req.user.rhu_id;
@@ -177,17 +181,10 @@ router.post("/nurse/admit-patient", async (req, res) => {
   }
 });
 
-router.get('/scanner', (req, res) => {
-  res.render('nurse/qrScanner');
-});
-
-
-
 router.post('/nurse/scannedQR', (req, res) => {
   const { qrCode } = req.body;
   console.log('Received scanned QR Code:', qrCode);
   res.json({ success: true, message: 'Data received' });
 });
-
 
 module.exports = router;
