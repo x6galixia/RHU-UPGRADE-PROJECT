@@ -3,6 +3,7 @@ const router = express.Router();
 const rhuPool = require("../../models/rhudb");
 const pharmacyPool = require("../../models/pharmacydb");
 const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
+const { calculateAge, formatDate } = require("../../public/js/global/functions");
 const Joi = require("joi");
 
 router.use(setUserData);
@@ -18,7 +19,7 @@ const patientSchema = Joi.object({
   phone: Joi.string().allow('').optional(),
   gender: Joi.string().required(),
   birthdate: Joi.date().required(),
-  age: Joi.string().allow('').optional(),
+  age: Joi.number().integer().allow('').optional(),
   completeAddress: Joi.string().required(),
   occupation: Joi.string().allow('').optional(),
   email: Joi.string().allow('').optional(),
@@ -185,7 +186,7 @@ router.post("/nurse/admit-patient", async (req, res) => {
         patientData.middle_name, patientData.suffix, patientData.phone, patientData.gender, 
         patientData.birthdate, house_no, street, barangay, city, province, patientData.occupation, 
         patientData.email, patientData.philhealth_no, patientData.guardian, 
-        value.age, value.check_date, value.height, value.weight, 
+        calculateAge(value.birthdate), value.check_date, value.height, value.weight, 
         value.systolic, value.diastolic, value.temperature, value.heart_rate, 
         value.respiratory_rate, value.bmi, value.comment, 
         value.follow_date, value.diagnosis, value.findings, value.category, 
