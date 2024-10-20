@@ -4,7 +4,7 @@
 }
 
 .pop-up {
-    padding: 0;
+    padding: 0 !important;
 }
 
 /* p {
@@ -88,8 +88,15 @@ button {
     height: 50%;
 }
 
+.head > img {
+    margin-right: 1em;
+    height: 10px;
+}
+
 .head {
-    color: black;
+    color: white;
+    background-color: var(--green-color);
+    padding: .5em;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
