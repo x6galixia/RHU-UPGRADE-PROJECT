@@ -88,13 +88,8 @@ button {
     height: 50%;
 }
 
-.head > img {
-    margin-right: 1em;
-}
-
 .head {
     color: black;
-    padding: 1em 1em 0 1em;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
