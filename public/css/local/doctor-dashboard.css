@@ -21,6 +21,9 @@
     flex-direction: row;
     align-items: center;
 }
+.row select{
+    width: 350px !important ;
+}
 
 .gap {
     gap: 1em;

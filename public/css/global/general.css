@@ -532,4 +532,12 @@ input[type="checkbox"] {
   margin-right: 10px;
 }
 
+.category-fields select{
+  width: 350px;
+
+}
+.category-fields{
+  display: flex;
+  gap: 10px;
+}
 

@@ -193,20 +193,29 @@
               </div>
             </div>
             <hr>
-            <div class="row just-bet gap">
-              <div class="col grow">
-                <label for="">Categories</label>
-                <select name="" id="">
-                  <option value="" selected disabled>Select category</option>
-                </select>
+            <div id="category-fields-container">
+              <!-- Initial Category Fields -->
+              <div class="category-fields">
+                 <select class="category-dropdown" name="category" onchange="updateServices(this)">
+                    <option value="default" disabled selected>Select a category</option>
+                    <option value="Hematology">Hematology</option>
+                    <option value="Blood Chemistry">Blood Chemistry</option>
+                    <option value="Special Test">Special Test</option>
+                    <option value="Thoracic Content">Thoracic Content</option>
+                    <option value="Blood Gases">Blood Gases</option>
+                    <option value="Other Skeletal">Other Skeletal</option>
+                    <option value="Abdomen">Abdomen</option>
+                    <option value="Clinical Microscopy">Clinical Microscopy</option>
+                    <option value="Head">Head</option>
+                    <option value="Vertebral Column">Vertebral Column</option>
+                    <option value="Clinical Chemistry">Clinical Chemistry</option>
+                 </select>
+           
+                 <select class="service-dropdown" name="service">
+                    <option value="default" disabled selected>Select a service</option>
+                 </select>
               </div>
-              <div class="col grow">
-                <label for="">Services</label>
-                <select name="" id="">
-                  <option value="" selected disabled>Select services</option>
-                </select>
-              </div>
-            </div>
+           </div>
             <div>
               <button>Add more</button>
             </div>
@@ -609,6 +618,7 @@
     </main>
     <script src="../../js/local/doctor-dashboard/patient-api.js"></script>
     <script src="../../js/global/pop-up.js"></script>
+    <script src="../../js/global/services.js"></script>
     <script>
       function printingReqReseta (containerID) {
         var reseta = document.getElementById('resetaPrint');
