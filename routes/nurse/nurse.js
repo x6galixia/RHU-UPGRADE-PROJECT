@@ -53,7 +53,40 @@ router.get("/nurse-dashboard", ensureAuthenticated, checkUserType("Nurse"), (req
 });
 
 router.get("/nurse/patient-registration", ensureAuthenticated, checkUserType("Nurse"), (req, res) => {
-  res.render("nurse/patient-registration");
+  res.render("nurse/patient-registration"); // Render the EJS view
+});
+
+
+// Route to generate a new patient ID
+router.get("/nurse/patient-registration/new-id", ensureAuthenticated, checkUserType("Nurse"), async (req, res) => {
+  try {
+    const result = await rhuPool.query(
+      "SELECT patient_id FROM patients ORDER BY patient_id DESC LIMIT 1"
+    );
+
+    let lastId = "A0000"; // Default in case there are no patients
+
+    if (result.rows.length > 0) {
+      lastId = result.rows[0].patient_id;
+
+      // Check if the last ID has a prefix
+      const prefixMatch = lastId.match(/^([A-Z]+)(\d+)$/);
+
+      if (!prefixMatch) {
+        // Handle IDs without a prefix or in a different format
+        const numericPart = parseInt(lastId, 10) || 0;
+        lastId = `A${String(numericPart).padStart(4, "0")}`;
+      }
+    }
+
+    // Generate the next ID
+    const newId = generateNextId(lastId);
+
+    res.json({ id: newId }); // Return the generated ID as JSON
+  } catch (err) {
+    console.error("Error generating ID:", err.message);
+    res.status(500).send("Server error");
+  }
 });
 
 router.get("/nurse/individual-health-assessment", ensureAuthenticated, checkUserType("Nurse"), (req, res) => {
@@ -182,14 +215,14 @@ router.post("/nurse/admit-patient", async (req, res) => {
             $19, $20, $21, $22, $23, $24, $25, $26, 
             $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38)
       `, [
-        patientData.patient_id, patientData.rhu_id, patientData.last_name, patientData.first_name, 
-        patientData.middle_name, patientData.suffix, patientData.phone, patientData.gender, 
-        patientData.birthdate, house_no, street, barangay, city, province, patientData.occupation, 
-        patientData.email, patientData.philhealth_no, patientData.guardian, 
-        calculateAge(value.birthdate), value.check_date, value.height, value.weight, 
-        value.systolic, value.diastolic, value.temperature, value.heart_rate, 
-        value.respiratory_rate, value.bmi, value.comment, 
-        value.follow_date, value.diagnosis, value.findings, value.category, 
+        patientData.patient_id, patientData.rhu_id, patientData.last_name, patientData.first_name,
+        patientData.middle_name, patientData.suffix, patientData.phone, patientData.gender,
+        patientData.birthdate, house_no, street, barangay, city, province, patientData.occupation,
+        patientData.email, patientData.philhealth_no, patientData.guardian,
+        calculateAge(value.birthdate), value.check_date, value.height, value.weight,
+        value.systolic, value.diastolic, value.temperature, value.heart_rate,
+        value.respiratory_rate, value.bmi, value.comment,
+        value.follow_date, value.diagnosis, value.findings, value.category,
         value.service, value.medicine, value.instruction, value.quantity, value.lab_result
       ]);
 
@@ -206,9 +239,9 @@ router.post("/nurse/admit-patient", async (req, res) => {
               heart_rate, respiratory_rate, bmi, comment)
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         `, [
-          value.patient_id, value.age, value.check_date, 
-          value.height, value.weight, value.systolic, value.diastolic, 
-          value.temperature, value.heart_rate, value.respiratory_rate, 
+          value.patient_id, value.age, value.check_date,
+          value.height, value.weight, value.systolic, value.diastolic,
+          value.temperature, value.heart_rate, value.respiratory_rate,
           value.bmi, value.comment
         ]);
       }
@@ -218,8 +251,8 @@ router.post("/nurse/admit-patient", async (req, res) => {
           INSERT INTO doctor_visits (patient_id, follow_date, diagnosis, findings, category, service, medicine, instruction, quantity)
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         `, [
-          value.patient_id, value.follow_date, value.diagnosis, 
-          value.findings, value.category, value.service, 
+          value.patient_id, value.follow_date, value.diagnosis,
+          value.findings, value.category, value.service,
           value.medicine, value.instruction, value.quantity
         ]);
       }
@@ -232,8 +265,8 @@ router.post("/nurse/admit-patient", async (req, res) => {
           value.patient_id, value.lab_result
         ]);
       }
-
-      return res.status(200).send("Patient data moved to history successfully and new data added.");
+      req.flash("submit", "Submitted Successfully");
+      return res.redirect("/nurse/patient-registration");
     } else {
       // Patient does not exist, insert new patient and vital signs
       await rhuPool.query(`
@@ -243,8 +276,8 @@ router.post("/nurse/admit-patient", async (req, res) => {
             $10, $11, $12, $13, $14, $15, $16, $17, $18)
       `, [
         value.patient_id, rhu_id, value.last_name, value.first_name,
-        value.middle_name, value.suffix, value.phone, value.gender, 
-        value.birthdate, house_no, street, barangay, city, province, 
+        value.middle_name, value.suffix, value.phone, value.gender,
+        value.birthdate, house_no, street, barangay, city, province,
         value.occupation, value.email, value.philhealth_no, value.guardian
       ]);
 
@@ -253,18 +286,36 @@ router.post("/nurse/admit-patient", async (req, res) => {
             heart_rate, respiratory_rate, bmi, comment)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       `, [
-        value.patient_id, value.age, value.check_date, 
-        value.height, value.weight, value.systolic, value.diastolic, 
-        value.temperature, value.heart_rate, value.respiratory_rate, 
+        value.patient_id, value.age, value.check_date,
+        value.height, value.weight, value.systolic, value.diastolic,
+        value.temperature, value.heart_rate, value.respiratory_rate,
         value.bmi, value.comment
       ]);
     }
-
-    res.redirect("/nurse/patient-registration");
+    req.flash("submit", "Submitted Successfully");
+    return res.redirect("/nurse/patient-registration");
   } catch (err) {
     console.error("Error: ", err);
     res.status(500).send("Server error");
   }
+
 });
+
+
+//-------------------functions------//
+function generateNextId(lastId) {
+  const match = lastId.match(/^([A-Z]+)(\d+)$/);
+
+  if (match) {
+    const prefix = match[1]; // Get the letter part (e.g., "A")
+    const number = parseInt(match[2], 10); // Get the number part (e.g., "0001")
+
+    const newNumber = number + 1; // Increment the numeric part
+    return `${prefix}${String(newNumber).padStart(4, '0')}`; // Return the new ID with padding
+  }
+
+  return "A0001"; // Default in case something goes wrong
+}
+
 
 module.exports = router;

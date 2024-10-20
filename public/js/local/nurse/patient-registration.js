@@ -1,17 +1,7 @@
 const { func } = require("joi");
+// import Base64 from 'crypto-js/enc-base64';
 
 document.addEventListener('DOMContentLoaded', function () {
-
-
-    document.getElementById('newUserCheck').addEventListener('change', function () {
-        const button = document.querySelector('.generateID');
-        if (this.checked) {
-            button.style.display = 'flex';
-        } else {
-            button.style.display = 'none';
-        }
-    });
-
     const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('ousiderPicture');
 
@@ -118,6 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 });
+
 // compute BMI
 function computeBMI() {
     const height = parseFloat(document.getElementById('height').value);

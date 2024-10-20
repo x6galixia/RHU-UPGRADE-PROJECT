@@ -168,37 +168,41 @@ input[type="button"] {
     flex-grow: 0 !important;
 }
 
-#generate-id > main {
+#generate-id>main {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
-#generate-id > main > button {
+
+#generate-id>main>button {
     align-self: self-end;
 }
 
-.check{
+.check {
     display: flex;
     flex-direction: column;
     gap: 12px;
     margin-top: 12px;
 }
-.check > .generateID{
+
+.check>.generateID {
     display: flex;
     align-items: center;
     gap: 20px;
 }
-.check > .generateID > .inputFile,
-.check > .generateID > button{
+
+.check>.generateID>.inputFile,
+.check>.generateID>button {
     width: 50%;
 }
 
-.check > .checkbox{
+.check>.checkbox {
     display: flex;
     align-items: center;
     gap: 12px;
 }
-.inputStyle{
+
+.inputStyle {
     display: flex;
     border: 1px solid;
     border-radius: 10px;
@@ -208,40 +212,47 @@ input[type="button"] {
     align-items: center;
     cursor: pointer;
 }
-.inputStyle > p{
+
+.inputStyle>p {
     margin: 0;
     width: fit-content;
 }
-#recently-admitted-table{
+
+#recently-admitted-table {
     width: 50%;
 }
 
-#recently-admitted-table .table-container{
+#recently-admitted-table .table-container {
     max-height: 370px;
     overflow: visible;
-    position:relative;
+    position: relative;
 }
-#recently-admitted-table .table-container thead{
+
+#recently-admitted-table .table-container thead {
     position: sticky;
     top: 0;
 }
-#recently-admitted-table .table-container tbody tr td:last-child{
+
+#recently-admitted-table .table-container tbody tr td:last-child {
     font-weight: normal;
 }
-#recently-admitted-table .table-container tbody tr td:first-child{
+
+#recently-admitted-table .table-container tbody tr td:first-child {
     font-weight: bold;
 }
-.triple-dot{
+
+.triple-dot {
     margin-bottom: -185px;
     margin-left: -100px;
 }
-.pagination{
+
+.pagination {
     margin-top: 24px;
 }
 
 /* The switch - the box around the slider */
 
-.scanSwitch{
+.scanSwitch {
     display: flex;
     justify-content: center;
     align-items: end;
@@ -255,17 +266,17 @@ input[type="button"] {
     width: 50px;
     height: 24px;
     margin-right: 10px;
-  }
-  
-  /* Hide default HTML checkbox */
-  .switch input {
+}
+
+/* Hide default HTML checkbox */
+.switch input {
     opacity: 0;
     width: 0;
     height: 0;
-  }
-  
-  /* The slider */
-  .slider {
+}
+
+/* The slider */
+.slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -275,9 +286,9 @@ input[type="button"] {
     background-color: #ccc;
     -webkit-transition: .4s;
     transition: .4s;
-  }
-  
-  .slider:before {
+}
+
+.slider:before {
     position: absolute;
     content: "";
     height: 16px;
@@ -287,27 +298,71 @@ input[type="button"] {
     background-color: white;
     -webkit-transition: .4s;
     transition: .4s;
-  }
-  
-  .switch input:checked + .slider {
+}
+
+.switch input:checked+.slider {
     background-color: #2196F3;
-  }
-  
-  .switch input:focus + .slider {
+}
+
+.switch input:focus+.slider {
     box-shadow: 0 0 1px #2196F3;
-  }
-  
-  .switch input:checked + .slider:before {
+}
+
+.switch input:checked+.slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
-  }
-  
-  /* Rounded sliders */
-  .slider.round {
+}
+
+/* Rounded sliders */
+.slider.round {
     border-radius: 34px;
-  }
-  
-  .slider.round:before {
+}
+
+.slider.round:before {
     border-radius: 50%;
-  }
+}
+
+#confirm_patient_registration main {
+    margin-bottom: 0;
+}
+
+
+#submit_prompt img {
+    width: 70px;
+    margin-top: -60px;
+    background-color: #ffff;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.visible1 {
+    display: flex !important;
+
+}
+
+#submit_prompt {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    background: #FFF;
+    /* box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25); */
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    padding: 30px 60px;
+    display: none;
+    overflow: visible;
+    z-index: 2;
+}
+
+#submit_prompt main {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin-top: 20px;
+}
