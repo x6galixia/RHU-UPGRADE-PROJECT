@@ -97,30 +97,6 @@ router.get('/scanner', (req, res) => {
   res.render('nurse/qrScanner');
 });
 
-// router.get('/nurse/fetchScannedData', async (req, res) => {
-//   const { qrCode } = req.query;
-//   console.log('Received scanned QR Code:', qrCode);
-
-//   try {
-//     const queryText = `
-//       SELECT * FROM beneficiary
-//       WHERE beneficiary_id = $1
-//     `;
-
-//     const result = await pharmacyPool.query(queryText, [qrCode]);
-
-//     if (result.rows.length > 0) {
-//       res.json(result.rows[0]);
-//     } else {
-//       console.log(`User not found for beneficiary_id=${qrCode}`);
-//       res.status(404).send("User not found");
-//     }
-//   } catch (err) {
-//     console.error("Error querying database:", err.message);
-//     res.status(500).send("Server error");
-//   }
-// });
-
 router.get('/nurse/fetchScannedData', async (req, res) => {
   const { qrCode } = req.query;
   console.log('Received scanned QR Code:', qrCode);
@@ -164,6 +140,8 @@ router.get('/nurse/fetchScannedData', async (req, res) => {
 
 router.post("/nurse/admit-patient", async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
+  console.log(value);
+  console.log(calculateAge(value.birthdate))
   const rhu_id = req.user.rhu_id;
 
   // Extract address components from completeAddress
@@ -286,7 +264,7 @@ router.post("/nurse/admit-patient", async (req, res) => {
             heart_rate, respiratory_rate, bmi, comment)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       `, [
-        value.patient_id, value.age, value.check_date,
+        value.patient_id, calculateAge(value.birthdate), value.check_date,
         value.height, value.weight, value.systolic, value.diastolic,
         value.temperature, value.heart_rate, value.respiratory_rate,
         value.bmi, value.comment
