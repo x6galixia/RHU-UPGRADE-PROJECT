@@ -129,7 +129,7 @@
                                             <img src="../icon/upload.svg" alt="">
                                         </div>
                                     </div>
-                                    <button class="button-pink" id="generateIdButton">Generate ID</button>
+                                    <button type="button" class="button-pink" id="generateIdButton">Generate ID</button>
                                 </div>
                             </div>
                         </div>
@@ -237,7 +237,7 @@
 
                             <div class="pop-up" id="generate-id" style="display: none;">
                                 <div class="close-container">
-                                    <img src="../icon/close.svg" alt="" class="close_popUp">
+                                    <img src="../icon/close.svg" alt="" onclick="closeeeee()">
                                 </div>
                                 <h1 class="heading">OUTSIDER ID</h1>
                                 <main class="id-container">
@@ -410,6 +410,7 @@
                                 </main>
                             </div>
         </main>
+        <!-- fetch ID -->
         <script>
             // Fetch the new patient ID when the page loads
             async function fetchPatientId() {
@@ -426,6 +427,38 @@
 
             // Call fetchPatientId when the page loads
             window.onload = fetchPatientId;
+        </script>
+        <!-- triple dot -->
+        <script>
+            document.querySelectorAll(".dot").forEach(function (dot) {
+                dot.addEventListener("click", function () {
+                    const tripleDotContainer = dot.closest("td").querySelector(".triple-dot");
+                    if (tripleDotContainer) {
+                        tripleDotContainer.classList.toggle("visible");
+                        // if (tripleDotContainer.classList.contains("visible")) {
+                        //     clearInterval(pollIntervalId);
+                        //     isDotMenuOpen = true;
+                        // } else {
+                        //     pollIntervalId = setInterval(fetchBeneficiaryUpdates, POLL_INTERVAL);
+                        //     isDotMenuOpen = false;
+                        // }
+                        console.log(tripleDotContainer);
+                    }
+                });
+
+                document.addEventListener("click", function (event) {
+                    // Check if the click was outside the dot container
+                    if (!dot.contains(event.target)) {
+                        const tripleDotContainer = dot.closest("td").querySelector(".triple-dot");
+                        if (tripleDotContainer && tripleDotContainer.classList.contains("visible")) {
+                            tripleDotContainer.classList.remove("visible");
+                            // pollIntervalId = setInterval(fetchBeneficiaryUpdates, POLL_INTERVAL);
+                            // isDotMenuOpen = false;
+                            console.log("triple dot closed");
+                        }
+                    }
+                });
+            });
         </script>
         <script src="../js/local/nurse/patient-registration.js"></script>
         <script src="../../js/global/client-side-functions.js"></script>
