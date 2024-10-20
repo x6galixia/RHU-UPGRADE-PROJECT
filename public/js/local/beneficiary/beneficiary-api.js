@@ -1,4 +1,3 @@
-import Base64 from 'crypto-js/enc-base64';
 document.addEventListener("DOMContentLoaded", function () {
     const POLL_INTERVAL = 1000;
     let pollIntervalId;
