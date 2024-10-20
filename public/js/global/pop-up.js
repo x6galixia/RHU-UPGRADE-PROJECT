@@ -1,144 +1,149 @@
-    //admin
-    const createUser = document.getElementById("create-user");
-    
-    // inventory
-    const restock = document.getElementById("restock-med");
-    const transfer = document.getElementById("transfer-med");
-    const add = document.getElementById("add-med");
-    const confirm_transfer = document.getElementById("confirm-transfer");
-    const confirm_restock = document.getElementById("confirm-restock");
-    const confirm_add_med = document.getElementById("confirm-add-med");
+//admin
+const createUser = document.getElementById("create-user");
 
-    //beneficiary-records
-    const add_beneficiary = document.getElementById("add-beneficiary");
-    const update_beneficiary = document.getElementById("update-beneficiary");
-    const delete_beneficiary = document.getElementById("delete-beneficiary");
-    const ID = document.getElementById("id");
+// inventory
+const restock = document.getElementById("restock-med");
+const transfer = document.getElementById("transfer-med");
+const add = document.getElementById("add-med");
+const confirm_transfer = document.getElementById("confirm-transfer");
+const confirm_restock = document.getElementById("confirm-restock");
+const confirm_add_med = document.getElementById("confirm-add-med");
 
-    //dispense
-    const dispense = document.getElementById("dispense-med");
-    const reject_dispense = document.getElementById("reject_dispense");
-    const submit_dispense = document.getElementById("submit_dispense");
+//beneficiary-records
+const add_beneficiary = document.getElementById("add-beneficiary");
+const update_beneficiary = document.getElementById("update-beneficiary");
+const delete_beneficiary = document.getElementById("delete-beneficiary");
+const ID = document.getElementById("id");
 
-    //nurse
-    const recently_admitted = document.getElementById("recently-admitted-table");
+//dispense
+const dispense = document.getElementById("dispense-med");
+const reject_dispense = document.getElementById("reject_dispense");
+const submit_dispense = document.getElementById("submit_dispense");
 
-    
-    //doctor dashboard id
-    const vital = document.getElementById('vital');
-    const reqLab = document.getElementById('reqLab');
-    const diagnosis = document.getElementById('diagnosis');
-    const findings = document.getElementById('findings');
-    const labResult = document.getElementById('labResult');
-    const prescribed = document.getElementById('prescribed');
+//nurse
+const recently_admitted = document.getElementById("recently-admitted-table");
+const confirm_patient_registration = document.getElementById("confirm_patient_registration");
 
 
-    const overlay = document.querySelector(".overlay");
+//doctor dashboard id
+const vital = document.getElementById('vital');
+const reqLab = document.getElementById('reqLab');
+const diagnosis = document.getElementById('diagnosis');
+const findings = document.getElementById('findings');
+const labResult = document.getElementById('labResult');
+const prescribed = document.getElementById('prescribed');
 
-    function popUp_button(button) {
-      var buttonId = button.id;
-      var select = button.value;
 
-      //inventory
-      if (buttonId === "restock"){
-        restock.classList.toggle("visible");
-      } else if (buttonId === "transfer"){
-        transfer.classList.toggle("visible");
-      } else if (buttonId === "add"){
-        add.classList.toggle("visible");
-      } else if (buttonId === "transfer_form"){
-        confirm_transfer.classList.toggle("visible");
-      } else if (buttonId === "restock_form"){
-        confirm_restock.classList.toggle("visible");
-      } else if (buttonId === "add_med_form"){
-        confirm_add_med.classList.toggle("visible");
-      }
+const overlay = document.querySelector(".overlay");
 
-      //beneficiary-records
-      else if (buttonId === "add-beneficiary-button"){
-        add_beneficiary.classList.toggle("visible");
-      }
-      else if (buttonId === "generate-id"){
-        ID.classList.toggle("visible");
-      }
-      else if (buttonId === "update-id"){
-        update_beneficiary.classList.toggle("visible");
-      }
-      
-      
-      //doctor dashboard reuse value
-      else if (select === "1"){
-        vital.classList.toggle('visible');
-      }
-      else if (select === "2"){
-        reqLab.classList.toggle('visible');
-      }
-      else if (select === "3"){
-        diagnosis.classList.toggle('visible');
-      }
-      else if (select === "4"){
-        findings.classList.toggle('visible');
-      }
-      else if (select === "5"){
-        labResult.classList.toggle('visible');
-      }
-      else if (select === "6"){
-        prescribed.classList.toggle('visible');
-      }
+function popUp_button(button) {
+  var buttonId = button.id;
+  var select = button.value;
 
-      // dispense
-      else if (buttonId === "reject_dispense_button"){
-        reject_dispense.classList.toggle("visible");
-      }
-      else if (buttonId === "submit_dispense_button"){
-        submit_dispense.classList.toggle("visible");
-      }
-      else if (buttonId === "dispense"){
-        dispense.classList.toggle("visible");
-      }
+  //inventory
+  if (buttonId === "restock") {
+    restock.classList.toggle("visible");
+  } else if (buttonId === "transfer") {
+    transfer.classList.toggle("visible");
+  } else if (buttonId === "add") {
+    add.classList.toggle("visible");
+  } else if (buttonId === "transfer_form") {
+    confirm_transfer.classList.toggle("visible");
+  } else if (buttonId === "restock_form") {
+    confirm_restock.classList.toggle("visible");
+  } else if (buttonId === "add_med_form") {
+    confirm_add_med.classList.toggle("visible");
+  }
 
-      //admin - user
-      else if (buttonId === "create-user-btn"){
-        createUser.classList.toggle("visible");
-      }
+  //beneficiary-records
+  else if (buttonId === "add-beneficiary-button") {
+    add_beneficiary.classList.toggle("visible");
+  }
+  else if (buttonId === "generate-id") {
+    ID.classList.toggle("visible");
+  }
+  else if (buttonId === "update-id") {
+    update_beneficiary.classList.toggle("visible");
+  }
 
-      //nurse
-      else if (buttonId == "recently-admitted"){
-        recently_admitted.classList.toggle("visible");
-      }
 
-      overlay.classList.add("visible");
+  //doctor dashboard reuse value
+  else if (select === "1") {
+    vital.classList.toggle('visible');
+  }
+  else if (select === "2") {
+    reqLab.classList.toggle('visible');
+  }
+  else if (select === "3") {
+    diagnosis.classList.toggle('visible');
+  }
+  else if (select === "4") {
+    findings.classList.toggle('visible');
+  }
+  else if (select === "5") {
+    labResult.classList.toggle('visible');
+  }
+  else if (select === "6") {
+    prescribed.classList.toggle('visible');
+  }
+
+  // dispense
+  else if (buttonId === "reject_dispense_button") {
+    reject_dispense.classList.toggle("visible");
+  }
+  else if (buttonId === "submit_dispense_button") {
+    submit_dispense.classList.toggle("visible");
+  }
+  else if (buttonId === "dispense") {
+    dispense.classList.toggle("visible");
+  }
+
+  //admin - user
+  else if (buttonId === "create-user-btn") {
+    createUser.classList.toggle("visible");
+  }
+
+  //nurse
+  else if (buttonId == "recently-admitted") {
+    recently_admitted.classList.toggle("visible");
+  }
+  //nurse
+  else if (buttonId == "register_patient") {
+    confirm_patient_registration.classList.toggle("visible");
+  }
+
+  overlay.classList.add("visible");
+}
+
+
+// close pop-up
+document.querySelectorAll(".close_popUp").forEach(function (closeBtn) {
+  closeBtn.addEventListener("click", function () {
+    var pop_up = closeBtn.closest(".pop-up");
+    if (pop_up) {
+      pop_up.classList.remove("visible");
+      overlay.classList.remove("visible");
     }
-    
+  });
+});
 
-    // close pop-up
-    document.querySelectorAll(".close_popUp").forEach(function(closeBtn) {
-      closeBtn.addEventListener("click", function() {
-        var pop_up = closeBtn.closest(".pop-up"); 
-        if (pop_up) {
-          pop_up.classList.remove("visible"); 
-          overlay.classList.remove("visible");
-        }
-      });
-    });
+// close pop-up
+document.querySelectorAll(".close_popUp1").forEach(function (closeBtn) {
+  closeBtn.addEventListener("click", function () {
+    var pop_up = closeBtn.closest(".pop-up-confirm");
+    if (pop_up) {
+      pop_up.classList.remove("visible");
+      overlay.classList.remove("visible");
+    }
+  });
+});
 
-    // close pop-up
-    document.querySelectorAll(".close_popUp1").forEach(function(closeBtn) {
-      closeBtn.addEventListener("click", function() {
-        var pop_up = closeBtn.closest(".pop-up-confirm"); 
-        if (pop_up) {
-          pop_up.classList.remove("visible"); 
-          overlay.classList.remove("visible");
-        }
-      });
-    });
-
-    //close pop-up 2
-    document.querySelectorAll(".close_confirm").forEach(function(closeBtn) {
-      closeBtn.addEventListener("click", function() {
-        var pop_up_confirm = closeBtn.closest(".pop-up-confirm"); 
-        if (pop_up_confirm) {
-          pop_up_confirm.classList.remove("visible"); 
-        }
-      });
-    });
+//close pop-up 2
+document.querySelectorAll(".close_confirm").forEach(function (closeBtn) {
+  closeBtn.addEventListener("click", function () {
+    var pop_up_confirm = closeBtn.closest(".pop-up-confirm");
+    if (pop_up_confirm) {
+      pop_up_confirm.classList.remove("visible");
+    }
+  });
+});

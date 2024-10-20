@@ -16,7 +16,8 @@
 <body>
     <%- include("../includes/header.ejs") %>
         <h1 class="headings">PATIENT REGISTRATION</h1>
-        <input type="text" id="qrInput" required style="opacity: 0; position: absolute;">
+        <input type="text" id="qrInput" required
+            style="opacity: 0; position: fixed; transform: translate(-50%, -50%),;">
         <main>
             <div class="buttons">
                 <div class="add-transfer">
@@ -42,7 +43,7 @@
                                 <span class="slider round"></span>
                             </label>
                         </div>
-                        <input type="number" id="qrOutput" name="patient_id" style="display: none; position: absolute;">
+                        <input type="text" id="qrOutput" name="patient_id" style="position: absolute; display: none;">
                         <div class="information">
                             <div class="r">
                                 <div>
@@ -98,7 +99,7 @@
                             <div class="r">
                                 <div>
                                     <label for="date">Date</label>
-                                    <input type="date" id="check_date" required name="check_date">
+                                    <input type="date" class="current-date" required name="check_date">
                                 </div>
                                 <div>
                                     <label for="phoneNumber">Phone Number</label>
@@ -188,177 +189,249 @@
                             </div>
                         </div>
                         <div class="submit-button">
-                            <button type="submit" id="submit">Submit</button>
+                            <button type="button" id="register_patient" onclick="popUp_button(this)">Submit</button>
                         </div>
+                    </div>
+                </div>
+                <div class="pop-up-confirm" id="confirm_patient_registration">
+                    <div>
+                        <h2>Are you sure you want to submit?</h2>
+                        <main>
+                            <button type="button" class="button-bordered close_popUp1">No</button>
+                            <button type="submit" class="button-green">Yes</button>
+                        </main>
                     </div>
                 </div>
             </form>
 
-            <div class="pop-up" id="generate-id" style="display: none;">
-                <div class="close-container">
-                    <img src="../icon/close.svg" alt="" class="close_popUp">
+            <% if (messages.submit) { %>
+                <div class="overlay visible" id="susOo"></div>
+                <div class="visible1" id="submit_prompt">
+                    <img src="../icon/check.svg" alt="">
+                    <div>
+                        <h2>
+                            <%= messages.submit%>
+                        </h2>
+                        <main>
+                            <button type="button" class="button-green" id="close_message" onclick="yawa()">OK</button>
+                        </main>
+                    </div>
                 </div>
-                <h1 class="heading">OUTSIDER ID</h1>
-                <main class="id-container">
-                    <div id="id-container">
-                        <div class="all">
-                            <div class="rec11">
-                                <img class="rec1" src="../img/id-img/rec1.png" />
-                            </div>
-                            <div class="three">
-                                <div class="prof">
-                                    <img class="profile" id="beneficiary-picture"
-                                        src="../icon/upload-img-default.svg" />
-                                </div>
+                <% } %>
 
-                                <div class="info">
-                                    <p class="name" id="beneficiary-name">JOHN REY B. PAGASPAS</p>
-                                    <p class="status" id="beneficiary-status">Outsider</p>
-                                    <div class="rectangle"></div>
-
-                                    <div class="i1-t">
-                                        <img class="icon1" src="../img/id-img/icon1.png" />
-                                        <p class="address" id="beneficiary-address">Maypangdan Borongan Eastern Samar
-                                        </p>
-                                    </div>
-
-                                    <div class="i3-t">
-                                        <img class="icon3" src="../img/id-img/icon3.png" />
-                                        <p class="phoneno." id="beneficiary-phone">09970752488</p>
-                                    </div>
-                                </div>
-
-                                <div class="qrr" id="qrcode">
-                                </div>
-
-                                <div class="recd11">
-                                    <img class="recd1" src="../img/id-img/recd1.png" />
-                                </div>
-
-                                <div class="recd22">
-                                    <img class="recd2" src="../img/id-img/recd2.png" />
-                                </div>
-
-                                <div class="recd33">
-                                    <img class="recd3" src="../img/id-img/recd3.png" />
-                                </div>
-
-                                <div class="recd44">
-                                    <img class="recd4" src="../img/id-img/recd4.png" />
-                                </div>
+                    <% if (messages.error) { %>
+                        <div class="overlay visible" id="susOo"></div>
+                        <div class="visible1" id="submit_prompt">
+                            <img src="../icon/close1" alt="">
+                            <div>
+                                <h2>
+                                    <%= messages.error%>
+                                </h2>
+                                <main>
+                                    <button type="button" class="button-green" id="close_message"
+                                        onclick="yawa()">OK</button>
+                                </main>
                             </div>
                         </div>
-                    </div>
-                    <button class="button-green" onclick="printContainer('id-container')">PRINT</button>
-                </main>
-            </div>
-            <div class="pop-up" id="recently-admitted-table">
-                <div class="close-container">
-                    <img src="../icon/close.svg" alt="" class="close_popUp">
-                </div>
-                <h1 class="heading">RECENTLY ADMITTED</h1>
-                <main>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Date</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Kim Galicia</td>
-                                    <td>October 4, 2024</td>
-                                    <td class="menu-row">
-                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
-                                        <div class="triple-dot">
-                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
-                                                <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
-                                                <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
+                        <% } %>
+
+                            <div class="pop-up" id="generate-id" style="display: none;">
+                                <div class="close-container">
+                                    <img src="../icon/close.svg" alt="" class="close_popUp">
+                                </div>
+                                <h1 class="heading">OUTSIDER ID</h1>
+                                <main class="id-container">
+                                    <div id="id-container">
+                                        <div class="all">
+                                            <div class="rec11">
+                                                <img class="rec1" src="../img/id-img/rec1.png" />
+                                            </div>
+                                            <div class="three">
+                                                <div class="prof">
+                                                    <img class="profile" id="beneficiary-picture"
+                                                        src="../icon/upload-img-default.svg" />
+                                                </div>
+
+                                                <div class="info">
+                                                    <p class="name" id="beneficiary-name">JOHN REY B. PAGASPAS</p>
+                                                    <p class="status" id="beneficiary-status">Outsider</p>
+                                                    <div class="rectangle"></div>
+
+                                                    <div class="i1-t">
+                                                        <img class="icon1" src="../img/id-img/icon1.png" />
+                                                        <p class="address" id="beneficiary-address">Maypangdan Borongan
+                                                            Eastern Samar
+                                                        </p>
+                                                    </div>
+
+                                                    <div class="i3-t">
+                                                        <img class="icon3" src="../img/id-img/icon3.png" />
+                                                        <p class="phoneno." id="beneficiary-phone">09970752488</p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="qrr" id="qrcode">
+                                                </div>
+
+                                                <div class="recd11">
+                                                    <img class="recd1" src="../img/id-img/recd1.png" />
+                                                </div>
+
+                                                <div class="recd22">
+                                                    <img class="recd2" src="../img/id-img/recd2.png" />
+                                                </div>
+
+                                                <div class="recd33">
+                                                    <img class="recd3" src="../img/id-img/recd3.png" />
+                                                </div>
+
+                                                <div class="recd44">
+                                                    <img class="recd4" src="../img/id-img/recd4.png" />
+                                                </div>
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Kim Galicia</td>
-                                    <td>October 4, 2024</td>
-                                    <td class="menu-row">
-                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
-                                        <div class="triple-dot">
-                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
-                                                <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
-                                                <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Kim Galicia</td>
-                                    <td>October 4, 2024</td>
-                                    <td class="menu-row">
-                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
-                                        <div class="triple-dot">
-                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
-                                                <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
-                                                <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Kim Galicia</td>
-                                    <td>October 4, 2024</td>
-                                    <td class="menu-row">
-                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
-                                        <div class="triple-dot">
-                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
-                                                <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
-                                                <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Kim Galicia</td>
-                                    <td>October 4, 2024</td>
-                                    <td class="menu-row">
-                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
-                                        <div class="triple-dot">
-                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
-                                                <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
-                                                <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Kim Galicia</td>
-                                    <td>October 4, 2024</td>
-                                    <td class="menu-row">
-                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
-                                        <div class="triple-dot">
-                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
-                                                <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
-                                                <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="pagination">
-                        <button class="button-green">Previous</button>
-                        <button class="button-green">Next</button>
-                    </div>
-                </main>
-            </div>
+                                    </div>
+                                    <button class="button-green" onclick="printContainer('id-container')">PRINT</button>
+                                </main>
+                            </div>
+                            <div class="pop-up" id="recently-admitted-table">
+                                <div class="close-container">
+                                    <img src="../icon/close.svg" alt="" class="close_popUp">
+                                </div>
+                                <h1 class="heading">RECENTLY ADMITTED</h1>
+                                <main>
+                                    <div class="table-container">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Date</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Kim Galicia</td>
+                                                    <td>October 4, 2024</td>
+                                                    <td class="menu-row">
+                                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
+                                                        <div class="triple-dot">
+                                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
+                                                                <button id="delete-id"
+                                                                    onclick="popUp_three_dot(this)">Delete</button>
+                                                                <button id="update-id"
+                                                                    onclick="popUp_three_dot(this)">Update</button>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Kim Galicia</td>
+                                                    <td>October 4, 2024</td>
+                                                    <td class="menu-row">
+                                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
+                                                        <div class="triple-dot">
+                                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
+                                                                <button id="delete-id"
+                                                                    onclick="popUp_three_dot(this)">Delete</button>
+                                                                <button id="update-id"
+                                                                    onclick="popUp_three_dot(this)">Update</button>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Kim Galicia</td>
+                                                    <td>October 4, 2024</td>
+                                                    <td class="menu-row">
+                                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
+                                                        <div class="triple-dot">
+                                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
+                                                                <button id="delete-id"
+                                                                    onclick="popUp_three_dot(this)">Delete</button>
+                                                                <button id="update-id"
+                                                                    onclick="popUp_three_dot(this)">Update</button>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Kim Galicia</td>
+                                                    <td>October 4, 2024</td>
+                                                    <td class="menu-row">
+                                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
+                                                        <div class="triple-dot">
+                                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
+                                                                <button id="delete-id"
+                                                                    onclick="popUp_three_dot(this)">Delete</button>
+                                                                <button id="update-id"
+                                                                    onclick="popUp_three_dot(this)">Update</button>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Kim Galicia</td>
+                                                    <td>October 4, 2024</td>
+                                                    <td class="menu-row">
+                                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
+                                                        <div class="triple-dot">
+                                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
+                                                                <button id="delete-id"
+                                                                    onclick="popUp_three_dot(this)">Delete</button>
+                                                                <button id="update-id"
+                                                                    onclick="popUp_three_dot(this)">Update</button>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Kim Galicia</td>
+                                                    <td>October 4, 2024</td>
+                                                    <td class="menu-row">
+                                                        <img class="dot" src="../icon/triple-dot.svg" alt="">
+                                                        <div class="triple-dot">
+                                                            <div class="menu" data-id="${beneficiary.beneficiary_id}">
+                                                                <button id="delete-id"
+                                                                    onclick="popUp_three_dot(this)">Delete</button>
+                                                                <button id="update-id"
+                                                                    onclick="popUp_three_dot(this)">Update</button>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="pagination">
+                                        <button class="button-green">Previous</button>
+                                        <button class="button-green">Next</button>
+                                    </div>
+                                </main>
+                            </div>
         </main>
+        <script>
+            // Fetch the new patient ID when the page loads
+            async function fetchPatientId() {
+                try {
+                    const response = await fetch("/nurse/patient-registration/new-id");
+                    const data = await response.json();
+
+                    // Store the generated ID in the input field with id="qrOutput"
+                    document.getElementById("qrOutput").value = data.id;
+                } catch (error) {
+                    console.error("Error fetching patient ID:", error);
+                }
+            }
+
+            // Call fetchPatientId when the page loads
+            window.onload = fetchPatientId;
+        </script>
         <script src="../js/local/nurse/patient-registration.js"></script>
+        <script src="../../js/global/client-side-functions.js"></script>
         <script src="../../js/global/pop-up.js"></script>
         <script>
+
             document.getElementById('scanSwitch').addEventListener('change', function () {
                 const qrInputField = document.getElementById('qrInput');
                 let scanning = false;
@@ -437,7 +510,6 @@
 
             });
 
-
             function populateFormFields(data) {
                 document.getElementById("lastname").value = data.last_name || '';
                 document.getElementById("firstname").value = data.first_name || '';
@@ -450,8 +522,6 @@
                 document.getElementById("phone").value = data.phone || '';
                 document.getElementById("occupation").value = data.occupation || '';
             }
-
-
 
         </script>
 </body>
