@@ -180,7 +180,7 @@ router.post("/nurse/admit-patient", async (req, res) => {
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
             $10, $11, $12, $13, $14, $15, $16, $17, $18,
             $19, $20, $21, $22, $23, $24, $25, $26, 
-            $27, $28, $29, $30, $31, $32, $33, $34, $35, $36)
+            $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38)
       `, [
         patientData.patient_id, patientData.rhu_id, patientData.last_name, patientData.first_name, 
         patientData.middle_name, patientData.suffix, patientData.phone, patientData.gender, 
@@ -194,11 +194,10 @@ router.post("/nurse/admit-patient", async (req, res) => {
       ]);
 
       // Delete the records from the original tables
-      await rhuPool.query(`
-        DELETE FROM nurse_checks WHERE patient_id = $1;
-        DELETE FROM doctor_visits WHERE patient_id = $1;
-        DELETE FROM medtech_labs WHERE patient_id = $1;
-      `, [value.patient_id]);
+      await rhuPool.query(`DELETE FROM nurse_checks WHERE patient_id = $1`, [value.patient_id]);
+      await rhuPool.query(`DELETE FROM doctor_visits WHERE patient_id = $1`, [value.patient_id]);
+      await rhuPool.query(`DELETE FROM medtech_labs WHERE patient_id = $1`, [value.patient_id]);
+
 
       // Insert new data into nurse_checks, doctor_visits, and medtech_labs
       if (value.age !== undefined) { // Check if age is provided
