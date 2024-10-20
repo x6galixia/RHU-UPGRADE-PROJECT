@@ -517,4 +517,19 @@ input[type="checkbox"] {
   border-radius: 50%;
   color: white;   /* This makes the div a circle */
 }
+.date-time{
+  color: white;
+  display: flex;
+  flex-direction: row;
+  font-size: 18px !important;
+  margin: 0;
+  gap: 30px;
+}
+.date-time span{
+  color: white;
+}
+.date-time i{
+  margin-right: 10px;
+}
+
 
