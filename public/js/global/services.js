@@ -248,3 +248,21 @@ const servicesByCategory = {
     container.appendChild(newField);
   }
   
+  function addCategoryFields() {
+    const container = document.getElementById('category-fields-container');
+    
+    const newField = container.firstElementChild.cloneNode(true);
+    
+    const categoryDropdown = newField.querySelector('.category-dropdown');
+    categoryDropdown.selectedIndex = 0;
+    
+    const serviceDropdown = newField.querySelector('.service-dropdown');
+    serviceDropdown.innerHTML = '<option value="default" disabled selected>Select a service</option>';
+    
+    categoryDropdown.addEventListener('change', function() {
+      updateServices(this);
+    });
+
+    container.appendChild(newField);
+  }
+  
