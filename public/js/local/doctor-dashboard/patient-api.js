@@ -21,13 +21,70 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td> ${patient.house_no} ${patient.street} ${patient.barangay} ${patient.town} ${patient.province}</td>
                     <td> 
                         <select name="patientAction" class="patientActionDropdown" onchange="popUp_button(this)">
-                            <option value="" selected disabled>Medical records</option>
-                            <option value="1">Vital Signs</option>
-                            <option value="2">Request Laboratory</option>
-                            <option value="3">Diagnosis</option>
-                            <option value="4">Findings</option>
-                            <option value="5">Laboratory Result</option>
-                            <option value="6">Prescribe</option>
+                                    <option value="" selected disabled>Medical records</option>
+                                    
+                                    <option value="1" 
+                                    data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
+                                    data-check-date="${patient.check_date}"
+                                    data-age="${patient.age}"
+                                    data-gender="${patient.gender}"
+                                    data-birthdate="${patient.birthdate}"
+                                    data-occupation="${patient.occupation}"
+                                    data-guardian="${patient.guardian}"
+                                    data-systolic="${patient.systolic}"
+                                    data-diastolic="${patient.diastolic}"
+                                    data-heart-rate="${patient.heart_rate}"
+                                    data-height="${patient.height}"
+                                    data-weight="${patient.weight}"
+                                    data-bmi="${patient.bmi}"
+                                    data-temperature="${patient.temperature}"
+                                    data-respiratory-rate="${patient.respiratory_rate}"
+                                    data-comment="${patient.comment}">Vital Signs</option>
+
+                                    <option value="2"
+                                    data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
+                                    data-check-date="${patient.check_date}"
+                                    data-age="${patient.age}"
+                                    data-gender="${patient.gender}"
+                                    data-birthdate="${patient.birthdate}"
+                                    data-occupation="${patient.occupation}"
+                                    data-guardian="${patient.guardian}">Request Laboratory</option>
+
+                                    <option value="3"
+                                    data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
+                                    data-check-date="${patient.check_date}"
+                                    data-age="${patient.age}"
+                                    data-gender="${patient.gender}"
+                                    data-birthdate="${patient.birthdate}"
+                                    data-occupation="${patient.occupation}"
+                                    data-guardian="${patient.guardian}">Diagnosis</option>
+
+                                    <option value="4"
+                                    data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
+                                    data-check-date="${patient.check_date}"
+                                    data-age="${patient.age}"
+                                    data-gender="${patient.gender}"
+                                    data-birthdate="${patient.birthdate}"
+                                    data-occupation="${patient.occupation}"
+                                    data-guardian="${patient.guardian}">Findings</option>
+
+                                    <option value="5"
+                                    data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
+                                    data-check-date="${patient.check_date}"
+                                    data-age="${patient.age}"
+                                    data-gender="${patient.gender}"
+                                    data-birthdate="${patient.birthdate}"
+                                    data-occupation="${patient.occupation}"
+                                    data-guardian="${patient.guardian}">Laboratory Result</option>
+
+                                    <option value="6"
+                                    data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
+                                    data-check-date="${patient.check_date}"
+                                    data-age="${patient.age}"
+                                    data-gender="${patient.gender}"
+                                    data-birthdate="${patient.birthdate}"
+                                    data-occupation="${patient.occupation}"
+                                    data-guardian="${patient.guardian}">Prescribe</option>
                         </select> 
                     </td>
                     <td>
@@ -94,14 +151,71 @@ document.addEventListener("DOMContentLoaded", function () {
                             <td>${patient.gender}</td>
                             <td>${patient.house_no} ${patient.street} ${patient.barangay} ${patient.town} ${patient.province}</td>
                             <td> 
-                                <select name="patientAction" class="patientActionDropdown" id="selectMedicalRecords" onchange="popUp_button(this)">
+                                <select name="patientAction" class="patientActionDropdown" onchange="popUp_button(this)">
                                     <option value="" selected disabled>Medical records</option>
-                                    <option value="1">Vital Signs</option>
-                                    <option value="2">Request Laboratory</option>
-                                    <option value="3">Diagnosis</option>
-                                    <option value="4">Findings</option>
-                                    <option value="5">Laboratory Result</option>
-                                    <option value="6">Prescribe</option>
+                                    
+                                    <option value="1" 
+                                    data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
+                                    data-check-date="${patient.check_date}"
+                                    data-age="${patient.age}"
+                                    data-gender="${patient.gender}"
+                                    data-birthdate="${patient.birthdate}"
+                                    data-occupation="${patient.occupation}"
+                                    data-guardian="${patient.guardian}"
+                                    data-systolic="${patient.systolic}"
+                                    data-diastolic="${patient.diastolic}"
+                                    data-heart-rate="${patient.heart_rate}"
+                                    data-height="${patient.height}"
+                                    data-weight="${patient.weight}"
+                                    data-bmi="${patient.bmi}"
+                                    data-temperature="${patient.temperature}"
+                                    data-respiratory-rate="${patient.respiratory_rate}"
+                                    data-comment="${patient.comment}">Vital Signs</option>
+
+                                    <option value="2"
+                                    data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
+                                    data-check-date="${patient.check_date}"
+                                    data-age="${patient.age}"
+                                    data-gender="${patient.gender}"
+                                    data-birthdate="${patient.birthdate}"
+                                    data-occupation="${patient.occupation}"
+                                    data-guardian="${patient.guardian}">Request Laboratory</option>
+
+                                    <option value="3"
+                                    data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
+                                    data-check-date="${patient.check_date}"
+                                    data-age="${patient.age}"
+                                    data-gender="${patient.gender}"
+                                    data-birthdate="${patient.birthdate}"
+                                    data-occupation="${patient.occupation}"
+                                    data-guardian="${patient.guardian}">Diagnosis</option>
+
+                                    <option value="4"
+                                    data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
+                                    data-check-date="${patient.check_date}"
+                                    data-age="${patient.age}"
+                                    data-gender="${patient.gender}"
+                                    data-birthdate="${patient.birthdate}"
+                                    data-occupation="${patient.occupation}"
+                                    data-guardian="${patient.guardian}">Findings</option>
+
+                                    <option value="5"
+                                    data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
+                                    data-check-date="${patient.check_date}"
+                                    data-age="${patient.age}"
+                                    data-gender="${patient.gender}"
+                                    data-birthdate="${patient.birthdate}"
+                                    data-occupation="${patient.occupation}"
+                                    data-guardian="${patient.guardian}">Laboratory Result</option>
+
+                                    <option value="6"
+                                    data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
+                                    data-check-date="${patient.check_date}"
+                                    data-age="${patient.age}"
+                                    data-gender="${patient.gender}"
+                                    data-birthdate="${patient.birthdate}"
+                                    data-occupation="${patient.occupation}"
+                                    data-guardian="${patient.guardian}">Prescribe</option>
                                 </select> 
                             </td>
                             <td>
