@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const rhuPool = require("../../models/rhudb");
+const { checkNotAuthenticated } = require("../../middlewares/middleware");
 const passport = require("passport");
 const Joi = require("joi");
 
@@ -10,7 +11,7 @@ const userSchema = Joi.object({
   user_type: Joi.string().required()
 });
 
-router.get("/user/login", (req, res) => {
+router.get("/user/login", checkNotAuthenticated, (req, res) => {
   res.render("login/login");
 });
 

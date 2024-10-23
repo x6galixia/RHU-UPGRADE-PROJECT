@@ -70,12 +70,14 @@
           <img class="sub-icon" src="../icon/profile.svg" alt="">
         </div>
         <div class="sheesh">
-          <p>Adriane Garcia</p>
-          <p class="userT">Doctor</p>
+          <p><%= firstname %> <%= firstname %></p>
+          <p class="userT"><%= profession %></p>
         </div>
       </div>
       <hr>
-      <a href="/"> <i class="fas fa-sign-out-alt"></i> Logout</a>
+      <form action="/logout?_method=DELETE" method="POST">
+        <button id="log-butt" type="submit"><i class="fa fa-sign-out-alt"></i> Log out</button>
+      </form>
     </div>
   </div>
 

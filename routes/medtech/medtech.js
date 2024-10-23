@@ -1,9 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const rhuPool = require("../../models/rhudb");
+const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
+const methodOverride = require("method-override");
 const { calculateAge, formatDate } = require("../../public/js/global/functions");
 
-router.get("/medtech-dashboard", async (req, res) => {
+router.use(setUserData);
+router.use(methodOverride("_method"));
+
+router.get("/medtech-dashboard", ensureAuthenticated, checkUserType("Med Tech"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const isAjax = req.query.ajax === "true";
@@ -14,6 +19,7 @@ router.get("/medtech-dashboard", async (req, res) => {
     if (isAjax) {
       return res.json({
         getPatientList,
+        user: req.user,
         currentPage: page,
         totalPages,
         limit,
@@ -22,6 +28,7 @@ router.get("/medtech-dashboard", async (req, res) => {
 
     res.render("medtech/medtech-dashboard", {
       getPatientList,
+      user: req.user,
       currentPage: page,
       totalPages,
       limit,
@@ -32,7 +39,7 @@ router.get("/medtech-dashboard", async (req, res) => {
   }
 });
 
-router.get("/medtech-dashboard/search", async (req, res) => {
+router.get("/medtech-dashboard/search", ensureAuthenticated, checkUserType("Med Tech"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const offset = (page - 1) * limit;
@@ -83,6 +90,15 @@ router.get("/medtech-dashboard/search", async (req, res) => {
     console.error("Error: ", err.message, err.stack);
     res.status(500).send("An error occurred during the search.");
   }
+});
+
+router.delete("/logout", (req, res) => {
+  req.logOut((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
 });
 
 async function fetchPatientList(page, limit) {

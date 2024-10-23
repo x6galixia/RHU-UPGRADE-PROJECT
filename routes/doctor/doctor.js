@@ -2,7 +2,12 @@ const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
 const rhuPool = require("../../models/rhudb");
+const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
+const methodOverride = require("method-override");
 const {calculateAge,formatDate,} = require("../../public/js/global/functions");
+
+router.use(setUserData);
+router.use(methodOverride("_method"));
 
 const patientSchema = Joi.object({
   patient_id: Joi.string().required(),
@@ -44,7 +49,7 @@ const patientSchema = Joi.object({
   lab_result: Joi.string().allow("").optional(),
 });
 
-router.get("/doctor-dashboard", async (req, res) => {
+router.get("/doctor-dashboard", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const isAjax = req.query.ajax === "true";
@@ -55,6 +60,7 @@ router.get("/doctor-dashboard", async (req, res) => {
     if (isAjax) {
       return res.json({
         getPatientList,
+        user: req.user,
         currentPage: page,
         totalPages,
         limit,
@@ -63,6 +69,7 @@ router.get("/doctor-dashboard", async (req, res) => {
 
     res.render("doctor/doctor-dashboard", {
       getPatientList,
+      user: req.user,
       currentPage: page,
       totalPages,
       limit,
@@ -73,7 +80,7 @@ router.get("/doctor-dashboard", async (req, res) => {
   }
 });
 
-router.get("/doctor-dashboard/search", async (req, res) => {
+router.get("/doctor-dashboard/search", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const offset = (page - 1) * limit;
@@ -152,8 +159,12 @@ router.get("/doctor-dashboard/search", async (req, res) => {
   }
 });
 
-router.get("/doctor/patient-history", (req, res) => {
-  res.render("doctor/patient-history");
+router.get("/doctor/patient-history", ensureAuthenticated, checkUserType("Doctor"), (req, res) => {
+  res.render("doctor/patient-history",
+    {
+      user: req.user
+    }
+  );
 });
 
 router.post("/doctor/request-laboratory/send", async (req, res) => {
@@ -248,6 +259,15 @@ router.post("/doctor/findings-patient/send", async (req, res) => {
     console.error("Error: ", err);
   }
 
+});
+
+router.delete("/logout", (req, res) => {
+  req.logOut((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
 });
 
 async function fetchPatientList(page, limit) {
