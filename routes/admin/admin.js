@@ -1,8 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const rhuPool = require("../../models/rhudb");
+const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
+const methodOverride = require("method-override");
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
+
+router.use(setUserData);
+router.use(methodOverride("_method"));
 
 const userSchema = Joi.object({
     rhu_id: Joi.number().integer().required(),
@@ -22,15 +27,21 @@ const userSchema = Joi.object({
 router.use(express.json());
 
 router.get("/sign-in", (req, res) => {
-    res.render("admin/sign-in");
+    res.render("admin/sign-in", {
+        user: req.user
+    });
 })
 
 router.get("/admin-dashboard", (req, res) => {
-    res.render("admin/admin-dashboard");
+    res.render("admin/admin-dashboard", {
+        user: req.user
+    });
 });
 
 router.get("/admin-users", (req, res) => {
-    res.render("admin/admin-users");
+    res.render("admin/admin-users", {
+        user: req.user
+    });
 });
 
 router.post("/admin/create-user/submit", async (req, res) => {
