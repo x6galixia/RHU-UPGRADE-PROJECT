@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td> ${patient.check_date} </td>
                     <td> ${patient.categories} </td>  <!-- Updated for multiple categories -->
                     <td> ${patient.services} </td>    <!-- Updated for multiple services -->
-                    <td> <button>Lab Result</button></td>
+                    <td> <button class="button-green">Lab Result</button></td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         `;
                         tableBody.appendChild(row);
                     });
-                }   
+                }
             })
             .catch(error => {
                 console.error('Error during search:', error);
