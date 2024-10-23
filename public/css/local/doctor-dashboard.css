@@ -4,7 +4,7 @@
 }
 
 .pop-up {
-    padding: 0;
+    padding: 0 !important;
 }
 
 /* p {
@@ -20,6 +20,9 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+}
+.row select{
+    width: 350px !important ;
 }
 
 .gap {
@@ -90,11 +93,13 @@ button {
 
 .head > img {
     margin-right: 1em;
+    height: 10px;
 }
 
 .head {
-    color: black;
-    padding: 1em 1em 0 1em;
+    color: white;
+    background-color: var(--green-color);
+    padding: .5em;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
