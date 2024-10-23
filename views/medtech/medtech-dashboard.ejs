@@ -5,11 +5,7 @@
   <meta charset="UTF-8" />
   <link rel="shortcut icon" type="image/png" href="" />
   <title>HealthSync</title>
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="../img/global/healthvector.png"
-    />
+  <link rel="shortcut icon" type="image/png" href="../img/global/healthvector.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../css/global/general.css" />
   <link rel="stylesheet" href="../css/local/index-form.css" />
@@ -17,49 +13,50 @@
 </head>
 
 <body>
-  <%- include("../includes/header.ejs")  %>
-  <h1 class="headings">DOCTOR'S LABORATORY REQUEST</h1>
-  <main>
-    <div class="buttons">
-      <div class="search">
-        <input type="text" id="searchInput" placeholder="Search..." aria-label="Search" />
-        <img src="../icon/search.svg" alt="Search Icon" />
+  <%- include("../includes/header.ejs") %>
+    <h1 class="headings">DOCTOR'S LABORATORY REQUEST</h1>
+    <main>
+      <div class="buttons">
+        <div class="search">
+          <input type="text" id="searchInput" placeholder="Search..." aria-label="Search" />
+          <img src="../icon/search.svg" alt="Search Icon" />
+        </div>
+        <div class="recently">
+          <button>RECENTLY ADDED</button>
+        </div>
       </div>
-      <div class="recently">
-        <button>RECENTLY ADDED</button>
-      </div>
-    </div>
 
-    <div class="table-container">
-      <div id="loadingSpinner" style="display: none">Loading...</div>
-      <table>
-        <thead>
-          <tr>
-            <th>RHU</th>
-            <th>PATIENT NAME</th>
-            <th>AGE</th>
-            <th>SEX</th>
-            <th>BIRTHDATE</th>
-            <th>PARENT</th>
-            <th>OCCUPATION</th>
-            <th>DATE</th>
-            <th>CATEGORIES</th>
-            <th>SERVICES</th>
-            <th>LABORATORY RESULT</th>
-          </tr>
-        </thead>
-        <tbody id="patientsTableBody"></tbody>
-      </table>
-      <nav aria-label="Page navigation" id="paginationNav">
-        <% if (currentPage > 1) { %>
-        <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
-        <% } %> <% if (currentPage < totalPages) { %>
-        <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
-        <% } %>
-      </nav>
-    </div>
-  </main>
-  <script src="../../js/local/medtech-labs/labs-api.js"></script>
+      <div class="table-container">
+        <div id="loadingSpinner" style="display: none">Loading...</div>
+        <table>
+          <thead>
+            <tr>
+              <th>RHU</th>
+              <th>PATIENT NAME</th>
+              <th>AGE</th>
+              <th>SEX</th>
+              <th>BIRTHDATE</th>
+              <th>PARENT</th>
+              <th>OCCUPATION</th>
+              <th>DATE</th>
+              <th>CATEGORIES</th>
+              <th>SERVICES</th>
+              <th>LABORATORY RESULT</th>
+            </tr>
+          </thead>
+          <tbody id="patientsTableBody"></tbody>
+        </table>
+        <nav aria-label="Page navigation" id="paginationNav">
+          <% if (currentPage> 1) { %>
+            <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
+            <% } %>
+              <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
+                <% } %>
+        </nav>
+      </div>
+    </main>
+    <script src="../../js/local/medtech-labs/labs-api.js"></script>
 </body>
 
 </html>

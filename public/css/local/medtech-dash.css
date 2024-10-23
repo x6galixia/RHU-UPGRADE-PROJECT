@@ -1,9 +1,14 @@
 .buttons {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    overflow: visible;
-  }
-  .buttons > .recently > button {
-    background-color: #44a130;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  overflow: visible;
+}
+
+.buttons>.recently>button {
+  background-color: #44a130;
+}
+
+.table-container {
+  overflow: auto !important;
+}
