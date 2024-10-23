@@ -93,11 +93,13 @@ router.get("/nurse/individual-health-assessment", ensureAuthenticated, checkUser
 
 router.get("/nurse/recently-added-patients", async (req, res) => {
   try {
-    
+
   } catch (err) {
     console.error("Error: ", err);
   }
 })
+
+
 
 router.get("/scanner", (req, res) => {
   res.render('nurse/qrScanner');

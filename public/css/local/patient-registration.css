@@ -294,3 +294,12 @@ input[type="button"] {
     padding: 0;
     margin-top: 20px;
 }
+
+.selecter>select {
+    width: fit-content !important;
+    border-radius: 0;
+}
+
+.selecter {
+    margin-bottom: 12px;
+}
