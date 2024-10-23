@@ -129,11 +129,13 @@ router.get("/doctor-dashboard/search", async (req, res) => {
       searchResult = await rhuPool.query(
         `${baseQuery} 
         WHERE CONCAT(p.first_name, ' ', p.middle_name, ' ', p.last_name, ' ', p.suffix) ILIKE $1
+          OR CONCAT(p.house_no, ' ', p.street, ' ', p.barangay, ' ', p.city, ' ', p.province) ILIKE $1
           OR CONCAT(p.first_name, ' ', p.last_name, ' ', p.suffix) ILIKE $1
           OR p.first_name ILIKE $1
           OR p.middle_name ILIKE $1
           OR p.last_name ILIKE $1
           OR p.suffix ILIKE $1
+          OR r.rhu_name ILIKE $1
         GROUP BY p.patient_id, r.rhu_name, r.rhu_address
         ORDER BY p.first_name LIMIT $2 OFFSET $3`,
         [`%${query}%`, limit, offset]
@@ -212,7 +214,7 @@ router.post("/doctor/diagnose-patient/send", async (req, res) => {
         [value.patient_id, value.diagnosis]
       );
     }
-    
+
     return res.redirect("/doctor-dashboard");
   } catch (error) {
     console.error("Error: ", err);
@@ -243,7 +245,7 @@ router.post("/doctor/findings-patient/send", async (req, res) => {
         [value.patient_id, value.findings]
       );
     }
-    
+
     return res.redirect("/doctor-dashboard");
   } catch (error) {
     console.error("Error: ", err);
