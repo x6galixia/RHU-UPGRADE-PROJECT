@@ -3,10 +3,12 @@ const router = express.Router();
 const rhuPool = require("../../models/rhudb");
 const pharmacyPool = require("../../models/pharmacydb");
 const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
+const methodOverride = require("method-override");
 const { calculateAge, formatDate } = require("../../public/js/global/functions");
 const Joi = require("joi");
 
 router.use(setUserData);
+router.use(methodOverride("_method"));
 
 const patientSchema = Joi.object({
   patient_id: Joi.string().required(),
@@ -49,11 +51,13 @@ const patientSchema = Joi.object({
 });
 
 router.get("/nurse-dashboard", ensureAuthenticated, checkUserType("Nurse"), (req, res) => {
-  res.render("nurse/nurse-dashboard");
+  res.render("nurse/nurse-dashboard",
+    {user: req.user});
 });
 
 router.get("/nurse/patient-registration", ensureAuthenticated, checkUserType("Nurse"), (req, res) => {
-  res.render("nurse/patient-registration"); // Render the EJS view
+  res.render("nurse/patient-registration",
+    {user: req.user});
 });
 
 router.get("/nurse/patient-registration/recently-added", ensureAuthenticated, checkUserType("Nurse"), async (req, res) => {
@@ -68,6 +72,7 @@ router.get("/nurse/patient-registration/recently-added", ensureAuthenticated, ch
     if (isAjax) {
       return res.json({
         getPatientList,
+        user: req.user,
         currentPage: page,
         totalPages,
         limit,
@@ -78,7 +83,6 @@ router.get("/nurse/patient-registration/recently-added", ensureAuthenticated, ch
     res.status(500).send("Internal server error");
   }
 });
-
 
 router.get("/nurse/patient-registration/new-id", ensureAuthenticated, checkUserType("Nurse"), async (req, res) => {
   try {
@@ -112,16 +116,9 @@ router.get("/nurse/patient-registration/new-id", ensureAuthenticated, checkUserT
 });
 
 router.get("/nurse/individual-health-assessment", ensureAuthenticated, checkUserType("Nurse"), (req, res) => {
-  res.render("nurse/individual-health-assessment");
+  res.render("nurse/individual-health-assessment",
+    {user: req.user});
 });
-
-router.get("/nurse/recently-added-patients", async (req, res) => {
-  try {
-
-  } catch (err) {
-    console.error("Error: ", err);
-  }
-})
 
 router.get("/nurse/fetchScannedData", async (req, res) => {
   const { qrCode } = req.query;
@@ -305,6 +302,15 @@ router.post("/nurse/admit-patient", async (req, res) => {
 
 });
 
+router.delete("/logout", (req, res) => {
+  req.logOut((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+});
+
 //-------------------functions------//
 function generateNextId(lastId) {
   const match = lastId.match(/^([A-Z]+)(\d+)$/);
@@ -400,7 +406,6 @@ async function fetchPatientList(page, limit, rhuId) {
   }
 }
 
-
 function formatPatientData(patient) {
   return {
     patient_id: patient.patient_id,
@@ -410,6 +415,5 @@ function formatPatientData(patient) {
     nurse: patient.nurse || 'N/A', // If nurse name is missing, default to 'N/A'
   };
 }
-
 
 module.exports = router;
