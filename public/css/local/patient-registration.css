@@ -241,6 +241,11 @@ input[type="button"] {
     font-weight: bold;
 }
 
+#patient-list tr td:first-child {
+    text-align: start;
+    padding-left: 32px;
+}
+
 .triple-dot {
     margin-bottom: -185px;
     margin-left: -100px;

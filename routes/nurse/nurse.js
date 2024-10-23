@@ -56,6 +56,30 @@ router.get("/nurse/patient-registration", ensureAuthenticated, checkUserType("Nu
   res.render("nurse/patient-registration"); // Render the EJS view
 });
 
+router.get("/nurse/patient-registration/recently-added", ensureAuthenticated, checkUserType("Nurse"), async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 6;
+  const isAjax = req.query.ajax === "true";
+  const rhuId = req.query.rhu_id;
+
+  try {
+    const { getPatientList, totalPages } = await fetchPatientList(page, limit, rhuId);
+
+    if (isAjax) {
+      return res.json({
+        getPatientList,
+        currentPage: page,
+        totalPages,
+        limit,
+      });
+    }
+  } catch (err) {
+    console.error("Error: ", err.message, err.stack);
+    res.status(500).send("Internal server error");
+  }
+});
+
+
 router.get("/nurse/patient-registration/new-id", ensureAuthenticated, checkUserType("Nurse"), async (req, res) => {
   try {
     const result = await rhuPool.query(
@@ -98,12 +122,6 @@ router.get("/nurse/recently-added-patients", async (req, res) => {
     console.error("Error: ", err);
   }
 })
-
-
-
-router.get("/scanner", (req, res) => {
-  res.render('nurse/qrScanner');
-});
 
 router.get("/nurse/fetchScannedData", async (req, res) => {
   const { qrCode } = req.query;
@@ -301,5 +319,97 @@ function generateNextId(lastId) {
 
   return "A0001"; // Default in case something goes wrong
 }
+
+async function fetchPatientList(page, limit, rhuId) {
+  const offset = (page - 1) * limit;
+
+  try {
+    let query;
+    let queryParams = [limit, offset];
+    let countQuery;
+
+    if (rhuId) {
+      query = `
+        SELECT
+          p.patient_id,
+          p.rhu_id,
+          p.last_name,
+          p.first_name,
+          MAX(nc.check_date) AS check_date,
+          r.rhu_name,
+          nc.nurse_name AS nurse
+        FROM patients p
+        LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
+        LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
+        WHERE r.rhu_id = $3
+        GROUP BY p.patient_id, r.rhu_name, nc.nurse_name
+        ORDER BY p.first_name
+        LIMIT $1 OFFSET $2
+      `;
+      queryParams.push(rhuId);
+
+      // Count query for total items
+      countQuery = `
+        SELECT COUNT(*) AS total
+        FROM patients p
+        LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
+        LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
+        WHERE r.rhu_id = $1
+      `;
+    } else {
+      query = `
+        SELECT
+          p.patient_id,
+          p.rhu_id,
+          p.last_name,
+          p.first_name,
+          MAX(nc.check_date) AS check_date,
+          r.rhu_name,
+          nc.nurse_name AS nurse
+        FROM patients p
+        LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
+        LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
+        GROUP BY p.patient_id, r.rhu_name, nc.nurse_name
+        ORDER BY p.first_name
+        LIMIT $1 OFFSET $2
+      `;
+
+      // Count query for total items
+      countQuery = `
+        SELECT COUNT(*) AS total
+        FROM patients p
+        LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
+        LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
+      `;
+    }
+
+    const patientListResult = await rhuPool.query(query, queryParams);
+    const countResult = await rhuPool.query(countQuery, rhuId ? [rhuId] : []);
+
+    const formattedPatientList = patientListResult.rows.map(formatPatientData);
+    const totalItems = parseInt(countResult.rows[0].total, 10);
+    const totalPages = Math.ceil(totalItems / limit);
+
+    return {
+      getPatientList: formattedPatientList,
+      totalPages,
+    };
+  } catch (err) {
+    console.error("Error fetching patient list:", err.message, err.stack);
+    throw new Error("Database query failed");
+  }
+}
+
+
+function formatPatientData(patient) {
+  return {
+    patient_id: patient.patient_id,
+    first_name: patient.first_name,
+    last_name: patient.last_name,
+    check_date: patient.check_date ? new Date(patient.check_date).toLocaleDateString() : 'N/A',
+    nurse: patient.nurse || 'N/A', // If nurse name is missing, default to 'N/A'
+  };
+}
+
 
 module.exports = router;
