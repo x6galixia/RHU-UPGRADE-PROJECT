@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <option value="" selected disabled>Medical records</option>
                                     
                                     <option value="1" 
+                                    data-patient-id="${patient.patient_id}"
                                     data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
                                     data-check-date="${patient.check_date}"
                                     data-age="${patient.age}"
@@ -42,6 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-comment="${patient.comment}">Vital Signs</option>
 
                                     <option value="2"
+                                    data-patient-id="${patient.patient_id}"
                                     data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
                                     data-check-date="${patient.check_date}"
                                     data-age="${patient.age}"
@@ -51,33 +53,40 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-guardian="${patient.guardian}">Request Laboratory</option>
 
                                     <option value="3"
+                                    data-patient-id="${patient.patient_id}"
                                     data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
                                     data-check-date="${patient.check_date}"
                                     data-age="${patient.age}"
                                     data-gender="${patient.gender}"
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
-                                    data-guardian="${patient.guardian}">Diagnosis</option>
+                                    data-guardian="${patient.guardian}"
+                                    data-diagnosis="${patient.diagnosis}">Diagnosis</option>
 
                                     <option value="4"
+                                    data-patient-id="${patient.patient_id}"
                                     data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
                                     data-check-date="${patient.check_date}"
                                     data-age="${patient.age}"
                                     data-gender="${patient.gender}"
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
-                                    data-guardian="${patient.guardian}">Findings</option>
+                                    data-guardian="${patient.guardian}"
+                                    data-findings="${patient.findings}">Findings</option>
 
                                     <option value="5"
+                                    data-patient-id="${patient.patient_id}"
                                     data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
                                     data-check-date="${patient.check_date}"
                                     data-age="${patient.age}"
                                     data-gender="${patient.gender}"
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
-                                    data-guardian="${patient.guardian}">Laboratory Result</option>
+                                    data-guardian="${patient.guardian}"
+                                    data-lab-result="${JSON.stringify(patient.lab_result)}">Laboratory Result</option>
 
                                     <option value="6"
+                                    data-patient-id="${patient.patient_id}"
                                     data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
                                     data-check-date="${patient.check_date}"
                                     data-age="${patient.age}"
@@ -155,6 +164,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <option value="" selected disabled>Medical records</option>
                                     
                                     <option value="1" 
+                                    data-patient-id="${patient.patient_id}"
                                     data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
                                     data-check-date="${patient.check_date}"
                                     data-age="${patient.age}"
@@ -173,6 +183,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-comment="${patient.comment}">Vital Signs</option>
 
                                     <option value="2"
+                                    data-patient-id="${patient.patient_id}"
                                     data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
                                     data-check-date="${patient.check_date}"
                                     data-age="${patient.age}"
@@ -182,15 +193,18 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-guardian="${patient.guardian}">Request Laboratory</option>
 
                                     <option value="3"
+                                    data-patient-id="${patient.patient_id}"
                                     data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
                                     data-check-date="${patient.check_date}"
                                     data-age="${patient.age}"
                                     data-gender="${patient.gender}"
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
-                                    data-guardian="${patient.guardian}">Diagnosis</option>
+                                    data-guardian="${patient.guardian}"
+                                    data-diagnosis="${patient.diagnosis}">Diagnosis</option>
 
                                     <option value="4"
+                                    data-patient-id="${patient.patient_id}"
                                     data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
                                     data-check-date="${patient.check_date}"
                                     data-age="${patient.age}"
@@ -200,15 +214,18 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-guardian="${patient.guardian}">Findings</option>
 
                                     <option value="5"
+                                    data-patient-id="${patient.patient_id}"
                                     data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
                                     data-check-date="${patient.check_date}"
                                     data-age="${patient.age}"
                                     data-gender="${patient.gender}"
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
-                                    data-guardian="${patient.guardian}">Laboratory Result</option>
+                                    data-guardian="${patient.guardian}"
+                                    data-lab-result="${JSON.stringify(patient.lab_result)}">Laboratory Result</option>
 
                                     <option value="6"
+                                    data-patient-id="${patient.patient_id}"
                                     data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
                                     data-check-date="${patient.check_date}"
                                     data-age="${patient.age}"

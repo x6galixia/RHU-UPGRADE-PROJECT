@@ -108,11 +108,13 @@ function popUp_button(button) {
       reqLab.classList.toggle('visible');
 
       const selectedOption = button.options[button.selectedIndex];
+      console.log(selectedOption);
 
       if (selectedOption) {
           const checkDate = selectedOption.getAttribute('data-check-date');
           const birthDate = selectedOption.getAttribute('data-birthdate');
 
+          document.getElementById('req_patient_id').value = selectedOption.getAttribute('data-patient-id');
           document.getElementById('req_full_name').value = selectedOption.getAttribute('data-full-name') || '';
           document.getElementById('req_check_date').value = formatDate(checkDate);
           document.getElementById('req_age').value = selectedOption.getAttribute('data-age');
@@ -133,6 +135,7 @@ function popUp_button(button) {
           const checkDate = selectedOption.getAttribute('data-check-date');
           const birthDate = selectedOption.getAttribute('data-birthdate');
 
+          document.getElementById('dia_patient_id').value = selectedOption.getAttribute('data-patient-id');
           document.getElementById('dia_full_name').value = selectedOption.getAttribute('data-full-name') || '';
           document.getElementById('dia_check_date').value = formatDate(checkDate);
           document.getElementById('dia_age').value = selectedOption.getAttribute('data-age');
@@ -140,6 +143,7 @@ function popUp_button(button) {
           document.getElementById('dia_birthdate').value = formatDate(birthDate);
           document.getElementById('dia_occupation').value = selectedOption.getAttribute('data-occupation') || '';
           document.getElementById('dia_guardian').value = selectedOption.getAttribute('data-guardian') || '';
+          document.getElementById('dia_diagnosis').value = selectedOption.getAttribute('data-diagnosis') || '';
       }
   }
 
@@ -153,6 +157,7 @@ function popUp_button(button) {
         const checkDate = selectedOption.getAttribute('data-check-date');
         const birthDate = selectedOption.getAttribute('data-birthdate');
 
+        document.getElementById('fin_patient_id').value = selectedOption.getAttribute('data-patient-id');
         document.getElementById('fin_full_name').value = selectedOption.getAttribute('data-full-name') || '';
         document.getElementById('fin_check_date').value = formatDate(checkDate);
         document.getElementById('fin_age').value = selectedOption.getAttribute('data-age');
@@ -160,6 +165,7 @@ function popUp_button(button) {
         document.getElementById('fin_birthdate').value = formatDate(birthDate);
         document.getElementById('fin_occupation').value = selectedOption.getAttribute('data-occupation') || '';
         document.getElementById('fin_guardian').value = selectedOption.getAttribute('data-guardian') || '';
+        document.getElementById('fin_findings').value = selectedOption.getAttribute('data-findings');
     }
   }
 
@@ -180,6 +186,23 @@ function popUp_button(button) {
         document.getElementById('res_birthdate').value = formatDate(birthDate);
         document.getElementById('res_occupation').value = selectedOption.getAttribute('data-occupation') || '';
         document.getElementById('res_guardian').value = selectedOption.getAttribute('data-guardian') || '';
+
+        // const labResults = button.dataset.labResults ? JSON.parse(button.dataset.labResults) : [];
+        // const labResultsContainer = document.querySelector("#labResultForm ul");
+        // labResultsContainer.innerHTML = "";
+        // if (labResults.length > 0) {
+        //   labResults.forEach(filename => {
+        //     const listItem = document.createElement("li");
+        //     const link = document.createElement("a");
+        //     link.href = `/uploads/${filename}`;
+        //     link.target = "_blank";
+        //     link.textContent = filename;
+        //     listItem.appendChild(link);
+        //     labResultsContainer.appendChild(listItem);
+        //   });
+        // } else {
+        //   labResultsContainer.innerHTML = "<p>No lab results available.</p>";
+        // }
     }
   }
 

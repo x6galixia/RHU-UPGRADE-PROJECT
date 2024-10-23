@@ -64,6 +64,7 @@ const beneficiarySchema = Joi.object({
   processed_date: Joi.date().required(),
   existing_picture: Joi.string().optional()
 });
+
 const upload = multer({ storage: storage });
 router.use("/uploads/beneficiary-img", express.static("uploads"));
 
