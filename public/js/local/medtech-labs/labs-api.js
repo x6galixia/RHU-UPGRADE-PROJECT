@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td> ${patient.check_date} </td>
                     <td> ${patient.categories} </td>  <!-- Updated for multiple categories -->
                     <td> ${patient.services} </td>    <!-- Updated for multiple services -->
-                    <td> <button class="button-green">Lab Result</button></td>
+                    <td class="lab-result" id="lab-result" onclick="popUp_button(this)"><img src="../icon/mata_ine.svg" alt="" /</td>
                 `;
                 tableBody.appendChild(row);
             });
