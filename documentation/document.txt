@@ -51,7 +51,8 @@ CREATE TABLE nurse_checks (
     heart_rate INT NULL,
     respiratory_rate INT NULL,
     bmi DECIMAL(5, 2) NULL,
-    comment TEXT NULL
+    comment TEXT NULL,
+    nurse_name VARCHAR(255)
 );
 
 CREATE TABLE doctor_visits (
