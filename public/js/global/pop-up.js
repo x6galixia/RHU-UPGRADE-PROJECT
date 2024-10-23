@@ -1,3 +1,11 @@
+function formatDate(date) {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 //admin
 const createUser = document.getElementById("create-user");
 
@@ -66,25 +74,156 @@ function popUp_button(button) {
     update_beneficiary.classList.toggle("visible");
   }
 
-
-  //doctor dashboard reuse value
+//doctor - vital signs
   else if (select === "1") {
     vital.classList.toggle('visible');
+
+    const selectedOption = button.options[button.selectedIndex];
+
+    if (selectedOption) {
+        const checkDate = selectedOption.getAttribute('data-check-date');
+        const birthDate = selectedOption.getAttribute('data-birthdate');
+
+        document.getElementById('vi_full_name').value = selectedOption.getAttribute('data-full-name') || '';
+        document.getElementById('vi_check_date').value = formatDate(checkDate);
+        document.getElementById('vi_age').value = selectedOption.getAttribute('data-age');
+        document.getElementById('vi_gender').value = selectedOption.getAttribute('data-gender') || '';
+        document.getElementById('vi_birthdate').value = formatDate(birthDate);
+        document.getElementById('vi_occupation').value = selectedOption.getAttribute('data-occupation') || '';
+        document.getElementById('vi_guardian').value = selectedOption.getAttribute('data-guardian') || '';
+        document.getElementById('vi_systolic').value = selectedOption.getAttribute('data-systolic') || '';
+        document.getElementById('vi_diastolic').value = selectedOption.getAttribute('data-diastolic') || '';
+        document.getElementById('vi_heart_rate').value = selectedOption.getAttribute('data-heart-rate') || '';
+        document.getElementById('vi_height').value = selectedOption.getAttribute('data-height') || '';
+        document.getElementById('vi_weight').value = selectedOption.getAttribute('data-weight') || '';
+        document.getElementById('vi_bmi').value = selectedOption.getAttribute('data-bmi') || '';
+        document.getElementById('vi_temperature').value = selectedOption.getAttribute('data-temperature') || '';
+        document.getElementById('vi_respiratory_rate').value = selectedOption.getAttribute('data-respiratory-rate') || '';
+        document.getElementById('vi_comment').value = selectedOption.getAttribute('data-comment') || '';
+    }
   }
+
+//doctor - request laboratory
   else if (select === "2") {
-    reqLab.classList.toggle('visible');
+      reqLab.classList.toggle('visible');
+
+      const selectedOption = button.options[button.selectedIndex];
+      console.log(selectedOption);
+
+      if (selectedOption) {
+          const checkDate = selectedOption.getAttribute('data-check-date');
+          const birthDate = selectedOption.getAttribute('data-birthdate');
+
+          document.getElementById('req_patient_id').value = selectedOption.getAttribute('data-patient-id');
+          document.getElementById('req_full_name').value = selectedOption.getAttribute('data-full-name') || '';
+          document.getElementById('req_check_date').value = formatDate(checkDate);
+          document.getElementById('req_age').value = selectedOption.getAttribute('data-age');
+          document.getElementById('req_gender').value = selectedOption.getAttribute('data-gender') || '';
+          document.getElementById('req_birthdate').value = formatDate(birthDate);
+          document.getElementById('req_occupation').value = selectedOption.getAttribute('data-occupation') || '';
+          document.getElementById('req_guardian').value = selectedOption.getAttribute('data-guardian') || '';
+      }
   }
+
+  //doctor - diagnoses
   else if (select === "3") {
     diagnosis.classList.toggle('visible');
+
+    const selectedOption = button.options[button.selectedIndex];
+
+      if (selectedOption) {
+          const checkDate = selectedOption.getAttribute('data-check-date');
+          const birthDate = selectedOption.getAttribute('data-birthdate');
+
+          document.getElementById('dia_patient_id').value = selectedOption.getAttribute('data-patient-id');
+          document.getElementById('dia_full_name').value = selectedOption.getAttribute('data-full-name') || '';
+          document.getElementById('dia_check_date').value = formatDate(checkDate);
+          document.getElementById('dia_age').value = selectedOption.getAttribute('data-age');
+          document.getElementById('dia_gender').value = selectedOption.getAttribute('data-gender') || '';
+          document.getElementById('dia_birthdate').value = formatDate(birthDate);
+          document.getElementById('dia_occupation').value = selectedOption.getAttribute('data-occupation') || '';
+          document.getElementById('dia_guardian').value = selectedOption.getAttribute('data-guardian') || '';
+          document.getElementById('dia_diagnosis').value = selectedOption.getAttribute('data-diagnosis') || '';
+      }
   }
+
+  //doctor - findings
   else if (select === "4") {
     findings.classList.toggle('visible');
+
+    const selectedOption = button.options[button.selectedIndex];
+
+    if (selectedOption) {
+        const checkDate = selectedOption.getAttribute('data-check-date');
+        const birthDate = selectedOption.getAttribute('data-birthdate');
+
+        document.getElementById('fin_patient_id').value = selectedOption.getAttribute('data-patient-id');
+        document.getElementById('fin_full_name').value = selectedOption.getAttribute('data-full-name') || '';
+        document.getElementById('fin_check_date').value = formatDate(checkDate);
+        document.getElementById('fin_age').value = selectedOption.getAttribute('data-age');
+        document.getElementById('fin_gender').value = selectedOption.getAttribute('data-gender') || '';
+        document.getElementById('fin_birthdate').value = formatDate(birthDate);
+        document.getElementById('fin_occupation').value = selectedOption.getAttribute('data-occupation') || '';
+        document.getElementById('fin_guardian').value = selectedOption.getAttribute('data-guardian') || '';
+        document.getElementById('fin_findings').value = selectedOption.getAttribute('data-findings');
+    }
   }
+
+  //doctor - labresult
   else if (select === "5") {
     labResult.classList.toggle('visible');
+
+    const selectedOption = button.options[button.selectedIndex];
+
+    if (selectedOption) {
+        const checkDate = selectedOption.getAttribute('data-check-date');
+        const birthDate = selectedOption.getAttribute('data-birthdate');
+
+        document.getElementById('res_full_name').value = selectedOption.getAttribute('data-full-name') || '';
+        document.getElementById('res_check_date').value = formatDate(checkDate);
+        document.getElementById('res_age').value = selectedOption.getAttribute('data-age');
+        document.getElementById('res_gender').value = selectedOption.getAttribute('data-gender') || '';
+        document.getElementById('res_birthdate').value = formatDate(birthDate);
+        document.getElementById('res_occupation').value = selectedOption.getAttribute('data-occupation') || '';
+        document.getElementById('res_guardian').value = selectedOption.getAttribute('data-guardian') || '';
+
+        // const labResults = button.dataset.labResults ? JSON.parse(button.dataset.labResults) : [];
+        // const labResultsContainer = document.querySelector("#labResultForm ul");
+        // labResultsContainer.innerHTML = "";
+        // if (labResults.length > 0) {
+        //   labResults.forEach(filename => {
+        //     const listItem = document.createElement("li");
+        //     const link = document.createElement("a");
+        //     link.href = `/uploads/${filename}`;
+        //     link.target = "_blank";
+        //     link.textContent = filename;
+        //     listItem.appendChild(link);
+        //     labResultsContainer.appendChild(listItem);
+        //   });
+        // } else {
+        //   labResultsContainer.innerHTML = "<p>No lab results available.</p>";
+        // }
+    }
   }
+
+  //doctor - prescribe
   else if (select === "6") {
     prescribed.classList.toggle('visible');
+
+    const selectedOption = button.options[button.selectedIndex];
+
+    if (selectedOption) {
+        const checkDate = selectedOption.getAttribute('data-check-date');
+        const birthDate = selectedOption.getAttribute('data-birthdate');
+
+        document.getElementById('pres_full_name').value = selectedOption.getAttribute('data-full-name') || '';
+        document.getElementById('pres_check_date').value = formatDate(checkDate);
+        document.getElementById('pres_age').value = selectedOption.getAttribute('data-age');
+        document.getElementById('pres_gender').value = selectedOption.getAttribute('data-gender') || '';
+        document.getElementById('pres_birthdate').value = formatDate(birthDate);
+        document.getElementById('pres_occupation').value = selectedOption.getAttribute('data-occupation') || '';
+        document.getElementById('pres_guardian').value = selectedOption.getAttribute('data-guardian') || '';
+    }
   }
 
   // dispense

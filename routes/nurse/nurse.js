@@ -56,8 +56,6 @@ router.get("/nurse/patient-registration", ensureAuthenticated, checkUserType("Nu
   res.render("nurse/patient-registration"); // Render the EJS view
 });
 
-
-// Route to generate a new patient ID
 router.get("/nurse/patient-registration/new-id", ensureAuthenticated, checkUserType("Nurse"), async (req, res) => {
   try {
     const result = await rhuPool.query(
@@ -93,11 +91,19 @@ router.get("/nurse/individual-health-assessment", ensureAuthenticated, checkUser
   res.render("nurse/individual-health-assessment");
 });
 
-router.get('/scanner', (req, res) => {
+router.get("/nurse/recently-added-patients", async (req, res) => {
+  try {
+    
+  } catch (err) {
+    console.error("Error: ", err);
+  }
+})
+
+router.get("/scanner", (req, res) => {
   res.render('nurse/qrScanner');
 });
 
-router.get('/nurse/fetchScannedData', async (req, res) => {
+router.get("/nurse/fetchScannedData", async (req, res) => {
   const { qrCode } = req.query;
   console.log('Received scanned QR Code:', qrCode);
 
@@ -279,7 +285,6 @@ router.post("/nurse/admit-patient", async (req, res) => {
 
 });
 
-
 //-------------------functions------//
 function generateNextId(lastId) {
   const match = lastId.match(/^([A-Z]+)(\d+)$/);
@@ -294,6 +299,5 @@ function generateNextId(lastId) {
 
   return "A0001"; // Default in case something goes wrong
 }
-
 
 module.exports = router;

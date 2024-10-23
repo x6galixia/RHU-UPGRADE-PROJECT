@@ -67,6 +67,26 @@ CREATE TABLE doctor_visits (
     quantity INT NULL
 );
 
+CREATE TABLE patient_prescription_data(
+    patient_prescription_id SERIAL PRIMARY KEY NOT NULL,
+    patient_id VARCHAR(255) REFERENCES patients(patient_id) ON DELETE CASCADE,
+    rhu_id INTEGER REFERENCES rhu(rhu_id) ON DELETE CASCADE,
+    reciever VARCHAR(255) NULL,
+    relationship_with_patient VARCHAR(255) NULL
+);
+
+CREATE TABLE prescription (
+    id SERIAL PRIMARY KEY NOT NULL,
+    patient_prescription_id REFERENCES patient_prescription_data(patient_prescription_id) ON DELETE CASCADE,
+    diagnosis TEXT NULL,
+    findings TEXT NULL,
+    category TEXT NULL,
+    service TEXT NULL,
+    medicine TEXT NULL,
+    instruction TEXT NULL,
+    quantity INT NULL
+);
+
 CREATE TABLE medtech_labs (
     id SERIAL PRIMARY KEY NOT NULL,
     patient_id VARCHAR(255) REFERENCES patients(patient_id) ON DELETE CASCADE,
