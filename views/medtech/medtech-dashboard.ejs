@@ -22,8 +22,8 @@
   <main>
     <div class="buttons">
       <div class="search">
-        <input type="text" placeholder="Search..." />
-        <img src="../icon/search.svg" alt="" />
+        <input type="text" id="searchInput" placeholder="Search..." aria-label="Search" />
+        <img src="../icon/search.svg" alt="Search Icon" />
       </div>
       <div class="recently">
         <button>RECENTLY ADDED</button>
@@ -31,9 +31,11 @@
     </div>
 
     <div class="table-container">
+      <div id="loadingSpinner" style="display: none">Loading...</div>
       <table>
         <thead>
           <tr>
+            <th>RHU</th>
             <th>PATIENT NAME</th>
             <th>AGE</th>
             <th>SEX</th>
@@ -46,10 +48,18 @@
             <th>LABORATORY RESULT</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody id="patientsTableBody"></tbody>
       </table>
+      <nav aria-label="Page navigation" id="paginationNav">
+        <% if (currentPage > 1) { %>
+        <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
+        <% } %> <% if (currentPage < totalPages) { %>
+        <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
+        <% } %>
+      </nav>
     </div>
   </main>
+  <script src="../../js/local/medtech-labs/labs-api.js"></script>
 </body>
 
 </html>

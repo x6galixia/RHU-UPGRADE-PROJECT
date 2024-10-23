@@ -2,10 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
 const rhuPool = require("../../models/rhudb");
-const {
-  calculateAge,
-  formatDate,
-} = require("../../public/js/global/functions");
+const {calculateAge,formatDate,} = require("../../public/js/global/functions");
 
 const patientSchema = Joi.object({
   patient_id: Joi.string().required(),
