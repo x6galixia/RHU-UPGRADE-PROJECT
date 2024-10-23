@@ -33,17 +33,20 @@
             <form action="/nurse/admit-patient" method="POST">
                 <div class="container">
                     <div class="sub-con patients-information-container">
-                        <div class="patient-head">
-                            <h2 class="form-header">PATIENT INFORMATION</h2>
+                        <div class="scannerContainer">
+                            <div class="patient-head">
+                                <h2 class="form-header">PATIENT INFORMATION</h2>
+                            </div>
+                            <div class="scanSwitch">
+                                Scan QR
+                                <label class="switch">
+                                    <input type="checkbox" id="scanSwitch">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <input type="text" id="qrOutput" name="patient_id"
+                                style="position: absolute; display: none;">
                         </div>
-                        <div class="scanSwitch">
-                            Scan QR
-                            <label class="switch">
-                                <input type="checkbox" id="scanSwitch">
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                        <input type="text" id="qrOutput" name="patient_id" style="position: absolute; display: none;">
                         <div class="information">
                             <div class="r">
                                 <div>
