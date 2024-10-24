@@ -254,8 +254,8 @@ function getBasePatientQuery() {
       MAX(dv.follow_date) AS follow_date,
       MAX(dv.diagnosis) AS diagnosis,
       MAX(dv.findings) AS findings,
-      STRING_AGG(DISTINCT dv.category, ', ') AS categories,  -- Modified to aggregate categories
-      STRING_AGG(DISTINCT dv.service, ', ') AS services,    -- Modified to aggregate services
+      STRING_AGG(DISTINCT dv.category, ', ') AS categories,
+      STRING_AGG(DISTINCT dv.service, ', ') AS services,
       MAX(dv.medicine) AS medicine,
       MAX(dv.instruction) AS instruction,
       MAX(dv.quantity) AS quantity,
