@@ -12,619 +12,626 @@
 
 <body>
   <%- include("../includes/header.ejs") %>
-  <h1 class="headings">PATIENT RECORDS</h1>
-  <main>
-    <div class="buttons">
-      <div class="search">
-        <input type="text" id="searchInput" placeholder="Search..." aria-label="Search" />
-        <img src="../icon/search.svg" alt="Search Icon" />
+    <h1 class="headings">PATIENT RECORDS</h1>
+    <main>
+      <div class="buttons">
+        <div class="search">
+          <input type="text" id="searchInput" placeholder="Search..." aria-label="Search" />
+          <img src="../icon/search.svg" alt="Search Icon" />
+        </div>
       </div>
-    </div>
-    <div class="table-container">
-      <div id="loadingSpinner" style="display: none">Loading...</div>
-      <table>
-        <thead>
-          <tr>
-            <th>RHU</th>
-            <th>Name</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>Address</th>
-            <th>Medical Records</th>
-            <th>More information</th>
-          </tr>
-        </thead>
-        <tbody id="patientsTableBody"></tbody>
-      </table>
-      <nav aria-label="Page navigation" id="paginationNav">
-        <% if (currentPage > 1) { %>
-        <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
-        <% } %> <% if (currentPage < totalPages) { %>
-        <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
-        <% } %>
-      </nav>
-    </div>
+      <div class="table-container">
+        <div id="loadingSpinner" style="display: none">Loading...</div>
+        <table>
+          <thead>
+            <tr>
+              <th>RHU</th>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Gender</th>
+              <th>Address</th>
+              <th>Medical Records</th>
+              <th>More information</th>
+            </tr>
+          </thead>
+          <tbody id="patientsTableBody"></tbody>
+        </table>
+        <nav aria-label="Page navigation" id="paginationNav">
+          <% if (currentPage> 1) { %>
+            <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
+            <% } %>
+              <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
+                <% } %>
+        </nav>
+      </div>
 
-    <!-- pop up for vital sign -->
-    <div class="pop-up" id="vital">
-      <div class="head row just-bet">
-        <div class="row gap">
-          <img src="../icon/broken-hart.svg" />
-          <h2>Vitals sign</h2>
+      <!-- pop up for vital sign -->
+      <div class="pop-up" id="vital">
+        <div class="head row just-bet">
+          <div class="row gap">
+            <img src="../icon/broken-hart.svg" />
+            <h2>Vitals sign</h2>
+          </div>
+          <div>
+            <img src="../icon/closing.svg" alt="" class="close_popUp" />
+          </div>
         </div>
-        <div>
-          <img src="../icon/closing.svg" alt="" class="close_popUp" />
+        <div class="info col gap">
+          <div class="row gap">
+            <div class="row grow">
+              <label for="">Name:</label>
+              <input type="text" id="vi_full_name" class="under-line-input" />
+            </div>
+            <div class="row">
+              <label for="">Date:</label>
+              <input type="date" id="vi_check_date" class="under-line-input" />
+            </div>
+          </div>
+          <div class="row gap">
+            <div class="row">
+              <label for="">Age:</label>
+              <input type="number" id="vi_age" class="under-line-input" />
+            </div>
+            <div class="row">
+              <label for="">Sex:</label>
+              <input type="text" id="vi_gender" class="under-line-input" />
+            </div>
+            <div class="row">
+              <label for="">Birth:</label>
+              <input type="date" id="vi_birthdate" class="under-line-input" />
+            </div>
+          </div>
+          <div class="row gap">
+            <div class="row">
+              <label for="">Occupation:</label>
+              <input type="text" id="vi_occupation" class="under-line-input" />
+            </div>
+            <div class="row grow">
+              <label for="">Parent/s:</label>
+              <input type="text" id="vi_guardian" class="under-line-input" />
+            </div>
+          </div>
+          <hr />
+          <div class="row lgap">
+            <div class="col gap">
+              <div class="col">
+                <label for="">BP Systolic:</label>
+                <input type="text" id="vi_systolic" />
+              </div>
+              <div class="col">
+                <label for="">Height:</label>
+                <input type="text" id="vi_height" />
+              </div>
+              <div class="col">
+                <label for="">Temperature:</label>
+                <input type="text" id="vi_temperature" />
+              </div>
+            </div>
+            <div class="col gap">
+              <div class="col">
+                <label for="">BP Diastolic:</label>
+                <input type="text" id="vi_diastolic" />
+              </div>
+              <div class="col">
+                <label for="">Weight:</label>
+                <input type="text" id="vi_weight" />
+              </div>
+              <div class="col">
+                <label for="">Respiratory rate:</label>
+                <input type="text" id="vi_respiratory_rate" />
+              </div>
+            </div>
+            <div class="col gap">
+              <div class="col">
+                <label for="">Heart rate:</label>
+                <input type="text" id="vi_heart_rate" />
+              </div>
+              <div class="col">
+                <label for="">BMI:</label>
+                <input type="text" id="vi_bmi" />
+              </div>
+              <div class="col" style="visibility: hidden;">
+                <label for="">Blood type:</label>
+                <input type="text" />
+              </div>
+            </div>
+          </div>
+          <div class="col" style="height: 20vh">
+            <label for="">Nurse note:</label>
+            <textarea name="" id="vi_comment" class="grow"></textarea>
+          </div>
         </div>
       </div>
-      <div class="info col gap">
-        <div class="row gap">
-          <div class="row grow">
-            <label for="">Name:</label>
-            <input type="text" id="vi_full_name" class="under-line-input" />
-          </div>
-          <div class="row">
-            <label for="">Date:</label>
-            <input type="date" id="vi_check_date" class="under-line-input" />
-          </div>
-        </div>
-        <div class="row gap">
-          <div class="row">
-            <label for="">Age:</label>
-            <input type="number" id="vi_age" class="under-line-input" />
-          </div>
-          <div class="row">
-            <label for="">Sex:</label>
-            <input type="text" id="vi_gender" class="under-line-input" />
-          </div>
-          <div class="row">
-            <label for="">Birth:</label>
-            <input type="date" id="vi_birthdate" class="under-line-input" />
-          </div>
-        </div>
-        <div class="row gap">
-          <div class="row">
-            <label for="">Occupation:</label>
-            <input type="text" id="vi_occupation" class="under-line-input" />
-          </div>
-          <div class="row grow">
-            <label for="">Parent/s:</label>
-            <input type="text" id="vi_guardian" class="under-line-input" />
-          </div>
-        </div>
-        <hr />
-        <div class="row lgap">
-          <div class="col gap">
-            <div class="col">
-              <label for="">BP Systolic:</label>
-              <input type="text" id="vi_systolic" />
-            </div>
-            <div class="col">
-              <label for="">Height:</label>
-              <input type="text" id="vi_height" />
-            </div>
-            <div class="col">
-              <label for="">Temperature:</label>
-              <input type="text" id="vi_temperature" />
-            </div>
-          </div>
-          <div class="col gap">
-            <div class="col">
-              <label for="">BP Diastolic:</label>
-              <input type="text" id="vi_diastolic" />
-            </div>
-            <div class="col">
-              <label for="">Weight:</label>
-              <input type="text" id="vi_weight" />
-            </div>
-            <div class="col">
-              <label for="">Respiratory rate:</label>
-              <input type="text" id="vi_respiratory_rate" />
-            </div>
-          </div>
-          <div class="col gap">
-            <div class="col">
-              <label for="">Heart rate:</label>
-              <input type="text" id="vi_heart_rate" />
-            </div>
-            <div class="col">
-              <label for="">BMI:</label>
-              <input type="text" id="vi_bmi" />
-            </div>
-            <div class="col" style="visibility: hidden;">
-              <label for="">Blood type:</label>
-              <input type="text" />
-            </div>
-          </div>
-        </div>
-        <div class="col" style="height: 20vh">
-          <label for="">Nurse note:</label>
-          <textarea name="" id="vi_comment" class="grow"></textarea>
-        </div>
-      </div>
-    </div>
 
-    <form action="/doctor/request-laboratory/send" method="POST">
-      <!-- pop up for request lab -->
-      <div class="pop-up" id="reqLab">
+      <form action="/doctor/request-laboratory/send" method="POST">
+        <!-- pop up for request lab -->
+        <div class="pop-up" id="reqLab">
+          <div class="head row just-bet">
+            <div class="row gap">
+              <img src="../icon/bottle.svg" />
+              <h2>Request laboratory</h2>
+            </div>
+            <div>
+              <img src="../icon/closing.svg" alt="" class="close_popUp" />
+            </div>
+          </div>
+          <!------Initially hidden just for submitting the form-->
+          <input type="hidden" name="patient_id" id="req_patient_id">
+
+          <div class="info col gap">
+            <div class="row gap">
+              <div class="row grow">
+                <label for="">Name:</label>
+                <input type="text" id="req_full_name" class="under-line-input" />
+              </div>
+              <div class="row">
+                <label for="">Date:</label>
+                <input type="date" id="req_check_date" name="check_date" class="under-line-input" />
+              </div>
+            </div>
+            <div class="row gap">
+              <div class="row">
+                <label for="">Age:</label>
+                <input type="number" id="req_age" name="age" class="under-line-input" />
+              </div>
+              <div class="row">
+                <label for="">Sex:</label>
+                <input type="text" id="req_gender" name="gender" class="under-line-input" />
+              </div>
+              <div class="row">
+                <label for="">Birth:</label>
+                <input type="date" id="req_birthdate" name="birthdate" class="under-line-input" />
+              </div>
+            </div>
+            <div class="row gap">
+              <div class="row">
+                <label for="">Occupation:</label>
+                <input type="text" id="req_occupation" name="occupation" class="under-line-input" />
+              </div>
+              <div class="row grow">
+                <label for="">Parent/s:</label>
+                <input type="text" id="req_guardian" name="guardian" class="under-line-input" />
+              </div>
+            </div>
+            <hr />
+            <div>
+              <details>
+                <summary>Recent Laboratory Request</summary>
+                <ul id="serviceList"></ul> <!-- This will hold the service list -->
+              </details>
+            </div>
+            <div id="category-fields-container">
+              <!-- Initial Category Fields -->
+              <div class="category-fields">
+                <select class="category-dropdown" name="category" onchange="updateServices(this)">
+                  <option value="default" disabled selected>
+                    Select a category
+                  </option>
+                  <option value="Hematology">Hematology</option>
+                  <option value="Blood Chemistry">Blood Chemistry</option>
+                  <option value="Special Test">Special Test</option>
+                  <option value="Thoracic Content">Thoracic Content</option>
+                  <option value="Blood Gases">Blood Gases</option>
+                  <option value="Other Skeletal">Other Skeletal</option>
+                  <option value="Abdomen">Abdomen</option>
+                  <option value="Clinical Microscopy">Clinical Microscopy</option>
+                  <option value="Head">Head</option>
+                  <option value="Vertebral Column">Vertebral Column</option>
+                  <option value="Clinical Chemistry">Clinical Chemistry</option>
+                </select>
+
+                <select class="service-dropdown" name="service">
+                  <option value="default" disabled selected>
+                    Select a service
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <button onclick="addCategoryFields()">Add more</button>
+            </div>
+            <div class="btn-l">
+              <button onclick="printingReqReseta('labReqPrint')">Print</button>
+              <button>Submit</button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <!-- Nasa pinakababa yung printtt -->
+
+      <form action="/doctor/diagnose-patient/send" method="POST">
+        <!-- pop up for diagnosis-->
+        <div class="pop-up" id="diagnosis">
+          <div class="head row just-bet">
+            <div class="row gap">
+              <img src="../icon/micro-scope.svg" />
+              <h2>Diagnosis</h2>
+            </div>
+            <div>
+              <img src="../icon/closing.svg" alt="" class="close_popUp" />
+            </div>
+          </div>
+
+          <!------Initially hidden just for submitting the form-->
+          <input type="hidden" name="patient_id" id="dia_patient_id">
+
+          <div class="info col gap">
+            <div class="row gap">
+              <div class="row grow">
+                <label for="">Name:</label>
+                <input type="text" id="dia_full_name" class="under-line-input" />
+              </div>
+              <div class="row">
+                <label for="">Date:</label>
+                <input type="date" id="dia_check_date" class="under-line-input" />
+              </div>
+            </div>
+            <div class="row gap">
+              <div class="row">
+                <label for="">Age:</label>
+                <input type="number" id="dia_age" class="under-line-input" />
+              </div>
+              <div class="row">
+                <label for="">Sex:</label>
+                <input type="text" id="dia_gender" class="under-line-input" />
+              </div>
+              <div class="row">
+                <label for="">Birth:</label>
+                <input type="date" id="dia_birthdate" class="under-line-input" />
+              </div>
+            </div>
+            <div class="row gap">
+              <div class="row">
+                <label for="">Occupation:</label>
+                <input type="text" id="dia_occupation" class="under-line-input" />
+              </div>
+              <div class="row grow">
+                <label for="">Parent/s:</label>
+                <input type="text" id="dia_guardian" class="under-line-input" />
+              </div>
+            </div>
+            <hr />
+            <div class="col" style="height: 20vh">
+              <label for="">Diagnosis</label>
+              <textarea name="diagnosis" id="dia_diagnosis" class="grow"></textarea>
+            </div>
+            <div class="left-btn">
+              <button>Submit</button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <form action="/doctor/findings-patient/send" method="POST">
+        <!-- pop up for findings -->
+        <div class="pop-up" id="findings">
+          <div class="head row just-bet">
+            <div class="row gap">
+              <img src="../icon/magnifying-glass.svg" />
+              <h2>Findings</h2>
+            </div>
+            <div>
+              <img src="../icon/closing.svg" alt="" class="close_popUp" />
+            </div>
+          </div>
+
+          <!------Initially hidden just for submitting the form-->
+          <input type="hidden" name="patient_id" id="fin_patient_id">
+
+          <div class="info col gap">
+            <div class="row gap">
+              <div class="row grow">
+                <label for="">Name:</label>
+                <input type="text" id="fin_full_name" class="under-line-input" />
+              </div>
+              <div class="row">
+                <label for="">Date:</label>
+                <input type="date" id="fin_check_date" class="under-line-input" />
+              </div>
+            </div>
+            <div class="row gap">
+              <div class="row">
+                <label for="">Age:</label>
+                <input type="number" id="fin_age" class="under-line-input" />
+              </div>
+              <div class="row">
+                <label for="">Sex:</label>
+                <input type="text" id="fin_gender" class="under-line-input" />
+              </div>
+              <div class="row">
+                <label for="">Birth:</label>
+                <input type="date" id="fin_birthdate" class="under-line-input" />
+              </div>
+            </div>
+            <div class="row gap">
+              <div class="row">
+                <label for="">Occupation:</label>
+                <input type="text" id="fin_occupation" class="under-line-input" />
+              </div>
+              <div class="row grow">
+                <label for="">Parent/s:</label>
+                <input type="text" id="fin_guardian" class="under-line-input" />
+              </div>
+            </div>
+            <hr />
+            <div class="col" style="height: 20vh">
+              <label for="">Findings</label>
+              <textarea name="findings" id="fin_findings" class="grow"></textarea>
+            </div>
+            <div class="left-btn">
+              <button>Submit</button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- pop up for lab result -->
+      <div class="pop-up" id="labResult">
         <div class="head row just-bet">
           <div class="row gap">
             <img src="../icon/bottle.svg" />
-            <h2>Request laboratory</h2>
-          </div>
-          <div>
-            <img src="../icon/closing.svg" alt="" class="close_popUp" />
-          </div>
-        </div>
-        <!------Initially hidden just for submitting the form-->
-        <input type="hidden" name="patient_id" id="req_patient_id">
-
-        <div class="info col gap">
-          <div class="row gap">
-            <div class="row grow">
-              <label for="">Name:</label>
-              <input type="text" id="req_full_name" class="under-line-input" />
-            </div>
-            <div class="row">
-              <label for="">Date:</label>
-              <input type="date" id="req_check_date" name="check_date" class="under-line-input" />
-            </div>
-          </div>
-          <div class="row gap">
-            <div class="row">
-              <label for="">Age:</label>
-              <input type="number" id="req_age" name="age" class="under-line-input" />
-            </div>
-            <div class="row">
-              <label for="">Sex:</label>
-              <input type="text" id="req_gender" name="gender" class="under-line-input" />
-            </div>
-            <div class="row">
-              <label for="">Birth:</label>
-              <input type="date" id="req_birthdate" name="birthdate" class="under-line-input" />
-            </div>
-          </div>
-          <div class="row gap">
-            <div class="row">
-              <label for="">Occupation:</label>
-              <input type="text" id="req_occupation" name="occupation" class="under-line-input" />
-            </div>
-            <div class="row grow">
-              <label for="">Parent/s:</label>
-              <input type="text" id="req_guardian" name="guardian" class="under-line-input" />
-            </div>
-          </div>
-          <hr />
-          <div id="category-fields-container">
-            <!-- Initial Category Fields -->
-            <div class="category-fields">
-              <select class="category-dropdown" name="category" onchange="updateServices(this)">
-                <option value="default" disabled selected>
-                  Select a category
-                </option>
-                <option value="Hematology">Hematology</option>
-                <option value="Blood Chemistry">Blood Chemistry</option>
-                <option value="Special Test">Special Test</option>
-                <option value="Thoracic Content">Thoracic Content</option>
-                <option value="Blood Gases">Blood Gases</option>
-                <option value="Other Skeletal">Other Skeletal</option>
-                <option value="Abdomen">Abdomen</option>
-                <option value="Clinical Microscopy">Clinical Microscopy</option>
-                <option value="Head">Head</option>
-                <option value="Vertebral Column">Vertebral Column</option>
-                <option value="Clinical Chemistry">Clinical Chemistry</option>
-              </select>
-
-              <select class="service-dropdown" name="service">
-                <option value="default" disabled selected>
-                  Select a service
-                </option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <button onclick="addCategoryFields()">Add more</button>
-          </div>
-          <div class="btn-l">
-            <button onclick="printingReqReseta('labReqPrint')">Print</button>
-            <button>Submit</button>
-          </div>
-        </div>
-      </div>
-    </form>
-    <!-- Nasa pinakababa yung printtt -->
-
-    <form action="/doctor/diagnose-patient/send" method="POST">
-      <!-- pop up for diagnosis-->
-      <div class="pop-up" id="diagnosis">
-        <div class="head row just-bet">
-          <div class="row gap">
-            <img src="../icon/micro-scope.svg" />
-            <h2>Diagnosis</h2>
+            <h2>Laboratory result</h2>
           </div>
           <div>
             <img src="../icon/closing.svg" alt="" class="close_popUp" />
           </div>
         </div>
 
-        <!------Initially hidden just for submitting the form-->
-        <input type="hidden" name="patient_id" id="dia_patient_id">
-
         <div class="info col gap">
           <div class="row gap">
             <div class="row grow">
               <label for="">Name:</label>
-              <input type="text" id="dia_full_name" class="under-line-input" />
+              <input type="text" id="res_full_name" class="under-line-input" />
             </div>
             <div class="row">
               <label for="">Date:</label>
-              <input type="date" id="dia_check_date" class="under-line-input" />
+              <input type="date" id="res_check_date" class="under-line-input" />
             </div>
           </div>
           <div class="row gap">
             <div class="row">
               <label for="">Age:</label>
-              <input type="number" id="dia_age" class="under-line-input" />
+              <input type="number" id="res_age" class="under-line-input" />
             </div>
             <div class="row">
               <label for="">Sex:</label>
-              <input type="text" id="dia_gender" class="under-line-input" />
+              <input type="text" id="res_gender" class="under-line-input" />
             </div>
             <div class="row">
               <label for="">Birth:</label>
-              <input type="date" id="dia_birthdate" class="under-line-input" />
+              <input type="date" id="res_birthdate" class="under-line-input" />
             </div>
           </div>
           <div class="row gap">
             <div class="row">
               <label for="">Occupation:</label>
-              <input type="text" id="dia_occupation" class="under-line-input" />
+              <input type="text" id="res_occupation" class="under-line-input" />
             </div>
             <div class="row grow">
               <label for="">Parent/s:</label>
-              <input type="text" id="dia_guardian" class="under-line-input" />
+              <input type="text" id="res_guardian" class="under-line-input" />
             </div>
           </div>
           <hr />
-          <div class="col" style="height: 20vh">
-            <label for="">Diagnosis</label>
-            <textarea name="diagnosis" id="dia_diagnosis" class="grow"></textarea>
-          </div>
-          <div class="left-btn">
-            <button>Submit</button>
-          </div>
-        </div>
-      </div>
-    </form>
-
-    <form action="/doctor/findings-patient/send" method="POST">
-      <!-- pop up for findings -->
-      <div class="pop-up" id="findings">
-        <div class="head row just-bet">
-          <div class="row gap">
-            <img src="../icon/magnifying-glass.svg" />
-            <h2>Findings</h2>
-          </div>
-          <div>
-            <img src="../icon/closing.svg" alt="" class="close_popUp" />
-          </div>
-        </div>
-
-        <!------Initially hidden just for submitting the form-->
-        <input type="hidden" name="patient_id" id="fin_patient_id">
-
-        <div class="info col gap">
-          <div class="row gap">
-            <div class="row grow">
-              <label for="">Name:</label>
-              <input type="text" id="fin_full_name" class="under-line-input" />
-            </div>
-            <div class="row">
-              <label for="">Date:</label>
-              <input type="date" id="fin_check_date" class="under-line-input" />
-            </div>
-          </div>
-          <div class="row gap">
-            <div class="row">
-              <label for="">Age:</label>
-              <input type="number" id="fin_age" class="under-line-input" />
-            </div>
-            <div class="row">
-              <label for="">Sex:</label>
-              <input type="text" id="fin_gender" class="under-line-input" />
-            </div>
-            <div class="row">
-              <label for="">Birth:</label>
-              <input type="date" id="fin_birthdate" class="under-line-input" />
-            </div>
-          </div>
-          <div class="row gap">
-            <div class="row">
-              <label for="">Occupation:</label>
-              <input type="text" id="fin_occupation" class="under-line-input" />
-            </div>
-            <div class="row grow">
-              <label for="">Parent/s:</label>
-              <input type="text" id="fin_guardian" class="under-line-input" />
-            </div>
-          </div>
-          <hr />
-          <div class="col" style="height: 20vh">
-            <label for="">Findings</label>
-            <textarea name="findings" id="fin_findings" class="grow"></textarea>
-          </div>
-          <div class="left-btn">
-            <button>Submit</button>
-          </div>
-        </div>
-      </div>
-    </form>
-
-    <!-- pop up for lab result -->
-    <div class="pop-up" id="labResult">
-      <div class="head row just-bet">
-        <div class="row gap">
-          <img src="../icon/bottle.svg" />
-          <h2>Laboratory result</h2>
-        </div>
-        <div>
-          <img src="../icon/closing.svg" alt="" class="close_popUp" />
-        </div>
-      </div>
-
-      <div class="info col gap">
-        <div class="row gap">
-          <div class="row grow">
-            <label for="">Name:</label>
-            <input type="text" id="res_full_name" class="under-line-input" />
-          </div>
-          <div class="row">
-            <label for="">Date:</label>
-            <input type="date" id="res_check_date" class="under-line-input" />
-          </div>
-        </div>
-        <div class="row gap">
-          <div class="row">
-            <label for="">Age:</label>
-            <input type="number" id="res_age" class="under-line-input" />
-          </div>
-          <div class="row">
-            <label for="">Sex:</label>
-            <input type="text" id="res_gender" class="under-line-input" />
-          </div>
-          <div class="row">
-            <label for="">Birth:</label>
-            <input type="date" id="res_birthdate" class="under-line-input" />
-          </div>
-        </div>
-        <div class="row gap">
-          <div class="row">
-            <label for="">Occupation:</label>
-            <input type="text" id="res_occupation" class="under-line-input" />
-          </div>
-          <div class="row grow">
-            <label for="">Parent/s:</label>
-            <input type="text" id="res_guardian" class="under-line-input" />
-          </div>
-        </div>
-        <hr />
-        <div class="col gap">
-          <label for="">Laboratory Result:</label>
-          <div class="gap grid-two-col">
-            <div>
-              <!-- Container for displaying multiple images -->
-              <h3 style="font-family: 'Poppins', sans-serif; margin-left: 25px;">List of Lab Results</h3>
-              <div id="list">
-                <ul id="labResultList"></ul>
+          <div class="col gap">
+            <label for="">Laboratory Result:</label>
+            <div class="gap grid-two-col">
+              <div>
+                <!-- Container for displaying multiple images -->
+                <h3 style="font-family: 'Poppins', sans-serif; margin-left: 25px;">List of Lab Results</h3>
+                <div id="list">
+                  <ul id="labResultList"></ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- pop up for prescribe -->
-    <div class="pop-up" id="prescribed">
-      <div class="head row just-bet">
-        <div class="row gap">
-          <img src="../icon/Rx.svg" />
-          <h2>Prescribe</h2>
+      <!-- pop up for prescribe -->
+      <div class="pop-up" id="prescribed">
+        <div class="head row just-bet">
+          <div class="row gap">
+            <img src="../icon/Rx.svg" />
+            <h2>Prescribe</h2>
+          </div>
+          <div>
+            <img src="../icon/closing.svg" alt="" class="close_popUp" />
+          </div>
         </div>
+
+        <div class="info col gap">
+          <div class="row gap">
+            <div class="row grow">
+              <label for="">Name:</label>
+              <input type="text" id="pres_full_name" class="under-line-input" />
+            </div>
+            <div class="row">
+              <label for="">Date:</label>
+              <input type="date" id="pres_check_date" class="under-line-input" />
+            </div>
+          </div>
+          <div class="row gap">
+            <div class="row">
+              <label for="">Age:</label>
+              <input type="number" id="pres_age" class="under-line-input" />
+            </div>
+            <div class="row">
+              <label for="">Sex:</label>
+              <input type="text" id="pres_gender" class="under-line-input" />
+            </div>
+            <div class="row">
+              <label for="">Birth:</label>
+              <input type="date" id="pres_birthdate" class="under-line-input" />
+            </div>
+          </div>
+          <div class="row gap">
+            <div class="row">
+              <label for="">Occupation:</label>
+              <input type="text" id="pres_occupation" class="under-line-input" />
+            </div>
+            <div class="row grow">
+              <label for="">Parent/s:</label>
+              <input type="text" id="pres_guardian" class="under-line-input" />
+            </div>
+          </div>
+          <hr />
+
+          <div class="col gap">
+            <div class="row gap just-bet">
+              <div class="col grow">
+                <label for="">Medicine:</label>
+                <input type="text" />
+              </div>
+              <div class="col grow">
+                <label for="">Instruction:</label>
+                <input type="text" />
+              </div>
+              <div class="col grow">
+                <label for="">Quantity:</label>
+                <input type="number" />
+              </div>
+            </div>
+            <div class="row gap just-bet">
+              <div class="col grow">
+                <label for="">Receiver:</label>
+                <input type="text" />
+              </div>
+              <div class="col grow">
+                <label for="">Relationship:</label>
+                <input type="text" />
+              </div>
+              <div class="col grow">
+                <label for="">Doctor:</label>
+                <input type="number" />
+              </div>
+            </div>
+          </div>
+          <div class="btn-l">
+            <button onclick="printingReqReseta('resetaPrint')">Print</button>
+            <button>Submit</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="overlay"></div>
+
+      <!-- print lab request!!! -->
+      <div class="LabReqPrint b" id="labReqPrint" style="display: none">
+        <div class="row gap b">
+          <img src="../img/global/lgu-logo.png" alt="" class="logo-print" height="100" />
+          <div class="col align-item">
+            <p class="head2">City of Borongan</p>
+            <p class="head1">CITY HEALTH OFFICE</p>
+          </div>
+          <img src="../img/global/DA-logo.png" alt="" class="logo-print" height="100" />
+        </div>
+        <div class="b m-top">
+          <p class="head1 b-p">LABORATORY REQUEST</p>
+        </div>
+        <div class="infoooo col">
+          <p>Name: <span></span></p>
+          <div class="row">
+            <p class="s">Age: <span></span></p>
+            <p class="s">Sex: <span></span></p>
+            <p class="grow">Date: <span></span></p>
+          </div>
+          <p>Address: <span></span></p>
+          <div class="row">
+            <p class="grow">Birth: <span></span></p>
+            <p class="grow">Occ: <span></span></p>
+          </div>
+          <p>Parent/s: <span></span></p>
+        </div>
+        <div class="h-line"></div>
+        <div class="row align-item p-s gap">
+          <p>Fasting: <input type="checkbox" /></p>
+          <p>None: <input type="checkbox" /></p>
+          <p>8-10 Hours: <input type="checkbox" /></p>
+          <p>10-12 Hours: <input type="checkbox" /></p>
+        </div>
+        <div class="row lgap grid-two-col cat">
+          <div style="align-self: start">
+            <p>Categories</p>
+            <ul>
+              <li>Hematology</li>
+            </ul>
+          </div>
+          <div style="align-self: start">
+            <p>Services</p>
+            <ul>
+              <li>Plateletes</li>
+            </ul>
+          </div>
+        </div>
+        <div class="btn-l cat d">
+          <p class="h2"><strong>DR. JOHN KELLY B. CAINDAY, JD</strong></p>
+          <p>Lic No: 0127303</p>
+          <p><strong>Rural Health Physician</strong></p>
+        </div>
+      </div>
+
+      <!-- print Reseta -->
+      <div class="ResetaPrint b" id="resetaPrint" style="display: none">
+        <div class="row gap b">
+          <img src="../img/global/lgu-logo.png" alt="" class="logo-print" height="100" />
+          <div class="col align-item">
+            <p class="head2">City of Borongan</p>
+            <p class="head1">CITY HEALTH OFFICE</p>
+          </div>
+          <img src="../img/global/DA-logo.png" alt="" class="logo-print" height="100" />
+        </div>
+
+        <div class="infoooo col">
+          <p class="b-p head2">HCVD; T2DM: dvslipidemia</p>
+          <p>Name: <span></span></p>
+          <div class="row">
+            <p class="s">Age: <span></span></p>
+            <p class="s">Sex: <span></span></p>
+            <p class="grow">Date: <span></span></p>
+          </div>
+          <p>Address: <span></span></p>
+          <div class="row">
+            <p class="grow">Birth: <span></span></p>
+            <p class="grow">Occ: <span></span></p>
+          </div>
+          <p>Parent/s: <span></span></p>
+        </div>
+        <div class="h-line"></div>
         <div>
-          <img src="../icon/closing.svg" alt="" class="close_popUp" />
+          <p>Prescription for date:</p>
+          <h1 class="ha">Rx</h1>
+          <p class="b-p">1. Amlodipine 5mg <span>#100</span></p>
+          <p>Sig. Take every morning</p>
+          <p class="b-p">2. Losartan 50mg <span>#100</span></p>
+          <p>Sig. Take every morning</p>
+        </div>
+        <div class="btn-l cat d">
+          <p class="h2"><strong>DR. JOHN KELLY B. CAINDAY, JD</strong></p>
+          <p>Lic No: 0127303</p>
+          <p><strong>Rural Health Physician</strong></p>
         </div>
       </div>
+    </main>
+    <script src="../../js/local/doctor-dashboard/patient-api.js"></script>
+    <script src="../../js/global/pop-up.js"></script>
+    <script src="../../js/global/services.js"></script>
+    <script>
+      function printingReqReseta(containerID) {
+        var reseta = document.getElementById("resetaPrint");
+        var reqLab = document.getElementById("labReqPrint");
 
-      <div class="info col gap">
-        <div class="row gap">
-          <div class="row grow">
-            <label for="">Name:</label>
-            <input type="text" id="pres_full_name" class="under-line-input" />
-          </div>
-          <div class="row">
-            <label for="">Date:</label>
-            <input type="date" id="pres_check_date" class="under-line-input" />
-          </div>
-        </div>
-        <div class="row gap">
-          <div class="row">
-            <label for="">Age:</label>
-            <input type="number" id="pres_age" class="under-line-input" />
-          </div>
-          <div class="row">
-            <label for="">Sex:</label>
-            <input type="text" id="pres_gender" class="under-line-input" />
-          </div>
-          <div class="row">
-            <label for="">Birth:</label>
-            <input type="date" id="pres_birthdate" class="under-line-input" />
-          </div>
-        </div>
-        <div class="row gap">
-          <div class="row">
-            <label for="">Occupation:</label>
-            <input type="text" id="pres_occupation" class="under-line-input" />
-          </div>
-          <div class="row grow">
-            <label for="">Parent/s:</label>
-            <input type="text" id="pres_guardian" class="under-line-input" />
-          </div>
-        </div>
-        <hr />
-
-        <div class="col gap">
-          <div class="row gap just-bet">
-            <div class="col grow">
-              <label for="">Medicine:</label>
-              <input type="text" />
-            </div>
-            <div class="col grow">
-              <label for="">Instruction:</label>
-              <input type="text" />
-            </div>
-            <div class="col grow">
-              <label for="">Quantity:</label>
-              <input type="number" />
-            </div>
-          </div>
-          <div class="row gap just-bet">
-            <div class="col grow">
-              <label for="">Receiver:</label>
-              <input type="text" />
-            </div>
-            <div class="col grow">
-              <label for="">Relationship:</label>
-              <input type="text" />
-            </div>
-            <div class="col grow">
-              <label for="">Doctor:</label>
-              <input type="number" />
-            </div>
-          </div>
-        </div>
-        <div class="btn-l">
-          <button onclick="printingReqReseta('resetaPrint')">Print</button>
-          <button>Submit</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="overlay"></div>
-
-    <!-- print lab request!!! -->
-    <div class="LabReqPrint b" id="labReqPrint" style="display: none">
-      <div class="row gap b">
-        <img src="../img/global/lgu-logo.png" alt="" class="logo-print" height="100" />
-        <div class="col align-item">
-          <p class="head2">City of Borongan</p>
-          <p class="head1">CITY HEALTH OFFICE</p>
-        </div>
-        <img src="../img/global/DA-logo.png" alt="" class="logo-print" height="100" />
-      </div>
-      <div class="b m-top">
-        <p class="head1 b-p">LABORATORY REQUEST</p>
-      </div>
-      <div class="infoooo col">
-        <p>Name: <span></span></p>
-        <div class="row">
-          <p class="s">Age: <span></span></p>
-          <p class="s">Sex: <span></span></p>
-          <p class="grow">Date: <span></span></p>
-        </div>
-        <p>Address: <span></span></p>
-        <div class="row">
-          <p class="grow">Birth: <span></span></p>
-          <p class="grow">Occ: <span></span></p>
-        </div>
-        <p>Parent/s: <span></span></p>
-      </div>
-      <div class="h-line"></div>
-      <div class="row align-item p-s gap">
-        <p>Fasting: <input type="checkbox" /></p>
-        <p>None: <input type="checkbox" /></p>
-        <p>8-10 Hours: <input type="checkbox" /></p>
-        <p>10-12 Hours: <input type="checkbox" /></p>
-      </div>
-      <div class="row lgap grid-two-col cat">
-        <div style="align-self: start">
-          <p>Categories</p>
-          <ul>
-            <li>Hematology</li>
-          </ul>
-        </div>
-        <div style="align-self: start">
-          <p>Services</p>
-          <ul>
-            <li>Plateletes</li>
-          </ul>
-        </div>
-      </div>
-      <div class="btn-l cat d">
-        <p class="h2"><strong>DR. JOHN KELLY B. CAINDAY, JD</strong></p>
-        <p>Lic No: 0127303</p>
-        <p><strong>Rural Health Physician</strong></p>
-      </div>
-    </div>
-
-    <!-- print Reseta -->
-    <div class="ResetaPrint b" id="resetaPrint" style="display: none">
-      <div class="row gap b">
-        <img src="../img/global/lgu-logo.png" alt="" class="logo-print" height="100" />
-        <div class="col align-item">
-          <p class="head2">City of Borongan</p>
-          <p class="head1">CITY HEALTH OFFICE</p>
-        </div>
-        <img src="../img/global/DA-logo.png" alt="" class="logo-print" height="100" />
-      </div>
-
-      <div class="infoooo col">
-        <p class="b-p head2">HCVD; T2DM: dvslipidemia</p>
-        <p>Name: <span></span></p>
-        <div class="row">
-          <p class="s">Age: <span></span></p>
-          <p class="s">Sex: <span></span></p>
-          <p class="grow">Date: <span></span></p>
-        </div>
-        <p>Address: <span></span></p>
-        <div class="row">
-          <p class="grow">Birth: <span></span></p>
-          <p class="grow">Occ: <span></span></p>
-        </div>
-        <p>Parent/s: <span></span></p>
-      </div>
-      <div class="h-line"></div>
-      <div>
-        <p>Prescription for date:</p>
-        <h1 class="ha">Rx</h1>
-        <p class="b-p">1. Amlodipine 5mg <span>#100</span></p>
-        <p>Sig. Take every morning</p>
-        <p class="b-p">2. Losartan 50mg <span>#100</span></p>
-        <p>Sig. Take every morning</p>
-      </div>
-      <div class="btn-l cat d">
-        <p class="h2"><strong>DR. JOHN KELLY B. CAINDAY, JD</strong></p>
-        <p>Lic No: 0127303</p>
-        <p><strong>Rural Health Physician</strong></p>
-      </div>
-    </div>
-  </main>
-  <script src="../../js/local/doctor-dashboard/patient-api.js"></script>
-  <script src="../../js/global/pop-up.js"></script>
-  <script src="../../js/global/services.js"></script>
-  <script>
-    function printingReqReseta(containerID) {
-      var reseta = document.getElementById("resetaPrint");
-      var reqLab = document.getElementById("labReqPrint");
-
-      if (containerID === "resetaPrint") {
-        reseta.classList.add("show");
-        reqLab.classList.remove("show");
-      } else if (containerID === "labReqPrint") {
-        reqLab.classList.add("show");
-        reseta.classList.remove("show");
+        if (containerID === "resetaPrint") {
+          reseta.classList.add("show");
+          reqLab.classList.remove("show");
+        } else if (containerID === "labReqPrint") {
+          reqLab.classList.add("show");
+          reseta.classList.remove("show");
+        }
+        window.print();
       }
-      window.print();
-    }
-  </script>
+    </script>
 </body>
 
 </html>

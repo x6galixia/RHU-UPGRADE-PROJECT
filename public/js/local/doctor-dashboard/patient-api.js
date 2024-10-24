@@ -50,7 +50,9 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-gender="${patient.gender}"
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
-                                    data-guardian="${patient.guardian}">Request Laboratory</option>
+                                    data-guardian="${patient.guardian}"
+                                    data-services="${patient.services}"
+                                    >Request Laboratory</option>
 
                                     <option value="3"
                                     data-patient-id="${patient.patient_id}"
@@ -190,7 +192,9 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-gender="${patient.gender}"
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
-                                    data-guardian="${patient.guardian}">Request Laboratory</option>
+                                    data-guardian="${patient.guardian}"
+                                    data-services="${patient.services}"
+                                    >Request Laboratory</option>
 
                                     <option value="3"
                                     data-patient-id="${patient.patient_id}"
