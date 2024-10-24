@@ -1,12 +1,76 @@
 const express = require("express");
 const router = express.Router();
 const rhuPool = require("../../models/rhudb");
+const Joi = require("joi");
 const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
 const { calculateAge, formatDate } = require("../../public/js/global/functions");
 
+const multer = require("multer");
+const fs = require('fs');
+const path = require('path');
+
 router.use(setUserData);
 router.use(methodOverride("_method"));
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = 'uploads/lab-results/';
+
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
+router.use("/uploads/lab-results", express.static("uploads"));
+
+const patientSchema = Joi.object({
+  patient_id: Joi.string().required(),
+  rhu_id: Joi.number().integer(),
+  //nurse
+  last_name: Joi.string().allow("").optional(),
+  first_name: Joi.string().allow("").optional(),
+  middle_name: Joi.string().allow("").optional(),
+  suffix: Joi.string().allow("").optional(),
+  phone: Joi.string().allow("").optional(),
+  gender: Joi.string().allow("").optional(),
+  birthdate: Joi.date().allow("").optional(),
+  age: Joi.number().integer().allow("").optional(),
+  completeAddress: Joi.string().allow("").optional(),
+  occupation: Joi.string().allow("").optional(),
+  email: Joi.string().allow("").optional(),
+  philhealth_no: Joi.string().allow("").optional(),
+  guardian: Joi.string().allow("").optional(),
+  check_date: Joi.date().allow("").optional(),
+  height: Joi.number().integer().allow("").optional(),
+  weight: Joi.number().integer().allow("").optional(),
+  systolic: Joi.number().integer().allow("").optional(),
+  diastolic: Joi.number().integer().allow("").optional(),
+  temperature: Joi.number().integer().allow("").optional(),
+  heart_rate: Joi.number().integer().allow("").optional(),
+  respiratory_rate: Joi.number().integer().allow("").optional(),
+  bmi: Joi.number().allow("").optional(),
+  comment: Joi.string().allow("").optional(),
+  //doctor
+  follow_date: Joi.date().allow("").optional(),
+  diagnosis: Joi.string().allow("").optional(),
+  findings: Joi.string().allow("").optional(),
+  category: Joi.string().allow("").optional(),
+  service: Joi.string().allow("").optional(),
+  medicine: Joi.string().allow("").optional(),
+  instruction: Joi.string().allow("").optional(),
+  quantity: Joi.string().allow("").optional(),
+  //medtech
+  lab_result: Joi.allow("").optional(),
+});
 
 router.get("/medtech-dashboard", ensureAuthenticated, checkUserType("Med Tech"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -89,6 +153,39 @@ router.get("/medtech-dashboard/search", ensureAuthenticated, checkUserType("Med 
   } catch (err) {
     console.error("Error: ", err.message, err.stack);
     res.status(500).send("An error occurred during the search.");
+  }
+});
+
+router.post("/medtech-dashboard/send-patient-lab", upload.array('lab_result', 6), async (req, res) => {
+  const { error, value } = patientSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
+  try {
+    const files = req.files;
+    const patientId = value.patient_id;
+    console.log("Patient ID:", patientId);
+
+
+    if (files && files.length > 0) {
+      for (let file of files) {
+        const filename = path.basename(file.path);
+
+        await rhuPool.query(`
+          INSERT INTO medtech_labs (patient_id, lab_result) 
+          VALUES ($1, $2)`, 
+          [patientId, filename]
+        );
+      }
+    }
+    
+    req.flash("submit", "Submitted Successfully");
+    res.redirect("/medtech-dashboard");
+  } catch (err) {
+    console.error("Error: ", err);
+    res.status(500).send("An error occurred while uploading files.");
   }
 });
 

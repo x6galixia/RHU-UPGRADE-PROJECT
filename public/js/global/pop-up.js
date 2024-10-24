@@ -255,9 +255,45 @@ function popUp_button(button) {
   }
 
   //med tech
-  else if (buttonId == "lab-result") {
-    lab_result.classList.toggle("visible");
+else if (buttonId == "lab-result") {
+  lab_result.classList.toggle("visible");
+
+  const checkDate = button.getAttribute('data-check-date');
+  const birthDate = button.getAttribute('data-birthdate');
+  const categories = button.getAttribute('data-categories');
+  const services = button.getAttribute('data-services');
+
+  document.getElementById('lab_patient_id').value = button.getAttribute('data-patient-id');
+  document.getElementById('lab_full_name').value = button.getAttribute('data-full-name') || '';
+  document.getElementById('lab_check_date').value = formatDate(checkDate);
+  document.getElementById('lab_age').value = button.getAttribute('data-age');
+  document.getElementById('lab_gender').value = button.getAttribute('data-gender') || '';
+  document.getElementById('lab_birthdate').value = formatDate(birthDate);
+  document.getElementById('lab_occupation').value = button.getAttribute('data-occupation') || '';
+  document.getElementById('lab_guardian').value = button.getAttribute('data-guardian') || '';
+
+  const categoryServiceTableBody = document.getElementById('categoryServiceTableBody');
+  categoryServiceTableBody.innerHTML = '';
+
+  if (categories && services) {
+      const categoryArray = categories.split(',');
+      const serviceArray = services.split(',');
+
+      const rowCount = Math.max(categoryArray.length, serviceArray.length);
+
+      for (let i = 0; i < rowCount; i++) {
+          const category = categoryArray[i] ? categoryArray[i].trim() : ''; 
+          const service = serviceArray[i] ? serviceArray[i].trim() : '';
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+              <td>${service}</td>
+              <td>${category}</td>
+          `;
+          categoryServiceTableBody.appendChild(row);
+      }
   }
+}
 
   overlay.classList.add("visible");
 }
