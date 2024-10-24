@@ -277,3 +277,12 @@ span {
 .ha {
     font-size: 4rem;
 }
+
+details ul {
+    padding-left: 20px;
+}
+
+details {
+    user-select: none;
+    cursor: pointer;
+}
