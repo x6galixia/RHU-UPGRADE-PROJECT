@@ -289,25 +289,9 @@ async function fetchPatientList(page, limit) {
 
     // Now, fetch the patient list with aggregation
     const getPatientList = await rhuPool.query(`
-      SELECT
-        p.patient_id,
-        p.rhu_id,
-        p.last_name,
-        p.first_name,
-        p.middle_name,
-        p.suffix,
-        p.phone,
-        p.gender,
-        p.birthdate,
-        p.house_no,
-        p.street,
-        p.barangay,
-        p.city,
-        p.province,
-        p.occupation,
-        p.email,
-        p.philhealth_no,
-        p.guardian,
+      SELECT 
+        p.patient_id, p.rhu_id, p.last_name, p.first_name, p.middle_name, p.suffix, p.phone, p.gender,
+        p.birthdate, p.house_no, p.street, p.barangay, p.city, p.province, p.occupation, p.email, p.philhealth_no, p.guardian,
         MAX(nc.age) AS age,
         MAX(nc.check_date) AS check_date,
         MAX(nc.height) AS height,
@@ -322,14 +306,13 @@ async function fetchPatientList(page, limit) {
         MAX(dv.follow_date) AS follow_date,
         MAX(dv.diagnosis) AS diagnosis,
         MAX(dv.findings) AS findings,
-        MAX(dv.category) AS category,
-        MAX(dv.service) AS service,
-        MAX(dv.medicine) AS medicine,
-        MAX(dv.instruction) AS instruction,
-        MAX(dv.quantity) AS quantity,
-        MAX(lr.lab_result) AS lab_result,
-        r.rhu_name,
-        r.rhu_address
+        STRING_AGG(DISTINCT dv.category, ', ') AS categories,
+        STRING_AGG(DISTINCT dv.service, ', ') AS services,
+        STRING_AGG(DISTINCT dv.medicine, ', ') AS medicines,
+        STRING_AGG(DISTINCT dv.instruction, ', ') AS instructions,
+        STRING_AGG(DISTINCT dv.quantity::text, ', ') AS quantities,  -- Cast to text here
+        STRING_AGG(DISTINCT lr.lab_result, ', ') AS lab_results,  -- Assuming lab_result is already text
+        r.rhu_name, r.rhu_address
       FROM patients p
       LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
       LEFT JOIN doctor_visits dv ON p.patient_id = dv.patient_id
@@ -338,7 +321,7 @@ async function fetchPatientList(page, limit) {
       GROUP BY p.patient_id, r.rhu_name, r.rhu_address
       ORDER BY p.first_name
       LIMIT $1 OFFSET $2
-    `, [limit, offset]);
+    `, [limit, offset]);    
 
     const data = formatPatientData(getPatientList.rows);
     return { getPatientList: data, totalPages };
