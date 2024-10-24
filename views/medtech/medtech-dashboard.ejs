@@ -39,8 +39,6 @@
               <th>PARENT</th>
               <th>OCCUPATION</th>
               <th>DATE</th>
-              <th>CATEGORIES</th>
-              <th>SERVICES</th>
               <th>LABORATORY RESULT</th>
             </tr>
           </thead>
@@ -56,7 +54,7 @@
         </nav>
       </div>
       <!-- pop up for request lab -->
-      <form action="/doctor/request-laboratory/send" method="POST">
+      <form action="/medtech-dashboard/send-patient-lab" method="POST" enctype="multipart/form-data">
         <!-- pop up for request lab -->
         <div class="pop-up" id="lab-res">
           <div class="head row just-bet">
@@ -66,41 +64,41 @@
             </div>
           </div>
           <!------Initially hidden just for submitting the form-->
-          <input type="hidden" name="patient_id" id="req_patient_id">
+          <input type="hidden" name="patient_id" id="lab_patient_id">
 
           <div class="info col gap">
             <div class="row gap">
               <div class="row grow">
                 <label for="">Name:</label>
-                <input type="text" id="req_full_name" class="under-line-input" />
+                <input type="text" id="lab_full_name" class="under-line-input" />
               </div>
               <div class="row">
                 <label for="">Date:</label>
-                <input type="date" id="req_check_date" name="check_date" class="under-line-input" />
+                <input type="date" id="lab_check_date" name="check_date" class="under-line-input" />
               </div>
             </div>
             <div class="row gap">
               <div class="row">
                 <label for="">Age:</label>
-                <input type="number" id="req_age" name="age" class="under-line-input" />
+                <input type="number" id="lab_age" name="age" class="under-line-input" />
               </div>
               <div class="row">
                 <label for="">Sex:</label>
-                <input type="text" id="req_gender" name="gender" class="under-line-input" />
+                <input type="text" id="lab_gender" name="gender" class="under-line-input" />
               </div>
               <div class="row">
                 <label for="">Birth:</label>
-                <input type="date" id="req_birthdate" name="birthdate" class="under-line-input" />
+                <input type="date" id="lab_birthdate" name="birthdate" class="under-line-input" />
               </div>
             </div>
             <div class="row gap">
               <div class="row">
                 <label for="">Occupation:</label>
-                <input type="text" id="req_occupation" name="occupation" class="under-line-input" />
+                <input type="text" id="lab_occupation" name="occupation" class="under-line-input" />
               </div>
               <div class="row grow">
                 <label for="">Parent/s:</label>
-                <input type="text" id="req_guardian" name="guardian" class="under-line-input" />
+                <input type="text" id="lab_guardian" name="guardian" class="under-line-input" />
               </div>
             </div>
             <hr />
@@ -113,29 +111,10 @@
                       <th>Category</th>
                     </tr>
                   </thead>
-                  <tbody class="list-of-request">
-                    <tr>
-                      <td>asd</td>
-                      <td>asd</td>
-                    </tr>
-                    <tr>
-                      <td>asd</td>
-                      <td>asd</td>
-                    </tr>
-                    <tr>
-                      <td>asd</td>
-                      <td>asd</td>
-                    </tr>
-                    <tr>
-                      <td>asd</td>
-                      <td>asd</td>
-                    </tr>
-                    <tr>
-                      <td>asd</td>
-                      <td>asd</td>
-                    </tr>
+                  <tbody class="list-of-request" id="categoryServiceTableBody">
                   </tbody>
                 </table>
+                
               </div>
               <div class="request-image">
                 <div class="image-section">
@@ -145,7 +124,7 @@
                   </div>
                   <div id="next-btn"><img src="../icon/arrow-right.svg" alt=""></div>
                 </div>
-                <input type="file" id="fileInput" style="display: none;" multiple>
+                <input type="file" id="fileInput" name="lab_result" style="display: none;" multiple>
                 <button type="button" class="button-bordered" id="uploadBtn">
                   <img src="../icon/folder-icon.svg" alt="">
                   Upload file
@@ -159,6 +138,11 @@
           </div>
         </div>
       </form>
+
+      <% if (messages.submit) { %>
+        <%= messages.submit%>
+        <% } %>
+
     </main>
     <script src="../../js/local/medtech-labs/labs-api.js"></script>
     <script src="../../js/global/pop-up.js"></script>

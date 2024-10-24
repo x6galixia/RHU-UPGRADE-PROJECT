@@ -15,15 +15,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 row.innerHTML = `
                     <td> ${patient.rhu_name} </td>
                     <td> ${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}</td>
-                    <td> ${patient.age} </td>
-                    <td> ${patient.gender} </td>
-                    <td> ${patient.birthdate} </td>
-                    <td> ${patient.guardian} </td>
-                    <td> ${patient.occupation} </td>
-                    <td> ${patient.check_date} </td>
-                    <td> ${patient.categories} </td>  <!-- Updated for multiple categories -->
-                    <td> ${patient.services} </td>    <!-- Updated for multiple services -->
-                    <td class="lab-result" id="lab-result" onclick="popUp_button(this)"><img src="../icon/mata_ine.svg" alt="" /</td>
+                    <td> ${patient.age}</td>
+                    <td> ${patient.gender}</td>
+                    <td> ${patient.birthdate}</td>
+                    <td> ${patient.guardian}</td>
+                    <td> ${patient.occupation}</td>
+                    <td> ${patient.check_date}</td>
+                    <td class="lab-result" id="lab-result" onclick="popUp_button(this)"
+                    data-patient-id="${patient.patient_id}"
+                    data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
+                    data-check-date="${patient.check_date}"
+                    data-age="${patient.age}"
+                    data-gender="${patient.gender}"
+                    data-birthdate="${patient.birthdate}"
+                    data-occupation="${patient.occupation}"
+                    data-guardian="${patient.guardian}"
+                    data-categories="${patient.categories}"
+                    data-services="${patient.services}"><img src="../icon/mata_ine.svg" alt=""></td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -81,15 +89,21 @@ document.addEventListener("DOMContentLoaded", function () {
                         row.innerHTML = `
                             <td> ${patient.rhu_name} </td>
                             <td> ${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}</td>
-                            <td> ${patient.age} </td>
-                            <td> ${patient.gender} </td>
-                            <td> ${patient.birthdate} </td>
-                            <td> ${patient.guardian} </td>
-                            <td> ${patient.occupation} </td>
-                            <td> ${patient.check_date} </td>
-                            <td> ${patient.categories} </td>  <!-- Updated for multiple categories -->
-                            <td> ${patient.services} </td>    <!-- Updated for multiple services -->
-                            <td> <button class="patientAttachLabResult">Lab Result</button></td>
+                            <td> ${patient.age}</td>
+                            <td> ${patient.gender}</td>
+                            <td> ${patient.birthdate}</td>
+                            <td> ${patient.guardian}</td>
+                            <td> ${patient.occupation}</td>
+                            <td> ${patient.check_date}</td>
+                            <td class="lab-result" id="lab-result" onclick="popUp_button(this)"
+                            data-patient-id="${patient.patient_id}"
+                            data-full-name="${patient.first_name} ${patient.middle_name || ''} ${patient.last_name} ${patient.suffix}"
+                            data-check-date="${patient.check_date}"
+                            data-age="${patient.age}"
+                            data-gender="${patient.gender}"
+                            data-birthdate="${patient.birthdate}"
+                            data-occupation="${patient.occupation}"
+                            data-guardian="${patient.guardian}"><img src="../icon/mata_ine.svg" alt=""></td>
                         `;
                         tableBody.appendChild(row);
                     });
