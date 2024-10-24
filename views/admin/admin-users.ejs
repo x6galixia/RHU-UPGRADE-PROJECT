@@ -49,39 +49,32 @@
             <th></th>
             <th></th>
             <th></th>
-
           </tr>
         </thead>
-        <tbody>
-
-          <tr>
-            <td>Doctor</td>
-            <td>Adriane Garcia</td>
-
-          </tr>
-          <tr>
-            <td>Pharmacy</td>
-            <td>Eugene Gerna</td>
-          </tr>
-          <tr>
-            <td>Nurse</td>
-            <td>Joel Magalay Carpio</td>
-          </tr>
-          <tr>
-            <td>Pharmacist</td>
-            <td>John Rey Pagaspas</td>
-          </tr>
-          <tr>
-            <td>Doctor</td>
-            <td>Galicia Kim</td>
-          </tr>
-          <tr>
-            <td>Nurse</td>
-            <td>Jhondrex Alde</td>
-          </tr>
-
+        <tbody id="data-table">
+          <!-- Data will be inserted here -->
         </tbody>
       </table>
+      <script>
+        async function fetchData() {
+          const response = await fetch('/api/users');
+          const data = await response.json();
+          const dataTable = document.getElementById('data-table');
+      
+          data.forEach(user => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${user.user_type}</td>
+              <td>${user.firstname} ${user.middle_name} ${user.surname}</td>
+            `;
+            dataTable.appendChild(row);
+          });
+        }
+      
+        // Call fetchData when the page loads
+        window.onload = fetchData;
+      </script>
+      
       <div class="create-user-btn">
         <button id="create-user-btn" onclick="popUp_button(this)">CREATE USER</button>
       </div>

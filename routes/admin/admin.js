@@ -33,15 +33,27 @@ router.get("/sign-in", (req, res) => {
 })
 
 router.get("/admin-dashboard", (req, res) => {
+    
     res.render("admin/admin-dashboard", {
         user: req.user
     });
 });
 
-router.get("/admin-users", (req, res) => {
+router.get("/admin-users", (req, res) => {  
     res.render("admin/admin-users", {
         user: req.user
     });
+});
+
+
+router.get("/api/users", async (req, res) => {
+    try {
+        const result = await rhuPool.query('SELECT user_type, firstname, surname, middle_name FROM users');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
 });
 
 router.post("/admin/create-user/submit", async (req, res) => {
