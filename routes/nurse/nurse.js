@@ -164,7 +164,7 @@ router.get("/nurse/fetchScannedData", async (req, res) => {
 router.post("/nurse/admit-patient", async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
   console.log(value);
-  console.log(calculateAge(value.birthdate))
+  console.log(calculateAge(value.birthdate));
   const rhu_id = req.user.rhu_id;
 
   // Extract address components from completeAddress
@@ -205,36 +205,72 @@ router.post("/nurse/admit-patient", async (req, res) => {
       const medtechLabsResult = await rhuPool.query(medtechLabsQuery, [value.patient_id]);
 
       // Insert into patient_history
-      await rhuPool.query(`
+      const historyInsertQuery = `
         INSERT INTO patient_history (patient_id, rhu_id, last_name, first_name, middle_name, suffix, phone, gender, birthdate,
             house_no, street, barangay, city, province, occupation, email, philhealth_no, guardian, 
             age, check_date, height, weight, systolic, diastolic, temperature, heart_rate, 
-            respiratory_rate, bmi, comment, follow_date, diagnosis, findings, category, 
-            service, medicine, instruction, quantity, lab_result)
+            respiratory_rate, bmi, comment, follow_date)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
             $10, $11, $12, $13, $14, $15, $16, $17, $18,
-            $19, $20, $21, $22, $23, $24, $25, $26, 
-            $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38)
-      `, [
+            $19, $20, $21, $22, $23, $24, $25, $26, $27, $28)
+        RETURNING id
+      `;
+      const historyInsertResult = await rhuPool.query(historyInsertQuery, [
         patientData.patient_id, patientData.rhu_id, patientData.last_name, patientData.first_name,
         patientData.middle_name, patientData.suffix, patientData.phone, patientData.gender,
         patientData.birthdate, house_no, street, barangay, city, province, patientData.occupation,
         patientData.email, patientData.philhealth_no, patientData.guardian,
         calculateAge(value.birthdate), value.check_date, value.height, value.weight,
         value.systolic, value.diastolic, value.temperature, value.heart_rate,
-        value.respiratory_rate, value.bmi, value.comment,
-        value.follow_date, value.diagnosis, value.findings, value.category,
-        value.service, value.medicine, value.instruction, value.quantity, value.lab_result
+        value.respiratory_rate, value.bmi, value.comment, value.follow_date
       ]);
+      const historyId = historyInsertResult.rows[0].id;
+
+      // Move lab results to patient_lab_results
+      if (medtechLabsResult.rows.length > 0) {
+        for (let lab of medtechLabsResult.rows) {
+          await rhuPool.query(`
+            INSERT INTO patient_lab_results (history_id, lab_result)
+            VALUES ($1, $2)
+          `, [historyId, lab.lab_result]);
+        }
+      }
+
+      // Move prescriptions and services to patient_prescriptions and patient_services
+      if (doctorVisitsResult.rows.length > 0) {
+        for (let visit of doctorVisitsResult.rows) {
+          // Handle multiple prescriptions (medicine, instruction, quantity)
+          const medicines = visit.medicine ? visit.medicine.split(',') : [];
+          const instructions = visit.instruction ? visit.instruction.split(',') : [];
+          const quantities = visit.quantity ? visit.quantity.split(',') : [];
+
+          for (let i = 0; i < medicines.length; i++) {
+            await rhuPool.query(`
+              INSERT INTO patient_prescriptions (history_id, medicine, instruction, quantity)
+              VALUES ($1, $2, $3, $4)
+            `, [historyId, medicines[i], instructions[i], quantities[i]]);
+          }
+
+          // Handle multiple services (service, category)
+          const services = visit.service ? visit.service.split(',') : [];
+          const categories = visit.category ? visit.category.split(',') : [];
+
+          for (let i = 0; i < services.length; i++) {
+            await rhuPool.query(`
+              INSERT INTO patient_services (history_id, service, category)
+              VALUES ($1, $2, $3)
+            `, [historyId, services[i], categories[i]]);
+          }
+        }
+      }
 
       // Delete the records from the original tables
       await rhuPool.query(`DELETE FROM nurse_checks WHERE patient_id = $1`, [value.patient_id]);
       await rhuPool.query(`DELETE FROM doctor_visits WHERE patient_id = $1`, [value.patient_id]);
       await rhuPool.query(`DELETE FROM medtech_labs WHERE patient_id = $1`, [value.patient_id]);
 
-
-      // Insert new data into nurse_checks, doctor_visits, and medtech_labs
-      if (value.age !== undefined) { // Check if age is provided
+      // Insert new data into nurse_checks, doctor_visits, and medtech_labs if provided
+      if (value.age !== undefined) {
         await rhuPool.query(`
           INSERT INTO nurse_checks (patient_id, age, check_date, height, weight, systolic, diastolic, temperature,
               heart_rate, respiratory_rate, bmi, comment)
@@ -247,7 +283,7 @@ router.post("/nurse/admit-patient", async (req, res) => {
         ]);
       }
 
-      if (value.diagnosis) { // Check if diagnosis is provided
+      if (value.diagnosis) {
         await rhuPool.query(`
           INSERT INTO doctor_visits (patient_id, follow_date, diagnosis, findings, category, service, medicine, instruction, quantity)
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
@@ -258,18 +294,21 @@ router.post("/nurse/admit-patient", async (req, res) => {
         ]);
       }
 
-      if (value.lab_result) { // Check if lab_result is provided
-        await rhuPool.query(`
-          INSERT INTO medtech_labs (patient_id, lab_result)
-          VALUES ($1, $2)
-        `, [
-          value.patient_id, value.lab_result
-        ]);
+      if (value.lab_result) {
+        const labResults = value.lab_result.split(','); // Multiple lab results
+        for (let labResult of labResults) {
+          await rhuPool.query(`
+            INSERT INTO medtech_labs (patient_id, lab_result)
+            VALUES ($1, $2)
+          `, [
+            value.patient_id, labResult
+          ]);
+        }
       }
       req.flash("submit", "Submitted Successfully");
       return res.redirect("/nurse/patient-registration");
     } else {
-      // Patient does not exist, insert new patient and vital signs
+      // Insert new patient and nurse checks if patient does not exist
       await rhuPool.query(`
         INSERT INTO patients (patient_id, rhu_id, last_name, first_name, middle_name, suffix, phone, gender, birthdate,
             house_no, street, barangay, city, province, occupation, email, philhealth_no, guardian)
@@ -287,19 +326,19 @@ router.post("/nurse/admit-patient", async (req, res) => {
             heart_rate, respiratory_rate, bmi, comment)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       `, [
-        value.patient_id, calculateAge(value.birthdate), value.check_date,
+        value.patient_id, value.age, value.check_date,
         value.height, value.weight, value.systolic, value.diastolic,
         value.temperature, value.heart_rate, value.respiratory_rate,
         value.bmi, value.comment
       ]);
-    }
-    req.flash("submit", "Submitted Successfully");
-    return res.redirect("/nurse/patient-registration");
-  } catch (err) {
-    console.error("Error: ", err);
-    res.status(500).send("Server error");
-  }
 
+      req.flash("submit", "Submitted Successfully");
+      return res.redirect("/nurse/patient-registration");
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
 });
 
 router.delete("/logout", (req, res) => {

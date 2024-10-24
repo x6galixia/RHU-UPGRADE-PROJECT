@@ -125,16 +125,30 @@ CREATE TABLE patient_history (
     respiratory_rate INT NULL,
     bmi DECIMAL(5, 2) NULL,
     comment TEXT NULL,
-    follow_date DATE NULL,
-    diagnosis TEXT NULL,
-    findings TEXT NULL,
-    category TEXT NULL,
-    service TEXT NULL,
-    medicine TEXT NULL,
-    instruction TEXT NULL,
-    quantity INT NULL,
-    lab_result TEXT NULL
+    follow_date DATE NULL
 );
+
+CREATE TABLE patient_lab_results (
+    id SERIAL PRIMARY KEY NOT NULL,
+    history_id INTEGER REFERENCES patient_history(id) ON DELETE CASCADE,
+    lab_result TEXT NOT NULL
+);
+
+CREATE TABLE patient_prescriptions (
+    id SERIAL PRIMARY KEY NOT NULL,
+    history_id INTEGER REFERENCES patient_history(id) ON DELETE CASCADE,
+    medicine TEXT NOT NULL,
+    instruction TEXT NOT NULL,
+    quantity INT NOT NULL
+);
+
+CREATE TABLE patient_services (
+    id SERIAL PRIMARY KEY NOT NULL,
+    history_id INTEGER REFERENCES patient_history(id) ON DELETE CASCADE,
+    service TEXT NOT NULL,
+    category TEXT NOT NULL
+);
+
 
 //---------------------------------------------------------------------------------//
 CREATE TABLE rhu (
