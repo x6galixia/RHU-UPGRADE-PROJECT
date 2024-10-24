@@ -401,13 +401,21 @@ input[type="checkbox"] {
   min-width: 240px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1;
-  border-radius: 4px;
+  border-radius: 5px;
   overflow: hidden;
   right: 20px;
 }
 
 .logout-drop p {
   font-size: 16px;
+
+}
+.logout-drop button{
+  letter-spacing: 0px !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  text-align: start;
+  text-wrap: wrap;
 }
 
 .logout-drop hr {
@@ -421,9 +429,13 @@ input[type="checkbox"] {
   display: block;
 }
 
-.logout-drop a:hover {
+#log-butt:hover {
   background-color: #c2c2c2c0;
   color: rgb(0, 0, 0);
+  border-top-left-radius: 0% !important;
+  border-top-right-radius: 0% !important;
+  border-bottom-left-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
 }
 
 .sectors {
@@ -440,7 +452,7 @@ input[type="checkbox"] {
   color: #696969;
 }
 
-.fas {
+.fa {
   margin-right: 20px;
 }
 
