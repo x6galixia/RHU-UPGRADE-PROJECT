@@ -8,8 +8,10 @@ const router = express.Router();
 const pharmacyPool = require("../../models/pharmacydb");
 const { calculateAge, formatDate } = require("../../public/js/global/functions");
 const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
+const methodOverride = require("method-override");
 
 router.use(setUserData);
+router.use(methodOverride("_method"));
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -79,6 +81,7 @@ router.get("/pharmacy-inventory", ensureAuthenticated, checkUserType("Pharmacist
     if (isAjax) {
       return res.json({
         getInventoryList,
+        user: req.user,
         currentPage: page,
         totalPages,
         limit
@@ -87,6 +90,7 @@ router.get("/pharmacy-inventory", ensureAuthenticated, checkUserType("Pharmacist
 
     res.render("pharmacy/inventory", {
       getInventoryList,
+      user: req.user,
       currentPage: page,
       totalPages,
       limit
@@ -145,6 +149,7 @@ router.get("/pharmacy-records", ensureAuthenticated, checkUserType("Pharmacist")
     if (isAjax) {
       return res.json({
         getBeneficiaryList,
+        user: req.user,
         currentPage: page,
         totalPages,
         limit
@@ -153,6 +158,7 @@ router.get("/pharmacy-records", ensureAuthenticated, checkUserType("Pharmacist")
 
     res.render("pharmacy/beneficiary-records", {
       getBeneficiaryList,
+      user: req.user,
       currentPage: page,
       totalPages,
       limit
@@ -231,19 +237,24 @@ router.get("/pharmacy-records/beneficiary/:id", ensureAuthenticated, checkUserTy
 });
 
 router.get("/pharmacy-dispense-request", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
-  res.render("pharmacy/requests-for-dispense");
+  res.render("pharmacy/requests-for-dispense",
+    {user: req.user}
+  );
 });
 
 router.get("/pharmacy-index-form", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
-  res.render("pharmacy/beneficiary-index-form");
+  res.render("pharmacy/beneficiary-index-form",
+    {user: req.user});
 });
 
 router.get("/pharmacy-request", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
-  res.render("pharmacy/pharmacy-request");
+  res.render("pharmacy/pharmacy-request",
+    {user: req.user});
 });
 
 router.get("/pharmacy-trends", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
-  res.render("pharmacy/trends");
+  res.render("pharmacy/trends",
+    {user: req.user});
 });
 
 router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
@@ -432,6 +443,15 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
     console.error('Error deleting beneficiary:', error);
     res.status(500).json({ message: 'Failed to delete the beneficiary.' });
   }
+});
+
+router.delete("/logout", (req, res) => {
+  req.logOut((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
 });
 
 async function fetchInventoryList(page, limit, rhu_id) {

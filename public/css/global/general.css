@@ -126,6 +126,16 @@ button {
   background-color: #FF007F;
 }
 
+#log-butt {
+  width: 100%;
+  background-color: transparent;
+  color: black;
+}
+
+#log-butt:hover {
+  height: fit-content;
+}
+
 button:hover {
   width: 212px;
   height: 42px;
@@ -558,7 +568,8 @@ input[type="checkbox"] {
   color: white;
   /* This makes the div a circle */
 }
-.date-time{
+
+.date-time {
   color: white;
   display: flex;
   flex-direction: row;
@@ -566,23 +577,27 @@ input[type="checkbox"] {
   margin: 0;
   gap: 30px;
 }
-.date-time span{
+
+.date-time span {
   color: white;
 }
-.date-time i{
+
+.date-time i {
   margin-right: 10px;
 }
 
-.category-fields select{
+.category-fields select {
   width: 350px;
 
 }
-.category-fields{
+
+.category-fields {
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
 }
-.add-btn{
+
+.add-btn {
   margin-top: -1em;
 }
 

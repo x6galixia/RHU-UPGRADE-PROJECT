@@ -1,10 +1,10 @@
 function setUserData(req, res, next) {
     if (req.isAuthenticated()) {
-        res.locals.rhu_id = req.user.rhu_id;
-        res.locals.firstname = req.user.firstname;
-        res.locals.surname = req.user.surname;
-        res.locals.middle_initial = req.user.middle_name;
-        res.locals.profession = req.user.profession;
+        res.locals.rhu_id = req.user.rhu_id || '0000';
+        res.locals.firstname = req.user.firstname || 'Admin';
+        res.locals.surname = req.user.surname || 'Admin';
+        res.locals.middle_initial = req.user.middle_name || 'Admin';
+        res.locals.profession = req.user.profession || 'Admin';
     } else {
         res.locals.rhu_id = null;
         res.locals.firstname = null;

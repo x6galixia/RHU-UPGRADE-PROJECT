@@ -5,11 +5,7 @@
   <meta charset="UTF-8" />
   <link rel="shortcut icon" type="image/png" href="" />
   <title>HealthSync</title>
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="../img/global/healthvector.png"
-    />
+  <link rel="shortcut icon" type="image/png" href="../img/global/healthvector.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../css/global/general.css" />
   <link rel="stylesheet" href="../css/local/index-form.css" />
@@ -17,39 +13,206 @@
 </head>
 
 <body>
-  <%- include("../includes/header.ejs")  %>
-  <h1 class="headings">DOCTOR'S LABORATORY REQUEST</h1>
-  <main>
-    <div class="buttons">
-      <div class="search">
-        <input type="text" placeholder="Search..." />
-        <img src="../icon/search.svg" alt="" />
+  <%- include("../includes/header.ejs") %>
+    <h1 class="headings">DOCTOR'S LABORATORY REQUEST</h1>
+    <main>
+      <div class="buttons">
+        <div class="search">
+          <input type="text" id="searchInput" placeholder="Search..." aria-label="Search" />
+          <img src="../icon/search.svg" alt="Search Icon" />
+        </div>
+        <div class="recently">
+          <button>RECENTLY ADDED</button>
+        </div>
       </div>
-      <div class="recently">
-        <button>RECENTLY ADDED</button>
-      </div>
-    </div>
 
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>PATIENT NAME</th>
-            <th>AGE</th>
-            <th>SEX</th>
-            <th>BIRTHDATE</th>
-            <th>PARENT</th>
-            <th>OCCUPATION</th>
-            <th>DATE</th>
-            <th>CATEGORIES</th>
-            <th>SERVICES</th>
-            <th>LABORATORY RESULT</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </main>
+      <div class="table-container">
+        <div id="loadingSpinner" style="display: none">Loading...</div>
+        <table>
+          <thead>
+            <tr>
+              <th>RHU</th>
+              <th>PATIENT NAME</th>
+              <th>AGE</th>
+              <th>SEX</th>
+              <th>BIRTHDATE</th>
+              <th>PARENT</th>
+              <th>OCCUPATION</th>
+              <th>DATE</th>
+              <th>CATEGORIES</th>
+              <th>SERVICES</th>
+              <th>LABORATORY RESULT</th>
+            </tr>
+          </thead>
+          <tbody id="patientsTableBody"></tbody>
+        </table>
+        <nav aria-label="Page navigation" id="paginationNav">
+          <% if (currentPage> 1) { %>
+            <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
+            <% } %>
+              <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
+                <% } %>
+        </nav>
+      </div>
+      <!-- pop up for request lab -->
+      <form action="/doctor/request-laboratory/send" method="POST">
+        <!-- pop up for request lab -->
+        <div class="pop-up" id="lab-res">
+          <div class="head row just-bet">
+            <div class="row gap">
+              <img src="../icon/bottle.svg" />
+              <h2>Laboratory Request</h2>
+            </div>
+          </div>
+          <!------Initially hidden just for submitting the form-->
+          <input type="hidden" name="patient_id" id="req_patient_id">
+
+          <div class="info col gap">
+            <div class="row gap">
+              <div class="row grow">
+                <label for="">Name:</label>
+                <input type="text" id="req_full_name" class="under-line-input" />
+              </div>
+              <div class="row">
+                <label for="">Date:</label>
+                <input type="date" id="req_check_date" name="check_date" class="under-line-input" />
+              </div>
+            </div>
+            <div class="row gap">
+              <div class="row">
+                <label for="">Age:</label>
+                <input type="number" id="req_age" name="age" class="under-line-input" />
+              </div>
+              <div class="row">
+                <label for="">Sex:</label>
+                <input type="text" id="req_gender" name="gender" class="under-line-input" />
+              </div>
+              <div class="row">
+                <label for="">Birth:</label>
+                <input type="date" id="req_birthdate" name="birthdate" class="under-line-input" />
+              </div>
+            </div>
+            <div class="row gap">
+              <div class="row">
+                <label for="">Occupation:</label>
+                <input type="text" id="req_occupation" name="occupation" class="under-line-input" />
+              </div>
+              <div class="row grow">
+                <label for="">Parent/s:</label>
+                <input type="text" id="req_guardian" name="guardian" class="under-line-input" />
+              </div>
+            </div>
+            <hr />
+            <div class="services-and-images">
+              <div class="request-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Service</th>
+                      <th>Category</th>
+                    </tr>
+                  </thead>
+                  <tbody class="list-of-request">
+                    <tr>
+                      <td>asd</td>
+                      <td>asd</td>
+                    </tr>
+                    <tr>
+                      <td>asd</td>
+                      <td>asd</td>
+                    </tr>
+                    <tr>
+                      <td>asd</td>
+                      <td>asd</td>
+                    </tr>
+                    <tr>
+                      <td>asd</td>
+                      <td>asd</td>
+                    </tr>
+                    <tr>
+                      <td>asd</td>
+                      <td>asd</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="request-image">
+                <div class="image-section">
+                  <div id="prev-btn"><img src="../icon/arrow-left.svg" alt=""></div>
+                  <div class="main-image">
+                    <img id="displayedImage" src="../img/local/jr.png" alt="">
+                  </div>
+                  <div id="next-btn"><img src="../icon/arrow-right.svg" alt=""></div>
+                </div>
+                <input type="file" id="fileInput" style="display: none;" multiple>
+                <button type="button" class="button-bordered" id="uploadBtn">
+                  <img src="../icon/folder-icon.svg" alt="">
+                  Upload file
+                </button>
+              </div>
+            </div>
+            <div class="btn-l">
+              <button type="button" class="close_popUp">Cancel</button>
+              <button>Submit</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </main>
+    <script src="../../js/local/medtech-labs/labs-api.js"></script>
+    <script src="../../js/global/pop-up.js"></script>
+    <script>
+      const fileInput = document.getElementById('fileInput');
+      const uploadBtn = document.getElementById('uploadBtn');
+      const displayedImage = document.getElementById('displayedImage');
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+
+      let uploadedFiles = [];
+      let currentIndex = 0;
+
+      uploadBtn.addEventListener('click', () => {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener('change', function () {
+        const files = Array.from(fileInput.files);
+
+        if (files.length > 0) {
+          uploadedFiles = files;
+          currentIndex = 0;
+          displayImage(currentIndex);
+        }
+      });
+
+      function displayImage(index) {
+        const file = uploadedFiles[index];
+
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            displayedImage.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+
+      prevBtn.addEventListener('click', function () {
+        if (uploadedFiles.length > 0) {
+          currentIndex = (currentIndex === 0) ? uploadedFiles.length - 1 : currentIndex - 1;
+          displayImage(currentIndex);
+        }
+      });
+
+      nextBtn.addEventListener('click', function () {
+        if (uploadedFiles.length > 0) {
+          currentIndex = (currentIndex === uploadedFiles.length - 1) ? 0 : currentIndex + 1;
+          displayImage(currentIndex);
+        }
+      });
+
+    </script>
 </body>
 
 </html>
