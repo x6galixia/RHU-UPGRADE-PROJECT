@@ -437,6 +437,9 @@ input[type="checkbox"] {
   border-bottom-left-radius: 4px !important;
   border-bottom-right-radius: 4px !important;
 }
+#log-butt{
+  height: auto !important;
+}
 
 .sectors {
   display: flex;

@@ -114,7 +114,7 @@
                   <tbody class="list-of-request" id="categoryServiceTableBody">
                   </tbody>
                 </table>
-                
+
               </div>
               <div class="request-image">
                 <div class="image-section">
@@ -140,11 +140,23 @@
       </form>
 
       <% if (messages.submit) { %>
-        <%= messages.submit%>
+        <div class="overlay visible" id="susOo"></div>
+        <div class="visible1" id="submit_prompt">
+          <img src="../icon/check.svg" alt="">
+          <div>
+            <h2>
+              <%= messages.submit%>
+            </h2>
+            <main>
+              <button type="button" class="button-green" id="close_message" onclick="yawa()">OK</button>
+            </main>
+          </div>
+        </div>
         <% } %>
 
     </main>
     <script src="../../js/local/medtech-labs/labs-api.js"></script>
+    <script src="../../js/global/client-side-functions.js"></script>
     <script src="../../js/global/pop-up.js"></script>
     <script>
       const fileInput = document.getElementById('fileInput');
