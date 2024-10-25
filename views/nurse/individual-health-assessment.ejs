@@ -428,23 +428,30 @@
               <h2 class="form-header">PAST MEDICAL HISTORY</h2>
             </div>
             <div class="large-margine right-info">
-              <div class="row">
-                <div class="col">
-                  <label for="">Allergy</label>
+                <div class="allergy-css">
+                  <label> <input id="allergyContext1" type="checkbox"> Allergy</label>
+                  <div class=" opttt" id="opt">
+                    <label><input type="radio"> Sea Food</label>
+                    <label><input type="radio"> Medicine</label>
+                    <label><input type="radio"> Insects</label>
+                  </div>
+                </div>
+              <div class="grid-two-c">
+                <div class="col text-box-g" style="position: relative;">
                   <label for=""><input type="checkbox"> Diabetes</label>
                   <label for=""><input type="checkbox"> Asthma</label>
                   <label for=""><input type="checkbox"> TB Resp.</label>
                   <label for=""><input type="checkbox"> TB Resp.</label>
                   <label for=""><input type="checkbox"> Pneumonia</label>
                 </div>
-                <div class="col">
+                <div class="col text-box-g">
                   <label for=""><input type="checkbox"> UTI</label>
                   <label for=""><input type="checkbox"> Thyroid</label>
                   <label for=""><input type="checkbox"> Peptic Ulcer</label>
                   <label for=""><input type="checkbox"> Hypertension</label>
-                  <div class="row">
+                  <div class="grid-two-c">
                     <label for=""><input type="checkbox"> Cancer</label>
-                    <input type="text" class="underlineInputs m grow" placeholder="(Body part)">
+                    <input type="text" class="underlineInputs m grow hay" placeholder="(Body part)">
                   </div>
                 </div>
               </div>
@@ -471,23 +478,30 @@
               <h2 class="form-header">FAMILY MEDICAL HISTORY</h2>
             </div>
             <div class="large-margine right-info">
-              <div class="row">
-                <div class="col">
-                  <label for="">Allergy</label>
+              <div class="allergy-css">
+                <label> <input id="allergyContext2" type="checkbox"> Allergy</label>
+                <div class=" opttt" id="opt2">
+                  <label><input type="radio"> Sea Food</label>
+                  <label><input type="radio"> Medicine</label>
+                  <label><input type="radio"> Insects</label>
+                </div>
+              </div>
+              <div class="grid-two-c">
+                <div class="col text-box-g" style="position: relative;">
                   <label for=""><input type="checkbox"> Diabetes</label>
                   <label for=""><input type="checkbox"> Asthma</label>
                   <label for=""><input type="checkbox"> TB Resp.</label>
                   <label for=""><input type="checkbox"> TB Resp.</label>
                   <label for=""><input type="checkbox"> Pneumonia</label>
                 </div>
-                <div class="col">
+                <div class="col text-box-g">
                   <label for=""><input type="checkbox"> UTI</label>
                   <label for=""><input type="checkbox"> Thyroid</label>
                   <label for=""><input type="checkbox"> Peptic Ulcer</label>
                   <label for=""><input type="checkbox"> Hypertension</label>
-                  <div class="row">
+                  <div class="grid-two-c">
                     <label for=""><input type="checkbox"> Cancer</label>
-                    <input type="text" class="underlineInputs m grow" placeholder="(Body part)">
+                    <input type="text" class="underlineInputs m grow hay" placeholder="(Body part)">
                   </div>
                 </div>
               </div>
@@ -678,7 +692,41 @@
           </div>
         </div>
       </form>
-    </main>
+    </main> 
+    <script>
+      var allergyChechbox = document.getElementById('allergyContext1');
+      var allergyChechbox2 = document.getElementById('allergyContext2');
+      allergyChechbox.addEventListener('change', () => {
+        var op = document.getElementById('opt');
+        if (allergyChechbox.checked) {
+          console.log ('haha');
+          op.style.display = 'block';
+        }else{
+          op.style.display = 'none';
+        }
+      });
+      allergyChechbox2.addEventListener('change', () => {
+        var op = document.getElementById('opt2');
+        if (allergyChechbox2.checked) {
+          console.log ('haha');
+          op.style.display = 'block';
+        }else{
+          op.style.display = 'none';
+        }
+      });
+
+      let lastChecked = null;
+      document.querySelectorAll(".opttt input[type='radio']").forEach(function(radio) {
+        radio.addEventListener("click", function() {
+          if (this === lastChecked) {
+            this.checked = false; // Uncheck if the same radio is clicked again
+            lastChecked = null;   // Reset last checked
+          } else {
+            lastChecked = this;   // Update last checked radio button
+          }
+        });
+      });
+    </script>
 </body>
 
 </html>
