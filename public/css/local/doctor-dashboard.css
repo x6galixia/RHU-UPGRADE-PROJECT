@@ -285,3 +285,8 @@ details {
     user-select: none;
     cursor: pointer;
 }
+
+#reqLab {
+    max-height: 80%;
+    overflow: auto;
+}
