@@ -41,6 +41,7 @@ CREATE TABLE patients (
 CREATE TABLE nurse_checks (
     id SERIAL PRIMARY KEY NOT NULL,
     patient_id VARCHAR(255) REFERENCES patients(patient_id) ON DELETE CASCADE,
+    nurse_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     age INT NULL,
     check_date DATE NULL DEFAULT CURRENT_DATE,
     height INT NULL,
@@ -51,34 +52,13 @@ CREATE TABLE nurse_checks (
     heart_rate INT NULL,
     respiratory_rate INT NULL,
     bmi DECIMAL(5, 2) NULL,
-    comment TEXT NULL,
-    nurse_name VARCHAR(255)
+    comment TEXT NULL 
 );
 
 CREATE TABLE doctor_visits (
     id SERIAL PRIMARY KEY NOT NULL,
     patient_id VARCHAR(255) REFERENCES patients(patient_id) ON DELETE CASCADE,
     follow_date DATE NULL,
-    diagnosis TEXT NULL,
-    findings TEXT NULL,
-    category TEXT NULL,
-    service TEXT NULL,
-    medicine TEXT NULL,
-    instruction TEXT NULL,
-    quantity INT NULL
-);
-
-CREATE TABLE patient_prescription_data(
-    patient_prescription_id VARCHAR(255) PRIMARY KEY NOT NULL,
-    patient_id VARCHAR(255) REFERENCES patients(patient_id) ON DELETE CASCADE,
-    rhu_id INTEGER REFERENCES rhu(rhu_id) ON DELETE CASCADE,
-    reciever VARCHAR(255) NULL,
-    relationship_with_patient VARCHAR(255) NULL
-);
-
-CREATE TABLE prescription (
-    id SERIAL PRIMARY KEY NOT NULL,
-    patient_prescription_id VARCHAR(255) REFERENCES patient_prescription_data(patient_prescription_id) ON DELETE CASCADE,
     diagnosis TEXT NULL,
     findings TEXT NULL,
     category TEXT NULL,
@@ -149,7 +129,27 @@ CREATE TABLE patient_services (
     category TEXT NOT NULL
 );
 
+--FOR PRESCRIPTION ONLY--
+CREATE TABLE patient_prescription_data(
+    patient_prescription_id VARCHAR(255) PRIMARY KEY NOT NULL,
+    patient_id VARCHAR(255) REFERENCES patients(patient_id) ON DELETE CASCADE,
+    rhu_id INTEGER REFERENCES rhu(rhu_id) ON DELETE CASCADE,
+    reciever VARCHAR(255) NULL,
+    relationship_with_patient VARCHAR(255) NULL
+);
 
+CREATE TABLE prescription (
+    id SERIAL PRIMARY KEY NOT NULL,
+    patient_prescription_id VARCHAR(255) REFERENCES patient_prescription_data(patient_prescription_id) ON DELETE CASCADE,
+    doctor_name VARCHAR(255) NULL,
+    diagnosis TEXT NULL,
+    findings TEXT NULL,
+    category TEXT NULL,
+    service TEXT NULL,
+    medicine TEXT NULL,
+    instruction TEXT NULL,
+    quantity INT NULL
+);
 //---------------------------------------------------------------------------------//
 CREATE TABLE rhu (
     rhu_id SERIAL PRIMARY KEY,
