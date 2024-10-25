@@ -14,6 +14,7 @@
   <%- include("../includes/header.ejs") %>
     <h1 class="headings">INDIVIDUAL HEALTH ASSESSMENT</h1>
     <main>
+      <button class="buton"><img src="../icon/arrow-left2.svg" alt="" class="close_popUp" /></button>
       <input type="text" id="qrInput" required style="opacity: 0; position: fixed; transform: translate(-50%, -50%),;">
       <form action="" method="" class="container">
         <!-- Left na lalagyan -->
@@ -172,8 +173,8 @@
 
           <!-- Above 25 years old small-margineuestionaire -->
           <div>
-            <div style="margin-bottom: 20px;">
-              <p>small-margineuestionaires for <u>25 years old & above only:</u></p>
+            <div style="margin-bottom: 20px;" class="large-margine">
+              <p>Questionnaires for <u>25 years old & above only:</u></p>
             </div>
             <div class="ulo">
               <h2 class="form-header">NCD HIGH RISK ASSSESMENT</h2>
@@ -326,8 +327,8 @@
             <!-- small-margineuestionnaire to Determine Probable Agina, Heart Attack, Stroke or Transient Ischemic Attack: -->
             <div style="margin-top: 50px;">
               <div style="text-align: center;">
-                <h2><u>small-margineuestionnaire to Determine Probable Agina, Heart Attack, Stroke or Transient Ischemic
-                    Attack:</u></h2>
+                <h2><u>Questionnaire to Determine Probable Agina, Heart Attack,
+                  Stroke or Transient Ischemic Attack:</u></h2>
               </div>
               <div class="col large-margine">
                 <p>Angina or Heart attack</p>
@@ -688,7 +689,7 @@
                 <input type="text" class="underlineInputs m grow">
               </div>
             </div>
-
+            <button class="butt">Submit</button>
           </div>
         </div>
       </form>
@@ -705,10 +706,11 @@
           op.style.display = 'none';
         }
       });
+
       allergyChechbox2.addEventListener('change', () => {
         var op = document.getElementById('opt2');
         if (allergyChechbox2.checked) {
-          console.log ('haha');
+          console.log ('gago');
           op.style.display = 'block';
         }else{
           op.style.display = 'none';

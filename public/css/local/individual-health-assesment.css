@@ -32,7 +32,6 @@
     flex-wrap: wrap;
 }
 
-
 .grow {
     flex: 1;
 }
@@ -173,6 +172,26 @@ input[type="checkbox"]{
  input[type="radio"] {
     height: auto !important;
     box-shadow: none;
+ }
+
+
+ .buton {
+    height: auto;
+    width: auto !important;
+    padding: .5em 2em;
+    background-color: var(--pink-color);
+    margin-bottom: 20px;
+
+ }
+
+ .buton:hover {
+    height: auto;
+    width: auto;
+ }
+
+ .butt {
+    background-color: var(--green-color);
+    margin: 28px 0;
  }
 
 
