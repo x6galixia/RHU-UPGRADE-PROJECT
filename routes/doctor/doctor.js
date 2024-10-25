@@ -338,6 +338,7 @@ function formatPatientData(rows) {
     check_date: formatDate(row.check_date),
     birthdate: formatDate(row.birthdate),
     follow_date: formatDate(row.follow_date),
+    age: calculateAge(row.birthdate)
   }));
 }
 
