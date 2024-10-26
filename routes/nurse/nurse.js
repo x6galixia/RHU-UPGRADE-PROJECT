@@ -483,7 +483,6 @@ router.delete('/nurse/patient-registration/delete/:id', async (req, res) => {
   }
 });
 
-
 router.delete("/logout", (req, res) => {
   req.logOut((err) => {
     if (err) {
@@ -525,23 +524,24 @@ async function fetchPatientList(page, limit, rhuId) {
           p.first_name,
           MAX(nc.check_date) AS check_date,
           r.rhu_name,
-          nc.nurse_name AS nurse
+          CONCAT(u.firstname, ' ', u.surname) AS nurse_name
         FROM patients p
         LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
         LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
+        LEFT JOIN users u ON nc.nurse_id = u.id
         WHERE r.rhu_id = $3
-        GROUP BY p.patient_id, r.rhu_name, nc.nurse_name
+        GROUP BY p.patient_id, r.rhu_name, u.firstname, u.surname
         ORDER BY p.first_name
         LIMIT $1 OFFSET $2
       `;
       queryParams.push(rhuId);
 
-      // Count query for total items
       countQuery = `
         SELECT COUNT(*) AS total
         FROM patients p
         LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
         LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
+        LEFT JOIN users u ON nc.nurse_id = u.id
         WHERE r.rhu_id = $1
       `;
     } else {
@@ -553,28 +553,35 @@ async function fetchPatientList(page, limit, rhuId) {
           p.first_name,
           MAX(nc.check_date) AS check_date,
           r.rhu_name,
-          nc.nurse_name AS nurse
+          CONCAT(u.firstname, ' ', u.surname) AS nurse_name
         FROM patients p
         LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
         LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
-        GROUP BY p.patient_id, r.rhu_name, nc.nurse_name
+        LEFT JOIN users u ON nc.nurse_id = u.id
+        GROUP BY p.patient_id, r.rhu_name, u.firstname, u.surname
         ORDER BY p.first_name
         LIMIT $1 OFFSET $2
       `;
 
-      // Count query for total items
       countQuery = `
         SELECT COUNT(*) AS total
         FROM patients p
         LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
         LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
+        LEFT JOIN users u ON nc.nurse_id = u.id
       `;
     }
 
     const patientListResult = await rhuPool.query(query, queryParams);
     const countResult = await rhuPool.query(countQuery, rhuId ? [rhuId] : []);
 
-    const formattedPatientList = patientListResult.rows.map(formatPatientData);
+    // Adjust mapping here
+    const formattedPatientList = patientListResult.rows.map(patient => ({
+      ...patient,
+      check_date: formatDate(patient.check_date),
+      nurse_name: patient.nurse_name || 'N/A', // Use nurse_name directly
+    }));
+
     const totalItems = parseInt(countResult.rows[0].total, 10);
     const totalPages = Math.ceil(totalItems / limit);
 
@@ -587,6 +594,7 @@ async function fetchPatientList(page, limit, rhuId) {
     throw new Error("Database query failed");
   }
 }
+
 
 function formatPatientData(patient) {
   return {
