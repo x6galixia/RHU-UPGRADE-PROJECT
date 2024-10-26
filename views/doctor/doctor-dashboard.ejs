@@ -302,7 +302,7 @@
           </div>
         </div>
       </form>
-      
+
       <form action="/doctor/findings-patient/send" method="POST">
         <!-- pop up for findings -->
         <div class="pop-up" id="findings">
@@ -432,7 +432,6 @@
         </div>
 
       </div>
-
       <!-- Full-screen image -->
       <div id="imageModal" class="modal">
         <span id="closeModal" class="close">&times;</span>
@@ -440,7 +439,7 @@
       </div>
 
       <!-- pop up for prescribe -->
-      <div class="pop-up" id="prescribed">
+      <form action="/doctor/prescribe-patient/send" method="POST" class="pop-up" id="prescribed">
         <div class="head row just-bet">
           <div class="row gap">
             <img src="../icon/Rx.svg" />
@@ -450,40 +449,40 @@
             <img src="../icon/closing.svg" alt="" class="close_popUp" />
           </div>
         </div>
-
+        <input type="hidden" name="patient_id" id="pres_patient_id">
         <div class="info col gap">
           <div class="row gap">
             <div class="row grow">
               <label for="">Name:</label>
-              <input type="text" id="pres_full_name" class="under-line-input" />
+              <input type="text" id="pres_full_name" class="under-line-input" readonly />
             </div>
             <div class="row">
               <label for="">Date:</label>
-              <input type="date" id="pres_check_date" class="under-line-input" />
+              <input type="date" id="pres_check_date" class="under-line-input" readonly />
             </div>
           </div>
           <div class="row gap">
             <div class="row">
               <label for="">Age:</label>
-              <input type="number" id="pres_age" class="under-line-input" />
+              <input type="number" id="pres_age" class="under-line-input" readonly />
             </div>
             <div class="row">
               <label for="">Sex:</label>
-              <input type="text" id="pres_gender" class="under-line-input" />
+              <input type="text" id="pres_gender" class="under-line-input" readonly />
             </div>
             <div class="row">
               <label for="">Birth:</label>
-              <input type="date" id="pres_birthdate" class="under-line-input" />
+              <input type="date" id="pres_birthdate" class="under-line-input" readonly />
             </div>
           </div>
           <div class="row gap">
             <div class="row">
               <label for="">Occupation:</label>
-              <input type="text" id="pres_occupation" class="under-line-input" />
+              <input type="text" id="pres_occupation" class="under-line-input" readonly />
             </div>
             <div class="row grow">
               <label for="">Parent/s:</label>
-              <input type="text" id="pres_guardian" class="under-line-input" />
+              <input type="text" id="pres_guardian" class="under-line-input" readonly />
             </div>
           </div>
           <hr />
@@ -492,41 +491,41 @@
             <div class="row gap just-bet">
               <div class="col grow">
                 <label for="">Medicine:</label>
-                <input id="medicine" type="text" name="medicine" />
+                <input id="medicine" type="text" name="medicine" required />
                 <div class="suggestionContainer">
                   <div id="suggestions"></div>
                 </div>
               </div>
               <div class="col grow">
                 <label for="">Instruction:</label>
-                <input type="text" name="instruction" />
+                <input type="text" name="instruction" required />
               </div>
               <div class="col grow">
                 <label for="">Quantity:</label>
-                <input type="number" name="quantity" />
+                <input type="number" name="quantity" required />
               </div>
             </div>
             <div class="row gap just-bet">
               <div class="col grow">
                 <label for="">Receiver:</label>
-                <input type="text" name="receiver" />
+                <input type="text" name="receiver" required />
               </div>
               <div class="col grow">
                 <label for="">Relationship:</label>
-                <input type="text" name="relationship" />
+                <input type="text" name="relationship" required />
               </div>
               <div class="col grow">
                 <label for="">Doctor:</label>
-                <input type="number" name="doctor" />
+                <input type="text" name="doctor" required />
               </div>
             </div>
           </div>
           <div class="btn-l">
             <button type="button" onclick="printingReqReseta('resetaPrint')">Print</button>
-            <button>Submit</button>
+            <button type="submit">Submit</button>
           </div>
         </div>
-      </div>
+      </form>
 
       <div class="overlay"></div>
 
@@ -626,9 +625,41 @@
           <p><strong>Rural Health Physician</strong></p>
         </div>
       </div>
+
+      <% if (messages.success) { %>
+        <div class="overlay visible" id="susOo"></div>
+        <div class="visible1" id="submit_prompt">
+          <img src="../icon/check.svg" alt="">
+          <div>
+            <h2>
+              <%= messages.success%>
+            </h2>
+            <main>
+              <button type="button" class="button-green" id="close_message" onclick="yawa()">OK</button>
+            </main>
+          </div>
+        </div>
+        <% } %>
+
+          <% if (messages.error) { %>
+            <div class="overlay visible" id="susOo"></div>
+            <div class="visible1" id="submit_prompt">
+              <img src="../icon/close1" alt="">
+              <div>
+                <h2>
+                  <%= messages.error%>
+                </h2>
+                <main>
+                  <button type="button" class="button-green" id="close_message" onclick="yawa()">OK</button>
+                </main>
+              </div>
+            </div>
+            <% } %>
+
     </main>
     <script src="../../js/local/doctor-dashboard/patient-api.js"></script>
     <script src="../../js/global/pop-up.js"></script>
+    <script src="../../js/global/client-side-functions.js"></script>
     <script src="../../js/global/update.js"></script>
     <script src="../../js/global/services.js"></script>
     <script>
@@ -665,7 +696,6 @@
         }
       });
 
-      // Search Box Functionality
       document.getElementById('medicine').addEventListener('input', function () {
         const query = this.value;
         if (query.length > 0) {
@@ -692,6 +722,14 @@
         } else {
           document.getElementById('suggestions').innerHTML = '';
           document.querySelector('.suggestionContainer').style.display = 'none';
+        }
+      });
+      document.addEventListener('click', function (event) {
+        const suggestionContainer = document.querySelector('.suggestionContainer');
+        const medicineInput = document.getElementById('medicine');
+
+        if (!suggestionContainer.contains(event.target) && event.target !== medicineInput) {
+          suggestionContainer.style.display = 'none';
         }
       });
     </script>
