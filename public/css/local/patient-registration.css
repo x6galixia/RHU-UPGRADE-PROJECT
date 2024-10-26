@@ -247,8 +247,8 @@ input[type="button"] {
 }
 
 .triple-dot {
-    margin-bottom: -185px;
-    margin-left: -100px;
+    margin-bottom: -185px !important;
+    margin-left: -100px !important;
 }
 
 .pagination {
@@ -307,4 +307,22 @@ input[type="button"] {
 
 .selecter {
     margin-bottom: 12px;
+}
+
+.reject-heading {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 2px solid black;
+    padding: 12px 0;
+}
+
+#delete-patient-recently-admitted main {
+    display: flex;
+    flex-direction: column;
+}
+
+#delete-patient-recently-admitted main>div {
+    display: flex !important;
+    justify-content: space-around;
 }

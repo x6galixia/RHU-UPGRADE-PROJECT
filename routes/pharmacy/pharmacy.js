@@ -238,23 +238,23 @@ router.get("/pharmacy-records/beneficiary/:id", ensureAuthenticated, checkUserTy
 
 router.get("/pharmacy-dispense-request", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
   res.render("pharmacy/requests-for-dispense",
-    {user: req.user}
+    { user: req.user }
   );
 });
 
 router.get("/pharmacy-index-form", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
   res.render("pharmacy/beneficiary-index-form",
-    {user: req.user});
+    { user: req.user });
 });
 
 router.get("/pharmacy-request", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
   res.render("pharmacy/pharmacy-request",
-    {user: req.user});
+    { user: req.user });
 });
 
 router.get("/pharmacy-trends", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
   res.render("pharmacy/trends",
-    {user: req.user});
+    { user: req.user });
 });
 
 router.post("/pharmacy-inventory/add-medicine", async (req, res) => {

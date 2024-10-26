@@ -14,13 +14,14 @@
   <%- include("../includes/header.ejs") %>
     <h1 class="headings">INDIVIDUAL HEALTH ASSESSMENT</h1>
     <main>
-      <button class="buton"><img src="../icon/arrow-left2.svg" alt="" class="close_popUp" /></button>
+      <button class="buton" onclick="window.location.href='/nurse/patient-registration'"><img
+          src="../icon/arrow-left2.svg" alt="" /></button>
       <input type="text" id="qrInput" required style="opacity: 0; position: fixed; transform: translate(-50%, -50%),;">
       <form action="" method="" class="container">
         <!-- Left na lalagyan -->
         <div class="sub-con left-container">
           <!-- PATIENT INFORMATION< -->
-          <div class="ulo scannerContainer">
+          <div class="ulo ulo-ulo scannerContainer">
             <h2 class="form-header">PATIENT INFORMATION</h2>
             <div class="scanSwitch">
               Scan QR
@@ -328,7 +329,7 @@
             <div style="margin-top: 50px;">
               <div style="text-align: center;">
                 <h2><u>Questionnaire to Determine Probable Agina, Heart Attack,
-                  Stroke or Transient Ischemic Attack:</u></h2>
+                    Stroke or Transient Ischemic Attack:</u></h2>
               </div>
               <div class="col large-margine">
                 <p>Angina or Heart attack</p>
@@ -425,18 +426,18 @@
         <!-- Right na lalagyan -->
         <div class="sub-con right-container">
           <div class="left-container">
-            <div class="ulo">
+            <div class="ulo ulo-ulo">
               <h2 class="form-header">PAST MEDICAL HISTORY</h2>
             </div>
             <div class="large-margine right-info">
-                <div class="allergy-css">
-                  <label> <input id="allergyContext1" type="checkbox"> Allergy</label>
-                  <div class=" opttt" id="opt">
-                    <label><input type="radio"> Sea Food</label>
-                    <label><input type="radio"> Medicine</label>
-                    <label><input type="radio"> Insects</label>
-                  </div>
+              <div class="allergy-css">
+                <label> <input id="allergyContext1" type="checkbox"> Allergy</label>
+                <div class=" opttt" id="opt">
+                  <label><input type="radio"> Sea Food</label>
+                  <label><input type="radio"> Medicine</label>
+                  <label><input type="radio"> Insects</label>
                 </div>
+              </div>
               <div class="grid-two-c">
                 <div class="col text-box-g" style="position: relative;">
                   <label for=""><input type="checkbox"> Diabetes</label>
@@ -689,20 +690,22 @@
                 <input type="text" class="underlineInputs m grow">
               </div>
             </div>
-            <button class="butt">Submit</button>
+            <div class="health-assessment-button">
+              <button class="butt">Submit</button>
+            </div>
           </div>
         </div>
       </form>
-    </main> 
+    </main>
     <script>
       var allergyChechbox = document.getElementById('allergyContext1');
       var allergyChechbox2 = document.getElementById('allergyContext2');
       allergyChechbox.addEventListener('change', () => {
         var op = document.getElementById('opt');
         if (allergyChechbox.checked) {
-          console.log ('haha');
+          console.log('haha');
           op.style.display = 'block';
-        }else{
+        } else {
           op.style.display = 'none';
         }
       });
@@ -710,16 +713,16 @@
       allergyChechbox2.addEventListener('change', () => {
         var op = document.getElementById('opt2');
         if (allergyChechbox2.checked) {
-          console.log ('gago');
+          console.log('gago');
           op.style.display = 'block';
-        }else{
+        } else {
           op.style.display = 'none';
         }
       });
 
       let lastChecked = null;
-      document.querySelectorAll(".opttt input[type='radio']").forEach(function(radio) {
-        radio.addEventListener("click", function() {
+      document.querySelectorAll(".opttt input[type='radio']").forEach(function (radio) {
+        radio.addEventListener("click", function () {
           if (this === lastChecked) {
             this.checked = false; // Uncheck if the same radio is clicked again
             lastChecked = null;   // Reset last checked

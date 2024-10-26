@@ -214,13 +214,16 @@ document.addEventListener("DOMContentLoaded", function () {
             const pop_up_Delete = document.getElementById('delete-beneficiary');
 
             pop_up_Delete.classList.add("visible");
+            overlay.classList.add("visible");
 
             confirmDeleteButton.addEventListener('click', function () {
                 deleteBeneficiary(beneficiaryId);
                 pop_up_Delete.classList.remove("visible");
+                overlay.classList.remove("visible");
             })
             cancelDeleteButton.addEventListener('click', function () {
                 pop_up_Delete.classList.remove("visible");
+                overlay.classList.remove("visible");
             })
         }
         if (action === 'Update' && beneficiaryId) {

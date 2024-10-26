@@ -127,9 +127,8 @@ button {
 }
 
 .grid-two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 1em;
+    display: flex;
+    justify-content: center;
 }
 
 
@@ -289,4 +288,103 @@ details {
 #reqLab {
     max-height: 80%;
     overflow: auto;
+}
+
+.image-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    gap: 12px;
+}
+
+.image-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.image-section>.main-image {
+    display: grid;
+    place-items: center;
+    flex: 1;
+}
+
+.image-section>.main-image>img {
+    height: 20em;
+    object-fit: scale-down;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.9);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    height: 90%;
+    max-width: 90%;
+    max-height: 90%;
+    margin: auto;
+    display: block;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    font-size: 40px;
+    color: white;
+    cursor: pointer;
+}
+
+.suggestionContainer {
+    background-color: #fff;
+    position: absolute;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 61px;
+    border: 1px solid gray;
+    z-index: 3;
+    border-radius: 0 10px 10px 10px;
+    display: none;
+    max-height: 200px;
+    overflow: auto;
+}
+
+.suggestion:first-child {
+    border-top-right-radius: 10px;
+}
+
+.suggestion {
+    padding: 8px 12px;
+    border-bottom: 1px solid gray;
+    cursor: pointer;
+}
+
+.suggestionContainer::-webkit-scrollbar {
+    width: 8px;
+    background-color: transparent;
+}
+
+.suggestionContainer::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+}
+
+.suggestion:hover {
+    background-color: #44a130;
+    color: white;
+}
+
+.suggestion:last-child {
+    border-bottom: none;
+    border-radius: 0 0 10px 10px;
 }
