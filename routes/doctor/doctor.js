@@ -46,6 +46,10 @@ const patientSchema = Joi.object({
   medicine: Joi.string().allow("").optional(),
   instruction: Joi.string().allow("").optional(),
   quantity: Joi.string().allow("").optional(),
+  receiver: Joi.string().allow("").optional(),
+  relationship: Joi.string().allow("").optional(),
+  quantity: Joi.string().allow("").optional(),
+  doctor: Joi.string().allow("").optional(),
   //medtech
   lab_result: Joi.string().allow("").optional(),
 });
@@ -280,6 +284,79 @@ router.get("/doctor-dashboard/prescribe/search", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
+router.post("/doctor/prescribe-patient/send", async (req, res) => {
+  const { error, value } = patientSchema.validate(req.body);
+  const rhu_id = req.user.rhu_id;
+  let patient_prescription_id;
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
+  try {
+    const isPatient = await rhuPool.query(
+      `SELECT * FROM doctor_visits WHERE patient_id = $1`,
+      [value.patient_id]
+    );
+
+    if (isPatient.rows.length > 0) {
+      await rhuPool.query(
+        `UPDATE doctor_visits 
+         SET medicine = $2, 
+             instruction = $3, 
+             quantity = $4 
+         WHERE patient_id = $1`,
+        [value.patient_id, value.medicine, value.instruction, value.quantity]
+      );
+
+      const checkPatientPrescription = await rhuPool.query(
+        `SELECT patient_prescription_id FROM patient_prescription_data WHERE patient_prescription_id = $1`,
+        [value.patient_id]
+      );
+
+      if (checkPatientPrescription.rows.length === 0) {
+        await rhuPool.query(
+          `INSERT INTO patient_prescription_data 
+           (patient_prescription_id, patient_id, rhu_id, receiver, relationship_with_patient) 
+           VALUES ($1, $2, $3, $4, $5)`,
+          [value.patient_id, value.patient_id, rhu_id, value.receiver, value.relationship]
+        );
+
+        patient_prescription_id = value.patient_id;
+      } else {
+        patient_prescription_id = checkPatientPrescription.rows[0].patient_prescription_id;
+      }
+
+
+      await rhuPool.query(
+        `INSERT INTO prescription 
+         (patient_prescription_id, diagnosis, findings, category, service, medicine, instruction, quantity) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+        [
+          patient_prescription_id,
+          isPatient.rows[0].diagnosis,
+          isPatient.rows[0].findings,
+          isPatient.rows[0].category,
+          isPatient.rows[0].service,
+          value.medicine,
+          value.instruction,
+          value.quantity
+        ]
+      );
+
+      req.flash("success", "Submitted Successfully");
+    } else {
+      req.flash("error", "No patient record.");
+    }
+
+    return res.redirect("/doctor-dashboard");
+  } catch (error) {
+    console.error("Error: ", error);
+    req.flash("error", "An error occurred while processing the request.");
+    return res.redirect("/doctor-dashboard");
+  }
+});
+
 
 router.delete("/logout", (req, res) => {
   req.logOut((err) => {

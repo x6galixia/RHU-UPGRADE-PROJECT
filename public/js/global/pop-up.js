@@ -279,6 +279,7 @@ function popUp_button(button) {
       const checkDate = selectedOption.getAttribute('data-check-date');
       const birthDate = selectedOption.getAttribute('data-birthdate');
 
+      document.getElementById('pres_patient_id').value = selectedOption.getAttribute('data-patient-id');
       document.getElementById('pres_full_name').value = selectedOption.getAttribute('data-full-name') || '';
       document.getElementById('pres_check_date').value = formatDate(checkDate);
       document.getElementById('pres_age').value = selectedOption.getAttribute('data-age');
