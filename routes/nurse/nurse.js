@@ -28,7 +28,6 @@ const patientSchema = Joi.object({
   phone: Joi.string().allow("").optional(),
   gender: Joi.string().required(),
   birthdate: Joi.date().required(),
-  age: Joi.number().integer().allow("").optional(),
   completeAddress: Joi.string().required(),
   occupation: Joi.string().allow("").optional(),
   email: Joi.string().allow("").optional(),
@@ -185,107 +184,57 @@ router.get("/nurse/fetchScannedData", async (req, res) => {
   }
 });
 
-const insertNurseChecks = async (value, user_name) => {
-  console.log("Inserting nurse checks with values:", {
-    patient_id: value.patient_id,
-    age: calculateAge(value.birthdate),
-    check_date: value.check_date,
-    height: value.height,
-    weight: value.weight,
-    systolic: value.systolic,
-    diastolic: value.diastolic,
-    temperature: value.temperature,
-    heart_rate: value.heart_rate,
-    respiratory_rate: value.respiratory_rate,
-    bmi: value.bmi,
-    comment: value.comment,
-    nurse_name: user_name
-  });
-
-  try {
-    await rhuPool.query(
-      `
-        INSERT INTO nurse_checks (patient_id, age, check_date, height, weight, systolic, diastolic,
-            temperature, heart_rate, respiratory_rate, bmi, comment, nurse_name)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-      `,
-      [
-        value.patient_id,
-        calculateAge(value.birthdate),
-        value.check_date,
-        value.height,
-        value.weight,
-        value.systolic,
-        value.diastolic,
-        value.temperature,
-        value.heart_rate,
-        value.respiratory_rate,
-        value.bmi,
-        value.comment,
-        user_name
-      ]
-    );
-  } catch (err) {
-    console.error("Error inserting nurse checks:", err.message);
-    throw err; // Re-throw the error to handle it in the calling function
-  }
-};
-
 router.post("/nurse/admit-patient", async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
   const rhu_id = req.user.rhu_id;
   const nurse_id = req.user.id;
 
   // Extract address components from completeAddress
-  const addressParts = value.completeAddress.split(",");
-  const [house_no, street, barangay, city, province] = addressParts.map(
-    (part) => part.trim()
-  );
+  const addressParts = value.completeAddress.split(",").map(part => part.trim());
+  const [house_no, street, barangay, city, province] = addressParts;
 
   if (error) {
+    console.error("Validation error:", error.details[0].message);
     return res.status(400).json({ error: error.details[0].message });
   }
 
+  let historyId;
+
   try {
-    // Check if the patient already exists in the patients table
+    console.log("Beginning transaction for patient admission");
+    await rhuPool.query("BEGIN");
+
+    // Check if the patient already exists
     const patientExistsQuery = `SELECT * FROM patients WHERE patient_id = $1`;
-    const patientExistsResult = await rhuPool.query(patientExistsQuery, [
-      value.patient_id,
-    ]);
+    const patientExistsResult = await rhuPool.query(patientExistsQuery, [value.patient_id]);
 
     if (patientExistsResult.rows.length > 0) {
+      console.log("Patient exists. Migrating data to history tables.");
       const patientData = patientExistsResult.rows[0];
 
-      // Retrieve data from related tables
-      const nurseChecksResult = await rhuPool.query(
-        `SELECT * FROM nurse_checks WHERE patient_id = $1`,
-        [value.patient_id]
-      );
-      const doctorVisitsResult = await rhuPool.query(
-        `SELECT * FROM doctor_visits WHERE patient_id = $1`,
-        [value.patient_id]
-      );
-      const medtechLabsResult = await rhuPool.query(
-        `SELECT * FROM medtech_labs WHERE patient_id = $1`,
-        [value.patient_id]
-      );
+      // Fetch related data in parallel
+      const [nurseChecksResult, doctorVisitsResult, medtechLabsResult] = await Promise.all([
+        rhuPool.query(`SELECT * FROM nurse_checks WHERE patient_id = $1`, [value.patient_id]),
+        rhuPool.query(`SELECT * FROM doctor_visits WHERE patient_id = $1`, [value.patient_id]),
+        rhuPool.query(`SELECT * FROM medtech_labs WHERE patient_id = $1`, [value.patient_id]),
+      ]);
 
-      // Prepare data for insertion into patient_history
+      // Prepare data for patient_history insertion
       const historyInsertQuery = `
-              INSERT INTO patient_history (patient_id, rhu_id, last_name, first_name, middle_name, suffix, phone, gender, birthdate, age,
-                  house_no, street, barangay, city, province, occupation, email, philhealth_no, guardian, 
-                  check_date, height, weight, systolic, diastolic, temperature, heart_rate, 
-                  respiratory_rate, bmi, comment, follow_date)
-              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
-                  $10, $11, $12, $13, $14, $15, $16, $17, $18,
-                  $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30)
-              RETURNING id
-          `;
+        INSERT INTO patient_history (patient_id, rhu_id, last_name, first_name, middle_name, suffix, phone, gender, birthdate, age,
+            house_no, street, barangay, city, province, occupation, email, philhealth_no, guardian, 
+            check_date, height, weight, systolic, diastolic, temperature, heart_rate, 
+            respiratory_rate, bmi, comment, follow_date)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
+            $10, $11, $12, $13, $14, $15, $16, $17, $18,
+            $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30)
+        RETURNING id
+      `;
 
-      // Extract nurse check and doctor visit data if they exist
       const nurseCheck = nurseChecksResult.rows[0];
       const doctorVisit = doctorVisitsResult.rows[0];
 
+      console.log("Inserting into patient_history for patient ID:", patientData.patient_id);
       const historyInsertResult = await rhuPool.query(historyInsertQuery, [
         patientData.patient_id,
         patientData.rhu_id,
@@ -319,157 +268,181 @@ router.post("/nurse/admit-patient", async (req, res) => {
         doctorVisit ? doctorVisit.follow_date : null,
       ]);
 
-      const historyId = historyInsertResult.rows[0]?.id;
+      historyId = historyInsertResult.rows[0]?.id;
+      if (!historyId) throw new Error("Failed to insert into patient_history, historyId is undefined.");
 
-      if (!historyId) {
-        console.error("Failed to insert into patient_history");
-        return res
-          .status(500)
-          .json({ error: "Failed to move data to patient_history" });
-      }
-
-      // Move lab results to patient_lab_results
+      // Insert lab results in batch
       if (medtechLabsResult.rows.length > 0) {
-        for (let lab of medtechLabsResult.rows) {
-          await rhuPool.query(
-            `
-                      INSERT INTO patient_lab_results (history_id, lab_result)
-                      VALUES ($1, $2)
-                  `,
-            [historyId, lab.lab_result]
-          );
-        }
+        console.log("Inserting lab results for history ID:", historyId);
+        const labInsertPromises = medtechLabsResult.rows.map(lab =>
+          rhuPool.query(`INSERT INTO patient_lab_results (history_id, lab_result) VALUES ($1, $2)`, [historyId, lab.lab_result])
+        );
+        await Promise.all(labInsertPromises);
+      } else {
+        console.log("No lab results found for patient ID:", value.patient_id);
       }
 
-      // Move prescriptions and services to patient_prescriptions and patient_services
+      // Insert prescriptions and services in batch
       if (doctorVisitsResult.rows.length > 0) {
-        for (let visit of doctorVisitsResult.rows) {
+        console.log("Inserting prescriptions and services for patient ID:", value.patient_id);
+        const visitInsertPromises = doctorVisitsResult.rows.map(async visit => {
           const medicines = visit.medicine ? visit.medicine.split(",") : [];
-          const instructions = visit.instruction
-            ? visit.instruction.split(",")
-            : [];
+          const instructions = visit.instruction ? visit.instruction.split(",") : [];
           const quantities = visit.quantity ? visit.quantity.split(",") : [];
 
-          for (let i = 0; i < medicines.length; i++) {
-            await rhuPool.query(
-              `
-                          INSERT INTO patient_prescriptions (history_id, medicine, instruction, quantity)
-                          VALUES ($1, $2, $3, $4)
-                      `,
-              [historyId, medicines[i], instructions[i], quantities[i]]
-            );
-          }
+          const prescriptionInserts = medicines.map((med, i) =>
+            rhuPool.query(`INSERT INTO patient_prescriptions (history_id, medicine, instruction, quantity) VALUES ($1, $2, $3, $4)`, [historyId, med, instructions[i], quantities[i]])
+          );
 
           const services = visit.service ? visit.service.split(",") : [];
           const categories = visit.category ? visit.category.split(",") : [];
 
-          for (let i = 0; i < services.length; i++) {
-            await rhuPool.query(
-              `
-                          INSERT INTO patient_services (history_id, service, category)
-                          VALUES ($1, $2, $3)
-                      `,
-              [historyId, services[i], categories[i]]
-            );
-          }
-        }
+          const serviceInserts = services.map((service, i) =>
+            rhuPool.query(`INSERT INTO patient_services (history_id, service, category) VALUES ($1, $2, $3)`, [historyId, service, categories[i]])
+          );
+
+          await Promise.all([...prescriptionInserts, ...serviceInserts]);
+        });
+
+        await Promise.all(visitInsertPromises);
+      } else {
+        console.log("No doctor visits found for patient ID:", value.patient_id);
       }
 
-      // Delete the records from the original tables after moving data
+      // Delete old records from relevant tables
+      console.log("Attempting to delete old records for patient ID:", value.patient_id);
+      await Promise.all([
+        rhuPool.query(`DELETE FROM nurse_checks WHERE patient_id = $1`, [value.patient_id]),
+        rhuPool.query(`DELETE FROM doctor_visits WHERE patient_id = $1`, [value.patient_id]),
+        rhuPool.query(`DELETE FROM medtech_labs WHERE patient_id = $1`, [value.patient_id]),
+      ]);
+      console.log("Old records deleted successfully.");
 
-      await rhuPool.query(`DELETE FROM patients WHERE patient_id = $1`, [
+      // Update existing patient record
+      console.log("Updating existing patient record for ID:", value.patient_id);
+      await rhuPool.query(`
+        UPDATE patients
+        SET
+          rhu_id = $1,
+          last_name = $2,
+          first_name = $3,
+          middle_name = $4,
+          suffix = $5,
+          phone = $6,
+          gender = $7,
+          birthdate = $8,
+          house_no = $9,
+          street = $10,
+          barangay = $11,
+          city = $12,
+          province = $13,
+          occupation = $14,
+          email = $15,
+          philhealth_no = $16,
+          guardian = $17
+        WHERE patient_id = $18
+      `, [
+        rhu_id,
+        value.last_name,
+        value.first_name,
+        value.middle_name,
+        value.suffix,
+        value.phone,
+        value.gender,
+        value.birthdate,
+        house_no,
+        street,
+        barangay,
+        city,
+        province,
+        value.occupation,
+        value.email,
+        value.philhealth_no,
+        value.guardian,
         value.patient_id,
       ]);
-      await rhuPool.query(`DELETE FROM nurse_checks WHERE patient_id = $1`, [
-        value.patient_id,
-      ]);
-      await rhuPool.query(`DELETE FROM doctor_visits WHERE patient_id = $1`, [
-        value.patient_id,
-      ]);
-      await rhuPool.query(`DELETE FROM medtech_labs WHERE patient_id = $1`, [
-        value.patient_id,
-      ]);
 
-      // Insert new patient if patient does not exist
-      await rhuPool.query(
-        `
-              INSERT INTO patients (patient_id, rhu_id, last_name, first_name, middle_name, suffix, phone, gender, birthdate,
-                  house_no, street, barangay, city, province, occupation, email, philhealth_no, guardian)
-              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
-                  $10, $11, $12, $13, $14, $15, $16, $17, $18)
-          `,
-        [
-          value.patient_id,
-          rhu_id,
-          value.last_name,
-          value.first_name,
-          value.middle_name,
-          value.suffix,
-          value.phone,
-          value.gender,
-          value.birthdate,
-          house_no,
-          street,
-          barangay,
-          city,
-          province,
-          value.occupation,
-          value.email,
-          value.philhealth_no,
-          value.guardian,
-        ]
-      );
+      // Insert new nurse checks
+      console.log("Inserting new nurse checks for patient ID:", value.patient_id);
+      await insertNurseChecks(value, nurse_id);
 
-      // Insert new vital signs into nurse_checks
-      await insertNurseChecks(value, value.user_name);
-
+      await rhuPool.query("COMMIT");
       req.flash("submit", "Submitted Successfully");
       return res.redirect("/nurse/patient-registration");
     } else {
-      console.log("Inserting new patient:", value);
-      // Insert new patient if patient does not exist
-      await rhuPool.query(
-        `
-              INSERT INTO patients (patient_id, rhu_id, last_name, first_name, middle_name, suffix, phone, gender, birthdate,
-                  house_no, street, barangay, city, province, occupation, email, philhealth_no, guardian)
-              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
-                  $10, $11, $12, $13, $14, $15, $16, $17, $18)
-          `,
-        [
-          value.patient_id,
-          rhu_id,
-          value.last_name,
-          value.first_name,
-          value.middle_name,
-          value.suffix,
-          value.phone,
-          value.gender,
-          value.birthdate,
-          house_no,
-          street,
-          barangay,
-          city,
-          province,
-          value.occupation,
-          value.email,
-          value.philhealth_no,
-          value.guardian,
-        ]
-      );
-
-      // Insert new vital signs into nurse_checks
-      await insertNurseChecks(value, value.user_name);
-
-      req.flash("submit", "Submitted Successfully");
+      console.log("New patient case. Inserting new patient data.");
+      await insertPatientRecord(value, rhu_id, house_no, street, barangay, city, province);
+      console.log("Inserting new nurse checks for patient ID:", value.patient_id);
+      await insertNurseChecks(value, nurse_id);
+      await rhuPool.query("COMMIT");
+      req.flash("submit", "Patient Added Successfully");
       return res.redirect("/nurse/patient-registration");
     }
   } catch (err) {
-    console.error(err);
-    res
-      .status(500)
-      .json({ error: "An error occurred while processing the request" });
+    await rhuPool.query("ROLLBACK");
+    console.error("Error during migration:", {
+      message: err.message,
+      stack: err.stack
+    });
+    return res.status(500).json({ error: err.message });
   }
 });
+
+// Function to insert a new patient record
+async function insertPatientRecord(value, rhu_id, house_no, street, barangay, city, province) {
+  const insertQuery = `
+    INSERT INTO patients (patient_id, rhu_id, last_name, first_name, middle_name, suffix, phone, gender, birthdate,
+        house_no, street, barangay, city, province, occupation, email, philhealth_no, guardian)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
+        $10, $11, $12, $13, $14, $15, $16, $17, $18)
+  `;
+  
+  await rhuPool.query(insertQuery, [
+    value.patient_id,
+    rhu_id,
+    value.last_name,
+    value.first_name,
+    value.middle_name,
+    value.suffix,
+    value.phone,
+    value.gender,
+    value.birthdate,
+    house_no,
+    street,
+    barangay,
+    city,
+    province,
+    value.occupation,
+    value.email,
+    value.philhealth_no,
+    value.guardian,
+  ]);
+}
+
+// Function to insert nurse checks
+async function insertNurseChecks(value, nurse_id) {
+  const nurseCheckInsertQuery = `
+    INSERT INTO nurse_checks (patient_id, nurse_id, age, check_date, height, weight, systolic, diastolic, temperature, heart_rate, respiratory_rate, bmi, comment)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+  `;
+
+  console.log("Inserting nurse check data for patient ID:", value.patient_id);
+  await rhuPool.query(nurseCheckInsertQuery, [
+    value.patient_id,
+    nurse_id,
+    calculateAge(value.birthdate),
+    new Date(),
+    value.height,
+    value.weight,
+    value.systolic,
+    value.diastolic,
+    value.temperature,
+    value.heart_rate,
+    value.respiratory_rate,
+    value.bmi,
+    value.comment,
+  ]);
+}
 
 router.delete('/nurse/patient-registration/delete/:id', async (req, res) => {
   const patientId = req.params.id;
