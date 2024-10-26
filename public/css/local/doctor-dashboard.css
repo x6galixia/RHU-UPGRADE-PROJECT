@@ -388,3 +388,42 @@ details {
     border-bottom: none;
     border-radius: 0 0 10px 10px;
 }
+
+#submit_prompt img {
+    width: 70px;
+    margin-top: -60px;
+    background-color: #ffff;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.visible1 {
+    display: flex !important;
+
+}
+
+#submit_prompt {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    background: #FFF;
+    /* box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25); */
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    padding: 30px 60px;
+    display: none;
+    overflow: visible;
+    z-index: 2;
+}
+
+#submit_prompt main {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin-top: 20px;
+}
