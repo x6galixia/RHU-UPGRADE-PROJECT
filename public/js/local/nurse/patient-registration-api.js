@@ -14,17 +14,20 @@ function loadPage(page, rhuId) {
   fetch(`/nurse/patient-registration/recently-added?page=${page}&rhu_id=${rhuId}&ajax=true`)
     .then(response => {
       if (!response.ok) {
-        throw new Error('Network response was not ok ' + response.statusText);
+        throw new Error('Network response was not ok: ' + response.statusText);
       }
       return response.json();
     })
     .then(data => {
-      console.log(data);
+      console.log('Response Data:', data);
+      console.log('Patient List:', data.getPatientList);
       const tbody = document.getElementById('patient-list');
-      tbody.innerHTML = '';
-      var main_container = "dot";
-      var triple_dot = "triple-dot";
+      tbody.innerHTML = ''; // Clear previous rows
 
+      const mainContainerClass = "dot";
+      const tripleDotClass = "triple-dot";
+
+      // Handle case when no patients are found
       if (data.getPatientList.length === 0) {
         tbody.innerHTML = `<tr><td colspan="4" style="text-align:center">No patients found.</td></tr>`;
         document.getElementById('previous-page').style.display = 'none';
@@ -32,25 +35,27 @@ function loadPage(page, rhuId) {
         return;
       }
 
+      // Populate the table with patient data
       data.getPatientList.forEach(patient => {
-        const row = `<tr>
+        const row = `
+          <tr>
             <td>${patient.first_name} ${patient.last_name}</td>
-            <td>${patient.check_date}</td>
-            <td>${patient.nurse}</td> <!-- Nurse column -->
+            <td>${patient.check_date || 'N/A'}</td>
+            <td>${patient.nurse_name}</td>
             <td class="menu-row">
-                <img class="${main_container}" src="../icon/triple-dot.svg" alt="">
-                <div class="${triple_dot}">
-                    <div class="menu" data-id="${patient.patient_id}">
-                        <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
-                        <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
-                    </div>
+              <img class="${mainContainerClass}" src="../icon/triple-dot.svg" alt="">
+              <div class="${tripleDotClass}">
+                <div class="menu" data-id="${patient.patient_id}">
+                  <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
+                  <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
                 </div>
+              </div>
             </td>
           </tr>`;
         tbody.insertAdjacentHTML('beforeend', row);
-        attachDotEventListeners();
       });
 
+      // Update pagination controls
       const previousPageButton = document.getElementById('previous-page');
       const nextPageButton = document.getElementById('next-page');
 
@@ -62,6 +67,7 @@ function loadPage(page, rhuId) {
     })
     .catch(error => console.error('Error fetching page:', error));
 }
+
 
 function attachDotEventListeners() {
   document.querySelectorAll(".dot").forEach(function (dot) {
