@@ -288,7 +288,9 @@ router.post("/nurse/admit-patient", async (req, res) => {
         const visitInsertPromises = doctorVisitsResult.rows.map(async visit => {
           const medicines = visit.medicine ? visit.medicine.split(",") : [];
           const instructions = visit.instruction ? visit.instruction.split(",") : [];
-          const quantities = visit.quantity ? visit.quantity.split(",") : [];
+          
+          // Directly use visit.quantity as it's an integer
+          const quantities = Array(medicines.length).fill(visit.quantity); // Create an array with the same quantity for each medicine
 
           const prescriptionInserts = medicines.map((med, i) =>
             rhuPool.query(`INSERT INTO patient_prescriptions (history_id, medicine, instruction, quantity) VALUES ($1, $2, $3, $4)`, [historyId, med, instructions[i], quantities[i]])
@@ -444,6 +446,7 @@ async function insertNurseChecks(value, nurse_id) {
   ]);
 }
 
+
 router.delete('/nurse/patient-registration/delete/:id', async (req, res) => {
   const patientId = req.params.id;
   console.log('Received DELETE request for patient ID:', patientId);
@@ -482,6 +485,7 @@ router.delete('/nurse/patient-registration/delete/:id', async (req, res) => {
     res.status(500).json({ message: 'Failed to delete the patient records.' });
   }
 });
+
 
 router.delete("/logout", (req, res) => {
   req.logOut((err) => {
