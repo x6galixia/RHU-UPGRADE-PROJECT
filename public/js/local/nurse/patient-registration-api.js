@@ -1,3 +1,11 @@
+function formatDate(date) {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 document.getElementById('recently-admitted').addEventListener('click', function () {
   const rhuId = document.getElementById('rhu-select').value;
   loadPage(1, rhuId);
@@ -42,8 +50,33 @@ function loadPage(page, rhuId) {
             <td>${patient.first_name} ${patient.last_name}</td>
             <td>${patient.check_date || 'N/A'}</td>
             <td>${patient.nurse_name}</td>
-            <td class="menu-row">
-            <button id="update-id" data-id="${patient.patient_id}">Update</button>
+            <td class="menu-row"><button id="update-id"
+            data-id="${patient.patient_id}"
+            data-rhu-id="${patient.rhu_id}"
+            data-last-name="${patient.last_name}"
+            data-first-name="${patient.first_name}"
+            data-middle-name="${patient.middle_name}"
+            data-suffix="${patient.suffix}"
+            data-phone="${patient.phone}"
+            data-gender="${patient.gender}"
+            data-birthdate="${patient.birthdate}"
+            data-address="${patient.house_no} ,  ${patient.street} ,  ${patient.barangay} ,  ${patient.town} ,  ${patient.province}"
+            data-occupation="${patient.occupation}"
+            data-email="${patient.email}"
+            data-philhealth-no="${patient.philhealth_no}"
+            data-guardian="${patient.guardian}"
+            data-nurse-id="${patient.nurse_id}"
+            data-age="${patient.age}"
+            data-check-date="${patient.check_date}"
+            data-height="${patient.height}"
+            data-weight="${patient.weight}"
+            data-systolic="${patient.systolic}"
+            data-diastolic="${patient.diastolic}"
+            data-temperature="${patient.temperature}"
+            data-heart-rate="${patient.heart_rate}"
+            data-respiratory-rate="${patient.respiratory_rate}"
+            data-bmi="${patient.bmi}"
+            data-comment="${patient.comment}" onClick="fillUpdate(this)">Update</button>
             </td>
           </tr>`;
         tbody.insertAdjacentHTML('beforeend', row);
@@ -63,6 +96,44 @@ function loadPage(page, rhuId) {
     .catch(error => console.error('Error fetching page:', error));
 }
 
+function fillUpdate(button){
+  var buttonId = button.id;
+  if (buttonId === "update-id"){
+
+    console.log("clicked");
+    const checkDate = button.getAttribute('data-check-date');
+    const birthDate = button.getAttribute('data-birthdate');
+
+    document.getElementById('qrOutput').value = button.getAttribute('data-id') || '';
+    document.getElementById('lastname').value = button.getAttribute('data-age');
+    document.getElementById('firstname').value = button.getAttribute('data-first-name');
+    document.getElementById('middlename').value = button.getAttribute('data-middle-name') || '';
+    document.getElementById('suffix').value = button.getAttribute('data-suffix') || '';
+    document.getElementById('address').value = button.getAttribute('data-address') || '';
+    document.getElementById('birthdate').value = formatDate(birthDate);
+    document.getElementById('email').value = button.getAttribute('data-email') || '';
+    document.getElementById('gender').value = button.getAttribute('data-gender') || '';
+    document.getElementById('guardian').value = button.getAttribute('data-guardian') || '';
+    document.getElementById('current-date').value = formatDate(checkDate);
+    document.getElementById('phone').value = button.getAttribute('data-phone') || '';
+    document.getElementById('philhealth_no').value = button.getAttribute('data-philhealth-no') || '';
+    document.getElementById('occupation').value = button.getAttribute('data-occupation') || '';
+    document.getElementById('height').value = button.getAttribute('data-height') || '';
+    document.getElementById('weight').value = button.getAttribute('data-weight');
+    document.getElementById('bmi').value = button.getAttribute('data-bmi') || '';
+    document.getElementById('temperature').value = button.getAttribute('data-temperature') || '';
+    document.getElementById('respiratory_rate').value = button.getAttribute('data-respiratory-rate') || '';
+    document.getElementById('pulse_rate').value = button.getAttribute('data-respiratory-rate') || '';
+    document.getElementById('comment').value = button.getAttribute('data-comment') || '';
+    document.getElementById('systolic').value = button.getAttribute('data-systolic') || '';
+    document.getElementById('diastolic').value = button.getAttribute('data-diastolic') || '';
+    document.getElementById('heart_rate').value = button.getAttribute('data-heart-rate');
+
+    const overlay = document.querySelector('.overlay');
+    document.getElementById('recently-admitted-table').style.display = 'none';
+    overlay.classList.toggle("visible");
+  }
+}
 
 function attachDotEventListeners() {
   document.querySelectorAll(".dot").forEach(function (dot) {
@@ -108,60 +179,6 @@ window.popUp_three_dot = function (button) {
       pop_up_Delete.classList.remove("visible");
     })
   }
-  // if (action === 'Update' && beneficiaryId) {
-  //   fetch(`/pharmacy-records/beneficiary/${beneficiaryId}`)
-  //     .then(response => {
-  //       if (!response.ok) throw new Error('Network response was not ok');
-  //       return response.json();
-  //     })
-  //     .then(beneficiaryData => {
-  //       document.getElementById('beneficiary_id').value = beneficiaryData.beneficiary_id || '';
-  //       document.getElementById('last_name').value = beneficiaryData.last_name || '';
-  //       document.getElementById('first_name').value = beneficiaryData.first_name || '';
-  //       document.getElementById('middle_name').value = beneficiaryData.middle_name || '';
-  //       document.getElementById('gender').value = beneficiaryData.gender || '';
-  //       document.getElementById('birthdate').value = beneficiaryData.birthdate.split('T')[0] || '';
-  //       document.getElementById('phone').value = beneficiaryData.phone || '';
-  //       document.getElementById('processed_date').value = beneficiaryData.processed_date.split('T')[0] || '';
-  //       document.getElementById('occupation').value = beneficiaryData.occupation || '';
-  //       document.getElementById('street').value = beneficiaryData.street || '';
-  //       document.getElementById('barangay').value = beneficiaryData.barangay || '';
-  //       document.getElementById('city').value = beneficiaryData.city || '';
-  //       document.getElementById('province').value = beneficiaryData.province || '';
-  //       document.getElementById('senior_citizen').value = beneficiaryData.senior_citizen || '';
-  //       document.getElementById('pwd').value = beneficiaryData.pwd || '';
-  //       document.getElementById('note').value = beneficiaryData.note || '';
-  //       document.getElementById('existing_picture').value = beneficiaryData.picture || '';
-
-  //       var picture;
-  //       if (beneficiaryData.gender === "Male") {
-  //         picture = "/icon/upload-img-default.svg";
-  //       } else {
-  //         picture = "/icon/upload-img-default-woman.svg";
-  //       }
-
-
-  //       const pictureElement = document.getElementById('pictureDisplay');
-  //       if (pictureElement) {
-  //         const picturePath = (beneficiaryData.picture && beneficiaryData.picture !== '0') ? `/uploads/beneficiary-img/${beneficiaryData.picture}` : picture;
-  //         pictureElement.src = picturePath;
-  //       } else {
-  //         console.error('Image element not found');
-  //       }
-
-  //       const fileInput = document.getElementById('picture');
-  //       if (fileInput) {
-  //         fileInput.value = '';
-  //       }
-
-  //       update_beneficiary.classList.add("visible");
-  //       overlay.classList.add("visible");
-  //     })
-  //     .catch(error => {
-  //       console.error('Error fetching beneficiary data:', error);
-  //       alert('Failed to fetch beneficiary data. Please try again.');
-  //     });
-  // }
 };
 
 function deletePatient(patientId) {

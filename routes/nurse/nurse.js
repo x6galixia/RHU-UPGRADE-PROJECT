@@ -2,16 +2,9 @@ const express = require("express");
 const router = express.Router();
 const rhuPool = require("../../models/rhudb");
 const pharmacyPool = require("../../models/pharmacydb");
-const {
-  setUserData,
-  ensureAuthenticated,
-  checkUserType,
-} = require("../../middlewares/middleware");
+const { setUserData, ensureAuthenticated, checkUserType,} = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
-const {
-  calculateAge,
-  formatDate,
-} = require("../../public/js/global/functions");
+const { calculateAge, formatDate,} = require("../../public/js/global/functions");
 const Joi = require("joi");
 
 router.use(setUserData);
@@ -45,29 +38,17 @@ const patientSchema = Joi.object({
   comment: Joi.string().allow("").optional(),
 });
 
-router.get(
-  "/nurse-dashboard",
-  ensureAuthenticated,
-  checkUserType("Nurse"),
-  (req, res) => {
+router.get("/nurse-dashboard", ensureAuthenticated, checkUserType("Nurse"), (req, res) => {
     res.render("nurse/nurse-dashboard", { user: req.user });
   }
 );
 
-router.get(
-  "/nurse/patient-registration",
-  ensureAuthenticated,
-  checkUserType("Nurse"),
-  (req, res) => {
+router.get("/nurse/patient-registration", ensureAuthenticated, checkUserType("Nurse"), (req, res) => {
     res.render("nurse/patient-registration", { user: req.user });
   }
 );
 
-router.get(
-  "/nurse/patient-registration/recently-added",
-  ensureAuthenticated,
-  checkUserType("Nurse"),
-  async (req, res) => {
+router.get("/nurse/patient-registration/recently-added", ensureAuthenticated, checkUserType("Nurse"), async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 6;
     const isAjax = req.query.ajax === "true";
@@ -96,11 +77,7 @@ router.get(
   }
 );
 
-router.get(
-  "/nurse/patient-registration/new-id",
-  ensureAuthenticated,
-  checkUserType("Nurse"),
-  async (req, res) => {
+router.get("/nurse/patient-registration/new-id", ensureAuthenticated, checkUserType("Nurse"), async (req, res) => {
     try {
       const result = await rhuPool.query(
         "SELECT patient_id FROM patients ORDER BY patient_id DESC LIMIT 1"
@@ -132,11 +109,7 @@ router.get(
   }
 );
 
-router.get(
-  "/nurse/individual-health-assessment",
-  ensureAuthenticated,
-  checkUserType("Nurse"),
-  (req, res) => {
+router.get("/nurse/individual-health-assessment", ensureAuthenticated, checkUserType("Nurse"), (req, res) => {
     res.render("nurse/individual-health-assessment", { user: req.user });
   }
 );
@@ -527,7 +500,33 @@ async function fetchPatientList(page, limit, rhuId) {
           p.rhu_id,
           p.last_name,
           p.first_name,
+          p.middle_name,
+          p.suffix,
+          p.phone,
+          p.gender,
+          p.birthdate,
+          p.house_no,
+          p.street,
+          p.barangay,
+          p.city,
+          p.province,
+          p.occupation,
+          p.email,
+          p.philhealth_no,
+          p.guardian,
+          MAX(nc.patient_id) AS patient_id,
+          MAX(nc.nurse_id) AS nurse_id,
+          MAX(nc.age) AS age,
           MAX(nc.check_date) AS check_date,
+          MAX(nc.height) AS height,
+          MAX(nc.weight) AS weight,
+          MAX(nc.systolic) AS systolic,
+          MAX(nc.diastolic) AS diastolic,
+          MAX(nc.temperature) AS temperature,
+          MAX(nc.heart_rate) AS heart_rate,
+          MAX(nc.respiratory_rate) AS respiratory_rate,
+          MAX(nc.bmi) AS bmi,
+          MAX(nc.comment) AS comment,
           r.rhu_name,
           CONCAT(u.firstname, ' ', u.surname) AS nurse_name
         FROM patients p
@@ -556,13 +555,40 @@ async function fetchPatientList(page, limit, rhuId) {
           p.rhu_id,
           p.last_name,
           p.first_name,
+          p.middle_name,
+          p.suffix,
+          p.phone,
+          p.gender,
+          p.birthdate,
+          p.house_no,
+          p.street,
+          p.barangay,
+          p.city,
+          p.province,
+          p.occupation,
+          p.email,
+          p.philhealth_no,
+          p.guardian,
+          MAX(nc.patient_id) AS patient_id,
+          MAX(nc.nurse_id) AS nurse_id,
+          MAX(nc.age) AS age,
           MAX(nc.check_date) AS check_date,
+          MAX(nc.height) AS height,
+          MAX(nc.height) AS height,
+          MAX(nc.systolic) AS systolic,
+          MAX(nc.diastolic) AS diastolic,
+          MAX(nc.temperature) AS temperature,
+          MAX(nc.heart_rate) AS heart_rate,
+          MAX(nc.respiratory_rate) AS respiratory_rate,
+          MAX(nc.bmi) AS bmi,
+          MAX(nc.comment) AS comment,
           r.rhu_name,
           CONCAT(u.firstname, ' ', u.surname) AS nurse_name
         FROM patients p
         LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
         LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
         LEFT JOIN users u ON nc.nurse_id = u.id
+        WHERE r.rhu_id = $3
         GROUP BY p.patient_id, r.rhu_name, u.firstname, u.surname
         ORDER BY p.first_name
         LIMIT $1 OFFSET $2
