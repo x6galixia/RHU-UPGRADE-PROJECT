@@ -152,6 +152,8 @@ function popUp_button(button) {
   else if (select === "3") {
     diagnosis.classList.toggle('visible');
 
+    const submitButton = document.getElementById('submitButton');
+    const diagnosisTextarea = document.getElementById('dia_diagnosis');
     const selectedOption = button.options[button.selectedIndex];
 
     if (selectedOption) {
@@ -168,12 +170,19 @@ function popUp_button(button) {
       document.getElementById('dia_guardian').value = selectedOption.getAttribute('data-guardian') || '';
       document.getElementById('dia_diagnosis').value = selectedOption.getAttribute('data-diagnosis') || '';
     }
+    if (diagnosisTextarea.value.trim() !== '') {
+      submitButton.textContent = 'Update';
+    } else {
+      submitButton.textContent = 'Submit';
+    }
   }
 
   //doctor - findings
   else if (select === "4") {
     findings.classList.toggle('visible');
 
+    const submitButtons = document.getElementById('submitButtons');
+    const findingsTextarea = document.getElementById('fin_findings');
     const selectedOption = button.options[button.selectedIndex];
 
     if (selectedOption) {
@@ -189,6 +198,11 @@ function popUp_button(button) {
       document.getElementById('fin_occupation').value = selectedOption.getAttribute('data-occupation') || '';
       document.getElementById('fin_guardian').value = selectedOption.getAttribute('data-guardian') || '';
       document.getElementById('fin_findings').value = selectedOption.getAttribute('data-findings');
+    }
+    if (findingsTextarea.value.trim() !== '') {
+      submitButtons.textContent = 'Update';
+    } else {
+      submitButtons.textContent = 'Submit';
     }
   }
 
