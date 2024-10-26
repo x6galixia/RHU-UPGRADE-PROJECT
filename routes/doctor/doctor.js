@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
 const rhuPool = require("../../models/rhudb");
+const pharmacyPool = require("../../models/pharmacydb");
 const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
 const { calculateAge, formatDate, } = require("../../public/js/global/functions");
@@ -259,6 +260,25 @@ router.post("/doctor/findings-patient/send", async (req, res) => {
     console.error("Error: ", err);
   }
 
+});
+
+router.get("/doctor-dashboard/prescribe/search", async (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).send("Query parameter is required");
+  }
+
+  try {
+    const result = await pharmacyPool.query(
+      "SELECT product_name, dosage, product_quantity FROM inventory WHERE product_quantity <> 0 AND product_name ILIKE $1",
+      [`%${query}%`]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
 });
 
 router.delete("/logout", (req, res) => {

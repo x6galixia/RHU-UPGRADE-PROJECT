@@ -492,34 +492,37 @@
             <div class="row gap just-bet">
               <div class="col grow">
                 <label for="">Medicine:</label>
-                <input type="text" />
+                <input id="medicine" type="text" name="medicine" />
+                <div class="suggestionContainer">
+                  <div id="suggestions"></div>
+                </div>
               </div>
               <div class="col grow">
                 <label for="">Instruction:</label>
-                <input type="text" />
+                <input type="text" name="instruction" />
               </div>
               <div class="col grow">
                 <label for="">Quantity:</label>
-                <input type="number" />
+                <input type="number" name="quantity" />
               </div>
             </div>
             <div class="row gap just-bet">
               <div class="col grow">
                 <label for="">Receiver:</label>
-                <input type="text" />
+                <input type="text" name="receiver" />
               </div>
               <div class="col grow">
                 <label for="">Relationship:</label>
-                <input type="text" />
+                <input type="text" name="relationship" />
               </div>
               <div class="col grow">
                 <label for="">Doctor:</label>
-                <input type="number" />
+                <input type="number" name="doctor" />
               </div>
             </div>
           </div>
           <div class="btn-l">
-            <button onclick="printingReqReseta('resetaPrint')">Print</button>
+            <button type="button" onclick="printingReqReseta('resetaPrint')">Print</button>
             <button>Submit</button>
           </div>
         </div>
@@ -659,6 +662,36 @@
       imageModal.addEventListener('click', function (event) {
         if (event.target === imageModal) {
           imageModal.style.display = 'none';
+        }
+      });
+
+      // Search Box Functionality
+      document.getElementById('medicine').addEventListener('input', function () {
+        const query = this.value;
+        if (query.length > 0) {
+          fetch(`/doctor-dashboard/prescribe/search?query=${query}`)
+            .then(response => response.json())
+            .then(data => {
+              const suggestions = document.getElementById('suggestions');
+              suggestions.innerHTML = '';
+              document.querySelector('.suggestionContainer').style.display = 'none';
+              data.forEach(item => {
+                const suggestionDiv = document.createElement('div');
+                suggestionDiv.classList.add('suggestion');
+                suggestionDiv.textContent = `${item.product_name} - ${item.dosage} QTY: ${item.product_quantity}`;
+                suggestionDiv.addEventListener('click', function () {
+                  document.getElementById('medicine').value = item.product_name + " " + item.dosage;
+                  suggestions.innerHTML = '';
+                  document.querySelector('.suggestionContainer').style.display = 'none';
+                });
+                document.querySelector('.suggestionContainer').style.display = 'block';
+                suggestions.appendChild(suggestionDiv);
+              });
+            })
+            .catch(error => console.error('Error:', error));
+        } else {
+          document.getElementById('suggestions').innerHTML = '';
+          document.querySelector('.suggestionContainer').style.display = 'none';
         }
       });
     </script>
