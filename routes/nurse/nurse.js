@@ -288,7 +288,7 @@ router.post("/nurse/admit-patient", async (req, res) => {
         const visitInsertPromises = doctorVisitsResult.rows.map(async visit => {
           const medicines = visit.medicine ? visit.medicine.split(",") : [];
           const instructions = visit.instruction ? visit.instruction.split(",") : [];
-          
+
           // Directly use visit.quantity as it's an integer
           const quantities = Array(medicines.length).fill(visit.quantity); // Create an array with the same quantity for each medicine
 
@@ -319,6 +319,7 @@ router.post("/nurse/admit-patient", async (req, res) => {
         rhuPool.query(`DELETE FROM medtech_labs WHERE patient_id = $1`, [value.patient_id]),
       ]);
       console.log("Old records deleted successfully.");
+      console.log(Promise.all);
 
       // Update existing patient record
       console.log("Updating existing patient record for ID:", value.patient_id);
@@ -398,7 +399,7 @@ async function insertPatientRecord(value, rhu_id, house_no, street, barangay, ci
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
         $10, $11, $12, $13, $14, $15, $16, $17, $18)
   `;
-  
+
   await rhuPool.query(insertQuery, [
     value.patient_id,
     rhu_id,
