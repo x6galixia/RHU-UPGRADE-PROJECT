@@ -18,6 +18,7 @@ router.use(setUserData);
 router.use(methodOverride("_method"));
 
 const patientSchema = Joi.object({
+  user_name: Joi.string().required(),
   patient_id: Joi.string().required(),
   rhu_id: Joi.number().integer(),
   last_name: Joi.string().required(),
@@ -184,10 +185,9 @@ router.get("/nurse/fetchScannedData", async (req, res) => {
   }
 });
 
-const insertNurseChecks = async (value, nurse_id) => {
+const insertNurseChecks = async (value, user_name) => {
   console.log("Inserting nurse checks with values:", {
     patient_id: value.patient_id,
-    nurse_id,
     age: calculateAge(value.birthdate),
     check_date: value.check_date,
     height: value.height,
@@ -199,18 +199,18 @@ const insertNurseChecks = async (value, nurse_id) => {
     respiratory_rate: value.respiratory_rate,
     bmi: value.bmi,
     comment: value.comment,
+    nurse_name: user_name
   });
 
   try {
     await rhuPool.query(
       `
-        INSERT INTO nurse_checks (patient_id, nurse_id, age, check_date, height, weight, systolic, diastolic,
-            temperature, heart_rate, respiratory_rate, bmi, comment)
+        INSERT INTO nurse_checks (patient_id, age, check_date, height, weight, systolic, diastolic,
+            temperature, heart_rate, respiratory_rate, bmi, comment, nurse_name)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
       `,
       [
         value.patient_id,
-        nurse_id,
         calculateAge(value.birthdate),
         value.check_date,
         value.height,
@@ -222,6 +222,7 @@ const insertNurseChecks = async (value, nurse_id) => {
         value.respiratory_rate,
         value.bmi,
         value.comment,
+        user_name
       ]
     );
   } catch (err) {
@@ -420,7 +421,7 @@ router.post("/nurse/admit-patient", async (req, res) => {
       );
 
       // Insert new vital signs into nurse_checks
-      await insertNurseChecks(value, nurse_id);
+      await insertNurseChecks(value, value.user_name);
 
       req.flash("submit", "Submitted Successfully");
       return res.redirect("/nurse/patient-registration");
@@ -457,7 +458,7 @@ router.post("/nurse/admit-patient", async (req, res) => {
       );
 
       // Insert new vital signs into nurse_checks
-      await insertNurseChecks(value, nurse_id);
+      await insertNurseChecks(value, value.user_name);
 
       req.flash("submit", "Submitted Successfully");
       return res.redirect("/nurse/patient-registration");
@@ -469,6 +470,48 @@ router.post("/nurse/admit-patient", async (req, res) => {
       .json({ error: "An error occurred while processing the request" });
   }
 });
+
+router.delete('/nurse/patient-registration/delete/:id', async (req, res) => {
+  const patientId = req.params.id;
+  console.log('Received DELETE request for patient ID:', patientId);
+
+  try {
+    // Check existence in both tables
+    const patientInPatients = await rhuPool.query(
+      'SELECT 1 FROM patients WHERE patient_id = $1',
+      [patientId]
+    );
+
+    const patientInNurseChecks = await rhuPool.query(
+      'SELECT 1 FROM nurse_checks WHERE patient_id = $1',
+      [patientId]
+    );
+
+    // Delete from `patients` table if exists
+    if (patientInPatients.rowCount > 0) {
+      await rhuPool.query('DELETE FROM patients WHERE patient_id = $1', [patientId]);
+    }
+
+    // Delete from `nurse_checks` table if exists
+    if (patientInNurseChecks.rowCount > 0) {
+      await rhuPool.query('DELETE FROM nurse_checks WHERE patient_id = $1', [patientId]);
+    }
+
+    if (patientInPatients.rowCount > 0 || patientInNurseChecks.rowCount > 0) {
+      res.json({ message: 'Patient records deleted successfully from applicable tables.' });
+    } else {
+      res.status(404).json({ message: 'Patient record not found in any table.' });
+    }
+
+  } catch (error) {
+    console.error('Error deleting patient records:', error);
+
+    res.status(500).json({ message: 'Failed to delete the patient records.' });
+  }
+});
+
+
+
 
 router.delete("/logout", (req, res) => {
   req.logOut((err) => {

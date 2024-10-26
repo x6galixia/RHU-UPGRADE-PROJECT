@@ -31,7 +31,8 @@
 
             <!-- Patient information na container :) -->
             <form action="/nurse/admit-patient" method="POST">
-                <div class="container">
+                <input name="user_name" type="hidden" value="<%= firstname %> <%= surname%>">
+                <div class=" container">
                     <div class="sub-con patients-information-container">
                         <div class="scannerContainer">
                             <div class="patient-head">
@@ -44,8 +45,7 @@
                                     <span class="slider round"></span>
                                 </label>
                             </div>
-                            <input type="text" id="qrOutput" name="patient_id"
-                                style="position: absolute; display: none;">
+                            <input type="hidden" id="qrOutput" name="patient_id" style="position: absolute;">
                         </div>
                         <div class="information">
                             <div class="r">
@@ -333,6 +333,23 @@
                                     </div>
                                 </main>
                             </div>
+                            <div class="pop-up-confirm" id="delete-patient-recently-admitted">
+                                <div>
+                                    <div class="reject-heading">
+                                        <img src="../icon/warning.svg" alt="">
+                                        <h2>Deleting a Recently Admitted will automatically delete from the list</h2>
+                                    </div>
+                                    <main>
+                                        <h2>Are sure you want to delete this?</h2>
+                                        <div>
+                                            <button type="button" id="cancel-delete"
+                                                class="button-bordered close_popUp1">No</button>
+                                            <button type="button" id="confirm-delete" class="button-bordered"
+                                                style="color: red;">Yes</button>
+                                        </div>
+                                    </main>
+                                </div>
+                            </div>
 
         </main>
         <!-- fetch ID -->
@@ -385,104 +402,9 @@
                 });
             });
         </script>
-        <script src="../js/local/nurse/patient-registration.js"></script>
         <script src="../js/local/nurse/patient-registration-api.js"></script>
-        <script src="../../js/global/client-side-functions.js"></script>
-        <script src="../../js/global/pop-up.js"></script>
-        <script>
-
-            document.getElementById('scanSwitch').addEventListener('change', function () {
-                const qrInputField = document.getElementById('qrInput');
-                let scanning = false;
-
-                if (this.checked) {
-                    console.log("Scanning started");
-
-                    // Enable scanning and focus the QR input field
-                    document.addEventListener('keydown', handleKeyDown);
-                    qrInputField.addEventListener('keypress', handleKeyPress);
-                    qrInputField.focus(); // Focus on the QR input field when scanning is enabled
-                } else {
-                    console.log("Scanning stopped");
-
-                    // Disable scanning and remove focus from the QR input field
-                    document.removeEventListener('keydown', handleKeyDown);
-                    qrInputField.removeEventListener('keypress', handleKeyPress);
-                    qrInputField.blur(); // Remove focus from the QR input field
-                }
-
-                // Function to handle keydown event
-                function handleKeyDown(event) {
-                    // Only focus the input if scanning is active and a character key was pressed
-                    if (scanning === false && event.key.length === 1) {
-                        scanning = true;
-                        qrInputField.focus();
-                    }
-                }
-
-                // Function to handle keypress event when 'Enter' is pressed
-                function handleKeyPress(event) {
-                    if (event.key === 'Enter') {
-                        const scannedData = event.target.value;
-                        const secretKey = "KimGalicia";
-
-                        // Decrypt function
-                        function decryptData(cipherText, secretKey) {
-                            const bytes = CryptoJS.AES.decrypt(cipherText, secretKey);
-                            return bytes.toString(CryptoJS.enc.Utf8);
-                        }
-
-                        const decryptedData = decryptData(scannedData, secretKey);
-
-                        console.log(document.getElementById("qrOutput").value);
-                        console.log(decryptedData);
-
-                        // Set scanned data to the QR output field
-                        document.getElementById("qrOutput").value = decryptedData;
-
-                        // Send the scanned QR code data to the server
-                        fetch(`/nurse/fetchScannedData?qrCode=${decryptedData}`, {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        })
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Network response was not ok ' + response.statusText);
-                                }
-                                return response.json();
-                            })
-                            .then(data => {
-                                console.log('Success:', data);
-                                populateFormFields(data); // Call function to populate fields
-                            })
-                            .catch((error) => {
-                                console.error('Error:', error);
-                            });
-
-                        // Clear the input after scanning
-                        event.target.value = '';
-                    }
-                }
-
-
-            });
-
-            function populateFormFields(data) {
-                document.getElementById("lastname").value = data.last_name || '';
-                document.getElementById("firstname").value = data.first_name || '';
-                document.getElementById("middlename").value = data.middle_name || '';
-                document.getElementById("address").value = data.street + ', ' + 'None, ' + data.barangay + ', ' + data.city + ', ' + data.province || '';
-                document.getElementById("birthdate").value = new Date(data.birthdate)
-                    .toISOString()
-                    .split("T")[0] || '';
-                document.getElementById("gender").value = data.gender || '';
-                document.getElementById("phone").value = data.phone || '';
-                document.getElementById("occupation").value = data.occupation || '';
-            }
-
-        </script>
+        <script src="../js/global/pop-up.js"></script>
+        <script src="../js/global/client-side-functions.js"></script>
 </body>
 
 </html>

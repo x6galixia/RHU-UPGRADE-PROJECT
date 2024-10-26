@@ -85,7 +85,8 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
                                     data-guardian="${patient.guardian}"
-                                    data-lab-result="${JSON.stringify(patient.lab_results)}">Laboratory Result</option>
+                                    data-lab-result="${patient.lab_results}"
+                                    >Laboratory Result</option>
 
                                     <option value="6"
                                     data-patient-id="${patient.patient_id}"
