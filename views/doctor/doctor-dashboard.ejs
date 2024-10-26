@@ -240,7 +240,7 @@
       </form>
       <!-- Nasa pinakababa yung printtt -->
 
-      <form action="/doctor/diagnose-patient/send" method="POST">
+      <form action="/doctor/diagnose-patient/send" method="POST" id="diagnosisForm">
         <!-- pop up for diagnosis-->
         <div class="pop-up" id="diagnosis">
           <div class="head row just-bet">
@@ -297,12 +297,12 @@
               <textarea name="diagnosis" id="dia_diagnosis" class="grow"></textarea>
             </div>
             <div class="left-btn">
-              <button>Submit</button>
+              <button type="submit" id="submitButton">Submit</button>
             </div>
           </div>
         </div>
       </form>
-
+      
       <form action="/doctor/findings-patient/send" method="POST">
         <!-- pop up for findings -->
         <div class="pop-up" id="findings">
@@ -360,7 +360,7 @@
               <textarea name="findings" id="fin_findings" class="grow"></textarea>
             </div>
             <div class="left-btn">
-              <button>Submit</button>
+              <button type="submit" id="submitButtons">Submit</button>
             </div>
           </div>
         </div>
@@ -629,6 +629,7 @@
     </main>
     <script src="../../js/local/doctor-dashboard/patient-api.js"></script>
     <script src="../../js/global/pop-up.js"></script>
+    <script src="../../js/global/update.js"></script>
     <script src="../../js/global/services.js"></script>
     <script>
       function printingReqReseta(containerID) {
