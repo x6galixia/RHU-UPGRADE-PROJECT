@@ -326,3 +326,18 @@ input[type="button"] {
     display: flex !important;
     justify-content: space-around;
 }
+
+.menu-row button {
+    width: fit-content;
+    /* background-color: #44a130; */
+    font-weight: normal;
+    color: black;
+    border-radius: 0;
+}
+
+.menu-row button:hover {
+    width: fit-content;
+    height: fit-content;
+    background-color: #44a130;
+    color: #FFF;
+}

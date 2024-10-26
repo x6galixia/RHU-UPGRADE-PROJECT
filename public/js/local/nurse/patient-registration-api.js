@@ -43,13 +43,7 @@ function loadPage(page, rhuId) {
             <td>${patient.check_date || 'N/A'}</td>
             <td>${patient.nurse_name}</td>
             <td class="menu-row">
-              <img class="${mainContainerClass}" src="../icon/triple-dot.svg" alt="">
-              <div class="${tripleDotClass}">
-                <div class="menu" data-id="${patient.patient_id}">
-                  <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
-                  <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
-                </div>
-              </div>
+            <button id="update-id" data-id="${patient.patient_id}">Update</button>
             </td>
           </tr>`;
         tbody.insertAdjacentHTML('beforeend', row);

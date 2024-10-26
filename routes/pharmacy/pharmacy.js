@@ -9,6 +9,7 @@ const pharmacyPool = require("../../models/pharmacydb");
 const { calculateAge, formatDate } = require("../../public/js/global/functions");
 const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
+const rhuPool = require("../../models/rhudb");
 
 router.use(setUserData);
 router.use(methodOverride("_method"));
@@ -236,10 +237,35 @@ router.get("/pharmacy-records/beneficiary/:id", ensureAuthenticated, checkUserTy
   }
 });
 
-router.get("/pharmacy-dispense-request", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
-  res.render("pharmacy/requests-for-dispense",
-    { user: req.user }
-  );
+router.get("/pharmacy-dispense-request", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const isAjax = req.query.ajax === "true";
+
+  try {
+    const { getBeneficiaryList, totalPages } = await fetchDispenseList(page, limit);
+
+    if (isAjax) {
+      return res.json({
+        getBeneficiaryList,
+        user: req.user,
+        currentPage: page,
+        totalPages,
+        limit
+      });
+    }
+
+    res.render("pharmacy/request-for-dispense", {
+      getBeneficiaryList,
+      user: req.user,
+      currentPage: page,
+      totalPages,
+      limit
+    });
+  } catch (err) {
+    console.error("Error: ", err);
+    res.sendStatus(500);
+  }
 });
 
 router.get("/pharmacy-index-form", ensureAuthenticated, checkUserType("Pharmacist"), (req, res) => {
@@ -508,6 +534,34 @@ async function fetchBeneficiaryList(page, limit) {
   } catch (err) {
     console.error("Error: ", err);
     throw new Error("Error fetching beneficiary list");
+  }
+}
+
+async function fetchDispenseList(page, limit) {
+  const offset = (page - 1) * limit;
+
+  try {
+    const totalItemsResult = await rhuPool.query("SELECT COUNT(*) FROM patient_prescription_data");
+    const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
+    const totalPages = Math.ceil(totalItems / limit);
+
+    const dispenseList = await rhuPool.query(
+      `SELECT pd.*, 
+              COALESCE(json_agg(p) FILTER (WHERE p.id IS NOT NULL), '[]') AS prescription 
+       FROM patient_prescription_data pd
+       LEFT JOIN prescription p ON b.patient_prescription_id = t.patient_prescription_id
+       GROUP BY b.patient_prescription_id
+       LIMIT $1 OFFSET $2`, [limit, offset]
+    );
+
+    const data = dispenseList.rows.map(row => ({
+      ...row
+    }));
+
+    return { getDispenseList: data, totalPages };
+  } catch (err) {
+    console.error("Error: ", err);
+    throw new Error("Error fetching dispense list");
   }
 }
 
