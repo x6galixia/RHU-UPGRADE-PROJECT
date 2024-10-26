@@ -19,6 +19,7 @@
           <img src="../icon/search.svg" alt="" />
         </div>
         <div class="table-container" id="">
+          <div id="loadingSpinner" style="display: none">Loading...</div>
           <table>
             <thead>
               <tr>
@@ -33,6 +34,14 @@
             </thead>
             <tbody id="dispenseTableBody"></tbody>
           </table>
+          <nav aria-label="Page navigation" id="paginationNav">
+            <% if (currentPage> 1) { %>
+              <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous Page">Previous</a>
+              <% } %>
+                <% if (currentPage < totalPages) { %>
+                  <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next Page">Next</a>
+                  <% } %>
+          </nav>
           <div>
           </div>
         </div>
@@ -43,54 +52,56 @@
         </div>
         <h1 class="heading">DISPENSE MEDICINE</h1>
         <main>
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>TRANSACTION NO.</th>
-                  <th>PRODUCT NAME</th>
-                  <th>ISSUED QUANTITY</th>
-                  <th>ISSUED DATE</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>11111</td>
-                  <td>Kim Boog</td>
-                  <td>Guti</td>
-                  <td>Delay</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
           <form action="" class="dispense-med" method="POST">
             <div>
               <div>
                 <div class="input-with-label">
-                  <label>Beneficiary Name</label>
-                  <input type="text" name="beneficiary_name" required>
-                </div>
-                <div class="input-with-label">
-                  <label>Physician</label>
-                  <input type="text" name="physician" required>
-                </div>
-                <div class="input-with-label">
-                  <label>Diagnosis</label>
-                  <input type="text" name="diagnosis" required>
+                  <label>Name:</label>
+                  <input type="text" name="beneficiary_name" id="dispense_name" required readonly>
                 </div>
               </div>
-              <div>
+              <div class="wan">
                 <div class="input-with-label">
-                  <label>Requesting Party</label>
-                  <input type="text" name="requesting_party" required>
+                  <label>Doctor:</label>
+                  <input type="text" name="doctor" id="dispense_doctor" required readonly>
                 </div>
                 <div class="input-with-label">
-                  <label>Affiliation</label>
-                  <input type="text" name="relationship" required>
+                  <label>Diagnosis:</label>
+                  <input type="text" name="diagnosis" id="dispense_diagnosis" required readonly>
+                </div>
+              </div>
+              <div class="too">
+                <div class="input-with-label">
+                  <label>Receiver:</label>
+                  <input type="text" name="receiver" id="dispense_receiver" required readonly>
+                </div>
+                <div class="input-with-label">
+                  <label>Affiliation:</label>
+                  <input type="text" name="relationship" id="dispense_relationship" required readonly>
                 </div>
               </div>
             </div>
-            <div>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>TRANSACTION NO.</th>
+                    <th>PRODUCT NAME</th>
+                    <th>ISSUED QUANTITY</th>
+                    <th>ISSUED DATE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>11111</td>
+                    <td>Kim Boog</td>
+                    <td>Guti</td>
+                    <td>Delay</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="button-container">
               <button type="button" class="button-bordered" id="reject_dispense_button"
                 onclick="popUp_button(this)">REJECT</button>
               <button type="button" class="button-green" id="submit_dispense_button"
@@ -124,6 +135,8 @@
         </main>
       </div>
 </body>
+<script src="../js/local/dispenseList/dispense-list-api.js"></script>
+<script src="../js/global/pop-up.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     var nav3 = document.querySelector(".nav3");
