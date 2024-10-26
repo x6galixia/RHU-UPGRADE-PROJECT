@@ -23,6 +23,7 @@ const update_beneficiary = document.getElementById("update-beneficiary");
 const delete_beneficiary = document.getElementById("delete-beneficiary");
 const ID = document.getElementById("id");
 
+
 //dispense
 const dispense = document.getElementById("dispense-med");
 const reject_dispense = document.getElementById("reject_dispense");
