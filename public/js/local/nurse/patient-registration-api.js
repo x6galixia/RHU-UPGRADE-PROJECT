@@ -2,7 +2,7 @@ document.getElementById('recently-admitted').addEventListener('click', function 
   const rhuId = document.getElementById('rhu-select').value;
   loadPage(1, rhuId);
   document.getElementById('recently-admitted-table').style.display = 'block';
-  overlay.classList.toggle("visible");
+  overlay.classList.add("visible");
 });
 
 document.getElementById('rhu-select').addEventListener('change', function () {
@@ -48,8 +48,8 @@ function loadPage(page, rhuId) {
             </td>
           </tr>`;
         tbody.insertAdjacentHTML('beforeend', row);
-        attachDotEventListeners();
       });
+      attachDotEventListeners();
 
       const previousPageButton = document.getElementById('previous-page');
       const nextPageButton = document.getElementById('next-page');
@@ -65,28 +65,25 @@ function loadPage(page, rhuId) {
 
 function attachDotEventListeners() {
   document.querySelectorAll(".dot").forEach(function (dot) {
-    dot.addEventListener("click", function () {
+    dot.addEventListener("click", function (event) {
+      event.stopPropagation();
       const tripleDotContainer = dot.closest("td").querySelector(".triple-dot");
-      if (tripleDotContainer) {
-        tripleDotContainer.classList.toggle("visible");
-        if (tripleDotContainer.classList.contains("visible")) {
-          isDotMenuOpen = true;
-        }
-      }
-    });
 
-    document.addEventListener("click", function (event) {
-      // Check if the click was outside the dot container
-      if (!dot.contains(event.target)) {
-        const tripleDotContainer = dot.closest("td").querySelector(".triple-dot");
-        if (tripleDotContainer && tripleDotContainer.classList.contains("visible")) {
-          tripleDotContainer.classList.remove("visible");
-          isDotMenuOpen = false;
+      document.querySelectorAll(".triple-dot.visible").forEach(openMenu => {
+        if (openMenu !== tripleDotContainer) {
+          openMenu.classList.remove("visible");
         }
-      }
+      });
+
+      tripleDotContainer.classList.toggle("visible");
     });
   });
 
+  document.addEventListener("click", function (event) {
+    document.querySelectorAll(".triple-dot.visible").forEach(openMenu => {
+      openMenu.classList.remove("visible");
+    });
+  });
 }
 
 window.popUp_three_dot = function (button) {
@@ -110,60 +107,60 @@ window.popUp_three_dot = function (button) {
       pop_up_Delete.classList.remove("visible");
     })
   }
-  if (action === 'Update' && beneficiaryId) {
-    fetch(`/pharmacy-records/beneficiary/${beneficiaryId}`)
-      .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
-        return response.json();
-      })
-      .then(beneficiaryData => {
-        document.getElementById('beneficiary_id').value = beneficiaryData.beneficiary_id || '';
-        document.getElementById('last_name').value = beneficiaryData.last_name || '';
-        document.getElementById('first_name').value = beneficiaryData.first_name || '';
-        document.getElementById('middle_name').value = beneficiaryData.middle_name || '';
-        document.getElementById('gender').value = beneficiaryData.gender || '';
-        document.getElementById('birthdate').value = beneficiaryData.birthdate.split('T')[0] || '';
-        document.getElementById('phone').value = beneficiaryData.phone || '';
-        document.getElementById('processed_date').value = beneficiaryData.processed_date.split('T')[0] || '';
-        document.getElementById('occupation').value = beneficiaryData.occupation || '';
-        document.getElementById('street').value = beneficiaryData.street || '';
-        document.getElementById('barangay').value = beneficiaryData.barangay || '';
-        document.getElementById('city').value = beneficiaryData.city || '';
-        document.getElementById('province').value = beneficiaryData.province || '';
-        document.getElementById('senior_citizen').value = beneficiaryData.senior_citizen || '';
-        document.getElementById('pwd').value = beneficiaryData.pwd || '';
-        document.getElementById('note').value = beneficiaryData.note || '';
-        document.getElementById('existing_picture').value = beneficiaryData.picture || '';
+  // if (action === 'Update' && beneficiaryId) {
+  //   fetch(`/pharmacy-records/beneficiary/${beneficiaryId}`)
+  //     .then(response => {
+  //       if (!response.ok) throw new Error('Network response was not ok');
+  //       return response.json();
+  //     })
+  //     .then(beneficiaryData => {
+  //       document.getElementById('beneficiary_id').value = beneficiaryData.beneficiary_id || '';
+  //       document.getElementById('last_name').value = beneficiaryData.last_name || '';
+  //       document.getElementById('first_name').value = beneficiaryData.first_name || '';
+  //       document.getElementById('middle_name').value = beneficiaryData.middle_name || '';
+  //       document.getElementById('gender').value = beneficiaryData.gender || '';
+  //       document.getElementById('birthdate').value = beneficiaryData.birthdate.split('T')[0] || '';
+  //       document.getElementById('phone').value = beneficiaryData.phone || '';
+  //       document.getElementById('processed_date').value = beneficiaryData.processed_date.split('T')[0] || '';
+  //       document.getElementById('occupation').value = beneficiaryData.occupation || '';
+  //       document.getElementById('street').value = beneficiaryData.street || '';
+  //       document.getElementById('barangay').value = beneficiaryData.barangay || '';
+  //       document.getElementById('city').value = beneficiaryData.city || '';
+  //       document.getElementById('province').value = beneficiaryData.province || '';
+  //       document.getElementById('senior_citizen').value = beneficiaryData.senior_citizen || '';
+  //       document.getElementById('pwd').value = beneficiaryData.pwd || '';
+  //       document.getElementById('note').value = beneficiaryData.note || '';
+  //       document.getElementById('existing_picture').value = beneficiaryData.picture || '';
 
-        var picture;
-        if (beneficiaryData.gender === "Male") {
-          picture = "/icon/upload-img-default.svg";
-        } else {
-          picture = "/icon/upload-img-default-woman.svg";
-        }
+  //       var picture;
+  //       if (beneficiaryData.gender === "Male") {
+  //         picture = "/icon/upload-img-default.svg";
+  //       } else {
+  //         picture = "/icon/upload-img-default-woman.svg";
+  //       }
 
 
-        const pictureElement = document.getElementById('pictureDisplay');
-        if (pictureElement) {
-          const picturePath = (beneficiaryData.picture && beneficiaryData.picture !== '0') ? `/uploads/beneficiary-img/${beneficiaryData.picture}` : picture;
-          pictureElement.src = picturePath;
-        } else {
-          console.error('Image element not found');
-        }
+  //       const pictureElement = document.getElementById('pictureDisplay');
+  //       if (pictureElement) {
+  //         const picturePath = (beneficiaryData.picture && beneficiaryData.picture !== '0') ? `/uploads/beneficiary-img/${beneficiaryData.picture}` : picture;
+  //         pictureElement.src = picturePath;
+  //       } else {
+  //         console.error('Image element not found');
+  //       }
 
-        const fileInput = document.getElementById('picture');
-        if (fileInput) {
-          fileInput.value = '';
-        }
+  //       const fileInput = document.getElementById('picture');
+  //       if (fileInput) {
+  //         fileInput.value = '';
+  //       }
 
-        update_beneficiary.classList.add("visible");
-        overlay.classList.add("visible");
-      })
-      .catch(error => {
-        console.error('Error fetching beneficiary data:', error);
-        alert('Failed to fetch beneficiary data. Please try again.');
-      });
-  }
+  //       update_beneficiary.classList.add("visible");
+  //       overlay.classList.add("visible");
+  //     })
+  //     .catch(error => {
+  //       console.error('Error fetching beneficiary data:', error);
+  //       alert('Failed to fetch beneficiary data. Please try again.');
+  //     });
+  // }
 };
 
 function deletePatient(patientId) {
