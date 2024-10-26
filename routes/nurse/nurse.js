@@ -511,8 +511,6 @@ router.delete('/nurse/patient-registration/delete/:id', async (req, res) => {
 });
 
 
-
-
 router.delete("/logout", (req, res) => {
   req.logOut((err) => {
     if (err) {
