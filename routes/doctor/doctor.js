@@ -317,7 +317,7 @@ router.post("/doctor/prescribe-patient/send", async (req, res) => {
       if (checkPatientPrescription.rows.length === 0) {
         await rhuPool.query(
           `INSERT INTO patient_prescription_data 
-           (patient_prescription_id, patient_id, rhu_id, receiver, relationship_with_patient) 
+           (patient_prescription_id, patient_id, rhu_id, reciever, relationship_with_patient) 
            VALUES ($1, $2, $3, $4, $5)`,
           [value.patient_id, value.patient_id, rhu_id, value.receiver, value.relationship]
         );
