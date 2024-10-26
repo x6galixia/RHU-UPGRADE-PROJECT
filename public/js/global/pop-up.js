@@ -210,22 +210,48 @@ function popUp_button(button) {
       document.getElementById('res_occupation').value = selectedOption.getAttribute('data-occupation') || '';
       document.getElementById('res_guardian').value = selectedOption.getAttribute('data-guardian') || '';
 
-      // const labResults = button.dataset.labResults ? JSON.parse(button.dataset.labResults) : [];
-      // const labResultsContainer = document.querySelector("#labResultForm ul");
-      // labResultsContainer.innerHTML = "";
-      // if (labResults.length > 0) {
-      //   labResults.forEach(filename => {
-      //     const listItem = document.createElement("li");
-      //     const link = document.createElement("a");
-      //     link.href = `/uploads/${filename}`;
-      //     link.target = "_blank";
-      //     link.textContent = filename;
-      //     listItem.appendChild(link);
-      //     labResultsContainer.appendChild(listItem);
-      //   });
-      // } else {
-      //   labResultsContainer.innerHTML = "<p>No lab results available.</p>";
-      // }
+      // Retrieve labResults containing the filenames of the lab result images
+      const labResultsData = selectedOption.getAttribute('data-lab-result');
+      const labResults = labResultsData ? labResultsData.split(', ') : []; // Split by comma and space
+      const displayedImage = document.getElementById("displayedImage");
+      const prevBtn = document.getElementById("prev-btn");
+      const nextBtn = document.getElementById("next-btn");
+
+      let currentImageIndex = 0;
+      console.log(selectedOption);
+      console.log(selectedOption.getAttribute('data-lab-result'));
+      console.log(labResults);
+      console.log(labResults[currentImageIndex]);
+
+      // Function to update the displayed image
+      function updateDisplayedImage() {
+        if (labResults.length > 0) {
+          displayedImage.src = `/uploads/lab-results/${labResults[currentImageIndex]}`;
+        } else {
+          displayedImage.src = "";
+          displayedImage.alt = "No lab results available";
+          // displayedImage.src = `/uploads/lab-results/lab_result-1729784855673-202915123.jpg`;
+        }
+      }
+
+      // Initial setup to display the first image
+      updateDisplayedImage();
+
+      // Event listener for 'Previous' button
+      prevBtn.addEventListener("click", () => {
+        if (labResults.length > 0) {
+          currentImageIndex = (currentImageIndex - 1 + labResults.length) % labResults.length; // Cycle back if at the start
+          updateDisplayedImage();
+        }
+      });
+
+      // Event listener for 'Next' button
+      nextBtn.addEventListener("click", () => {
+        if (labResults.length > 0) {
+          currentImageIndex = (currentImageIndex + 1) % labResults.length; // Cycle to beginning if at the end
+          updateDisplayedImage();
+        }
+      });
     }
   }
 

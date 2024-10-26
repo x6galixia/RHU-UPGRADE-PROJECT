@@ -10,6 +10,10 @@
     /* text-wrap: nowrap; */
 }
 
+.ulo-ulo {
+    margin-top: 0;
+}
+
 .sub-con {
     width: 100%;
     padding: 1em 1em;
@@ -36,10 +40,10 @@
     flex: 1;
 }
 
- .labels-input-rows {
+.labels-input-rows {
     display: flex;
     flex-direction: column;
-} 
+}
 
 .small-margineuestions {
     display: flex;
@@ -88,7 +92,7 @@
     margin-top: 30px;
 }
 
-.row > div {
+.row>div {
     width: 100%;
 }
 
@@ -114,7 +118,8 @@ hr {
     text-wrap: nowrap;
 } */
 
-input, textarea {
+input,
+textarea {
     height: 32px;
     width: auto !important;
     border-radius: 10px;
@@ -142,7 +147,7 @@ select {
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
-input[type="checkbox"]{
+input[type="checkbox"] {
     height: auto !important;
     box-shadow: none;
 }
@@ -157,41 +162,44 @@ input[type="checkbox"]{
     }
   } */
 
- .allergy-css {
+.allergy-css {
     display: flex;
     align-items: center;
     gap: 1em;
- }
+}
 
- .allergy-css .opttt {
+.allergy-css .opttt {
     display: none;
- }
+}
 
- 
 
- input[type="radio"] {
+
+input[type="radio"] {
     height: auto !important;
     box-shadow: none;
- }
+}
 
 
- .buton {
+.buton {
     height: auto;
     width: auto !important;
     padding: .5em 2em;
     background-color: var(--pink-color);
     margin-bottom: 20px;
 
- }
+}
 
- .buton:hover {
+.buton:hover {
     height: auto;
     width: auto;
- }
+}
 
- .butt {
+.butt {
     background-color: var(--green-color);
-    margin: 28px 0;
- }
+    margin: 28px 0 0 0;
+}
 
-
+.health-assessment-button {
+    display: flex;
+    justify-content: center;
+}
