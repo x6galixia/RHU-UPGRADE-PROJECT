@@ -170,6 +170,127 @@ router.get("/pharmacy-records", ensureAuthenticated, checkUserType("Pharmacist")
   }
 });
 
+router.get("/pharmacy-dispense", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const isAjax = req.query.ajax === "true";
+
+  try {
+    const { getDispenseList, totalPages } = await fetchDispenseList(page, limit);
+
+    if (isAjax) {
+      return res.json({
+        getDispenseList,
+        user: req.user,
+        currentPage: page,
+        totalPages,
+        limit
+      });
+    }
+
+    res.render("pharmacy/requests-for-dispense", {
+      getDispenseList,
+      user: req.user,
+      currentPage: page,
+      totalPages,
+      limit
+    });
+  } catch (err) {
+    console.error("Error: ", err);
+    res.sendStatus(500);
+  }
+});
+
+router.get("/pharmacy-dispense-request", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const isAjax = req.query.ajax === "true";
+
+  try {
+    const { getDispenseList, totalPages } = await fetchDispenseList(page, limit);
+
+    if (isAjax) {
+      return res.json({
+        getDispenseList,
+        user: req.user,
+        currentPage: page,
+        totalPages,
+        limit
+      });
+    }
+
+    res.render("pharmacy/requests-for-dispense", {
+      getDispenseList,
+      user: req.user,
+      currentPage: page,
+      totalPages,
+      limit
+    });
+  } catch (err) {
+    console.error("Error: ", err);
+    res.sendStatus(500);
+  }
+});
+
+router.get("/pharmacy-dispense/search", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+  const { query } = req.query;
+
+  try {
+    let searchResult;
+
+    if (!query) {
+      // Fetch all data without search filter
+      searchResult = await rhuPool.query(
+        `SELECT pd.*, 
+                pt.*, 
+                COALESCE(json_agg(p) FILTER (WHERE p.id IS NOT NULL), '[]') AS prescription 
+         FROM patient_prescription_data pd
+         LEFT JOIN prescription p ON pd.patient_prescription_id = p.patient_prescription_id
+         LEFT JOIN patients pt ON pd.patient_id = pt.patient_id
+         GROUP BY pd.patient_prescription_id, pt.patient_id
+         ORDER BY pt.first_name
+         LIMIT $1 OFFSET $2`, [limit, offset]
+      );
+    } else {
+      // Fetch data with search filter
+      searchResult = await rhuPool.query(
+        `SELECT pd.*, 
+                pt.*, 
+                COALESCE(json_agg(p) FILTER (WHERE p.id IS NOT NULL), '[]') AS prescription 
+         FROM patient_prescription_data pd
+         LEFT JOIN prescription p ON pd.patient_prescription_id = p.patient_prescription_id
+         LEFT JOIN patients pt ON pd.patient_id = pt.patient_id
+         WHERE CONCAT(pt.first_name, ' ', pt.middle_name, ' ', pt.last_name) ILIKE $1
+            OR CONCAT(pt.first_name, ' ', pt.last_name) ILIKE $1
+            OR pt.first_name ILIKE $1
+            OR pt.middle_name ILIKE $1
+            OR pt.last_name ILIKE $1
+         GROUP BY pd.patient_prescription_id, pt.patient_id
+         ORDER BY pt.first_name
+         LIMIT $2 OFFSET $3`,
+        [`%${query}%`, limit, offset]
+      );
+    }
+
+    // Format data for response
+    const data = searchResult.rows.map(row => ({
+      ...row,
+      middle_name: row.middle_name || '',
+      age: calculateAge(row.birthdate),
+      senior_citizen: isSeniorCitizen(row.age)
+    }));
+
+    res.json({ getDispenseList: data });
+  } catch (err) {
+    console.error("Error: ", err);
+    res.status(500).send("An error occurred during the search.");
+  }
+});
+
+
 router.get("/pharmacy-records/search", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
@@ -234,37 +355,6 @@ router.get("/pharmacy-records/beneficiary/:id", ensureAuthenticated, checkUserTy
   } catch (err) {
     console.error("Error fetching beneficiary:", err);
     res.status(500).json({ message: "Failed to fetch the beneficiary." });
-  }
-});
-
-router.get("/pharmacy-dispense-request", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const isAjax = req.query.ajax === "true";
-
-  try {
-    const { getBeneficiaryList, totalPages } = await fetchDispenseList(page, limit);
-
-    if (isAjax) {
-      return res.json({
-        getBeneficiaryList,
-        user: req.user,
-        currentPage: page,
-        totalPages,
-        limit
-      });
-    }
-
-    res.render("pharmacy/request-for-dispense", {
-      getBeneficiaryList,
-      user: req.user,
-      currentPage: page,
-      totalPages,
-      limit
-    });
-  } catch (err) {
-    console.error("Error: ", err);
-    res.sendStatus(500);
   }
 });
 
@@ -547,12 +637,15 @@ async function fetchDispenseList(page, limit) {
 
     const dispenseList = await rhuPool.query(
       `SELECT pd.*, 
+              pt.*, 
               COALESCE(json_agg(p) FILTER (WHERE p.id IS NOT NULL), '[]') AS prescription 
        FROM patient_prescription_data pd
-       LEFT JOIN prescription p ON b.patient_prescription_id = t.patient_prescription_id
-       GROUP BY b.patient_prescription_id
+       LEFT JOIN prescription p ON pd.patient_prescription_id = p.patient_prescription_id
+       LEFT JOIN patients pt ON pd.patient_id = pt.patient_id
+       GROUP BY pd.patient_prescription_id, pt.patient_id
        LIMIT $1 OFFSET $2`, [limit, offset]
     );
+
 
     const data = dispenseList.rows.map(row => ({
       ...row
