@@ -38,6 +38,7 @@ const patientSchema = Joi.object({
   bmi: Joi.number().allow("").optional(),
   comment: Joi.string().allow("").optional(),
   //doctor
+  doctor_name: Joi.string().allow("").optional(),
   follow_date: Joi.date().allow("").optional(),
   diagnosis: Joi.string().allow("").optional(),
   findings: Joi.string().allow("").optional(),
@@ -52,6 +53,9 @@ const patientSchema = Joi.object({
   doctor: Joi.string().allow("").optional(),
   //medtech
   lab_result: Joi.string().allow("").optional(),
+  //inventory
+  product_id: Joi.string().allow("").optional(),
+  batch_number: Joi.string().allow("").optional()
 });
 
 router.get("/doctor-dashboard", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
@@ -275,7 +279,7 @@ router.get("/doctor-dashboard/prescribe/search", async (req, res) => {
 
   try {
     const result = await pharmacyPool.query(
-      "SELECT product_name, dosage, product_quantity FROM inventory WHERE product_quantity <> 0 AND product_name ILIKE $1",
+      "SELECT product_name, dosage, product_quantity, product_id, batch_number FROM inventory WHERE product_quantity <> 0 AND product_name ILIKE $1",
       [`%${query}%`]
     );
     res.json(result.rows);
@@ -287,6 +291,13 @@ router.get("/doctor-dashboard/prescribe/search", async (req, res) => {
 
 router.post("/doctor/prescribe-patient/send", async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
+
+  console.log(value);
+
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   const rhu_id = req.user.rhu_id;
   let patient_prescription_id;
   if (error) {
@@ -304,7 +315,7 @@ router.post("/doctor/prescribe-patient/send", async (req, res) => {
         `UPDATE doctor_visits 
          SET medicine = $2, 
              instruction = $3, 
-             quantity = $4 
+             quantity = $4
          WHERE patient_id = $1`,
         [value.patient_id, value.medicine, value.instruction, value.quantity]
       );
@@ -330,14 +341,17 @@ router.post("/doctor/prescribe-patient/send", async (req, res) => {
 
       await rhuPool.query(
         `INSERT INTO prescription 
-         (patient_prescription_id, diagnosis, findings, category, service, medicine, instruction, quantity) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+         (patient_prescription_id, doctor_name, diagnosis, findings, category, service, product_id, batch_number, medicine, instruction, quantity) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
         [
           patient_prescription_id,
+          value.doctor,
           isPatient.rows[0].diagnosis,
           isPatient.rows[0].findings,
           isPatient.rows[0].category,
           isPatient.rows[0].service,
+          value.product_id,
+          value.batch_number,
           value.medicine,
           value.instruction,
           value.quantity
