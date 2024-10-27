@@ -68,6 +68,56 @@ const beneficiarySchema = Joi.object({
   existing_picture: Joi.string().optional()
 });
 
+// const dispenseSchema = Joi.object({
+//   beneficiary_id: Joi.string().required(),
+//   transaction_number: Joi.string().required(),
+//   date_issued: Joi.date().required(),
+//   doctor: Joi.string().required(),
+//   receiver: Joi.string().required(),
+//   relationship_beneficiary: Joi.string().required(),
+//   medicines: Joi.array().items(Joi.object({
+//     product_id: Joi.string().required(),
+//     batch_number: Joi.string().required(),
+//     product_details: Joi.string().required(),
+//     quantity: Joi.number().integer().greater(0).required()
+//   })).required()
+// });
+
+const dispenseSchema = Joi.object({
+
+  //-----transaction records----//
+
+  //beneficiaryID 1
+  //transactionNumber -- 
+  //dateIssued -- 
+  //doctor 2
+  //recieverName 3
+  //recieverRelationship 4
+
+  //------transaction medicine-----//
+
+  //--THIS IS IN MULTIPLE ROW--//
+  //tranID -- 
+  //productID 5 -- 
+  //batchNumber 6
+  //productDetails 7
+  //quantity 8
+
+  //-----transaction records----//
+  beneficiary_id: Joi.string().required(),
+  transaction_number: Joi.string().required(),
+  date_issued: Joi.date().required(),
+  doctor: Joi.string().required(),
+  reciever: Joi.string().required(),
+  relationship_beneficiary: Joi.string().required(),
+  //------transaction medicine-----//
+  tran_id: Joi.number().integer().required(),
+  product_id: Joi.string().required(),
+  batch_number: Joi.string().required(),
+  product_details: Joi.string().required(),
+  quantity: Joi.number().integer().required()
+});
+
 const upload = multer({ storage: storage });
 router.use("/uploads/beneficiary-img", express.static("uploads"));
 
@@ -372,6 +422,26 @@ router.get("/pharmacy-trends", ensureAuthenticated, checkUserType("Pharmacist"),
     { user: req.user });
 });
 
+router.get("/pharmacy/generate-transaction-id/new-id", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  try {
+      const result = await pharmacyPool.query(
+          "SELECT transaction_number FROM transaction_records ORDER BY transaction_number DESC LIMIT 1"
+      );
+
+      let lastId = "T0000";
+      if (result.rows.length > 0 && result.rows[0].transaction_number) {
+          lastId = result.rows[0].transaction_number;
+      }
+
+      console.log('Last ID:', lastId);
+      const newId = generateNextTransactionId(lastId);
+      res.json({ id: newId });
+  } catch (err) {
+      console.error("Error generating ID:", err);
+      res.status(500).json({ error: "Server error", details: err.message });
+  }
+});
+
 router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
 
@@ -510,6 +580,86 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
   } catch (error) {
     console.error('Error updating beneficiary:', error);
     res.status(500).json({ message: 'Failed to update the beneficiary.' });
+  }
+});
+
+router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
+  const { error, value } = dispenseSchema.validate(req.body);
+
+  if (error) {
+      return res.status(400).send(error.details[0].message);
+  }
+
+  const {
+      beneficiary_id,
+      transaction_number,
+      date_issued,
+      doctor,
+      receiver,
+      relationship_beneficiary,
+      medicines // Array of medicine objects
+  } = value;
+
+  const client = await pool.connect();
+  try {
+      await client.query('BEGIN');
+
+      // Check if beneficiary exists
+      const beneficiaryCheckQuery = `
+          SELECT beneficiary_id FROM beneficiary WHERE beneficiary_id = $1
+      `;
+      const beneficiaryResult = await client.query(beneficiaryCheckQuery, [beneficiary_id]);
+
+      if (beneficiaryResult.rowCount === 0) {
+          return res.status(404).json({ message: `Beneficiary ID ${beneficiary_id} not found` });
+      }
+
+      // Insert into transaction_records
+      const insertTransactionQuery = `
+          INSERT INTO transaction_records (beneficiary_id, transaction_number, date_issued, doctor, reciever, relationship_beneficiary)
+          VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
+      `;
+      const transactionResult = await client.query(insertTransactionQuery, [beneficiary_id, transaction_number, date_issued, doctor, receiver, relationship_beneficiary]);
+      const transactionId = transactionResult.rows[0].id;
+
+      // Deduct quantities and insert into transaction_medicine
+      for (const medicine of medicines) {
+          const { product_id, quantity, batch_number, product_details } = medicine;
+
+          // Update the inventory table to deduct the quantity based on product ID and batch number
+          const updateInventoryQuery = `
+              UPDATE inventory 
+              SET product_quantity = product_quantity - $1 
+              WHERE product_id = $2 
+              AND batch_number = $3 
+              AND product_quantity >= $1
+          `;
+          const result = await client.query(updateInventoryQuery, [quantity, product_id, batch_number]);
+
+          // Check if the update was successful
+          if (result.rowCount === 0) {
+              // Rollback if no rows were updated (i.e., not enough stock)
+              await client.query('ROLLBACK');
+              return res.status(400).json({ message: `Not enough quantity for product ID: ${product_id}, batch number: ${batch_number}` });
+          }
+
+          // Insert into transaction_medicine with product details
+          const insertMedicineQuery = `
+              INSERT INTO transaction_medicine (tran_id, product_id, batch_number, product_details, quantity)
+              VALUES ($1, $2, $3, $4, $5)
+          `;
+          await client.query(insertMedicineQuery, [transactionId, product_id, batch_number, product_details, quantity]);
+      }
+
+      await client.query('COMMIT');
+      return res.status(200).json({ message: 'Medicine dispensed and transaction recorded successfully' });
+
+  } catch (err) {
+      await client.query('ROLLBACK');
+      console.error("Error: ", err);
+      return res.status(500).json({ message: 'Internal server error' });
+  } finally {
+      client.release();
   }
 });
 
@@ -660,28 +810,6 @@ async function fetchDispenseList(page, limit) {
 function isSeniorCitizen(age) {
   return age >= 60 ? 'Yes' : 'No';
 }
-
-router.get("/pharmacy/generate-transaction-id/new-id", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
-  try {
-    const result = await pharmacyPool.query(
-      "SELECT transaction_number FROM transaction_records ORDER BY transaction_number DESC LIMIT 1"
-    );
-
-    console.log('Query result:', result.rows);
-
-    let lastId = "T0000";
-    if (result.rows.length > 0 && result.rows[0].transaction_number) {
-      lastId = result.rows[0].transaction_number;
-    }
-
-    console.log('Last ID:', lastId);
-    const newId = generateNextTransactionId(lastId);
-    res.json({ id: newId });
-  } catch (err) {
-    console.error("Error generating ID:", err);
-    res.status(500).json({ error: "Server error", details: err.message });
-  }
-});
 
 function generateNextTransactionId(lastId) {
   const match = lastId.match(/^([A-Z]+)(\d+)$/);
