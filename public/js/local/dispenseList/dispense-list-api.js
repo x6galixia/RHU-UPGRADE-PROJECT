@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("dispense_name").value = `${dispense.first_name} ${dispense.middle_name || ''} ${dispense.last_name}`;
       document.getElementById("dispense_doctor").value = dispense.prescription[0]?.doctor_name || 'N/A';
       document.getElementById("dispense_diagnosis").value = dispense.prescription[0]?.diagnosis || 'N/A';
-      document.getElementById("dispense_receiver").value = dispense.receiver || 'N/A';
+      document.getElementById("dispense_receiver").value = dispense.reciever || 'N/A';
       document.getElementById("dispense_relationship").value = dispense.relationship_with_patient || 'N/A';
     };
 
@@ -42,6 +42,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     return row;
   }
+
+  
 
 
   function updateDispenseTable(data) {
