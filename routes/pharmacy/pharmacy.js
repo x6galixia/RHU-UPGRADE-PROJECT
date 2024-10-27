@@ -290,7 +290,6 @@ router.get("/pharmacy-dispense/search", ensureAuthenticated, checkUserType("Phar
   }
 });
 
-
 router.get("/pharmacy-records/search", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
@@ -660,6 +659,42 @@ async function fetchDispenseList(page, limit) {
 
 function isSeniorCitizen(age) {
   return age >= 60 ? 'Yes' : 'No';
+}
+
+router.get("/pharmacy/generate-transaction-id/new-id", ensureAuthenticated, checkUserType("Nurse"), async (req, res) => {
+  try {
+      const result = await pharmacyPool.query(
+          "SELECT transaction_number FROM transaction_records ORDER BY transaction_number DESC LIMIT 1"
+      );
+
+      console.log('Query result:', result.rows);
+
+      let lastId = "T0000";
+      if (result.rows.length > 0 && result.rows[0].transaction_number) {
+          lastId = result.rows[0].transaction_number;
+      }
+
+      console.log('Last ID:', lastId);
+      const newId = generateNextTransactionId(lastId);
+      res.json({ id: newId });
+  } catch (err) {
+      console.error("Error generating ID:", err);
+      res.status(500).json({ error: "Server error", details: err.message });
+  }
+});
+
+function generateNextTransactionId(lastId) {
+  const match = lastId.match(/^([A-Z]+)(\d+)$/);
+
+  if (match) {
+    const prefix = match[1];
+    const number = parseInt(match[2], 10);
+
+    const newNumber = number + 1;
+    return `${prefix}${String(newNumber).padStart(4, "0")}`;
+  }
+
+  return "T0001";
 }
 
 module.exports = router;

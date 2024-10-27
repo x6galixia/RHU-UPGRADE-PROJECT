@@ -26,10 +26,8 @@
                 <th>NAME</th>
                 <th>GENDER</th>
                 <th>ADDRESS</th>
-                <th>MEDICINE</th>
-                <th>QUANTITY</th>
-                <th>DOCTOR</th>
-                <th>DIAGNOSES</th>
+                <th>RECIEVER</th>
+                <th>RELATIONSHIP</th>
               </tr>
             </thead>
             <tbody id="dispenseTableBody"></tbody>
@@ -52,7 +50,7 @@
         </div>
         <h1 class="heading">DISPENSE MEDICINE</h1>
         <main>
-          <form action="" class="dispense-med" method="POST">
+          <form action="" class="dispense-med" method="POST">                  <!-------------------FORM HIT PAG DISPENSE-------------------------->
             <div>
               <div>
                 <div class="input-with-label">
@@ -76,7 +74,7 @@
                   <input type="text" name="receiver" id="dispense_receiver" required readonly>
                 </div>
                 <div class="input-with-label">
-                  <label>Affiliation:</label>
+                  <label>relationship:</label>
                   <input type="text" name="relationship" id="dispense_relationship" required readonly>
                 </div>
               </div>
@@ -89,6 +87,7 @@
                     <th>PRODUCT NAME</th>
                     <th>ISSUED QUANTITY</th>
                     <th>ISSUED DATE</th>
+
                   </tr>
                 </thead>
                 <tbody id="medicineTableBody"></tbody>

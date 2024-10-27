@@ -25,7 +25,7 @@ rhuPool
   .connect()
   .then(() => console.log("Connected to RHU database"))
   .catch((err) => console.error("Error connecting to RHU database:", err));
-  
+
 pharmacyPool
   .connect()
   .then(() => console.log("Connected to PHARMACY database"))
@@ -38,14 +38,20 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/node_modules", express.static(path.join(__dirname, "node_modules")));
-app.use(cors());
+
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://google.com'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true // Allow credentials
+}));
 
 app.use(
   session({
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false },
+    cookie: { secure: process.env.NODE_ENV === 'production' },
   })
 );
 
