@@ -184,18 +184,23 @@ CREATE TABLE beneficiary (
 CREATE TABLE transaction_records (
     id SERIAL PRIMARY KEY NOT NULL,
     beneficiary_id INTEGER REFERENCES beneficiary(beneficiary_id) ON DELETE CASCADE,
-    transaction_number VARCHAR(50) NOT NULL,
-    batch_number VARCHAR(50) NOT NULL,
-    product_details TEXT NULL,
-    quantity INT NOT NULL CHECK (quantity > 0),
-    expiration_date DATE NULL,
+    transaction_number VARCHAR(50) NOT NULL UNIQUE,
     date_issued DATE NULL,
-    prescribing_doctor VARCHAR(255) NULL,
-    requesting_person VARCHAR(255) NULL,
+    doctor VARCHAR(255) NULL,
+    reciever VARCHAR(255) NULL,
     relationship_beneficiary VARCHAR(100) NULL
 );
 
-CREATE TABLE inventory (-
+CREATE TABLE transaction_medicine (
+    id SERIAL PRIMARY KEY NOT NULL,
+    tran_id INTEGER REFERENCES transaction_records(id) ON DELETE CASCADE,
+    product_id VARCHAR(255) NULL,
+    batch_number VARCHAR(50) NOT NULL,
+    product_details TEXT NULL,
+    quantity INT NOT NULL CHECK (quantity > 0)
+);
+
+CREATE TABLE inventory (
     id SERIAL PRIMARY KEY NOT NULL,
     rhu_id INTEGER REFERENCES rhu(rhu_id) ON DELETE CASCADE,
     product_id VARCHAR(255) NOT NULL,

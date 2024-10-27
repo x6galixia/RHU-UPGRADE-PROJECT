@@ -50,80 +50,83 @@
         </div>
         <h1 class="heading">DISPENSE MEDICINE</h1>
         <main>
-          <form action="" class="dispense-med" method="POST">                  <!-------------------FORM HIT PAG DISPENSE-------------------------->
+          <form action="/pharmacy-records/update" class="dispense-med" method="POST">                  
+            <!-------------------FORM HIT PAG DISPENSE-------------------------->
+        
             <div>
-              <div>
-                <div class="input-with-label">
-                  <label>Name:</label>
-                  <input type="text" name="beneficiary_name" id="dispense_name" required readonly>
+                <div>
+                    <div class="input-with-label">
+                        <label>Name:</label>
+                        <input type="text" name="beneficiary_name" id="dispense_name" required readonly>
+                    </div>
                 </div>
-              </div>
-              <div class="wan">
-                <div class="input-with-label">
-                  <label>Doctor:</label>
-                  <input type="text" name="doctor" id="dispense_doctor" required readonly>
+                <div class="wan">
+                    <div class="input-with-label">
+                        <label>Doctor:</label>
+                        <input type="text" name="doctor" id="dispense_doctor" required readonly>
+                    </div>
+                    <div class="input-with-label">
+                        <label>Diagnosis:</label>
+                        <input type="text" name="diagnosis" id="dispense_diagnosis" required readonly>
+                    </div>
                 </div>
-                <div class="input-with-label">
-                  <label>Diagnosis:</label>
-                  <input type="text" name="diagnosis" id="dispense_diagnosis" required readonly>
+                <div class="too">
+                    <div class="input-with-label">
+                        <label>Receiver:</label>
+                        <input type="text" name="receiver_name" id="dispense_receiver" required readonly>
+                    </div>
+                    <div class="input-with-label">
+                        <label>Relationship:</label>
+                        <input type="text" name="relationship_beneficiary" id="dispense_relationship" required readonly>
+                    </div>
                 </div>
-              </div>
-              <div class="too">
-                <div class="input-with-label">
-                  <label>Receiver:</label>
-                  <input type="text" name="receiver" id="dispense_receiver" required readonly>
-                </div>
-                <div class="input-with-label">
-                  <label>relationship:</label>
-                  <input type="text" name="relationship" id="dispense_relationship" required readonly>
-                </div>
-              </div>
             </div>
+            
             <div class="table-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>TRANSACTION NO.</th>
-                    <th>PRODUCT NAME</th>
-                    <th>ISSUED QUANTITY</th>
-                    <th>ISSUED DATE</th>
-
-                  </tr>
-                </thead>
-                <tbody id="medicineTableBody"></tbody>
-              </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>TRANSACTION NO.</th>
+                            <th>PRODUCT NAME</th>
+                            <th>ISSUED QUANTITY</th>
+                            <th>ISSUED DATE</th>
+                        </tr>
+                    </thead>
+                    <tbody id="medicineTableBody"></tbody>
+                </table>
             </div>
+            
             <div class="button-container">
-              <button type="button" class="button-bordered" id="reject_dispense_button"
-                onclick="popUp_button(this)">REJECT</button>
-              <button type="button" class="button-green" id="submit_dispense_button"
-                onclick="popUp_button(this)">SUBMIT</button>
+                <button type="button" class="button-bordered" id="reject_dispense_button" onclick="popUp_button(this)">REJECT</button>
+                <button type="button" class="button-green" id="submit_dispense_button" onclick="popUp_button(this)">SUBMIT</button>
             </div>
+            
             <div class="pop-up-confirm" id="reject_dispense">
-              <div>
-                <div class="reject-heading">
-                  <img src="../icon/warning.svg" alt="">
-                  <h2>Rejecting a dispense request will automatically delete from the list</h2>
+                <div>
+                    <div class="reject-heading">
+                        <img src="../icon/warning.svg" alt="">
+                        <h2>Rejecting a dispense request will automatically delete from the list</h2>
+                    </div>
+                    <main>
+                        <h2>Are you sure you want to reject this dispense request?</h2>
+                        <div>
+                            <button type="button" class="button-bordered close_confirm">No</button>
+                            <button type="submit" class="button-bordered">Yes</button>
+                        </div>
+                    </main>
                 </div>
-                <main>
-                  <h2>Are sure you want to reject this dispense request?</h2>
-                  <div>
-                    <button type="button" class="button-bordered close_confirm">No</button>
-                    <button type="submit" class="button-bordered">Yes</button>
-                  </div>
-                </main>
-              </div>
             </div>
+            
             <div class="pop-up-confirm" id="submit_dispense">
-              <div>
-                <h2>Do you want to dispense medicine?</h2>
-                <main>
-                  <button type="button" class="button-bordered close_confirm">No</button>
-                  <button type="submit" class="button-green">Yes</button>
-                </main>
-              </div>
+                <div>
+                    <h2>Do you want to dispense medicine?</h2>
+                    <main>
+                        <button type="button" class="button-bordered close_confirm">No</button>
+                        <button type="submit" class="button-green">Yes</button>
+                    </main>
+                </div>
             </div>
-          </form>
+        </form>        
         </main>
       </div>
 </body>
