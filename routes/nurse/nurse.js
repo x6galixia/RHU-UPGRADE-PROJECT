@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 const rhuPool = require("../../models/rhudb");
 const pharmacyPool = require("../../models/pharmacydb");
-const { setUserData, ensureAuthenticated, checkUserType,} = require("../../middlewares/middleware");
+const { setUserData, ensureAuthenticated, checkUserType, } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
-const { calculateAge, formatDate,} = require("../../public/js/global/functions");
+const { calculateAge, formatDate, } = require("../../public/js/global/functions");
 const Joi = require("joi");
 
 router.use(setUserData);
@@ -39,79 +39,79 @@ const patientSchema = Joi.object({
 });
 
 router.get("/nurse-dashboard", ensureAuthenticated, checkUserType("Nurse"), (req, res) => {
-    res.render("nurse/nurse-dashboard", { user: req.user });
-  }
+  res.render("nurse/nurse-dashboard", { user: req.user });
+}
 );
 
 router.get("/nurse/patient-registration", ensureAuthenticated, checkUserType("Nurse"), (req, res) => {
-    res.render("nurse/patient-registration", { user: req.user });
-  }
+  res.render("nurse/patient-registration", { user: req.user });
+}
 );
 
 router.get("/nurse/patient-registration/recently-added", ensureAuthenticated, checkUserType("Nurse"), async (req, res) => {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 6;
-    const isAjax = req.query.ajax === "true";
-    const rhuId = req.query.rhu_id;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 6;
+  const isAjax = req.query.ajax === "true";
+  const rhuId = req.query.rhu_id;
 
-    try {
-      const { getPatientList, totalPages } = await fetchPatientList(
-        page,
+  try {
+    const { getPatientList, totalPages } = await fetchPatientList(
+      page,
+      limit,
+      rhuId
+    );
+
+    if (isAjax) {
+      return res.json({
+        getPatientList,
+        user: req.user,
+        currentPage: page,
+        totalPages,
         limit,
-        rhuId
-      );
-
-      if (isAjax) {
-        return res.json({
-          getPatientList,
-          user: req.user,
-          currentPage: page,
-          totalPages,
-          limit,
-        });
-      }
-    } catch (err) {
-      console.error("Error: ", err.message, err.stack);
-      res.status(500).send("Internal server error");
+      });
     }
+  } catch (err) {
+    console.error("Error: ", err.message, err.stack);
+    res.status(500).send("Internal server error");
   }
+}
 );
 
 router.get("/nurse/patient-registration/new-id", ensureAuthenticated, checkUserType("Nurse"), async (req, res) => {
-    try {
-      const result = await rhuPool.query(
-        "SELECT patient_id FROM patients ORDER BY patient_id DESC LIMIT 1"
-      );
+  try {
+    const result = await rhuPool.query(
+      "SELECT patient_id FROM patients ORDER BY patient_id DESC LIMIT 1"
+    );
 
-      let lastId = "A0000"; // Default in case there are no patients
+    let lastId = "A0000"; // Default in case there are no patients
 
-      if (result.rows.length > 0) {
-        lastId = result.rows[0].patient_id;
+    if (result.rows.length > 0) {
+      lastId = result.rows[0].patient_id;
 
-        // Check if the last ID has a prefix
-        const prefixMatch = lastId.match(/^([A-Z]+)(\d+)$/);
+      // Check if the last ID has a prefix
+      const prefixMatch = lastId.match(/^([A-Z]+)(\d+)$/);
 
-        if (!prefixMatch) {
-          // Handle IDs without a prefix or in a different format
-          const numericPart = parseInt(lastId, 10) || 0;
-          lastId = `A${String(numericPart).padStart(4, "0")}`;
-        }
+      if (!prefixMatch) {
+        // Handle IDs without a prefix or in a different format
+        const numericPart = parseInt(lastId, 10) || 0;
+        lastId = `A${String(numericPart).padStart(4, "0")}`;
       }
-
-      // Generate the next ID
-      const newId = generateNextId(lastId);
-
-      res.json({ id: newId }); // Return the generated ID as JSON
-    } catch (err) {
-      console.error("Error generating ID:", err.message);
-      res.status(500).send("Server error");
     }
+
+    // Generate the next ID
+    const newId = generateNextId(lastId);
+
+    res.json({ id: newId }); // Return the generated ID as JSON
+  } catch (err) {
+    console.error("Error generating ID:", err.message);
+    res.status(500).send("Server error");
   }
+}
 );
 
 router.get("/nurse/individual-health-assessment", ensureAuthenticated, checkUserType("Nurse"), (req, res) => {
-    res.render("nurse/individual-health-assessment", { user: req.user });
-  }
+  res.render("nurse/individual-health-assessment", { user: req.user });
+}
 );
 
 router.get("/nurse/fetchScannedData", async (req, res) => {
@@ -343,7 +343,7 @@ router.post("/nurse/admit-patient", async (req, res) => {
       await insertNurseChecks(value, nurse_id);
 
       await rhuPool.query("COMMIT");
-      req.flash("submit", "Submitted Successfully");
+      req.flash("submit", "Patient Updated Successfully");
       return res.redirect("/nurse/patient-registration");
     } else {
       console.log("New patient case. Inserting new patient data.");

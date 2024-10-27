@@ -218,10 +218,6 @@ input[type="button"] {
     width: fit-content;
 }
 
-#recently-admitted-table {
-    width: 50%;
-}
-
 #recently-admitted-table .table-container {
     max-height: 370px;
     overflow: visible;
