@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
                                     data-guardian="${patient.guardian}"
-                                    data-diagnosis="${patient.diagnosis}">Diagnosis</option>
+                                    data-diagnosis="${patient.diagnosis} ">Diagnosis</option>
 
                                     <option value="4"
                                     data-patient-id="${patient.patient_id}"
