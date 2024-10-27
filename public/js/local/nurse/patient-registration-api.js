@@ -9,7 +9,7 @@ function formatDate(date) {
 document.getElementById('recently-admitted').addEventListener('click', function () {
   const rhuId = document.getElementById('rhu-select').value;
   loadPage(1, rhuId);
-  document.getElementById('recently-admitted-table').style.display = 'block';
+  document.getElementById('recently-admitted-table').classList.add("visible");
   overlay.classList.add("visible");
 });
 
@@ -96,9 +96,9 @@ function loadPage(page, rhuId) {
     .catch(error => console.error('Error fetching page:', error));
 }
 
-function fillUpdate(button){
+function fillUpdate(button) {
   var buttonId = button.id;
-  if (buttonId === "update-id"){
+  if (buttonId === "update-id") {
 
     console.log("clicked");
     const checkDate = button.getAttribute('data-check-date');
@@ -127,12 +127,13 @@ function fillUpdate(button){
     document.getElementById('comment').value = button.getAttribute('data-comment') || '';
     document.getElementById('systolic').value = button.getAttribute('data-systolic') || '';
     document.getElementById('diastolic').value = button.getAttribute('data-diastolic') || '';
-    document.getElementById('heart_rate').value = button.getAttribute('data-heart-rate');
+    document.getElementById('pulse_rate').value = button.getAttribute('data-heart-rate') || '';
 
-    const overlay = document.querySelector('.overlay');
-    document.getElementById('recently-admitted-table').style.display = 'none';
-    overlay.classList.toggle("visible");
   }
+  document.getElementById('recently-admitted-table').classList.remove("visible");
+  overlay.classList.toggle("visible");
+  document.getElementById("register_patient").innerText = "Update";
+  document.querySelector('#confirm_patient_registration h2').innerText = 'Are you sure you want update this patient?';
 }
 
 function attachDotEventListeners() {
