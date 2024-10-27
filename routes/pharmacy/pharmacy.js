@@ -661,25 +661,25 @@ function isSeniorCitizen(age) {
   return age >= 60 ? 'Yes' : 'No';
 }
 
-router.get("/pharmacy/generate-transaction-id/new-id", ensureAuthenticated, checkUserType("Nurse"), async (req, res) => {
+router.get("/pharmacy/generate-transaction-id/new-id", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   try {
-      const result = await pharmacyPool.query(
-          "SELECT transaction_number FROM transaction_records ORDER BY transaction_number DESC LIMIT 1"
-      );
+    const result = await pharmacyPool.query(
+      "SELECT transaction_number FROM transaction_records ORDER BY transaction_number DESC LIMIT 1"
+    );
 
-      console.log('Query result:', result.rows);
+    console.log('Query result:', result.rows);
 
-      let lastId = "T0000";
-      if (result.rows.length > 0 && result.rows[0].transaction_number) {
-          lastId = result.rows[0].transaction_number;
-      }
+    let lastId = "T0000";
+    if (result.rows.length > 0 && result.rows[0].transaction_number) {
+      lastId = result.rows[0].transaction_number;
+    }
 
-      console.log('Last ID:', lastId);
-      const newId = generateNextTransactionId(lastId);
-      res.json({ id: newId });
+    console.log('Last ID:', lastId);
+    const newId = generateNextTransactionId(lastId);
+    res.json({ id: newId });
   } catch (err) {
-      console.error("Error generating ID:", err);
-      res.status(500).json({ error: "Server error", details: err.message });
+    console.error("Error generating ID:", err);
+    res.status(500).json({ error: "Server error", details: err.message });
   }
 });
 

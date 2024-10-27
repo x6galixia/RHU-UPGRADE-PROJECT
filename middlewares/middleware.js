@@ -32,7 +32,7 @@ function checkNotAuthenticated(req, res, next) {
         const user = req.user;
         switch (user.user_type) {
             case "Nurse":
-            return res.redirect("/nurse/patient-registration");
+                return res.redirect("/nurse/patient-registration");
             case "Doctor":
                 return res.redirect("/doctor-dashboard");
             case "Med Tech":
