@@ -450,7 +450,7 @@
           </div>
         </div>
         <input type="hidden" name="patient_id" id="pres_patient_id">
-        
+
         <div class="info col gap">
           <div class="row gap">
             <div class="row grow">
@@ -487,9 +487,14 @@
             </div>
           </div>
           <hr />
-
+          <div>
+            <details>
+              <summary>Recent Laboratory Request</summary>
+              <ul id="medicineList"></ul> <!-- This will hold the service list -->
+            </details>
+          </div>
           <div class="col gap">
-            
+
             <div class="row gap just-bet">
               <div class="col grow">
                 <input type="hidden" name="product_id" id="product_id">
