@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function createTableRow(beneficiary) {
         const row = document.createElement('tr');
-        row.setAttribute('onclick', `popUp_index(${beneficiary.beneficiary_id})`);
 
         row.innerHTML = `
             <td>${beneficiary.first_name} ${beneficiary.middle_name || ''} ${beneficiary.last_name}</td>
@@ -42,8 +41,38 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             </td>
         `;
+
+        const cells = Array.from(row.children).slice(0, -1); // Exclude the last `td`
+        cells.forEach(cell => {
+            cell.onclick = () => {
+                console.log(`Row clicked for ${beneficiary.first_name} ${beneficiary.last_name}`);
+
+                document.getElementById('ben_name').value = `${beneficiary.first_name} ${beneficiary.middle_name || ''} ${beneficiary.last_name}`;
+                document.getElementById('ben_age').value = `${beneficiary.age}`;
+                document.getElementById('ben_address').value = `${beneficiary.barangay} ${beneficiary.city || ''} ${beneficiary.province}`;
+                document.getElementById('ben_number').value = `${beneficiary.phone}`;
+                document.getElementById('ben_senior').value = `${beneficiary.senior_citizen}`;
+                document.getElementById('ben_pwd').value = `${beneficiary.pwd}`;
+                document.getElementById('ben_gender').value = `${beneficiary.gender}`;
+
+                const pictureElement = document.getElementById('ben_profile');
+                if (pictureElement) {
+                    const picturePath = (beneficiary.picture && beneficiary.picture !== '0')
+                        ? `/uploads/beneficiary-img/${beneficiary.picture}`
+                        : (beneficiary.gender === "Male"
+                            ? "/icon/upload-img-default.svg"
+                            : "/icon/upload-img-default-woman.svg");
+                    pictureElement.src = picturePath;
+                }
+
+                document.getElementById('beneficiary-index').classList.toggle('visible');
+                document.querySelector('.overlay').classList.toggle('visible');
+            };
+        });
+
         return row;
     }
+
 
     window.popUp_index = function popUp_index(id) {
         console.log(id);
