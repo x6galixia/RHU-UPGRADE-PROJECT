@@ -289,6 +289,24 @@ function popUp_button(button) {
       document.getElementById('pres_occupation').value = selectedOption.getAttribute('data-occupation') || '';
       document.getElementById('pres_guardian').value = selectedOption.getAttribute('data-guardian') || '';
     }
+    const servicer = selectedOption.getAttribute('data-medicine') || ''; // Get services, default to empty string
+    const servicesValues = (servicer === 'null' || servicer === undefined) ? '' : servicer;
+
+    // Clear existing list content
+    document.getElementById('serviceList').innerHTML = '';
+
+    if (servicesValues) {
+      const serviceArrays = servicesValue.split(','); // Split services by comma
+      serviceArrays.forEach(servicers => {
+        const lis = document.createElement('li');
+        lis.textContent = servicers.trim(); // Trim to remove extra spaces
+        document.getElementById('PrescribeList').appendChild(li);
+      });
+    } else {
+      const p = document.createElement('p');
+      p.textContent = "-- no recent prescribed medicine. --"; // Trim to remove extra spaces
+      document.getElementById('PrescribeList').appendChild(p);
+    }
   }
 
   // dispense
