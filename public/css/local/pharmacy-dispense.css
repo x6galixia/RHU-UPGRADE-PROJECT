@@ -32,6 +32,8 @@
   width: 100%;
   outline: none;
   height: fit-content;
+  font-size: 16px;
+  text-align: center;
 }
 
 .dispense-med .input-with-label {
