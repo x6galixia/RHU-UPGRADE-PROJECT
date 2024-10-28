@@ -289,23 +289,23 @@ function popUp_button(button) {
       document.getElementById('pres_occupation').value = selectedOption.getAttribute('data-occupation') || '';
       document.getElementById('pres_guardian').value = selectedOption.getAttribute('data-guardian') || '';
     }
-    const servicer = selectedOption.getAttribute('data-medicine') || ''; // Get services, default to empty string
-    const servicesValues = (servicer === 'null' || servicer === undefined) ? '' : servicer;
-
+    const medicine = selectedOption.getAttribute('data-medicine') || '';
+    const medicineIn = (medicine === 'null' || medicine === undefined) ? '' : medicine;
     // Clear existing list content
-    document.getElementById('serviceList').innerHTML = '';
+    document.getElementById('medicineList').innerHTML = '';
 
-    if (servicesValues) {
-      const serviceArrays = servicesValue.split(','); // Split services by comma
-      serviceArrays.forEach(servicers => {
+    if (medicineIn) {
+      const medicineArray = medicineIn.split(','); // Split services by comma
+      medicineArray.forEach(medicines => {
+        console.log(medicineArray);
         const lis = document.createElement('li');
-        lis.textContent = servicers.trim(); // Trim to remove extra spaces
-        document.getElementById('PrescribeList').appendChild(li);
+        lis.textContent = medicines.trim(); // Trim to remove extra spaces
+        document.getElementById('medicineList').appendChild(lis);
       });
     } else {
       const p = document.createElement('p');
       p.textContent = "-- no recent prescribed medicine. --"; // Trim to remove extra spaces
-      document.getElementById('PrescribeList').appendChild(p);
+      document.getElementById('medicineList').appendChild(p);
     }
   }
 
