@@ -96,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-gender="${patient.gender}"
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
+                                    data-medicine="${patient.prescription_medicines}"
                                     data-guardian="${patient.guardian}">Prescribe</option>
                         </select> 
                     </td>
@@ -237,6 +238,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-gender="${patient.gender}"
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
+                                    data-medicine="${patient.medicine}"
                                     data-guardian="${patient.guardian}">Prescribe</option>
                                 </select> 
                             </td>

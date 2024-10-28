@@ -88,7 +88,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // Toggle visibility of the modal and overlay
-            isModalOpen = true; // Set the modal state to open
             document.getElementById('dispense-med').classList.toggle('visible');
             document.querySelector('.overlay').classList.toggle('visible');
         };
@@ -220,12 +219,11 @@ document.addEventListener("DOMContentLoaded", function () {
         attachPaginationListeners();
     }
 
-    // Update modal state on modal close
-    document.getElementById('dispense-med').addEventListener('click', function () {
-        isModalOpen = false; // Set the modal state to closed when it is clicked
-        this.classList.remove('visible');
-        document.querySelector('.overlay').classList.remove('visible');
-    });
+    // // Update modal state on modal close
+    // document.getElementById('dispense-med').addEventListener('click', function () {
+    //     this.classList.remove('visible');
+    //     document.querySelector('.overlay').classList.remove('visible');
+    // });
 
     attachPaginationListeners();
 });

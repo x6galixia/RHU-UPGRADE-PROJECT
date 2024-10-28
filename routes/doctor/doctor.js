@@ -392,13 +392,14 @@ async function fetchPatientList(page, limit) {
       LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
       LEFT JOIN doctor_visits dv ON p.patient_id = dv.patient_id
       LEFT JOIN medtech_labs lr ON p.patient_id = lr.patient_id
+      LEFT JOIN prescription pr ON p.patient_id = pr.patient_prescription_id
       LEFT JOIN rhu r ON p.rhu_id = r.rhu_id;
     `);
 
     const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
     const totalPages = Math.ceil(totalItems / limit);
 
-    // Now, fetch the patient list with aggregation
+    // Now, fetch the patient list with aggregation including prescription data
     const getPatientList = await rhuPool.query(`
       SELECT 
         p.patient_id, p.rhu_id, p.last_name, p.first_name, p.middle_name, p.suffix, p.phone, p.gender,
@@ -421,13 +422,15 @@ async function fetchPatientList(page, limit) {
         STRING_AGG(DISTINCT dv.service, ', ') AS services,
         STRING_AGG(DISTINCT dv.medicine, ', ') AS medicines,
         STRING_AGG(DISTINCT dv.instruction, ', ') AS instructions,
-        STRING_AGG(DISTINCT dv.quantity::text, ', ') AS quantities,  -- Cast to text here
-        STRING_AGG(DISTINCT lr.lab_result, ', ') AS lab_results,  -- Assuming lab_result is already text
+        STRING_AGG(DISTINCT dv.quantity::text, ', ') AS quantities,
+        STRING_AGG(DISTINCT lr.lab_result, ', ') AS lab_results,
+        STRING_AGG(DISTINCT pr.medicine, ', ') AS prescription_medicines,
         r.rhu_name, r.rhu_address
       FROM patients p
       LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
       LEFT JOIN doctor_visits dv ON p.patient_id = dv.patient_id
       LEFT JOIN medtech_labs lr ON p.patient_id = lr.patient_id
+      LEFT JOIN prescription pr ON p.patient_id = pr.patient_prescription_id
       LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
       GROUP BY p.patient_id, r.rhu_name, r.rhu_address
       ORDER BY p.first_name
