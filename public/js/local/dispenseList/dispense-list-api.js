@@ -36,41 +36,77 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    const mymy = (async () => {
+        const transac = await fetchTransactionId();
+        console.log('Transaction ID:', transac);
+    })();
+
+    function fetchDispenseDetails(patientPrescriptionId) {
+        // Fetch detailed data for the clicked dispense row
+        fetch(`/pharmacy-dispense/${patientPrescriptionId}`)
+          .then(response => response.json())
+          .then(data => {
+            console.log('Fetched Dispense Details:', data);  // Optionally log the detailed data
+          })
+          .catch(error => {
+            console.error('Error fetching dispense details:', error);
+          });
+    }    
 
     async function createMedicineTableRows(prescriptions) {
         const medicineTableBody = document.getElementById('medicineTableBody');
         medicineTableBody.innerHTML = ''; // Clear existing rows
-
+    
         if (prescriptions.length === 0) {
             const emptyRow = document.createElement('tr');
             emptyRow.innerHTML = '<td colspan="4">No prescriptions found</td>';
             medicineTableBody.appendChild(emptyRow);
             return;
         }
-
-        for (const prescription of prescriptions) {
+    
+        for (const [index, prescription] of prescriptions.entries()) {
             try {
-                const transactionId = await fetchTransactionId(); // Await the transaction ID
+                const transactionId = await fetchTransactionId();
                 const row = document.createElement('tr');
+  
                 row.innerHTML = `
-              <td>${transactionId}</td>
-              <td>${prescription.medicine || 'N/A'}</td>
-              <td>${prescription.quantity || 'N/A'}</td>
-              <td>${getCurrentDate()}</td>
-          `;
+                    <td>
+                        ${transactionId}
+                        <input type="hidden" name="medicines[${index}][product_id]" value="${prescription.product_id || 'N/A'}">
+                    </td>
+                    <td>
+                        ${prescription.medicine || 'N/A'}
+                        <input type="hidden" name="medicines[${index}][product_details]" value="${prescription.medicine || 'N/A'}">
+                    </td>
+                    <td>
+                        ${prescription.quantity || 'N/A'}
+                        <input type="hidden" name="medicines[${index}][quantity]" value="${prescription.quantity || 'N/A'}">
+                    </td>
+                    <td>
+                        ${getCurrentDate()}
+                    </td>
+                    <!-- Hidden batch number -->
+                    <input type="hidden" name="medicines[${index}][batch_number]" value="${prescription.batch_number || 'N/A'}">   
+                `;
+    
                 medicineTableBody.appendChild(row);
             } catch (error) {
                 console.error('Failed to fetch transaction ID:', error);
-                // Optionally handle this error in the UI
             }
         }
     }
 
-
-    function createTableRow(dispense) {
+    function createTableRow(dispense) {  
         const row = document.createElement('tr');
-        row.onclick = () => {
+        row.onclick = async () => {
             console.log(`Row clicked for ${dispense.first_name} ${dispense.last_name}`);
+            fetchDispenseDetails(dispense.patient_id);
+            //hidden in the modal
+            document.getElementById('patient_prescription_id').value = dispense.patient_prescription_id;
+            document.getElementById('beneficiary_id').value = parseInt(dispense.patient_id, 10);
+            document.getElementById('date_issued').value = getCurrentDate();
+            const transac = await fetchTransactionId();
+            document.getElementById('transaction_number').value = transac;
 
             // Fill the modal with patient info
             document.getElementById('dispense_name').value = `${dispense.first_name} ${dispense.middle_name || ''} ${dispense.last_name}`;
@@ -92,9 +128,6 @@ document.addEventListener("DOMContentLoaded", function () {
             document.querySelector('.overlay').classList.toggle('visible');
         };
 
-        const dispenseTableBody = document.getElementById('dispenseTableBody');
-        dispenseTableBody.innerHTML = '';
-
         row.innerHTML = `
           <td>${dispense.first_name} ${dispense.middle_name || ''} ${dispense.last_name}</td>
           <td>${dispense.gender}</td>
@@ -109,10 +142,11 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateDispenseTable(data) {
         const tableBody = document.getElementById("dispenseTableBody");
         tableBody.innerHTML = "";
-        console.log(data);
-
+        console.log("Fetched dispense data:", data);
+    
         if (data.getDispenseList && data.getDispenseList.length > 0) {
             data.getDispenseList.forEach(list => {
+                console.log("Adding row for:", list); // Log each list item
                 const row = createTableRow(list);
                 tableBody.appendChild(row);
             });
@@ -121,15 +155,14 @@ document.addEventListener("DOMContentLoaded", function () {
             emptyRow.innerHTML = '<td colspan="8">No dispense list</td>';
             tableBody.appendChild(emptyRow);
         }
-    }
+    }    
 
     function fetchDispenseUpdates() {
         if (!isSearching && !isDotMenuOpen && !isModalOpen) { // Check modal state
-            fetch('/pharmacy-dispense?ajax=true')
+            fetch('/pharmacy-dispense-request?ajax=true')
                 .then(response => response.json())
                 .then(data => {
                     updateDispenseTable(data);
-                    console.log(data);
                 })
                 .catch(error => {
                     console.error('Error fetching dispense updates:', error);
@@ -181,13 +214,18 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         const url = new URL(event.target.href);
         const params = new URLSearchParams(url.search);
+        
+        // Only update the query if the current search query exists
         if (currentSearchQuery) {
             params.set('query', currentSearchQuery);
         }
-        params.set('ajax', 'true');
-
-        clearInterval(pollIntervalId);
-        fetch(url.pathname + '?' + params.toString())
+        
+        params.set('ajax', 'true'); // Ensure this is set for AJAX requests
+        const page = parseInt(params.get('page')) || 1; // Read page from URL
+        const limit = parseInt(params.get('limit')) || 10; // Read limit from URL
+        
+        clearInterval(pollIntervalId); // Stop polling when handling pagination
+        fetch(`/pharmacy-dispense-request?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
                 updateDispenseTable(data);
@@ -196,7 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => {
                 console.error('Error during pagination:', error);
             });
-    }
+    }    
 
     function attachPaginationListeners() {
         document.querySelectorAll('nav[aria-label="Page navigation"] a').forEach(link => {
@@ -218,12 +256,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         attachPaginationListeners();
     }
-
-    // // Update modal state on modal close
-    // document.getElementById('dispense-med').addEventListener('click', function () {
-    //     this.classList.remove('visible');
-    //     document.querySelector('.overlay').classList.remove('visible');
-    // });
 
     attachPaginationListeners();
 });

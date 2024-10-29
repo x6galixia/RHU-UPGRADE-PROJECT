@@ -68,54 +68,22 @@ const beneficiarySchema = Joi.object({
   existing_picture: Joi.string().optional()
 });
 
-// const dispenseSchema = Joi.object({
-//   beneficiary_id: Joi.string().required(),
-//   transaction_number: Joi.string().required(),
-//   date_issued: Joi.date().required(),
-//   doctor: Joi.string().required(),
-//   receiver: Joi.string().required(),
-//   relationship_beneficiary: Joi.string().required(),
-//   medicines: Joi.array().items(Joi.object({
-//     product_id: Joi.string().required(),
-//     batch_number: Joi.string().required(),
-//     product_details: Joi.string().required(),
-//     quantity: Joi.number().integer().greater(0).required()
-//   })).required()
-// });
-
 const dispenseSchema = Joi.object({
-
-  //-----transaction records----//
-
-  //beneficiaryID 1
-  //transactionNumber -- 
-  //dateIssued -- 
-  //doctor 2
-  //recieverName 3
-  //recieverRelationship 4
-
-  //------transaction medicine-----//
-
-  //--THIS IS IN MULTIPLE ROW--//
-  //tranID -- 
-  //productID 5 -- 
-  //batchNumber 6
-  //productDetails 7
-  //quantity 8
-
-  //-----transaction records----//
-  beneficiary_id: Joi.string().required(),
+  patient_prescription_id: Joi.string().required(),
+  beneficiary_id: Joi.number().required(),
   transaction_number: Joi.string().required(),
   date_issued: Joi.date().required(),
+  beneficiary_name: Joi.string().required(),
+  diagnosis: Joi.string().required(),
   doctor: Joi.string().required(),
-  reciever: Joi.string().required(),
+  receiver: Joi.string().required(),
   relationship_beneficiary: Joi.string().required(),
-  //------transaction medicine-----//
-  tran_id: Joi.number().integer().required(),
-  product_id: Joi.string().required(),
-  batch_number: Joi.string().required(),
-  product_details: Joi.string().required(),
-  quantity: Joi.number().integer().required()
+  medicines: Joi.array().items(Joi.object({
+    product_id: Joi.string().required(),
+    batch_number: Joi.string().required(),
+    product_details: Joi.string().required(),
+    quantity: Joi.number().integer().greater(0).required()
+  })).required()
 });
 
 const upload = multer({ storage: storage });
@@ -220,34 +188,43 @@ router.get("/pharmacy-records", ensureAuthenticated, checkUserType("Pharmacist")
   }
 });
 
-router.get("/pharmacy-dispense", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+router.get("/pharmacy-records/search", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
-  const isAjax = req.query.ajax === "true";
+  const offset = (page - 1) * limit;
+  const { query } = req.query;
 
   try {
-    const { getDispenseList, totalPages } = await fetchDispenseList(page, limit);
+    let searchResult;
 
-    if (isAjax) {
-      return res.json({
-        getDispenseList,
-        user: req.user,
-        currentPage: page,
-        totalPages,
-        limit
-      });
+    if (!query) {
+      searchResult = await pharmacyPool.query(
+        `SELECT * FROM beneficiary ORDER BY first_name LIMIT $1 OFFSET $2`, [limit, offset]
+      );
+    } else {
+      searchResult = await pharmacyPool.query(
+        `SELECT * FROM beneficiary 
+         WHERE CONCAT(first_name, ' ', middle_name, ' ', last_name) ILIKE $1
+         OR CONCAT(first_name,' ', last_name) ILIKE $1
+         OR first_name ILIKE $1
+         OR middle_name ILIKE $1
+         OR last_name ILIKE $1
+         LIMIT 10`,
+        [`%${query}%`]
+      );
     }
 
-    res.render("pharmacy/requests-for-dispense", {
-      getDispenseList,
-      user: req.user,
-      currentPage: page,
-      totalPages,
-      limit
-    });
+    const data = searchResult.rows.map(row => ({
+      ...row,
+      middle_name: row.middle_name ? row.middle_name : '',
+      age: calculateAge(row.birthdate),
+      senior_citizen: isSeniorCitizen(row.age)
+    }));
+
+    res.json({ getBeneficiaryList: data });
   } catch (err) {
     console.error("Error: ", err);
-    res.sendStatus(500);
+    res.status(500).send("An error occurred during the search.");
   }
 });
 
@@ -255,9 +232,10 @@ router.get("/pharmacy-dispense-request", ensureAuthenticated, checkUserType("Pha
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const isAjax = req.query.ajax === "true";
+  const rhu_id = req.user.rhu_id;
 
   try {
-    const { getDispenseList, totalPages } = await fetchDispenseList(page, limit);
+    const { getDispenseList, totalPages } = await fetchDispenseList(page, limit, rhu_id);
 
     if (isAjax) {
       return res.json({
@@ -340,43 +318,24 @@ router.get("/pharmacy-dispense/search", ensureAuthenticated, checkUserType("Phar
   }
 });
 
-router.get("/pharmacy-records/search", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const offset = (page - 1) * limit;
-  const { query } = req.query;
+router.get("/pharmacy-dispense/:patientPrescriptionId", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  const { patientPrescriptionId } = req.params;
 
   try {
-    let searchResult;
+    const dispenseDetails = await rhuPool.query(
+      `SELECT pd.*, pt.*, 
+              COALESCE(json_agg(p) FILTER (WHERE p.id IS NOT NULL), '[]') AS prescription 
+       FROM patient_prescription_data pd
+       LEFT JOIN prescription p ON pd.patient_prescription_id = p.patient_prescription_id
+       LEFT JOIN patients pt ON pd.patient_id = pt.patient_id
+       WHERE pd.patient_prescription_id = $1
+       GROUP BY pd.patient_prescription_id, pt.patient_id`, [patientPrescriptionId]
+    );
 
-    if (!query) {
-      searchResult = await pharmacyPool.query(
-        `SELECT * FROM beneficiary ORDER BY first_name LIMIT $1 OFFSET $2`, [limit, offset]
-      );
-    } else {
-      searchResult = await pharmacyPool.query(
-        `SELECT * FROM beneficiary 
-         WHERE CONCAT(first_name, ' ', middle_name, ' ', last_name) ILIKE $1
-         OR CONCAT(first_name,' ', last_name) ILIKE $1
-         OR first_name ILIKE $1
-         OR middle_name ILIKE $1
-         OR last_name ILIKE $1
-         LIMIT 10`,
-        [`%${query}%`]
-      );
-    }
-
-    const data = searchResult.rows.map(row => ({
-      ...row,
-      middle_name: row.middle_name ? row.middle_name : '',
-      age: calculateAge(row.birthdate),
-      senior_citizen: isSeniorCitizen(row.age)
-    }));
-
-    res.json({ getBeneficiaryList: data });
+    res.json(dispenseDetails.rows[0]); // Send the detailed dispense record
   } catch (err) {
     console.error("Error: ", err);
-    res.status(500).send("An error occurred during the search.");
+    res.status(500).json({ error: "Error fetching dispense details" });
   }
 });
 
@@ -585,6 +544,7 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
 
 router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
   const { error, value } = dispenseSchema.validate(req.body);
+  console.log(value);
 
   if (error) {
       return res.status(400).send(error.details[0].message);
@@ -600,7 +560,10 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
       medicines // Array of medicine objects
   } = value;
 
-  const client = await pool.connect();
+  // Use only the transaction number at index 1
+  const transactionNumber = transaction_number[0];
+
+  const client = await pharmacyPool.connect();
   try {
       await client.query('BEGIN');
 
@@ -619,12 +582,25 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
           INSERT INTO transaction_records (beneficiary_id, transaction_number, date_issued, doctor, reciever, relationship_beneficiary)
           VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
       `;
-      const transactionResult = await client.query(insertTransactionQuery, [beneficiary_id, transaction_number, date_issued, doctor, receiver, relationship_beneficiary]);
+      const transactionResult = await client.query(insertTransactionQuery, [beneficiary_id, transactionNumber, date_issued, doctor, receiver, relationship_beneficiary]);
       const transactionId = transactionResult.rows[0].id;
 
       // Deduct quantities and insert into transaction_medicine
       for (const medicine of medicines) {
           const { product_id, quantity, batch_number, product_details } = medicine;
+
+          // First check if the stock is sufficient
+          const checkInventoryQuery = `
+              SELECT product_quantity FROM inventory 
+              WHERE product_id = $1 
+              AND batch_number = $2
+          `;
+          const inventoryResult = await client.query(checkInventoryQuery, [product_id, batch_number]);
+
+          if (inventoryResult.rowCount === 0 || inventoryResult.rows[0].product_quantity < quantity) {
+              await client.query('ROLLBACK');
+              return res.status(400).json({ message: `Insufficient stock for product ID: ${product_id}, batch number: ${batch_number}` });
+          }
 
           // Update the inventory table to deduct the quantity based on product ID and batch number
           const updateInventoryQuery = `
@@ -636,11 +612,9 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
           `;
           const result = await client.query(updateInventoryQuery, [quantity, product_id, batch_number]);
 
-          // Check if the update was successful
           if (result.rowCount === 0) {
-              // Rollback if no rows were updated (i.e., not enough stock)
               await client.query('ROLLBACK');
-              return res.status(400).json({ message: `Not enough quantity for product ID: ${product_id}, batch number: ${batch_number}` });
+              return res.status(400).json({ message: `Not enough stock for product ID: ${product_id}, batch number: ${batch_number}` });
           }
 
           // Insert into transaction_medicine with product details
@@ -651,9 +625,15 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
           await client.query(insertMedicineQuery, [transactionId, product_id, batch_number, product_details, quantity]);
       }
 
-      await client.query('COMMIT');
-      return res.status(200).json({ message: 'Medicine dispensed and transaction recorded successfully' });
+      // Delete the records from patient patient_prescription_data
+      await rhuPool.query(`
+        DELETE FROM patient_prescription_data WHERE patient_prescription_id = $1
+      `, [value.patient_prescription_id]);
 
+      await client.query('COMMIT');
+      req.flash("submit", "Medicine dispensed Successfully");
+      return res.redirect("/pharmacy-dispense-request");
+      
   } catch (err) {
       await client.query('ROLLBACK');
       console.error("Error: ", err);
@@ -776,14 +756,19 @@ async function fetchBeneficiaryList(page, limit) {
   }
 }
 
-async function fetchDispenseList(page, limit) {
+async function fetchDispenseList(page, limit, rhu_id) {
   const offset = (page - 1) * limit;
 
   try {
-    const totalItemsResult = await rhuPool.query("SELECT COUNT(*) FROM patient_prescription_data");
+    // Get the total number of items with the specific rhu_id
+    const totalItemsResult = await rhuPool.query(
+      "SELECT COUNT(*) FROM patient_prescription_data WHERE rhu_id = $1", 
+      [rhu_id]
+    );
     const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
     const totalPages = Math.ceil(totalItems / limit);
 
+    // Fetch the list of prescriptions for the specific rhu_id
     const dispenseList = await rhuPool.query(
       `SELECT pd.*, 
               pt.*, 
@@ -791,10 +776,10 @@ async function fetchDispenseList(page, limit) {
        FROM patient_prescription_data pd
        LEFT JOIN prescription p ON pd.patient_prescription_id = p.patient_prescription_id
        LEFT JOIN patients pt ON pd.patient_id = pt.patient_id
+       WHERE pd.rhu_id = $3
        GROUP BY pd.patient_prescription_id, pt.patient_id
-       LIMIT $1 OFFSET $2`, [limit, offset]
+       LIMIT $1 OFFSET $2`, [limit, offset, rhu_id]
     );
-
 
     const data = dispenseList.rows.map(row => ({
       ...row
