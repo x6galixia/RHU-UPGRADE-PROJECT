@@ -73,6 +73,8 @@ const dispenseSchema = Joi.object({
   beneficiary_id: Joi.number().required(),
   transaction_number: Joi.string().required(),
   date_issued: Joi.date().required(),
+  beneficiary_name: Joi.string().required(),
+  diagnosis: Joi.string().required(),
   doctor: Joi.string().required(),
   receiver: Joi.string().required(),
   relationship_beneficiary: Joi.string().required(),
@@ -186,35 +188,43 @@ router.get("/pharmacy-records", ensureAuthenticated, checkUserType("Pharmacist")
   }
 });
 
-router.get("/pharmacy-dispense", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+router.get("/pharmacy-records/search", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
-  const isAjax = req.query.ajax === "true";
-  const rhu_id = req.user.rhu_id;
+  const offset = (page - 1) * limit;
+  const { query } = req.query;
 
   try {
-    const { getDispenseList, totalPages } = await fetchDispenseList(page, limit, rhu_id);
+    let searchResult;
 
-    if (isAjax) {
-      return res.json({
-        getDispenseList,
-        user: req.user,
-        currentPage: page,
-        totalPages,
-        limit
-      });
+    if (!query) {
+      searchResult = await pharmacyPool.query(
+        `SELECT * FROM beneficiary ORDER BY first_name LIMIT $1 OFFSET $2`, [limit, offset]
+      );
+    } else {
+      searchResult = await pharmacyPool.query(
+        `SELECT * FROM beneficiary 
+         WHERE CONCAT(first_name, ' ', middle_name, ' ', last_name) ILIKE $1
+         OR CONCAT(first_name,' ', last_name) ILIKE $1
+         OR first_name ILIKE $1
+         OR middle_name ILIKE $1
+         OR last_name ILIKE $1
+         LIMIT 10`,
+        [`%${query}%`]
+      );
     }
 
-    res.render("pharmacy/requests-for-dispense", {
-      getDispenseList,
-      user: req.user,
-      currentPage: page,
-      totalPages,
-      limit
-    });
+    const data = searchResult.rows.map(row => ({
+      ...row,
+      middle_name: row.middle_name ? row.middle_name : '',
+      age: calculateAge(row.birthdate),
+      senior_citizen: isSeniorCitizen(row.age)
+    }));
+
+    res.json({ getBeneficiaryList: data });
   } catch (err) {
     console.error("Error: ", err);
-    res.sendStatus(500);
+    res.status(500).send("An error occurred during the search.");
   }
 });
 
@@ -247,27 +257,6 @@ router.get("/pharmacy-dispense-request", ensureAuthenticated, checkUserType("Pha
   } catch (err) {
     console.error("Error: ", err);
     res.sendStatus(500);
-  }
-});
-
-router.get("/pharmacy-dispense/:patientPrescriptionId", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
-  const { patientPrescriptionId } = req.params;
-
-  try {
-    const dispenseDetails = await rhuPool.query(
-      `SELECT pd.*, pt.*, 
-              COALESCE(json_agg(p) FILTER (WHERE p.id IS NOT NULL), '[]') AS prescription 
-       FROM patient_prescription_data pd
-       LEFT JOIN prescription p ON pd.patient_prescription_id = p.patient_prescription_id
-       LEFT JOIN patients pt ON pd.patient_id = pt.patient_id
-       WHERE pd.patient_prescription_id = $1
-       GROUP BY pd.patient_prescription_id, pt.patient_id`, [patientPrescriptionId]
-    );
-
-    res.json(dispenseDetails.rows[0]); // Send the detailed dispense record
-  } catch (err) {
-    console.error("Error: ", err);
-    res.status(500).json({ error: "Error fetching dispense details" });
   }
 });
 
@@ -329,43 +318,24 @@ router.get("/pharmacy-dispense/search", ensureAuthenticated, checkUserType("Phar
   }
 });
 
-router.get("/pharmacy-records/search", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const offset = (page - 1) * limit;
-  const { query } = req.query;
+router.get("/pharmacy-dispense/:patientPrescriptionId", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  const { patientPrescriptionId } = req.params;
 
   try {
-    let searchResult;
+    const dispenseDetails = await rhuPool.query(
+      `SELECT pd.*, pt.*, 
+              COALESCE(json_agg(p) FILTER (WHERE p.id IS NOT NULL), '[]') AS prescription 
+       FROM patient_prescription_data pd
+       LEFT JOIN prescription p ON pd.patient_prescription_id = p.patient_prescription_id
+       LEFT JOIN patients pt ON pd.patient_id = pt.patient_id
+       WHERE pd.patient_prescription_id = $1
+       GROUP BY pd.patient_prescription_id, pt.patient_id`, [patientPrescriptionId]
+    );
 
-    if (!query) {
-      searchResult = await pharmacyPool.query(
-        `SELECT * FROM beneficiary ORDER BY first_name LIMIT $1 OFFSET $2`, [limit, offset]
-      );
-    } else {
-      searchResult = await pharmacyPool.query(
-        `SELECT * FROM beneficiary 
-         WHERE CONCAT(first_name, ' ', middle_name, ' ', last_name) ILIKE $1
-         OR CONCAT(first_name,' ', last_name) ILIKE $1
-         OR first_name ILIKE $1
-         OR middle_name ILIKE $1
-         OR last_name ILIKE $1
-         LIMIT 10`,
-        [`%${query}%`]
-      );
-    }
-
-    const data = searchResult.rows.map(row => ({
-      ...row,
-      middle_name: row.middle_name ? row.middle_name : '',
-      age: calculateAge(row.birthdate),
-      senior_citizen: isSeniorCitizen(row.age)
-    }));
-
-    res.json({ getBeneficiaryList: data });
+    res.json(dispenseDetails.rows[0]); // Send the detailed dispense record
   } catch (err) {
     console.error("Error: ", err);
-    res.status(500).send("An error occurred during the search.");
+    res.status(500).json({ error: "Error fetching dispense details" });
   }
 });
 
@@ -574,6 +544,7 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
 
 router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
   const { error, value } = dispenseSchema.validate(req.body);
+  console.log(value);
 
   if (error) {
       return res.status(400).send(error.details[0].message);
@@ -588,6 +559,9 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
       relationship_beneficiary,
       medicines // Array of medicine objects
   } = value;
+
+  // Use only the transaction number at index 1
+  const transactionNumber = transaction_number[0];
 
   const client = await pharmacyPool.connect();
   try {
@@ -608,7 +582,7 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
           INSERT INTO transaction_records (beneficiary_id, transaction_number, date_issued, doctor, reciever, relationship_beneficiary)
           VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
       `;
-      const transactionResult = await client.query(insertTransactionQuery, [beneficiary_id, transaction_number, date_issued, doctor, receiver, relationship_beneficiary]);
+      const transactionResult = await client.query(insertTransactionQuery, [beneficiary_id, transactionNumber, date_issued, doctor, receiver, relationship_beneficiary]);
       const transactionId = transactionResult.rows[0].id;
 
       // Deduct quantities and insert into transaction_medicine
@@ -651,15 +625,15 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
           await client.query(insertMedicineQuery, [transactionId, product_id, batch_number, product_details, quantity]);
       }
 
-      //delete the records from patien patient_prescription_data
+      // Delete the records from patient patient_prescription_data
       await rhuPool.query(`
         DELETE FROM patient_prescription_data WHERE patient_prescription_id = $1
-        `,
-      [value.patient_prescription_id])
+      `, [value.patient_prescription_id]);
 
       await client.query('COMMIT');
-      return res.status(200).json({ message: 'Medicine dispensed and transaction recorded successfully' });
-
+      req.flash("submit", "Medicine dispensed Successfully");
+      return res.redirect("/pharmacy-dispense-request");
+      
   } catch (err) {
       await client.query('ROLLBACK');
       console.error("Error: ", err);
