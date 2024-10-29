@@ -34,43 +34,72 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error('Error fetching transaction ID:', error.message);
             return 'Error'; // Return a fallback value
         }
-    }z
+    }
 
+    function fetchDispenseDetails(patientPrescriptionId) {
+        // Fetch detailed data for the clicked dispense row
+        fetch(`/pharmacy-dispense/${patientPrescriptionId}`)
+          .then(response => response.json())
+          .then(data => {
+            console.log('Fetched Dispense Details:', data);  // Optionally log the detailed data
+          })
+          .catch(error => {
+            console.error('Error fetching dispense details:', error);
+          });
+    }    
 
     async function createMedicineTableRows(prescriptions) {
         const medicineTableBody = document.getElementById('medicineTableBody');
         medicineTableBody.innerHTML = ''; // Clear existing rows
-
+    
         if (prescriptions.length === 0) {
             const emptyRow = document.createElement('tr');
             emptyRow.innerHTML = '<td colspan="4">No prescriptions found</td>';
             medicineTableBody.appendChild(emptyRow);
             return;
         }
-
-        for (const prescription of prescriptions) {
+    
+        for (const [index, prescription] of prescriptions.entries()) {
             try {
                 const transactionId = await fetchTransactionId(); // Await the transaction ID
                 const row = document.createElement('tr');
+  
                 row.innerHTML = `
-              <td>${transactionId}</td>
-              <td>${prescription.medicine || 'N/A'}</td>
-              <td>${prescription.quantity || 'N/A'}</td>
-              <td>${getCurrentDate()}</td>
-          `;
+                    <td>
+                        ${transactionId}
+                        <input type="hidden" name="medicines[${index}][product_id]" value="${prescription.product_id || 'N/A'}">
+                    </td>
+                    <td>
+                        ${prescription.medicine || 'N/A'}
+                        <input type="hidden" name="medicines[${index}][product_name]" value="${prescription.medicine || 'N/A'}">
+                    </td>
+                    <td>
+                        ${prescription.quantity || 'N/A'}
+                        <input type="hidden" name="medicines[${index}][quantity]" value="${prescription.quantity || 'N/A'}">
+                    </td>
+                    <td>
+                        ${getCurrentDate()}
+                        <input type="hidden" name="medicines[${index}][issued_date]" value="${getCurrentDate()}">
+                    </td>
+                    <!-- Hidden batch number -->
+                    <input type="hidden" name="medicines[${index}][batch_number]" value="${prescription.batch_number || 'N/A'}">
+                `;
+    
                 medicineTableBody.appendChild(row);
             } catch (error) {
                 console.error('Failed to fetch transaction ID:', error);
-                // Optionally handle this error in the UI
             }
         }
-    }
-
+    }            
 
     function createTableRow(dispense) {
         const row = document.createElement('tr');
         row.onclick = () => {
             console.log(`Row clicked for ${dispense.first_name} ${dispense.last_name}`);
+            fetchDispenseDetails(dispense.patient_id);
+            //hidden in the modal
+            document.getElementById('patient_prescription_id').value = dispense.patient_prescription_id;
+            document.getElementById('beneficiary_id').value = parseInt(dispense.patient_id, 10);
 
             // Fill the modal with patient info
             document.getElementById('dispense_name').value = `${dispense.first_name} ${dispense.middle_name || ''} ${dispense.last_name}`;
