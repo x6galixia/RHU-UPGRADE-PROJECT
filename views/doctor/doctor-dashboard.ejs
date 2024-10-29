@@ -537,10 +537,10 @@
         </div>
       </form>
 
-      <div class="overlay"></div>
+      <div class="overlay" id="bruh"></div>
 
       <!-- print lab request!!! -->
-      <div class="LabReqPrint b" id="labReqPrint" style="display: none">
+      <div class="LabReqPrint b" id="labReqPrint" style="display: none;">
         <div class="row gap b">
           <img src="../img/global/lgu-logo.png" alt="" class="logo-print" height="100" />
           <div class="col align-item">
@@ -595,7 +595,7 @@
       </div>
 
       <!-- print Reseta -->
-      <div class="ResetaPrint b" id="resetaPrint" style="display: none">
+      <div class="ResetaPrint b" id="resetaPrint" style="display: none;">
         <div class="row gap b">
           <img src="../img/global/lgu-logo.png" alt="" class="logo-print" height="100" />
           <div class="col align-item">
@@ -674,15 +674,18 @@
     <script src="../../js/global/services.js"></script>
     <script>
       function printingReqReseta(containerID) {
+        console.log("containerID:", containerID);
         var reseta = document.getElementById("resetaPrint");
         var reqLab = document.getElementById("labReqPrint");
 
-        if (containerID === "resetaPrint") {
-          reseta.classList.add("show");
-          reqLab.classList.remove("show");
-        } else if (containerID === "labReqPrint") {
+        if (containerID === "labReqPrint") {
+          console.log('pres')
           reqLab.classList.add("show");
           reseta.classList.remove("show");
+        } else if (containerID === "resetaPrint") {
+          console.log('labreq');
+          reseta.classList.add("show");
+          reqLab.classList.remove("show");
         }
         window.print();
       }

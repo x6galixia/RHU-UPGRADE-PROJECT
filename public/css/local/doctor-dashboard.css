@@ -139,32 +139,12 @@ button {
     height: auto;
     width: auto;
 } */
+ 
 
 
 @page {
     size: Letter;
     margin: .1in;
-}
-
-#labReqPrint {
-    padding: 1em 1em;
-    height: auto;
-    border-radius: 0;
-    border: 1px solid black;
-    display: flex;
-}
-
-#resetaPrint {
-    padding: 1em 1em;
-    height: auto;
-    border-radius: 0;
-    border: 1px solid black;
-    display: flex;
-}
-
-#resetaPrint,
-#labReqPrint p {
-    font-size: 1.5rem;
 }
 
 
@@ -175,14 +155,23 @@ button {
     .headings,
     header,
     button,
-    .pop-up,
-    .overlay {
+    #reqLab,
+    #prescribed {
         display: none !important;
+    }
+
+     .overlay{
+        z-index: -1 !important;
+        background-color: white !important;
     }
 
     body {
         margin: 0;
         padding: 0;
+    }
+
+    main {
+        position: relative;
     }
 
     .show {
@@ -208,6 +197,40 @@ button {
         page-break-before: always;
     }
 
+}
+
+main {
+    position: relative;
+}
+
+#resetaPrint,
+#labReqPrint p {
+    font-size: 1.5rem;
+}
+#resetaPrint,
+#labReqPrint  {
+    display: flex;
+    flex-direction: column;
+}
+
+#labReqPrint {
+    position: absolute;
+    right: 0;
+    padding: 1em 1em;
+    height: auto;
+    border-radius: 0;
+    border: 1px solid black;
+    display: flex;
+}
+
+#resetaPrint {
+    position: absolute;
+    left: 0;
+    padding: 1em 1em;
+    height: auto;
+    border-radius: 0;
+    border: 1px solid black;
+    display: flex;
 }
 
 
