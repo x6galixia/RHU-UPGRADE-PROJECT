@@ -408,7 +408,6 @@ router.get("/pharmacy-records/beneficiary-index-form/:beneficiaryId", ensureAuth
         tm.product_details,
         tm.quantity,
         tm.batch_number,
-        tm.expiration_date, 
         tr.date_issued,
         tr.doctor,
         tr.reciever,

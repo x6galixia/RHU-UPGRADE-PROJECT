@@ -27,6 +27,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const tableBody = document.querySelector("tbody[beneficiaryIndexTable]");
         tableBody.innerHTML = "";
     
+        if (transactions.length === 0) {
+            const emptyRow = document.createElement('tr');
+            emptyRow.innerHTML = '<td colspan="8">No transactions available</td>';
+            tableBody.appendChild(emptyRow);
+            return;
+        }
+    
         transactions.forEach(transaction => {
             const row = document.createElement('tr');
     
@@ -35,7 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${transaction.product_details}</td>    
                 <td>${transaction.quantity}</td>
                 <td>${transaction.batch_number}</td>
-                <td>${transaction.expiration_date}</td>
                 <td>${transaction.date_issued}</td>        
                 <td>${transaction.doctor}</td>             
                 <td>${transaction.reciever}</td>          
