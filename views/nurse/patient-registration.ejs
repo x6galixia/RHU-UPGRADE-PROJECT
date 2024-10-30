@@ -71,8 +71,8 @@
                             <div class="r">
                                 <div>
                                     <label for="address">Address: <span class="add">House no, Purok, Brgy,
-                                            Municipality</span></label>
-                                    <input type="text" required id="address" name="completeAddress">
+                                            Municipality, Province</span></label>
+                                    <input type="text" required id="address" name="completeAddress" placeholder="32, purok 2, Canjaway, Borongan, Eastern Samar">
                                 </div>
                             </div>
                             <div class="r">
@@ -378,13 +378,6 @@
                     const tripleDotContainer = dot.closest("td").querySelector(".triple-dot");
                     if (tripleDotContainer) {
                         tripleDotContainer.classList.toggle("visible");
-                        // if (tripleDotContainer.classList.contains("visible")) {
-                        //     clearInterval(pollIntervalId);
-                        //     isDotMenuOpen = true;
-                        // } else {
-                        //     pollIntervalId = setInterval(fetchBeneficiaryUpdates, POLL_INTERVAL);
-                        //     isDotMenuOpen = false;
-                        // }
                         console.log(tripleDotContainer);
                     }
                 });
@@ -395,8 +388,6 @@
                         const tripleDotContainer = dot.closest("td").querySelector(".triple-dot");
                         if (tripleDotContainer && tripleDotContainer.classList.contains("visible")) {
                             tripleDotContainer.classList.remove("visible");
-                            // pollIntervalId = setInterval(fetchBeneficiaryUpdates, POLL_INTERVAL);
-                            // isDotMenuOpen = false;
                             console.log("triple dot closed");
                         }
                     }
@@ -407,5 +398,4 @@
         <script src="../js/global/pop-up.js"></script>
         <script src="../js/global/client-side-functions.js"></script>
 </body>
-
 </html>

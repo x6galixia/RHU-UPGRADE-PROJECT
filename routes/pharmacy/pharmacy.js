@@ -65,7 +65,7 @@ const beneficiarySchema = Joi.object({
   picture: Joi.string().allow('').optional(),
   note: Joi.string().allow('').optional(),
   processed_date: Joi.date().required(),
-  existing_picture: Joi.string().optional()
+  existing_picture: Joi.string().allow('').optional()
 });
 
 const dispenseSchema = Joi.object({
@@ -199,16 +199,75 @@ router.get("/pharmacy-records/search", ensureAuthenticated, checkUserType("Pharm
 
     if (!query) {
       searchResult = await pharmacyPool.query(
-        `SELECT * FROM beneficiary ORDER BY first_name LIMIT $1 OFFSET $2`, [limit, offset]
+        `WITH medicine_agg AS (
+           SELECT tm.tran_id,
+                  json_agg(
+                    json_build_object(
+                      'product_id', tm.product_id,
+                      'batch_number', tm.batch_number,
+                      'product_details', tm.product_details,
+                      'quantity', tm.quantity
+                    )
+                  ) AS medicines
+           FROM transaction_medicine tm
+           GROUP BY tm.tran_id
+         )
+         SELECT b.*, 
+                COALESCE(json_agg(
+                  json_build_object(
+                    'id', t.id,
+                    'transaction_number', t.transaction_number,
+                    'date_issued', t.date_issued,
+                    'doctor', t.doctor,
+                    'reciever', t.reciever,
+                    'relationship_beneficiary', t.relationship_beneficiary,
+                    'medicines', COALESCE(m.medicines, '[]')
+                  )
+                ) FILTER (WHERE t.id IS NOT NULL), '[]') AS transaction_records
+         FROM beneficiary b
+         LEFT JOIN transaction_records t ON b.beneficiary_id = t.beneficiary_id
+         LEFT JOIN medicine_agg m ON t.id = m.tran_id
+         GROUP BY b.beneficiary_id
+         ORDER BY b.first_name
+         LIMIT $1 OFFSET $2`,
+        [limit, offset]
       );
     } else {
       searchResult = await pharmacyPool.query(
-        `SELECT * FROM beneficiary 
-         WHERE CONCAT(first_name, ' ', middle_name, ' ', last_name) ILIKE $1
-         OR CONCAT(first_name,' ', last_name) ILIKE $1
-         OR first_name ILIKE $1
-         OR middle_name ILIKE $1
-         OR last_name ILIKE $1
+        `WITH medicine_agg AS (
+           SELECT tm.tran_id,
+                  json_agg(
+                    json_build_object(
+                      'product_id', tm.product_id,
+                      'batch_number', tm.batch_number,
+                      'product_details', tm.product_details,
+                      'quantity', tm.quantity
+                    )
+                  ) AS medicines
+           FROM transaction_medicine tm
+           GROUP BY tm.tran_id
+         )
+         SELECT b.*, 
+                COALESCE(json_agg(
+                  json_build_object(
+                    'id', t.id,
+                    'transaction_number', t.transaction_number,
+                    'date_issued', t.date_issued,
+                    'doctor', t.doctor,
+                    'reciever', t.reciever,
+                    'relationship_beneficiary', t.relationship_beneficiary,
+                    'medicines', COALESCE(m.medicines, '[]')
+                  )
+                ) FILTER (WHERE t.id IS NOT NULL), '[]') AS transaction_records
+         FROM beneficiary b
+         LEFT JOIN transaction_records t ON b.beneficiary_id = t.beneficiary_id
+         LEFT JOIN medicine_agg m ON t.id = m.tran_id
+         WHERE CONCAT(b.first_name, ' ', b.middle_name, ' ', b.last_name) ILIKE $1
+            OR CONCAT(b.first_name, ' ', b.last_name) ILIKE $1
+            OR b.first_name ILIKE $1
+            OR b.middle_name ILIKE $1
+            OR b.last_name ILIKE $1
+         GROUP BY b.beneficiary_id
          LIMIT 10`,
         [`%${query}%`]
       );
@@ -218,7 +277,8 @@ router.get("/pharmacy-records/search", ensureAuthenticated, checkUserType("Pharm
       ...row,
       middle_name: row.middle_name ? row.middle_name : '',
       age: calculateAge(row.birthdate),
-      senior_citizen: isSeniorCitizen(row.age)
+      senior_citizen: isSeniorCitizen(row.age),
+      transaction_records: row.transaction_records ? row.transaction_records : []
     }));
 
     res.json({ getBeneficiaryList: data });
@@ -392,7 +452,6 @@ router.get("/pharmacy/generate-transaction-id/new-id", ensureAuthenticated, chec
           lastId = result.rows[0].transaction_number;
       }
 
-      console.log('Last ID:', lastId);
       const newId = generateNextTransactionId(lastId);
       res.json({ id: newId });
   } catch (err) {
@@ -732,13 +791,37 @@ async function fetchBeneficiaryList(page, limit) {
     const totalPages = Math.ceil(totalItems / limit);
 
     const beneficiaryList = await pharmacyPool.query(
-      `SELECT b.*, 
-              COALESCE(json_agg(t) FILTER (WHERE t.id IS NOT NULL), '[]') AS transaction_records 
-       FROM beneficiary b
-       LEFT JOIN transaction_records t ON b.beneficiary_id = t.beneficiary_id
-       GROUP BY b.beneficiary_id
-       ORDER BY b.first_name 
-       LIMIT $1 OFFSET $2`, [limit, offset]
+      `WITH medicine_agg AS (
+          SELECT tm.tran_id,
+                 json_agg(
+                   json_build_object(
+                     'product_id', tm.product_id,
+                     'batch_number', tm.batch_number,
+                     'product_details', tm.product_details,
+                     'quantity', tm.quantity
+                   )
+                 ) AS medicines
+          FROM transaction_medicine tm
+          GROUP BY tm.tran_id
+      )
+      SELECT b.*, 
+             COALESCE(json_agg(
+               json_build_object(
+                 'id', t.id,
+                 'transaction_number', t.transaction_number,
+                 'date_issued', t.date_issued,
+                 'doctor', t.doctor,
+                 'reciever', t.reciever,
+                 'relationship_beneficiary', t.relationship_beneficiary,
+                 'medicines', COALESCE(m.medicines, '[]')
+               )
+             ) FILTER (WHERE t.id IS NOT NULL), '[]') AS transaction_records
+      FROM beneficiary b
+      LEFT JOIN transaction_records t ON b.beneficiary_id = t.beneficiary_id
+      LEFT JOIN medicine_agg m ON t.id = m.tran_id
+      GROUP BY b.beneficiary_id
+      ORDER BY b.first_name
+      LIMIT $1 OFFSET $2`, [limit, offset]
     );
 
     const data = beneficiaryList.rows.map(row => ({

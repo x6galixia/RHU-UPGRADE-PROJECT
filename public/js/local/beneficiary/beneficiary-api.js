@@ -17,6 +17,33 @@ document.addEventListener("DOMContentLoaded", function () {
         nav2.classList.toggle("selected");
     }
 
+    // async function createTransactionTableRows(prescriptions) {
+    //     const medicineTableBody = document.getElementById('beneficiaryIndexTable');
+    //     medicineTableBody.innerHTML = ''; // Clear existing rows
+    
+    //     if (prescriptions.length === 0) {
+    //         const emptyRow = document.createElement('tr');
+    //         emptyRow.innerHTML = '<td colspan="9">No transactions found</td>';
+    //         medicineTableBody.appendChild(emptyRow);
+    //         return;
+    //     }
+    
+    //     for (const [index, prescription] of prescriptions.entries()) {
+    //         try {
+    //             const transactionId = await fetchTransactionId();
+    //             const row = document.createElement('tr');
+  
+    //             row.innerHTML = `
+                      
+    //             `;
+    
+    //             medicineTableBody.appendChild(row);
+    //         } catch (error) {
+    //             console.error('Failed to fetch transaction ID:', error);
+    //         }
+    //     }
+    // }
+
     function createTableRow(beneficiary) {
         const row = document.createElement('tr');
 
