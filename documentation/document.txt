@@ -196,7 +196,6 @@ CREATE TABLE transaction_medicine (
     tran_id INTEGER REFERENCES transaction_records(id) ON DELETE CASCADE,
     product_id VARCHAR(255) NULL,
     batch_number VARCHAR(50) NOT NULL,
-    expiration_date DATE NULL,
     product_details TEXT NULL,
     quantity INT NOT NULL CHECK (quantity > 0)
 );
