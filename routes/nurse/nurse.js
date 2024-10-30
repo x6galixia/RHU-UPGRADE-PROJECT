@@ -364,63 +364,6 @@ router.post("/nurse/admit-patient", async (req, res) => {
   }
 });
 
-// Function to insert a new patient record
-async function insertPatientRecord(value, rhu_id, house_no, street, barangay, city, province) {
-  const insertQuery = `
-    INSERT INTO patients (patient_id, rhu_id, last_name, first_name, middle_name, suffix, phone, gender, birthdate,
-        house_no, street, barangay, city, province, occupation, email, philhealth_no, guardian)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
-        $10, $11, $12, $13, $14, $15, $16, $17, $18)
-  `;
-
-  await rhuPool.query(insertQuery, [
-    value.patient_id,
-    rhu_id,
-    value.last_name,
-    value.first_name,
-    value.middle_name,
-    value.suffix,
-    value.phone,
-    value.gender,
-    value.birthdate,
-    house_no,
-    street,
-    barangay,
-    city,
-    province,
-    value.occupation,
-    value.email,
-    value.philhealth_no,
-    value.guardian,
-  ]);
-}
-
-// Function to insert nurse checks
-async function insertNurseChecks(value, nurse_id) {
-  const nurseCheckInsertQuery = `
-    INSERT INTO nurse_checks (patient_id, nurse_id, age, check_date, height, weight, systolic, diastolic, temperature, heart_rate, respiratory_rate, bmi, comment)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-  `;
-
-  console.log("Inserting nurse check data for patient ID:", value.patient_id);
-  await rhuPool.query(nurseCheckInsertQuery, [
-    value.patient_id,
-    nurse_id,
-    calculateAge(value.birthdate),
-    new Date(),
-    value.height,
-    value.weight,
-    value.systolic,
-    value.diastolic,
-    value.temperature,
-    value.heart_rate,
-    value.respiratory_rate,
-    value.bmi,
-    value.comment,
-  ]);
-}
-
-
 router.delete('/nurse/patient-registration/delete/:id', async (req, res) => {
   const patientId = req.params.id;
   console.log('Received DELETE request for patient ID:', patientId);
@@ -459,7 +402,6 @@ router.delete('/nurse/patient-registration/delete/:id', async (req, res) => {
     res.status(500).json({ message: 'Failed to delete the patient records.' });
   }
 });
-
 
 router.delete("/logout", (req, res) => {
   req.logOut((err) => {
@@ -626,6 +568,61 @@ async function fetchPatientList(page, limit, rhuId) {
   }
 }
 
+// Function to insert a new patient record
+async function insertPatientRecord(value, rhu_id, house_no, street, barangay, city, province) {
+  const insertQuery = `
+    INSERT INTO patients (patient_id, rhu_id, last_name, first_name, middle_name, suffix, phone, gender, birthdate,
+        house_no, street, barangay, city, province, occupation, email, philhealth_no, guardian)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
+        $10, $11, $12, $13, $14, $15, $16, $17, $18)
+  `;
+
+  await rhuPool.query(insertQuery, [
+    value.patient_id,
+    rhu_id,
+    value.last_name,
+    value.first_name,
+    value.middle_name,
+    value.suffix,
+    value.phone,
+    value.gender,
+    value.birthdate,
+    house_no,
+    street,
+    barangay,
+    city,
+    province,
+    value.occupation,
+    value.email,
+    value.philhealth_no,
+    value.guardian,
+  ]);
+}
+
+// Function to insert nurse checks
+async function insertNurseChecks(value, nurse_id) {
+  const nurseCheckInsertQuery = `
+    INSERT INTO nurse_checks (patient_id, nurse_id, age, check_date, height, weight, systolic, diastolic, temperature, heart_rate, respiratory_rate, bmi, comment)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+  `;
+
+  console.log("Inserting nurse check data for patient ID:", value.patient_id);
+  await rhuPool.query(nurseCheckInsertQuery, [
+    value.patient_id,
+    nurse_id,
+    calculateAge(value.birthdate),
+    new Date(),
+    value.height,
+    value.weight,
+    value.systolic,
+    value.diastolic,
+    value.temperature,
+    value.heart_rate,
+    value.respiratory_rate,
+    value.bmi,
+    value.comment,
+  ]);
+}
 
 function formatPatientData(patient) {
   return {

@@ -44,6 +44,8 @@ const patientSchema = Joi.object({
   findings: Joi.string().allow("").optional(),
   category: Joi.string().allow("").optional(),
   service: Joi.string().allow("").optional(),
+  // category: Joi.array().items(Joi.string().allow("")).optional(),
+  // service: Joi.array().items(Joi.string().allow("")).optional(),
   medicine: Joi.string().allow("").optional(),
   instruction: Joi.string().allow("").optional(),
   quantity: Joi.string().allow("").optional(),
@@ -206,6 +208,59 @@ router.post("/doctor/request-laboratory/send", async (req, res) => {
     console.error("Error: ", err);
   }
 });
+
+// router.post("/doctor/request-laboratory/send", async (req, res) => {
+//   const { error, value } = patientSchema.validate(req.body);
+
+//   if (error) {
+//     return res.status(400).json({ error: error.details[0].message });
+//   }
+
+//   try {
+//     const isPatient = await rhuPool.query(
+//       `SELECT * FROM doctor_visits WHERE patient_id = $1`,
+//       [value.patient_id]
+//     );
+
+//     if (isPatient.rows.length > 0) {
+//       // If patient exists, update the existing records
+//       const categories = value.category || [];  // Ensure categories is an array
+//       const services = value.service || [];      // Ensure services is an array
+
+//       // Update existing records with the new categories and services
+//       // Assuming you want to update the latest values in a single row
+//       await rhuPool.query(
+//         `UPDATE doctor_visits SET category = $2, service = $3 WHERE patient_id = $1`,
+//         [value.patient_id, categories, services]
+//       );
+//     } else {
+//       // If patient doesn't exist, insert multiple rows for each category and service
+//       const categories = value.category || []; // Ensure categories is an array
+//       const services = value.service || [];     // Ensure services is an array
+
+//       // Insert each category
+//       for (const category of categories) {
+//         await rhuPool.query(
+//           `INSERT INTO doctor_visits (patient_id, category, service) VALUES ($1, $2, NULL)`,
+//           [value.patient_id, category]
+//         );
+//       }
+
+//       // Insert each service
+//       for (const service of services) {
+//         await rhuPool.query(
+//           `INSERT INTO doctor_visits (patient_id, category, service) VALUES ($1, NULL, $2)`,
+//           [value.patient_id, service]
+//         );
+//       }
+//     }
+
+//     return res.redirect("/doctor-dashboard");
+//   } catch (err) {
+//     console.error("Error: ", err);
+//     return res.status(500).json({ error: "Internal server error" });
+//   }
+// });
 
 router.post("/doctor/diagnose-patient/send", async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
@@ -370,7 +425,6 @@ router.post("/doctor/prescribe-patient/send", async (req, res) => {
     return res.redirect("/doctor-dashboard");
   }
 });
-
 
 router.delete("/logout", (req, res) => {
   req.logOut((err) => {

@@ -17,6 +17,17 @@ document.addEventListener("DOMContentLoaded", function () {
         nav2.classList.toggle("selected");
     }
 
+    function formatDate(dateString) {
+        const options = {
+          weekday: "short",
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        };
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", options);
+      }
+
     async function fetchTransactions(beneficiaryId) {
         const response = await fetch(`/pharmacy-records/beneficiary-index-form/${beneficiaryId}`);
         const transactions = await response.json();
@@ -42,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${transaction.product_details}</td>    
                 <td>${transaction.quantity}</td>
                 <td>${transaction.batch_number}</td>
-                <td>${transaction.date_issued}</td>        
+                <td>${formatDate(transaction.date_issued)}</td>        
                 <td>${transaction.doctor}</td>             
                 <td>${transaction.reciever}</td>          
                 <td>${transaction.relationship_beneficiary}</td>
