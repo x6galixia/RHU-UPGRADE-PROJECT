@@ -168,13 +168,195 @@ router.get("/doctor-dashboard/search", ensureAuthenticated, checkUserType("Docto
   }
 });
 
-router.get("/doctor/patient-history", ensureAuthenticated, checkUserType("Doctor"), (req, res) => {
-  res.render("doctor/patient-history",
-    {
-      user: req.user
-    }
-  );
+router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
+  const { patient_id } = req.params;
+
+  try {
+    // Fetch the latest patient history and all check dates
+    const patientHistoryInfo = await rhuPool.query(`
+      SELECT 
+        p.id, p.patient_id, p.rhu_id, p.last_name, p.first_name, p.middle_name, p.suffix, p.phone, p.gender,
+        p.birthdate, p.house_no, p.street, p.barangay, p.city, p.province, p.occupation, p.email, p.philhealth_no, p.guardian,
+        MAX(p.age) as age,
+        MAX(p.check_date) as check_date,
+        MAX(p.height) as height,
+        MAX(p.weight) as weight,
+        MAX(p.systolic) as systolic,
+        MAX(p.diastolic) as diastolic,
+        MAX(p.temperature) as temperature,
+        MAX(p.heart_rate) as heart_rate,
+        MAX(p.respiratory_rate) as respiratory_rate,
+        MAX(p.bmi) as bmi,
+        MAX(p.comment) as comment,
+        STRING_AGG(DISTINCT plr.lab_result, ', ') AS lab_results,
+        STRING_AGG(DISTINCT pp.medicine, ', ') AS medicines,
+        STRING_AGG(DISTINCT pp.instruction, ', ') AS instruction,
+        STRING_AGG(DISTINCT pp.quantity::text, ', ') AS quantity,
+        STRING_AGG(DISTINCT ps.category, ', ') AS categories,
+        STRING_AGG(DISTINCT ps.service, ', ') AS services
+      FROM patient_history p
+      LEFT JOIN patient_lab_results plr ON p.id = plr.history_id
+      LEFT JOIN patient_prescriptions pp ON p.id = pp.history_id
+      LEFT JOIN patient_services ps ON p.id = ps.history_id
+      WHERE p.patient_id = $1
+      GROUP BY p.id
+      ORDER BY p.check_date DESC
+      LIMIT 1
+    `, [patient_id]);
+
+    const patientHistory = patientHistoryInfo.rows[0] || {};
+
+    // Fetch distinct check dates and group by year
+    const getPatientHistoryInfo = await rhuPool.query(`
+      SELECT DISTINCT 
+        EXTRACT(YEAR FROM check_date) AS year,
+        check_date 
+      FROM patient_history 
+      WHERE patient_id = $1
+      ORDER BY check_date DESC
+    `, [patient_id]);
+
+    const groupedHistory = getPatientHistoryInfo.rows.reduce((acc, row) => {
+      const year = row.year;
+      if (!acc[year]) {
+        acc[year] = [];
+      }
+      acc[year].push(row.check_date);
+      return acc;
+    }, {});
+
+    res.render("doctor/patient-history", {
+      user: req.user,
+      patient_id: patient_id,
+      groupedHistory: groupedHistory,
+      patientHistory: patientHistory
+    });
+
+  } catch (err) {
+    console.error("Error: ", err);
+    res.status(500).send("Server error");
+  }
 });
+
+
+router.post('/patient-history/:patientId', async (req, res) => {
+  const { patientId } = req.params;
+  const { date } = req.body;
+
+  try {
+    const patientHistoryQuery = `
+      SELECT 
+        p.id, 
+        p.patient_id, 
+        p.last_name, 
+        p.first_name, 
+        -- Add other fields you want to retrieve
+        STRING_AGG(DISTINCT plr.lab_result::text, ', ') AS lab_results,
+        STRING_AGG(DISTINCT pp.medicine::text, ', ') AS medicines,
+        STRING_AGG(DISTINCT pp.instruction::text, ', ') AS instruction,
+        STRING_AGG(DISTINCT pp.quantity::text, ', ') AS quantity,
+        STRING_AGG(DISTINCT ps.category::text, ', ') AS categories,
+        STRING_AGG(DISTINCT ps.service::text, ', ') AS services
+      FROM patient_history p
+      LEFT JOIN patient_lab_results plr ON p.id = plr.history_id
+      LEFT JOIN patient_prescriptions pp ON p.id = pp.history_id
+      LEFT JOIN patient_services ps ON p.id = ps.history_id
+      WHERE p.patient_id = $1 AND p.check_date::date = $2
+      GROUP BY p.id, p.patient_id, p.last_name, p.first_name
+    `;
+
+    const patientHistory = await rhuPool.query(patientHistoryQuery, [patientId, date]);
+    res.json(patientHistory.rows);
+  } catch (error) {
+    console.error('Error fetching patient history:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+// router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
+//   const { patient_id } = req.params;
+
+//   try {
+
+//     const getPatientHistory = await rhuPool.query(`
+//       SELECT 
+//         p.id, 
+//         p.patient_id, 
+//         p.rhu_id, 
+//         p.last_name, 
+//         p.first_name, 
+//         p.middle_name, 
+//         p.suffix, 
+//         p.phone, 
+//         p.gender,
+//         p.birthdate, 
+//         p.house_no, 
+//         p.street, 
+//         p.barangay, 
+//         p.city, 
+//         p.province, 
+//         p.occupation, 
+//         p.email, 
+//         p.philhealth_no, 
+//         p.guardian,
+//         MAX(p.age) AS age,
+//         MAX(p.check_date) AS check_date,
+//         MAX(p.height) AS height,
+//         MAX(p.weight) AS weight,
+//         MAX(p.systolic) AS systolic,
+//         MAX(p.diastolic) AS diastolic,
+//         MAX(p.temperature) AS temperature,
+//         MAX(p.heart_rate) AS heart_rate,
+//         MAX(p.respiratory_rate) AS respiratory_rate,
+//         MAX(p.bmi) AS bmi,
+//         MAX(p.comment) AS comment,
+//         STRING_AGG(DISTINCT plr.lab_result::text, ', ') AS lab_results,
+//         STRING_AGG(DISTINCT pp.medicine::text, ', ') AS medicines,
+//         STRING_AGG(DISTINCT pp.instruction::text, ', ') AS instruction,
+//         STRING_AGG(DISTINCT pp.quantity::text, ', ') AS quantity,
+//         STRING_AGG(DISTINCT ps.category::text, ', ') AS categories,
+//         STRING_AGG(DISTINCT ps.service::text, ', ') AS services
+//       FROM patient_history p
+//       LEFT JOIN patient_lab_results plr ON p.id = plr.history_id
+//       LEFT JOIN patient_prescriptions pp ON p.id = pp.history_id
+//       LEFT JOIN patient_services ps ON p.id = ps.history_id
+//       WHERE p.patient_id = $1
+//       GROUP BY 
+//         p.id, 
+//         p.patient_id, 
+//         p.rhu_id, 
+//         p.last_name, 
+//         p.first_name, 
+//         p.middle_name, 
+//         p.suffix, 
+//         p.phone, 
+//         p.gender,
+//         p.birthdate, 
+//         p.house_no, 
+//         p.street, 
+//         p.barangay, 
+//         p.city, 
+//         p.province, 
+//         p.occupation, 
+//         p.email, 
+//         p.philhealth_no, 
+//         p.guardian
+//     `, [patient_id]);
+//     res.render("doctor/patient-history",
+//       {
+//         user: req.user,
+//         patient_id: patient_id,
+//         getPatientHistory: getPatientHistory.rows[0]
+//       }
+//     );
+
+//   } catch (err) {
+//     console.error("Error: ", err);
+//     res.status(500).send("Server error");
+//   }
+
+// });
 
 router.post("/doctor/request-laboratory/send", async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
