@@ -513,16 +513,32 @@ router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
 router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
 
+  const rhu_id = req.user.rhu_id;
+
   if (error) {
     return res.status(400).send(error.details[0].message);
   }
 
   try {
+    const result = await pharmacyPool.query(
+      "SELECT product_quantity FROM inventory WHERE product_id = $1 AND product_code = $2 AND rhu_id = $3",
+      [value.product_id, value.product_code, rhu_id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.redirect("/pharmacy-inventory");
+    }
+
+    const existingQuantity = result.rows[0].product_quantity;
+
+    const newQuantity = existingQuantity + value.product_quantity;
+
     await pharmacyPool.query(
       "UPDATE inventory SET batch_number = $4, date_added = $5, expiration = $6, product_quantity = $7 WHERE product_id = $1 AND product_code = $2 AND rhu_id = $3",
-      [value.product_id, value.product_code, 1, value.batch_number, value.date_added, value.expiration, value.product_quantity]
+      [value.product_id, value.product_code, rhu_id, value.batch_number, value.date_added, value.expiration, newQuantity]
     );
-    res.redirect("/pharmacy-inventory");
+
+    return res.redirect("/pharmacy-inventory");
   } catch (err) {
     console.error("Error: ", err);
     res.status(400).send("Error updating medicine");
@@ -532,6 +548,8 @@ router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
 router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
 
+  const rhu_id = req.user.rhu_id;
+
   if (error) {
     return res.status(400).send(error.details[0].message);
   }
@@ -539,32 +557,59 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
   try {
     const trimmedProductId = value.product_id.trim();
 
-    const medValue = await pharmacyPool.query("SELECT * FROM inventory WHERE product_id = $1", [trimmedProductId]);
+    // Check if the medicine exists in the source inventory
+    const medValue = await pharmacyPool.query(
+      "SELECT * FROM inventory WHERE product_id = $1 AND rhu_id = $2", 
+      [trimmedProductId, rhu_id]
+    );
 
     if (medValue.rows.length === 0) {
-      return res.status(404).send(`Medicine with product_id ${value.product_id} is not available`);
+      return res.status(404).send(`Medicine with product_id ${value.product_id} is not available in the source inventory`);
     }
 
     const data = medValue.rows[0];
 
+    // Check if the stock is sufficient
     if (data.product_quantity < value.product_quantity) {
-      return res.status(400).send(`Not enough stock available. Available quantity: ${data.product_quantity}`);
+      return res.status(500).send(`Not enough stock available. Available quantity: ${data.product_quantity}`);
     }
 
-    await pharmacyPool.query(`
-      INSERT INTO inventory (product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added, rhu_id)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-    `, [data.product_id, data.product_code, data.product_name, data.brand_name, data.supplier, value.product_quantity, data.dosage_form, data.dosage, data.reorder_level, data.batch_number, data.expiration, data.date_added, value.rhu_id]);
+    // Check if the medicine already exists in the target RHU
+    const targetMed = await pharmacyPool.query(
+      "SELECT * FROM inventory WHERE product_id = $1 AND rhu_id = $2", 
+      [trimmedProductId, value.rhu_id]
+    );
 
-    const newProductQuantity = data.product_quantity - value.product_quantity
+    if (targetMed.rows.length === 0) {
+      // If medicine does not exist in the target RHU, insert it
+      await pharmacyPool.query(`
+        INSERT INTO inventory (product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added, rhu_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      `, [
+        data.product_id, data.product_code, data.product_name, data.brand_name, data.supplier, value.product_quantity, 
+        data.dosage_form, data.dosage, data.reorder_level, data.batch_number, data.expiration, data.date_added, value.rhu_id
+      ]);
+    } else {
+      // If medicine exists, just update the quantity
+      const newTargetQuantity = targetMed.rows[0].product_quantity + value.product_quantity;
+      await pharmacyPool.query(`
+        UPDATE inventory 
+        SET product_quantity = $1 
+        WHERE product_id = $2 AND rhu_id = $3`,
+        [newTargetQuantity, trimmedProductId, value.rhu_id]
+      );
+    }
+
+    // Update the source inventory by subtracting the transferred quantity
+    const newProductQuantity = data.product_quantity - value.product_quantity;
     await pharmacyPool.query(`
       UPDATE inventory 
       SET product_quantity = $1 
       WHERE product_id = $2 AND rhu_id = $3`,
-      [newProductQuantity, trimmedProductId, 1]
+      [newProductQuantity, trimmedProductId, rhu_id]
     );
 
-    res.redirect("/pharmacy-inventory");
+    return res.redirect("/pharmacy-inventory");
   } catch (err) {
     console.error("Error: ", err);
     res.status(400).send("Error transferring medicine");
