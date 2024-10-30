@@ -100,8 +100,8 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-guardian="${patient.guardian}">Prescribe</option>
                         </select> 
                     </td>
-                    <td>
-                         <img src="../icon/mata_ine.svg" alt="" />
+                    <td onclick="window.location.href='/doctor/patient-history/${patient.patient_id}'">
+                        <img src="../icon/mata_ine.svg" alt="" />
                     </td>
                 `;
                 tableBody.appendChild(row);

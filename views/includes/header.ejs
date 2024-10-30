@@ -1,15 +1,15 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
 <header>
-  <div class="logo" id="logo"><img src="../img/global/logohealth.png" alt=""></div>
+  <div class="logo" id="logo"><img src="/img/global/logohealth.png" alt=""></div>
 
   <div class="date-time">
     <p> <i class='far fa-clock' style='font-size:24px'></i> <span id="time"></span></p>
     <hr class="lining">
     <p><i class='far fa-calendar-alt' style='font-size:24px'></i> <span id="date"></span></p>
-</div>
+  </div>
   <div class="profile1">
-    <img src="../icon/notif.svg" alt="Notification" class="notif" onclick="notifDropdown()"/>
+    <img src="/icon/notif.svg" alt="Notification" class="notif" onclick="notifDropdown()" />
     <div id="notif-drop" class="notification-drop">
       <div class="notif-head">
         <h3>Notifications</h3>
@@ -18,7 +18,7 @@
       <hr>
       <div class="notif-separate">
         <div class="notif-center">
-          <img class="icon-p" src="../icon/profile.svg" alt="">
+          <img class="icon-p" src="/icon/profile.svg" alt="">
         </div>
         <div>
           <p class="p-head">
@@ -28,11 +28,11 @@
             Send a laboratory request for patient Emma Silvero.
           </p>
         </div>
-        
-      </div> 
+
+      </div>
       <div class="notif-separate">
         <div class="notif-center">
-          <img class="icon-p" src="../icon/profile.svg" alt="">
+          <img class="icon-p" src="/icon/profile.svg" alt="">
         </div>
         <div>
           <p class="p-head">
@@ -42,11 +42,11 @@
             Sends a new patient.
           </p>
         </div>
-        
-      </div> 
+
+      </div>
       <div class="notif-separate">
         <div class="notif-center">
-          <img class="icon-p" src="../icon/profile.svg" alt="">
+          <img class="icon-p" src="/icon/profile.svg" alt="">
         </div>
         <div>
           <p class="p-head">
@@ -56,22 +56,27 @@
             Sends laboratory results to doctor Garcia.
           </p>
         </div>
-        
-      </div>     
+
+      </div>
       <div class="see-all">
-        <a  href="">See all</a>
+        <a href="">See all</a>
       </div>
     </div>
 
-    <img src="../icon/profile.svg" alt="Profile" class="icon" id="icon-pg" onclick="toggleDropdown()"/>
+    <img src="/icon/profile.svg" alt="Profile" class="icon" id="icon-pg" onclick="toggleDropdown()" />
     <div id="log-drop" class="logout-drop">
       <div class="sectors">
         <div class="iconing">
-          <img class="sub-icon" src="../icon/profile.svg" alt="">
+          <img class="sub-icon" src="/icon/profile.svg" alt="">
         </div>
         <div class="sheesh">
-          <p><%= firstname %> <%= surname %></p>
-          <p class="userT"><%= profession %></p>
+          <p>
+            <%= firstname %>
+              <%= surname %>
+          </p>
+          <p class="userT">
+            <%= profession %>
+          </p>
         </div>
       </div>
       <hr>
