@@ -17,6 +17,35 @@ document.addEventListener("DOMContentLoaded", function () {
         nav2.classList.toggle("selected");
     }
 
+    async function fetchTransactions(beneficiaryId) {
+        const response = await fetch(`/pharmacy-records/beneficiary-index-form/${beneficiaryId}`);
+        const transactions = await response.json();
+        fillTransactionTable(transactions);
+    }    
+
+    function fillTransactionTable(transactions) {
+        const tableBody = document.querySelector("tbody[beneficiaryIndexTable]");
+        tableBody.innerHTML = "";
+    
+        transactions.forEach(transaction => {
+            const row = document.createElement('tr');
+    
+            row.innerHTML = `
+                <td>${transaction.transaction_number}</td>
+                <td>${transaction.product_details}</td>    
+                <td>${transaction.quantity}</td>
+                <td>${transaction.batch_number}</td>
+                <td>${transaction.expiration_date}</td>
+                <td>${transaction.date_issued}</td>        
+                <td>${transaction.doctor}</td>             
+                <td>${transaction.reciever}</td>          
+                <td>${transaction.relationship_beneficiary}</td>
+            `;
+    
+            tableBody.appendChild(row);
+        });
+    }    
+
     function createTableRow(beneficiary) {
         const row = document.createElement('tr');
 
@@ -44,7 +73,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const cells = Array.from(row.children).slice(0, -1); // Exclude the last `td`
         cells.forEach(cell => {
-            cell.onclick = () => {
+            cell.onclick = async () => {
+                await fetchTransactions(beneficiary.beneficiary_id);
                 console.log(`Row clicked for ${beneficiary.first_name} ${beneficiary.last_name}`);
 
                 document.getElementById('ben_name').value = `${beneficiary.first_name} ${beneficiary.middle_name || ''} ${beneficiary.last_name}`;
