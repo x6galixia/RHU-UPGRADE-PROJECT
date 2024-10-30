@@ -17,32 +17,34 @@ document.addEventListener("DOMContentLoaded", function () {
         nav2.classList.toggle("selected");
     }
 
-    // async function createTransactionTableRows(prescriptions) {
-    //     const medicineTableBody = document.getElementById('beneficiaryIndexTable');
-    //     medicineTableBody.innerHTML = ''; // Clear existing rows
+    async function fetchTransactions(beneficiaryId) {
+        const response = await fetch(`/pharmacy-records/beneficiary-index-form/${beneficiaryId}`);
+        const transactions = await response.json();
+        fillTransactionTable(transactions);
+    }    
+
+    function fillTransactionTable(transactions) {
+        const tableBody = document.querySelector("tbody[beneficiaryIndexTable]");
+        tableBody.innerHTML = "";
     
-    //     if (prescriptions.length === 0) {
-    //         const emptyRow = document.createElement('tr');
-    //         emptyRow.innerHTML = '<td colspan="9">No transactions found</td>';
-    //         medicineTableBody.appendChild(emptyRow);
-    //         return;
-    //     }
+        transactions.forEach(transaction => {
+            const row = document.createElement('tr');
     
-    //     for (const [index, prescription] of prescriptions.entries()) {
-    //         try {
-    //             const transactionId = await fetchTransactionId();
-    //             const row = document.createElement('tr');
-  
-    //             row.innerHTML = `
-                      
-    //             `;
+            row.innerHTML = `
+                <td>${transaction.transaction_number}</td>
+                <td>${transaction.product_details}</td>    
+                <td>${transaction.quantity}</td>
+                <td>${transaction.batch_number}</td>
+                <td>${transaction.expiration_date}</td>
+                <td>${transaction.date_issued}</td>        
+                <td>${transaction.doctor}</td>             
+                <td>${transaction.reciever}</td>          
+                <td>${transaction.relationship_beneficiary}</td>
+            `;
     
-    //             medicineTableBody.appendChild(row);
-    //         } catch (error) {
-    //             console.error('Failed to fetch transaction ID:', error);
-    //         }
-    //     }
-    // }
+            tableBody.appendChild(row);
+        });
+    }    
 
     function createTableRow(beneficiary) {
         const row = document.createElement('tr');
@@ -71,7 +73,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const cells = Array.from(row.children).slice(0, -1); // Exclude the last `td`
         cells.forEach(cell => {
-            cell.onclick = () => {
+            cell.onclick = async () => {
+                await fetchTransactions(beneficiary.beneficiary_id);
                 console.log(`Row clicked for ${beneficiary.first_name} ${beneficiary.last_name}`);
 
                 document.getElementById('ben_name').value = `${beneficiary.first_name} ${beneficiary.middle_name || ''} ${beneficiary.last_name}`;

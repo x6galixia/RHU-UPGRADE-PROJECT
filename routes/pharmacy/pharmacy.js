@@ -392,10 +392,41 @@ router.get("/pharmacy-dispense/:patientPrescriptionId", ensureAuthenticated, che
        GROUP BY pd.patient_prescription_id, pt.patient_id`, [patientPrescriptionId]
     );
 
-    res.json(dispenseDetails.rows[0]); // Send the detailed dispense record
+    res.json(dispenseDetails.rows[0]);
   } catch (err) {
     console.error("Error: ", err);
     res.status(500).json({ error: "Error fetching dispense details" });
+  }
+});
+
+router.get("/pharmacy-records/beneficiary-index-form/:beneficiaryId", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  const { beneficiaryId } = req.params;
+  try {
+    const transactionRecords = await pharmacyPool.query(`
+      SELECT 
+        tr.transaction_number,
+        tm.product_details,
+        tm.quantity,
+        tm.batch_number,
+        tm.expiration_date, 
+        tr.date_issued,
+        tr.doctor,
+        tr.reciever,
+        tr.relationship_beneficiary
+      FROM 
+        transaction_records tr
+      JOIN 
+        transaction_medicine tm
+      ON 
+        tr.id = tm.tran_id
+      WHERE 
+        tr.beneficiary_id = $1;
+    `, [beneficiaryId]);
+
+    res.json(transactionRecords.rows);
+  } catch (err) {
+    console.error("Error: ", err);
+    res.status(500).json({ error: "Error fetching Transaction records" });
   }
 });
 
@@ -616,11 +647,11 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
       doctor,
       receiver,
       relationship_beneficiary,
-      medicines // Array of medicine objects
+      medicines
   } = value;
 
   // Use only the transaction number at index 1
-  const transactionNumber = transaction_number[0];
+  const transactionNumber = transaction_number;
 
   const client = await pharmacyPool.connect();
   try {
