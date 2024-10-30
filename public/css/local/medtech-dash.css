@@ -282,3 +282,42 @@ button {
   color: white;
   cursor: pointer;
 }
+
+/* pop recently */
+
+.pop-up {
+  padding: 30px 60px !important;
+}
+
+#recently-admitted-table .table-container {
+  max-height: 370px;
+  overflow: visible;
+  position: relative;
+}
+
+#recently-admitted-table .table-container thead {
+  position: sticky;
+  top: 0;
+}
+
+#recently-admitted-table .table-container tbody tr td:last-child {
+  font-weight: normal;
+}
+
+#recently-admitted-table .table-container tbody tr td:first-child {
+  font-weight: bold;
+}
+
+#patient-list tr td:first-child {
+  text-align: start;
+  padding-left: 32px;
+}
+
+.selecter>select {
+  width: fit-content !important;
+  border-radius: 0;
+}
+
+.selecter {
+  margin-bottom: 12px;
+}

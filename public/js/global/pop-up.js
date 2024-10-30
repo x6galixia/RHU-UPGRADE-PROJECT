@@ -31,6 +31,7 @@ const submit_dispense = document.getElementById("submit_dispense");
 
 //nurse
 const recently_admitted = document.getElementById("recently-admitted-table");
+const recently_admittedMed = document.getElementById("recently-admitted-table-med");
 const confirm_patient_registration = document.getElementById("confirm_patient_registration");
 
 //med tech
@@ -332,6 +333,11 @@ function popUp_button(button) {
   //nurse
   else if (buttonId == "register_patient") {
     confirm_patient_registration.classList.toggle("visible");
+  }
+
+  else if (buttonId == "recentlyAddedMed") {
+    recently_admittedMed.classList.toggle("visible");
+    // alert("fuck");
   }
 
   //med tech
