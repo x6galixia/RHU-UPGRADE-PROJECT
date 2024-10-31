@@ -1,41 +1,40 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const POLL_INTERVAL = 1000;
+    const POLL_INTERVAL = 300;
     let pollIntervalId;
     let isSearching = false;
     let currentSearchQuery = "";
+    const loadingSpinner = document.getElementById('loadingSpinner'); // Assuming you have a loading spinner element
 
-    var nav1 = document.querySelector(".nav1");
+    const nav1 = document.querySelector(".nav1");
     if (nav1) {
         nav1.classList.toggle("selected");
     }
 
     function updateInventoryTable(data) {
         const tableBody = document.getElementById("inventoryTableBody");
-        tableBody.innerHTML = "";
+        let rows = '';
 
         if (data.getInventoryList.length > 0) {
             data.getInventoryList.forEach(list => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                  <td>${list.product_id}</td>
-                  <td>${list.product_code}</td>
-                  <td>${list.product_name}</td>
-                  <td>${list.brand_name}</td>
-                  <td>${list.supplier}</td>
-                  <td>${list.dosage_form}</td>
-                  <td>${list.dosage}</td>
-                  <td>${list.reorder_level}</td>
-                  <td>${list.batch_number}</td>
-                  <td>${list.product_quantity}</td>
-                  <td>${list.expiration}</td>
-              `;
-                tableBody.appendChild(row);
+                rows += `
+                    <tr>
+                        <td>${list.product_id}</td>
+                        <td>${list.product_code}</td>
+                        <td>${list.product_name}</td>
+                        <td>${list.brand_name}</td>
+                        <td>${list.supplier}</td>
+                        <td>${list.dosage_form}</td>
+                        <td>${list.dosage}</td>
+                        <td>${list.reorder_level}</td>
+                        <td>${list.batch_number}</td>
+                        <td>${list.product_quantity}</td>
+                        <td>${list.expiration}</td>
+                    </tr>`;
             });
         } else {
-            const emptyRow = document.createElement("tr");
-            emptyRow.innerHTML = '<td colspan="11">No list of Medicine</td>';
-            tableBody.appendChild(emptyRow);
+            rows = '<tr><td colspan="11">No list of Medicine</td></tr>';
         }
+        tableBody.innerHTML = rows; // Batch DOM update
     }
 
     function fetchInventoryUpdates() {
@@ -53,7 +52,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     pollIntervalId = setInterval(fetchInventoryUpdates, POLL_INTERVAL);
 
-    document.getElementById('searchInput').addEventListener('input', function (event) {
+    // Debounce function
+    function debounce(func, delay) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+
+    document.getElementById('searchInput').addEventListener('input', debounce(function (event) {
         event.preventDefault();
 
         const query = this.value;
@@ -71,33 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch(`/pharmacy-inventory/search?query=${encodeURIComponent(query)}`)
             .then(response => response.json())
             .then(data => {
-                const tableBody = document.querySelector('#inventoryTableBody');
-                tableBody.innerHTML = '';
-
-                if (data.getInventoryList.length === 0) {
-                    tableBody.innerHTML = `
-                      <tr>
-                          <td colspan="11">No matching records found</td>
-                      </tr>`;
-                } else {
-                    data.getInventoryList.forEach(medicine => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                          <td>${medicine.product_id}</td>
-                          <td>${medicine.product_code}</td>
-                          <td>${medicine.product_name}</td>
-                          <td>${medicine.brand_name}</td>
-                          <td>${medicine.supplier}</td>
-                          <td>${medicine.dosage_form}</td>
-                          <td>${medicine.dosage}</td>
-                          <td>${medicine.reorder_level}</td>
-                          <td>${medicine.batch_number}</td>
-                          <td>${medicine.product_quantity}</td>
-                          <td>${medicine.expiration}</td>
-                      `;
-                        tableBody.appendChild(row);
-                    });
-                }
+                updateInventoryTable(data);
             })
             .catch(error => {
                 console.error('Error during search:', error);
@@ -105,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .finally(() => {
                 loadingSpinner.style.display = 'none';
             });
-    });
+    }, 300)); // 300 ms delay for debounce
 
     // Function to handle pagination clicks
     function handlePagination(event) {

@@ -129,11 +129,13 @@ function fillUpdate(button) {
     document.getElementById('diastolic').value = button.getAttribute('data-diastolic') || '';
     document.getElementById('pulse_rate').value = button.getAttribute('data-heart-rate') || '';
 
+    document.getElementById('recently-admitted-table').classList.remove("visible");
+    overlay.classList.toggle("visible");
+
+    document.getElementById("register_patient").innerText = "Update";
+    document.querySelector('#confirm_patient_registration h2').innerText = 'Are you sure you want update this patient?';
   }
-  document.getElementById('recently-admitted-table').classList.remove("visible");
-  overlay.classList.toggle("visible");
-  document.getElementById("register_patient").innerText = "Update";
-  document.querySelector('#confirm_patient_registration h2').innerText = 'Are you sure you want update this patient?';
+  
 }
 
 function attachDotEventListeners() {
