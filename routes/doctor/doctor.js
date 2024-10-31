@@ -5,7 +5,7 @@ const rhuPool = require("../../models/rhudb");
 const pharmacyPool = require("../../models/pharmacydb");
 const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
-const { calculateAge, formatDate, } = require("../../public/js/global/functions");
+const { formatDate } = require("../../public/js/global/functions");
 
 router.use(setUserData);
 router.use(methodOverride("_method"));
@@ -170,6 +170,25 @@ router.get("/doctor-dashboard/search", ensureAuthenticated, checkUserType("Docto
   }
 });
 
+router.get("/doctor-dashboard/prescribe/search", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).send("Query parameter is required");
+  }
+
+  try {
+    const result = await pharmacyPool.query(
+      "SELECT product_name, dosage, product_quantity, product_id, batch_number FROM inventory WHERE product_quantity <> 0 AND product_name ILIKE $1",
+      [`%${query}%`]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
 router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
   const { patient_id } = req.params;
 
@@ -239,8 +258,7 @@ router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUser
     res.status(500).send("Server error");
   }
 });
-
-
+    
 router.post('/patient-history/:patientId', async (req, res) => {
   const { patientId } = req.params;
   const { date } = req.body;
@@ -274,7 +292,6 @@ router.post('/patient-history/:patientId', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 
 // router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
 //   const { patient_id } = req.params;
@@ -391,59 +408,6 @@ router.post("/doctor/request-laboratory/send", async (req, res) => {
   }
 });
 
-// router.post("/doctor/request-laboratory/send", async (req, res) => {
-//   const { error, value } = patientSchema.validate(req.body);
-
-//   if (error) {
-//     return res.status(400).json({ error: error.details[0].message });
-//   }
-
-//   try {
-//     const isPatient = await rhuPool.query(
-//       `SELECT * FROM doctor_visits WHERE patient_id = $1`,
-//       [value.patient_id]
-//     );
-
-//     if (isPatient.rows.length > 0) {
-//       // If patient exists, update the existing records
-//       const categories = value.category || [];  // Ensure categories is an array
-//       const services = value.service || [];      // Ensure services is an array
-
-//       // Update existing records with the new categories and services
-//       // Assuming you want to update the latest values in a single row
-//       await rhuPool.query(
-//         `UPDATE doctor_visits SET category = $2, service = $3 WHERE patient_id = $1`,
-//         [value.patient_id, categories, services]
-//       );
-//     } else {
-//       // If patient doesn't exist, insert multiple rows for each category and service
-//       const categories = value.category || []; // Ensure categories is an array
-//       const services = value.service || [];     // Ensure services is an array
-
-//       // Insert each category
-//       for (const category of categories) {
-//         await rhuPool.query(
-//           `INSERT INTO doctor_visits (patient_id, category, service) VALUES ($1, $2, NULL)`,
-//           [value.patient_id, category]
-//         );
-//       }
-
-//       // Insert each service
-//       for (const service of services) {
-//         await rhuPool.query(
-//           `INSERT INTO doctor_visits (patient_id, category, service) VALUES ($1, NULL, $2)`,
-//           [value.patient_id, service]
-//         );
-//       }
-//     }
-
-//     return res.redirect("/doctor-dashboard");
-//   } catch (err) {
-//     console.error("Error: ", err);
-//     return res.status(500).json({ error: "Internal server error" });
-//   }
-// });
-
 router.post("/doctor/diagnose-patient/send", async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
 
@@ -505,25 +469,6 @@ router.post("/doctor/findings-patient/send", async (req, res) => {
     console.error("Error: ", err);
   }
 
-});
-
-router.get("/doctor-dashboard/prescribe/search", async (req, res) => {
-  const { query } = req.query;
-
-  if (!query) {
-    return res.status(400).send("Query parameter is required");
-  }
-
-  try {
-    const result = await pharmacyPool.query(
-      "SELECT product_name, dosage, product_quantity, product_id, batch_number FROM inventory WHERE product_quantity <> 0 AND product_name ILIKE $1",
-      [`%${query}%`]
-    );
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error");
-  }
 });
 
 router.post("/doctor/prescribe-patient/send", async (req, res) => {

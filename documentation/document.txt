@@ -226,4 +226,5 @@ CREATE INDEX idx_product_name_inventory ON inventory(product_name);
 CREATE INDEX idx_beneficiary_name ON beneficiary USING gin(to_tsvector('english', first_name || ' ' || last_name));
 
 CREATE INDEX idx_beneficiary_name_gender ON beneficiary (last_name, first_name, gender);
-CREATE INDEX idx_inventory_rhu_product ON inventory (rhu_id, product_id);
+CREATE INDEX idx_inventory_rhu_product ON inventory(rhu_id, product_id);
+CREATE INDEX idx_rhu_id ON rhu(rhu_id);

@@ -666,7 +666,7 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
     );
 
     if (result.rowCount > 0) {
-      res.redirect("/pharmacy-records");
+      return res.redirect("/pharmacy-records");
     } else {
       res.status(404).json({ message: 'Beneficiary not found.' });
     }
