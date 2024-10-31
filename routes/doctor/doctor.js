@@ -5,7 +5,7 @@ const rhuPool = require("../../models/rhudb");
 const pharmacyPool = require("../../models/pharmacydb");
 const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
-const { formatDate } = require("../../public/js/global/functions");
+const { calculateAge, formatDate, } = require("../../public/js/global/functions");
 
 router.use(setUserData);
 router.use(methodOverride("_method"));
@@ -170,7 +170,7 @@ router.get("/doctor-dashboard/search", ensureAuthenticated, checkUserType("Docto
   }
 });
 
-router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
+router.get("/doctor/patient-histories/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
   const { patient_id } = req.params;
 
   try {
@@ -315,6 +315,7 @@ router.post("/doctor/request-laboratory/send", async (req, res) => {
   }
 });
 
+
 router.post("/doctor/diagnose-patient/send", async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
 
@@ -376,6 +377,25 @@ router.post("/doctor/findings-patient/send", async (req, res) => {
     console.error("Error: ", err);
   }
 
+});
+
+router.get("/doctor-dashboard/prescribe/search", async (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).send("Query parameter is required");
+  }
+
+  try {
+    const result = await pharmacyPool.query(
+      "SELECT product_name, dosage, product_quantity, product_id, batch_number FROM inventory WHERE product_quantity <> 0 AND product_name ILIKE $1",
+      [`%${query}%`]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
 });
 
 router.post("/doctor/prescribe-patient/send", async (req, res) => {
