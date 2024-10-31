@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const POLL_INTERVAL = 3000;
+    const POLL_INTERVAL = 300;
     let pollIntervalId;
     let isSearching = false;
     let currentSearchQuery = "";
