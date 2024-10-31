@@ -15,6 +15,10 @@ router.get("/user/login", checkNotAuthenticated, (req, res) => {
   res.render("login/login");
 });
 
+router.get("/admin/login", checkNotAuthenticated, (req, res) => {
+  res.render("login/admin", {title : 'Admin | login'})
+});
+
 router.post("/login/user", async (req, res, next) => {
   const { error, value } = userSchema.validate(req.body);
 
@@ -53,10 +57,43 @@ router.post("/login/user", async (req, res, next) => {
             return res.redirect("/");
         }
       });
-    })(req, res, next);;
+    })(req, res, next);
   } catch (err) {
     console.error("Error: ", err);
     res.status(500).send("Internal server error");
+  }
+});
+
+router.post("/login/admin", async (req, res, next) => {
+  const { error, value } = userSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
+  try {
+    passport.authenticate("local", (err, user, info) => {
+      if (err) {
+        console.error("Authentication error :", err);
+        return next(err);
+      } if (!user) {
+        console.log("Authentication failed:", info.message);
+        req.flash("error", info.message);
+        return res.redirect("/admin/login");
+      } if (user.user_type !== value.user_type) {
+        req.flash("error", "User type does not match.");
+        return res.redirect("/admin/login");
+      }
+      req.login(user, (err) => {
+        if (err) {
+          console.error("Login error:", err);
+          return next(err);
+        }
+        return res.redirect("/admin-dashboard")
+      });
+    })(req, res, next);;
+  } catch (err) {
+    console.error("Error: ", err);
   }
 });
 
