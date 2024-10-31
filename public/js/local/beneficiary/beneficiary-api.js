@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const POLL_INTERVAL = 1000;
+    const POLL_INTERVAL = 3000;
     let pollIntervalId;
     let isSearching = false;
     let isDotMenuOpen = false;
@@ -27,6 +27,17 @@ document.addEventListener("DOMContentLoaded", function () {
         const date = new Date(dateString);
         return date.toLocaleDateString("en-US", options);
       }
+
+      function debounce(func, delay) {
+        let timeoutId;
+        return function (...args) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(this, args);
+            }, delay);
+        };
+    }
+    
 
     async function fetchTransactions(beneficiaryId) {
         const response = await fetch(`/pharmacy-records/beneficiary-index-form/${beneficiaryId}`);
@@ -187,10 +198,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    document.getElementById('searchInput').addEventListener('input', function (event) {
+    document.getElementById('searchInput').addEventListener('input', debounce(function (event) {
         event.preventDefault();
         const query = this.value;
-
+    
         if (query.trim() !== "") {
             isSearching = true;
             clearInterval(pollIntervalId);
@@ -198,15 +209,15 @@ document.addEventListener("DOMContentLoaded", function () {
             isSearching = false;
             pollIntervalId = setInterval(fetchBeneficiaryUpdates, POLL_INTERVAL);
         }
-
+    
         loadingSpinner.style.display = 'block';
-
+    
         fetch(`/pharmacy-records/search?query=${encodeURIComponent(query)}`)
             .then(response => response.json())
             .then(data => {
                 const tableBody = document.querySelector('#beneficiaryTableBody');
                 tableBody.innerHTML = '';
-
+    
                 if (data.getBeneficiaryList.length === 0) {
                     tableBody.innerHTML = `
                         <tr>
@@ -226,7 +237,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .finally(() => {
                 loadingSpinner.style.display = 'none';
             });
-    });
+    }, 500));    
 
     // Function to handle pagination clicks
     function handlePagination(event) {
