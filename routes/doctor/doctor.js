@@ -5,7 +5,7 @@ const rhuPool = require("../../models/rhudb");
 const pharmacyPool = require("../../models/pharmacydb");
 const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
-const { formatDate } = require("../../public/js/global/functions");
+const { calculateAge, formatDate, } = require("../../public/js/global/functions");
 
 router.use(setUserData);
 router.use(methodOverride("_method"));
@@ -170,26 +170,7 @@ router.get("/doctor-dashboard/search", ensureAuthenticated, checkUserType("Docto
   }
 });
 
-router.get("/doctor-dashboard/prescribe/search", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
-  const { query } = req.query;
-
-  if (!query) {
-    return res.status(400).send("Query parameter is required");
-  }
-
-  try {
-    const result = await pharmacyPool.query(
-      "SELECT product_name, dosage, product_quantity, product_id, batch_number FROM inventory WHERE product_quantity <> 0 AND product_name ILIKE $1",
-      [`%${query}%`]
-    );
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error");
-  }
-});
-
-router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
+router.get("/doctor/patient-histories/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
   const { patient_id } = req.params;
 
   try {
@@ -246,19 +227,29 @@ router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUser
       return acc;
     }, {});
 
-    res.render("doctor/patient-history", {
-      user: req.user,
-      patient_id: patient_id,
-      groupedHistory: groupedHistory,
-      patientHistory: patientHistory
+    // Change this line to return JSON data
+    res.json({
+      patientHistory,
+      groupedHistory
     });
 
+  } catch (err) {
+    console.error("Error: ", err);
+    res.status(500).json({ error: "Server error" }); // Also return JSON on error
+  }
+});
+
+router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
+  const { patient_id } = req.params;
+  console.log("patient history clicked!")
+  try {
+    res.render("doctor/patient-history", { patient_id });
   } catch (err) {
     console.error("Error: ", err);
     res.status(500).send("Server error");
   }
 });
-    
+
 router.post('/patient-history/:patientId', async (req, res) => {
   const { patientId } = req.params;
   const { date } = req.body;
@@ -293,90 +284,6 @@ router.post('/patient-history/:patientId', async (req, res) => {
   }
 });
 
-// router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
-//   const { patient_id } = req.params;
-
-//   try {
-
-//     const getPatientHistory = await rhuPool.query(`
-//       SELECT 
-//         p.id, 
-//         p.patient_id, 
-//         p.rhu_id, 
-//         p.last_name, 
-//         p.first_name, 
-//         p.middle_name, 
-//         p.suffix, 
-//         p.phone, 
-//         p.gender,
-//         p.birthdate, 
-//         p.house_no, 
-//         p.street, 
-//         p.barangay, 
-//         p.city, 
-//         p.province, 
-//         p.occupation, 
-//         p.email, 
-//         p.philhealth_no, 
-//         p.guardian,
-//         MAX(p.age) AS age,
-//         MAX(p.check_date) AS check_date,
-//         MAX(p.height) AS height,
-//         MAX(p.weight) AS weight,
-//         MAX(p.systolic) AS systolic,
-//         MAX(p.diastolic) AS diastolic,
-//         MAX(p.temperature) AS temperature,
-//         MAX(p.heart_rate) AS heart_rate,
-//         MAX(p.respiratory_rate) AS respiratory_rate,
-//         MAX(p.bmi) AS bmi,
-//         MAX(p.comment) AS comment,
-//         STRING_AGG(DISTINCT plr.lab_result::text, ', ') AS lab_results,
-//         STRING_AGG(DISTINCT pp.medicine::text, ', ') AS medicines,
-//         STRING_AGG(DISTINCT pp.instruction::text, ', ') AS instruction,
-//         STRING_AGG(DISTINCT pp.quantity::text, ', ') AS quantity,
-//         STRING_AGG(DISTINCT ps.category::text, ', ') AS categories,
-//         STRING_AGG(DISTINCT ps.service::text, ', ') AS services
-//       FROM patient_history p
-//       LEFT JOIN patient_lab_results plr ON p.id = plr.history_id
-//       LEFT JOIN patient_prescriptions pp ON p.id = pp.history_id
-//       LEFT JOIN patient_services ps ON p.id = ps.history_id
-//       WHERE p.patient_id = $1
-//       GROUP BY 
-//         p.id, 
-//         p.patient_id, 
-//         p.rhu_id, 
-//         p.last_name, 
-//         p.first_name, 
-//         p.middle_name, 
-//         p.suffix, 
-//         p.phone, 
-//         p.gender,
-//         p.birthdate, 
-//         p.house_no, 
-//         p.street, 
-//         p.barangay, 
-//         p.city, 
-//         p.province, 
-//         p.occupation, 
-//         p.email, 
-//         p.philhealth_no, 
-//         p.guardian
-//     `, [patient_id]);
-//     res.render("doctor/patient-history",
-//       {
-//         user: req.user,
-//         patient_id: patient_id,
-//         getPatientHistory: getPatientHistory.rows[0]
-//       }
-//     );
-
-//   } catch (err) {
-//     console.error("Error: ", err);
-//     res.status(500).send("Server error");
-//   }
-
-// });
-
 router.post("/doctor/request-laboratory/send", async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
 
@@ -407,6 +314,7 @@ router.post("/doctor/request-laboratory/send", async (req, res) => {
     console.error("Error: ", err);
   }
 });
+
 
 router.post("/doctor/diagnose-patient/send", async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
@@ -469,6 +377,25 @@ router.post("/doctor/findings-patient/send", async (req, res) => {
     console.error("Error: ", err);
   }
 
+});
+
+router.get("/doctor-dashboard/prescribe/search", async (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).send("Query parameter is required");
+  }
+
+  try {
+    const result = await pharmacyPool.query(
+      "SELECT product_name, dosage, product_quantity, product_id, batch_number FROM inventory WHERE product_quantity <> 0 AND product_name ILIKE $1",
+      [`%${query}%`]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
 });
 
 router.post("/doctor/prescribe-patient/send", async (req, res) => {

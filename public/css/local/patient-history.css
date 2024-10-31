@@ -23,7 +23,9 @@ h1 {
     margin-bottom: 1em;
 }
 
-label, p, input {
+label,
+p,
+input {
     font-size: var(--font-size);
 }
 
@@ -81,12 +83,12 @@ select {
     margin-bottom: 1em;
 }
 
-.health-btn-div > .health-btn{
+.health-btn-div>.health-btn {
     width: 230px !important;
     background-color: var(--green-color);
 }
 
-.health-btn-div > .health-btn:hover{
+.health-btn-div>.health-btn:hover {
     width: 232px !important;
 }
 
@@ -161,4 +163,63 @@ select {
     background-color: var(--green-color);
 } */
 
+.image-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    gap: 12px;
+}
 
+.image-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.image-section>.main-image {
+    display: grid;
+    place-items: center;
+    flex: 1;
+}
+
+.image-section>.main-image>img {
+    height: 20em;
+    object-fit: scale-down;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.9);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    height: 90%;
+    max-width: 90%;
+    max-height: 90%;
+    margin: auto;
+    display: block;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    font-size: 40px;
+    color: white;
+    cursor: pointer;
+}
+
+#date-container {
+    position: sticky;
+    top: 28px;
+}
