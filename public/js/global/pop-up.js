@@ -332,6 +332,14 @@ function popUp_button(button) {
   //nurse
   else if (buttonId == "register_patient") {
     confirm_patient_registration.classList.toggle("visible");
+
+    const form = document.getElementById('form-admit-yes-or-no');
+    if (button.innerText === "Update") {
+        form.action = "/nurse/update-patient-details";
+    } else {
+        form.action = "/nurse/admit-patient";
+    }
+
   }
 
   //med tech
