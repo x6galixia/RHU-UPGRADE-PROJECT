@@ -837,17 +837,22 @@ async function fetchInventoryList(page, limit, rhu_id) {
   const offset = (page - 1) * limit;
 
   try {
-    const totalItemsResult = await pharmacyPool.query("SELECT COUNT(*) FROM inventory WHERE rhu_id = $1", [rhu_id]);
-    const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
+    const query = `
+      SELECT *, COUNT(*) OVER() AS total_count
+      FROM inventory
+      WHERE rhu_id = $1
+      ORDER BY product_name
+      LIMIT $2 OFFSET $3
+    `;
+
+    const { rows } = await pharmacyPool.query(query, [rhu_id, limit, offset]);
+
+    const totalItems = rows.length > 0 ? rows[0].total_count : 0;
     const totalPages = Math.ceil(totalItems / limit);
 
-    const inventoryList = await pharmacyPool.query(
-      `SELECT * FROM inventory WHERE rhu_id = $3 ORDER BY product_name LIMIT $1 OFFSET $2`, [limit, offset, rhu_id]
-    );
-
-    const data = inventoryList.rows.map(row => ({
+    const data = rows.map(row => ({
       ...row,
-      expiration: formatDate(row.expiration)
+      expiration: formatDate(row.expiration),
     }));
 
     return { getInventoryList: data, totalPages };
