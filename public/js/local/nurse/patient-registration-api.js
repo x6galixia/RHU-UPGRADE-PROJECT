@@ -363,3 +363,17 @@ function populateFormFields(data) {
   document.getElementById("occupation").value = data.occupation || '';
 }
 
+function printContainer(containerId) {
+  var container = document.getElementById(containerId);
+  
+  var printWindow = window.open('', '', 'height=600,width=800');
+  printWindow.document.write('<html><head><title>Print</title>');
+  printWindow.document.write('<link rel="stylesheet" href="../css/global/general.css">');
+  printWindow.document.write('<link rel="stylesheet" href="../css/local/id.css">');
+  
+  printWindow.document.write('</head><body>');
+  printWindow.document.write(container.innerHTML);
+  printWindow.document.write('</body></html>');
+  printWindow.document.close();
+  printWindow.print();
+}
