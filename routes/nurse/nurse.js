@@ -343,7 +343,7 @@ router.post("/nurse/admit-patient", async (req, res) => {
       await insertNurseChecks(value, nurse_id);
 
       await rhuPool.query("COMMIT");
-      req.flash("submit", "Patient Updated Successfully");
+      req.flash("submit", "Patient Added Successfully");
       return res.redirect("/nurse/patient-registration");
     } else {
       console.log("New patient case. Inserting new patient data.");
@@ -361,6 +361,52 @@ router.post("/nurse/admit-patient", async (req, res) => {
       stack: err.stack
     });
     return res.status(500).json({ error: err.message });
+  }
+});
+
+router.post("/nurse/update-patient-details", async (req, res) => {
+  const { error, value } = patientSchema.validate(req.body);
+  const rhu_id = req.user.rhu_id;
+  const nurse_id = req.user.id;
+
+  // Extract address components from completeAddress
+  const addressParts = value.completeAddress.split(",").map(part => part.trim());
+  const [house_no, street, barangay, city, province] = addressParts;
+
+  if (error) {
+    console.error("Validation error:", error.details[0].message);
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
+  try {
+    await rhuPool.query(`
+      UPDATE patients
+      SET rhu_id = $1, last_name = $2, first_name = $3, middle_name = $4, suffix = $5, phone = $6, gender = $7, birthdate = $8, house_no = $9, street = $10, barangay = $11, city = $12, province = $13, occupation = $14, email = $15, philhealth_no = $16, guardian = $17
+      WHERE patient_id = $18
+    `, [ rhu_id, value.last_name, value.first_name, value.middle_name, value.suffix, value.phone, value.gender, value.birthdate, house_no, street, barangay, city, province, value.occupation, value.email, value.philhealth_no, value.guardian, value.patient_id,
+    ]);
+
+    await rhuPool.query(`
+      UPDATE nurse_checks
+      SET 
+        nurse_id = $1, 
+        age = $2, 
+        check_date = $3, 
+        height = $4, 
+        weight = $5, 
+        systolic = $6, 
+        diastolic = $7, 
+        temperature = $8, 
+        heart_rate = $9, 
+        respiratory_rate = $10, 
+        bmi = $11, 
+        comment = $12
+      WHERE patient_id = $13
+    `, [nurse_id, calculateAge(value.birthdate), new Date(), value.height, value.weight, value.systolic, value.diastolic, value.temperature, value.heart_rate, value.respiratory_rate, value.bmi, value.comment, value.patient_id]);
+      req.flash("submit", "Patient Updated Successfully");
+      return res.redirect("/nurse/patient-registration");
+  } catch (err) {
+    console.error("Error: ", err);
   }
 });
 
