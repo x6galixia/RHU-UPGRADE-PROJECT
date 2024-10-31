@@ -17,7 +17,6 @@ const loginRouter = require("./routes/login/login");
 const adminRouter = require("./routes/admin/admin");
 const nurseRouter = require("./routes/nurse/nurse");
 const doctorRouter = require("./routes/doctor/doctor");
-const patientHistoryRouter = require("./routes/doctor/patient-history");
 const medtechRouter = require("./routes/medtech/medtech");
 const pharmacyRouter = require("./routes/pharmacy/pharmacy");
 
@@ -79,7 +78,6 @@ app.use("/", nurseRouter);
 app.use("/", doctorRouter);
 app.use("/", medtechRouter);
 app.use("/", pharmacyRouter);
-app.use("/", patientHistoryRouter);
 
 app.get("/", (req, res) => {
   res.redirect("/user/login");
