@@ -214,7 +214,7 @@ const servicesByCategory = {
       "Chloride(CI-)",
       "Phosphorus/Phosphate(P4)",
       "Albumin",
-      "B1,B2, Total Bilirubin ",
+      "B1 B2 Total Bilirubin ",
       "Drug Test",
   
     ],
