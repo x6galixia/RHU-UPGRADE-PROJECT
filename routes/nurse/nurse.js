@@ -211,6 +211,7 @@ router.post("/nurse/admit-patient", async (req, res) => {
       const historyInsertResult = await rhuPool.query(historyInsertQuery, [
         patientData.patient_id,
         patientData.rhu_id,
+        doctorVisit ? doctorVisit.doctor_id : null,
         patientData.last_name,
         patientData.first_name,
         patientData.middle_name,
@@ -449,12 +450,17 @@ router.delete('/nurse/patient-registration/delete/:id', async (req, res) => {
   }
 });
 
-router.delete("/logout", (req, res) => {
+router.delete("/logout", (req, res, next) => {
   req.logOut((err) => {
     if (err) {
       return next(err);
     }
-    res.redirect("/");
+    req.session.destroy((err) => {
+      if (err) {
+        return next(err);
+      }
+      res.redirect("/user/login");
+    });
   });
 });
 
@@ -614,7 +620,6 @@ async function fetchPatientList(page, limit, rhuId) {
   }
 }
 
-// Function to insert a new patient record
 async function insertPatientRecord(value, rhu_id, house_no, street, barangay, city, province) {
   const insertQuery = `
     INSERT INTO patients (patient_id, rhu_id, last_name, first_name, middle_name, suffix, phone, gender, birthdate,
@@ -645,7 +650,6 @@ async function insertPatientRecord(value, rhu_id, house_no, street, barangay, ci
   ]);
 }
 
-// Function to insert nurse checks
 async function insertNurseChecks(value, nurse_id) {
   const nurseCheckInsertQuery = `
     INSERT INTO nurse_checks (patient_id, nurse_id, age, check_date, height, weight, systolic, diastolic, temperature, heart_rate, respiratory_rate, bmi, comment)

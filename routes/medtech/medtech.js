@@ -158,6 +158,7 @@ router.get("/medtech-dashboard/search", ensureAuthenticated, checkUserType("Med 
 
 router.post("/medtech-dashboard/send-patient-lab", upload.array('lab_result', 6), async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
+  const medtech_id = req.user.id;
 
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
@@ -174,9 +175,9 @@ router.post("/medtech-dashboard/send-patient-lab", upload.array('lab_result', 6)
         const filename = path.basename(file.path);
 
         await rhuPool.query(`
-          INSERT INTO medtech_labs (patient_id, lab_result) 
-          VALUES ($1, $2)`, 
-          [patientId, filename]
+          INSERT INTO medtech_labs (patient_id, lab_result, medtech_id) 
+          VALUES ($1, $2, $3)`, 
+          [patientId, filename, medtech_id]
         );
       }
     }
@@ -189,12 +190,17 @@ router.post("/medtech-dashboard/send-patient-lab", upload.array('lab_result', 6)
   }
 });
 
-router.delete("/logout", (req, res) => {
+router.delete("/logout", (req, res, next) => {
   req.logOut((err) => {
     if (err) {
       return next(err);
     }
-    res.redirect("/");
+    req.session.destroy((err) => {
+      if (err) {
+        return next(err);
+      }
+      res.redirect("/user/login");
+    });
   });
 });
 
