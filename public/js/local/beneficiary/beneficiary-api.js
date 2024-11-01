@@ -475,18 +475,14 @@ document.addEventListener("DOMContentLoaded", function () {
             },
         })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to delete beneficiary');
-                }
+                if (response.ok) {
+                    alert('Beneficiary deleted successfully.');
+                    fetchBeneficiaryUpdates();
 
-                alert('Beneficiary deleted successfully.');
-                fetchBeneficiaryUpdates();
-
+                } 
             })
             .catch(error => {
                 console.error('Error deleting beneficiary:', error);
-
-                alert('An error occurred while trying to delete the beneficiary: ' + error.message);
             });
     }
 
