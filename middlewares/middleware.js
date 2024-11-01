@@ -10,6 +10,7 @@ function setUserData(req, res, next) {
         res.locals.rhu_id = null;
         res.locals.firstname = null;
         res.locals.surname = null;
+        res.locals.license_number = null;
         res.locals.middle_initial = null;
         res.locals.profession = null;
     }
