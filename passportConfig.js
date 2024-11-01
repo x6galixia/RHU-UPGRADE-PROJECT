@@ -39,24 +39,23 @@ function initialize(passport){
 };
 
 passport.serializeUser((user, done) => {
-    if (!user || !user.id){
-        return done(new Error("user not found or id is missing"));
+    if (!user || typeof user !== 'object' || !user.id) {
+        return done(new Error("User not found or ID is missing"));
     }
     done(null, user.id);
 });
 
 passport.deserializeUser((id, done) => {
-    rhuPool.query("SELECT * FROM users WHERE id = $1", [id],
-        (err, results) => {
-            if (err){
-                return done(err);
-            } if (results.rows.length === 0) {
-                return done(new Error("user not found"));
-            }
-            const user = results.rows[0];
-            done(null, user);
+    rhuPool.query("SELECT * FROM users WHERE id = $1", [id], (err, results) => {
+        if (err) {
+            return done(err);
         }
-    )
-})
+        if (results.rows.length === 0) {
+            return done(new Error("User not found"));
+        }
+        const user = results.rows[0];
+        done(null, user);
+    });
+});
 
 module.exports = initialize;

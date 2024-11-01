@@ -26,12 +26,6 @@ const userSchema = Joi.object({
 
 router.use(express.json());
 
-router.get("/sign-in", ensureAdminAuthenticated, checkUserType("Admin"), (req, res) => {
-    res.render("admin/sign-in", {
-        user: req.user
-    });
-})
-
 router.get("/admin-dashboard", ensureAdminAuthenticated, checkUserType("Admin"), (req, res) => {
     
     res.render("admin/admin-dashboard", {
@@ -39,7 +33,8 @@ router.get("/admin-dashboard", ensureAdminAuthenticated, checkUserType("Admin"),
     });
 });
 
-router.get("/admin-users", ensureAdminAuthenticated, checkUserType("Admin"), (req, res) => {  
+router.get("/admin-users", ensureAdminAuthenticated, checkUserType("Admin"), (req, res) => {
+
     res.render("admin/admin-users", {
         user: req.user
     });
@@ -47,14 +42,17 @@ router.get("/admin-users", ensureAdminAuthenticated, checkUserType("Admin"), (re
 
 router.get("/api/users", ensureAdminAuthenticated, checkUserType("Admin"), async function (req, res) {
     const ln = '000000';
-        try {
-            const result = await rhuPool.query('SELECT user_type, firstname, surname, middle_name FROM users WHERE license_number != $1', [ln]);
-            res.json(result.rows);
-        } catch (err) {
-            console.error(err);
-            res.status(500).send('Server Error');
+    try {
+        const result = await rhuPool.query('SELECT user_type, firstname, surname, middle_name FROM users WHERE license_number != $1', [ln]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "No users found" });
         }
-    });
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
 
 router.post("/admin/create-user/submit", async (req, res) => {
     const { error, value } = userSchema.validate(req.body);

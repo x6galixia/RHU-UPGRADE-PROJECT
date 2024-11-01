@@ -543,7 +543,6 @@ router.delete("/logout", (req, res, next) => {
   });
 });
 
-
 async function fetchPatientList(page, limit) {
   const offset = (page - 1) * limit;
 

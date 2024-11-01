@@ -81,7 +81,7 @@ router.post("/login/admin", async (req, res, next) => {
         req.flash("error", info.message);
         return res.redirect("/admin/login");
       } if (user.user_type !== value.user_type) {
-        req.flash("error", "User type does not match.");
+        req.flash("error", "Invalid credentials.");
         return res.redirect("/admin/login");
       }
       req.login(user, (err) => {
@@ -89,7 +89,7 @@ router.post("/login/admin", async (req, res, next) => {
           console.error("Login error:", err);
           return next(err);
         }
-        return res.redirect("/admin-dashboard")
+        return res.redirect("/admin-dashboard");
       });
     })(req, res, next);;
   } catch (err) {
