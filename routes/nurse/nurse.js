@@ -407,7 +407,8 @@ router.post("/nurse/update-patient-details", async (req, res) => {
     req.flash("submit", "Patient Updated Successfully");
     return res.redirect("/nurse/patient-registration");
   } catch (err) {
-    console.error("Error: ", err);
+    req.flash("error", err);
+    return res.redirect("/nurse/patient-registration");
   }
 });
 
