@@ -17,12 +17,36 @@ async function fetchPatientHistory(patientId) {
   }
 }
 
+async function fetchPatientHistory1(patientId, date) {
+  console.log(date, patientId);
+  try {
+    const response = await fetch(`/patient-history/${patientId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ date })
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    displayPatientHistory(data);
+  } catch (error) {
+    console.error("Error fetching patient history:", error);
+  }
+}
+
+
 function displayPatientHistory(data) {
+  const birthdate = new Date(data.patientHistory.birthdate).toISOString().split('T')[0];
   document.getElementById('name').value = `${data.patientHistory.first_name} ${data.patientHistory.middle_name} ${data.patientHistory.last_name}`;
   document.getElementById('phil_no').value = `${data.patientHistory.philhealth_no}`;
   document.getElementById('suffix').value = `${data.patientHistory.suffix}`;
   document.getElementById('phone').value = `${data.patientHistory.phone}`;
-  document.getElementById('birthdate').value = `${data.patientHistory.birthdate}`;
+  document.getElementById('birthdate').value = birthdate;
   document.getElementById('email').value = `${data.patientHistory.email}`;
   document.getElementById('gender').value = `${data.patientHistory.gender}`;
   document.getElementById('occupation').value = `${data.patientHistory.occupation}`;
@@ -53,6 +77,52 @@ function displayPatientHistory(data) {
   const quantityIn = (quantity === 'null' || quantity === undefined) ? '' : quantity;
   const instruction = data.patientHistory.instruction || '';
   const instructionIn = (instruction === 'null' || instruction === undefined) ? '' : instruction;
+
+  //lab result
+  const labResultsData = data.patientHistory.lab_results;
+  const labResults = labResultsData ? labResultsData.split(', ') : [];
+  const displayedImage = document.getElementById("displayedImage");
+  const prevBtn = document.getElementById("prev-btn");
+  const nextBtn = document.getElementById("next-btn");
+
+  let currentImageIndex = 0;
+
+  function updateDisplayedImage() {
+    if (labResults.length > 0) {
+      displayedImage.src = `/uploads/lab-results/${labResults[currentImageIndex]}`;
+      displayedImage.alt = "Lab result image";
+      displayedImage.style.display = "block";
+      prevBtn.style.display = "inline-block";
+      nextBtn.style.display = "inline-block";
+    } else {
+      displayedImage.src = "";
+      displayedImage.alt = "No lab results available";
+      displayedImage.style.display = "none";
+      prevBtn.style.display = "none";
+      nextBtn.style.display = "none";
+
+      const noResultsMessage = document.createElement("p");
+      noResultsMessage.id = "no-results-message";
+      noResultsMessage.innerText = "No lab results available";
+      displayedImage.parentNode.insertBefore(noResultsMessage, displayedImage.nextSibling);
+    }
+  }
+
+  updateDisplayedImage();
+
+  prevBtn.addEventListener("click", () => {
+    if (labResults.length > 0) {
+      currentImageIndex = (currentImageIndex - 1 + labResults.length) % labResults.length;
+      updateDisplayedImage();
+    }
+  });
+
+  nextBtn.addEventListener("click", () => {
+    if (labResults.length > 0) {
+      currentImageIndex = (currentImageIndex + 1) % labResults.length;
+      updateDisplayedImage();
+    }
+  });
 
   // CATEGORIES
   document.getElementById('categoryList').innerHTML = '';
@@ -150,7 +220,14 @@ function displayPatientHistory(data) {
 
       const dateElement = document.createElement('p');
       dateElement.innerText = formattedDate;
+
+      dateElement.onclick = () => {
+        console.log("Selected date:", date);
+        console.log("Selected id:", data.patientId); // Corrected to data.patientId
+        fetchPatientHistory1(data.patientId, date);   // Use data.patientId here as well
+      };
       historyContainer.appendChild(dateElement);
     });
   }
+
 }

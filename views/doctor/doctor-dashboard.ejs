@@ -666,6 +666,21 @@
             </div>
             <% } %>
 
+              <% if (messages.noHistory) { %>
+                <div class="overlay visible" id="susOo"></div>
+                <div class="visible1" id="submit_prompt">
+                  <img src="../icon/close1.svg" alt="">
+                  <div>
+                    <h2>
+                      <%= messages.noHistory%>
+                    </h2>
+                    <main>
+                      <button type="button" class="button-green" id="close_message" onclick="yawa()">OK</button>
+                    </main>
+                  </div>
+                </div>
+                <% } %>
+
     </main>
     <script src="../../js/local/doctor-dashboard/patient-api.js"></script>
     <script src="../../js/global/pop-up.js"></script>
