@@ -5,7 +5,7 @@ const rhuPool = require("../../models/rhudb");
 const pharmacyPool = require("../../models/pharmacydb");
 const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
-const { calculateAge, formatDate, } = require("../../public/js/global/functions");
+const { formatDate, } = require("../../public/js/global/functions");
 
 router.use(setUserData);
 router.use(methodOverride("_method"));

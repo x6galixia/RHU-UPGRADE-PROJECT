@@ -105,7 +105,7 @@ const servicesByCategory = {
   
   "Beta HCG",
   
-  "Pregnancy test, urine (PT)",
+  "Pregnancy test urine (PT)",
   
   "Triiodothyronine (T3)",
   
@@ -129,7 +129,7 @@ const servicesByCategory = {
   
   "Typhidot",
   
-  "H. pylori, blood"
+  "H. pylori/ blood"
     ],
     "Other Skeletal": [
       "Shoulder joint (Internal and external rotation)",
@@ -168,7 +168,7 @@ const servicesByCategory = {
   
       "Paranal sinuses [3 views - modified PNS (Caldwell's Water and Lateral view)]",
   
-      "Orbit, per orbit (2 views - straight PA and 5 deg. andle cephalad)",
+      "Orbit/ per orbit (2 views - straight PA and 5 deg. andle cephalad)",
   
       "Maxilla/Mandible (2 views - PA and both latero-oblique",
   
@@ -176,7 +176,7 @@ const servicesByCategory = {
   
       "Temporaro-mandibular joint (4-views - Schuller's view close/open mouth both sides)",
   
-      "Zygoma (Town's, Water's and Axial views)"
+      "Zygoma (Town's/ Water's and Axial views)"
     ],
   
     "Vertebral Column": [

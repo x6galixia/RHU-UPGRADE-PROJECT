@@ -1,10 +1,10 @@
 function setUserData(req, res, next) {
     if (req.isAuthenticated()) {
-        res.locals.rhu_id = req.user.rhu_id || '0000';
-        res.locals.firstname = req.user.firstname || 'Admin';
-        res.locals.surname = req.user.surname || 'Admin';
-        res.locals.middle_initial = req.user.middle_name || 'Admin';
-        res.locals.profession = req.user.profession || 'Admin';
+        res.locals.rhu_id = req.user.rhu_id;
+        res.locals.firstname = req.user.firstname;
+        res.locals.surname = req.user.surname;
+        res.locals.middle_initial = req.user.middle_name;
+        res.locals.profession = req.user.profession;
     } else {
         res.locals.rhu_id = null;
         res.locals.firstname = null;
@@ -27,6 +27,18 @@ function ensureAuthenticated(req, res, next) {
     }
 }
 
+function ensureAdminAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        if (req.user.rhu_id) {
+            return next();
+        } else {
+            res.redirect("/admin/login");
+        }
+    } else {
+        res.redirect("/admin/login");
+    }
+}
+
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         const user = req.user;
@@ -39,6 +51,8 @@ function checkNotAuthenticated(req, res, next) {
                 return res.redirect("/medtech-dashboard");
             case "Pharmacist":
                 return res.redirect("/pharmacy-inventory");
+            case "Admin": 
+                return res.redirect("/admin-dashboard");
             default:
                 return res.redirect("/");
         }
@@ -60,5 +74,6 @@ module.exports = {
     setUserData,
     ensureAuthenticated,
     checkNotAuthenticated,
-    checkUserType
+    checkUserType,
+    ensureAdminAuthenticated
 };
