@@ -229,7 +229,7 @@
               </div>
             </div>
             <div class="btn-l">
-              <button onclick="printingReqReseta('labReqPrint')">Print</button>
+              <button type="button" onclick="printingReqReseta('labReqPrint')">Print</button>
               <button>Submit</button>
             </div>
           </div>
@@ -528,7 +528,7 @@
             </div>
           </div>
           <div class="btn-l">
-            <button type="button" onclick="printingReqReseta('resetaPrint')">Print</button>
+            <button type="button" id="print-reseta" onclick="printingReqReseta('resetaPrint')">Print</button>
             <button type="submit">Submit</button>
           </div>
         </div>
@@ -550,18 +550,18 @@
           <p class="head1 b-p">LABORATORY REQUEST</p>
         </div>
         <div class="infoooo col">
-          <p>Name: <span></span></p>
+          <p id="pl-name">Name: <span></span></p>
           <div class="row">
-            <p class="s">Age: <span></span></p>
-            <p class="s">Sex: <span></span></p>
-            <p class="grow">Date: <span></span></p>
+            <p class="s" id="pl-age">Age: <span></span></p>
+            <p class="s" id="pl-gender">Sex: <span></span></p>
+            <p class="grow" id="pl-check-date">Date: <span></span></p>
           </div>
-          <p>Address: <span></span></p>
+          <p id="pl-address">Address: <span></span></p>
           <div class="row">
-            <p class="grow">Birth: <span></span></p>
-            <p class="grow">Occ: <span></span></p>
+            <p class="grow" id="pl-birthdate">Birth: <span></span></p>
+            <p class="grow" id="pl-occupation">Occ: <span></span></p>
           </div>
-          <p>Parent/s: <span></span></p>
+          <p id="pl-guardian">Parent/s: <span></span></p>
         </div>
         <div class="h-line"></div>
         <div class="row align-item p-s gap">
@@ -573,20 +573,18 @@
         <div class="row lgap grid-two-col cat">
           <div style="align-self: start">
             <p>Categories</p>
-            <ul>
-              <li>Hematology</li>
+            <ul id="category-list">
             </ul>
           </div>
           <div style="align-self: start">
             <p>Services</p>
-            <ul>
-              <li>Plateletes</li>
+            <ul id="service-list">
             </ul>
           </div>
         </div>
         <div class="btn-l cat d">
-          <p class="h2"><strong>DR. JOHN KELLY B. CAINDAY, JD</strong></p>
-          <p>Lic No: 0127303</p>
+          <p class="h2"><strong>DR. <%= firstname %> <%= surname %></strong></p>
+          <p>Lic No: <%= license_number %></p>
           <p><strong>Rural Health Physician</strong></p>
         </div>
       </div>
@@ -603,32 +601,30 @@
         </div>
 
         <div class="infoooo col">
-          <p class="b-p head2">HCVD; T2DM: dvslipidemia</p>
-          <p>Name: <span></span></p>
+          <p class="b-p head2" id="prnt-diag-fin">HCVD; T2DM: dvslipidemia</p> <!------diagnosis-->
+          <p id="prnt-name">Name: <span></span></p>
           <div class="row">
-            <p class="s">Age: <span></span></p>
-            <p class="s">Sex: <span></span></p>
-            <p class="grow">Date: <span></span></p>
+            <p class="s" id="prnt-age">Age: <span></span></p>
+            <p class="s" id="prnt-gender">Sex: <span></span></p>
+            <p class="grow" id="prnt-check-date">Date: <span></span></p>
           </div>
-          <p>Address: <span></span></p>
+          <p id="prnt-address">Address: <span></span></p>
           <div class="row">
-            <p class="grow">Birth: <span></span></p>
-            <p class="grow">Occ: <span></span></p>
+            <p class="grow" id="prnt-birthdate">Birth: <span></span></p>
+            <p class="grow" id="prnt-occupation">Occ: <span></span></p>
           </div>
-          <p>Parent/s: <span></span></p>
+          <p id="prnt-guardian">Parent/s: <span></span></p>
         </div>
         <div class="h-line"></div>
         <div>
           <p>Prescription for date:</p>
           <h1 class="ha">Rx</h1>
-          <p class="b-p">1. Amlodipine 5mg <span>#100</span></p>
-          <p>Sig. Take every morning</p>
-          <p class="b-p">2. Losartan 50mg <span>#100</span></p>
-          <p>Sig. Take every morning</p>
+          <!----list of medicine-->
+          <ul id="list-med"></ul>
         </div>
         <div class="btn-l cat d">
-          <p class="h2"><strong>DR. JOHN KELLY B. CAINDAY, JD</strong></p>
-          <p>Lic No: 0127303</p>
+          <p class="h2"><strong>Dr. <%= firstname %> <%= surname %></strong></p>
+          <p>Lic No: <%= license_number %></p>
           <p><strong>Rural Health Physician</strong></p>
         </div>
       </div>
@@ -696,6 +692,8 @@
           reseta.classList.remove("show");
         } else if (containerID === "resetaPrint") {
           console.log('labreq');
+
+
           reseta.classList.add("show");
           reqLab.classList.remove("show");
         }

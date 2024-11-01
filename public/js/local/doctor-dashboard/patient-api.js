@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const POLL_INTERVAL = 1000;
+    const POLL_INTERVAL = 3000;
     let pollIntervalId;
     let isSearching = false;
     let currentSearchQuery = "";
@@ -52,7 +52,8 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-occupation="${patient.occupation}"
                                     data-guardian="${patient.guardian}"
                                     data-services="${patient.services}"
-                                    >Request Laboratory</option>
+                                    data-categories="${patient.categories}"
+                                    data-address="${patient.house_no ? patient.house_no : ''} ${patient.street ? patient.street : ''} ${patient.barangay ? patient.barangay : ''} ${patient.city ? patient.city : ''} ${patient.province ? patient.province : ''}">Request Laboratory</option>
 
                                     <option value="3"
                                     data-patient-id="${patient.patient_id}"
@@ -97,7 +98,11 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
                                     data-medicine="${patient.medicines}"
-                                    data-guardian="${patient.guardian}">Prescribe</option>
+                                    data-guardian="${patient.guardian}"
+                                    data-address="${patient.house_no ? patient.house_no : ''} ${patient.street ? patient.street : ''} ${patient.barangay ? patient.barangay : ''} ${patient.city ? patient.city : ''} ${patient.province ? patient.province : ''}"
+                                    data-conclusion="${patient.diagnosis}; : ${patient.findings}"
+                                    data-instructions="${patient.instructions}"
+                                    data-quantities="${patient.quantities}">Prescribe</option>
                         </select> 
                     </td>
                     <td onclick="window.location.href='/doctor/patient-history/${patient.patient_id}'">
@@ -196,7 +201,9 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-occupation="${patient.occupation}"
                                     data-guardian="${patient.guardian}"
                                     data-services="${patient.services}"
-                                    >Request Laboratory</option>
+                                    data-address="${patient.house_no ? patient.house_no : ''} ${patient.street ? patient.street : ''} ${patient.barangay ? patient.barangay : ''} ${patient.city ? patient.city : ''} ${patient.province ? patient.province : ''}"
+                                    data-categories="${patient.categories}"
+                                    data-services="${patient.services}">Request Laboratory</option>
 
                                     <option value="3"
                                     data-patient-id="${patient.patient_id}"
@@ -239,7 +246,11 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
                                     data-medicine="${patient.medicine}"
-                                    data-guardian="${patient.guardian}">Prescribe</option>
+                                    data-guardian="${patient.guardian}"
+                                    data-address="${patient.house_no ? patient.house_no : ''} ${patient.street ? patient.street : ''} ${patient.barangay ? patient.barangay : ''} ${patient.city ? patient.city : ''} ${patient.province ? patient.province : ''}"
+                                    data-conclusion="${patient.diagnosis}; : ${patient.findings}"
+                                    data-instructions="${patient.instructions}"
+                                    data-quantities="${patient.quantities}">Prescribe</option>
                                 </select> 
                             </td>
                             <td>
