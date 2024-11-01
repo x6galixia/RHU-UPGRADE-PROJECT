@@ -201,9 +201,8 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-occupation="${patient.occupation}"
                                     data-guardian="${patient.guardian}"
                                     data-services="${patient.services}"
-                                    data-address="${patient.house_no ? patient.house_no : ''} ${patient.street ? patient.street : ''} ${patient.barangay ? patient.barangay : ''} ${patient.city ? patient.city : ''} ${patient.province ? patient.province : ''}"
                                     data-categories="${patient.categories}"
-                                    data-services="${patient.services}">Request Laboratory</option>
+                                    data-address="${patient.house_no ? patient.house_no : ''} ${patient.street ? patient.street : ''} ${patient.barangay ? patient.barangay : ''} ${patient.city ? patient.city : ''} ${patient.province ? patient.province : ''}">Request Laboratory</option>
 
                                     <option value="3"
                                     data-patient-id="${patient.patient_id}"
@@ -214,7 +213,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
                                     data-guardian="${patient.guardian}"
-                                    data-diagnosis="${patient.diagnosis} ">Diagnosis</option>
+                                    data-diagnosis="${patient.diagnosis}">Diagnosis</option>
 
                                     <option value="4"
                                     data-patient-id="${patient.patient_id}"
@@ -224,7 +223,8 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-gender="${patient.gender}"
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
-                                    data-guardian="${patient.guardian}">Findings</option>
+                                    data-guardian="${patient.guardian}"
+                                    data-findings="${patient.findings}">Findings</option>
 
                                     <option value="5"
                                     data-patient-id="${patient.patient_id}"
@@ -235,7 +235,8 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
                                     data-guardian="${patient.guardian}"
-                                    data-lab-result="${JSON.stringify(patient.lab_results)}">Laboratory Result</option>
+                                    data-lab-result="${patient.lab_results}"
+                                    >Laboratory Result</option>
 
                                     <option value="6"
                                     data-patient-id="${patient.patient_id}"
@@ -245,7 +246,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-gender="${patient.gender}"
                                     data-birthdate="${patient.birthdate}"
                                     data-occupation="${patient.occupation}"
-                                    data-medicine="${patient.medicine}"
+                                    data-medicine="${patient.medicines}"
                                     data-guardian="${patient.guardian}"
                                     data-address="${patient.house_no ? patient.house_no : ''} ${patient.street ? patient.street : ''} ${patient.barangay ? patient.barangay : ''} ${patient.city ? patient.city : ''} ${patient.province ? patient.province : ''}"
                                     data-conclusion="${patient.diagnosis}; : ${patient.findings}"
