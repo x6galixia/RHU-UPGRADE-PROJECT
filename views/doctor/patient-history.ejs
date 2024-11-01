@@ -120,10 +120,20 @@
             </div>
             <div class="listing ">
               <p>Lab. Result</p>
-              <ul>
-                <li>Lab result image</li>
-              </ul>
+              <div class="image-section">
+                <div id="prev-btn"><img src="/icon/arrow-left.svg" alt=""></div>
+                <div class="main-image">
+                  <img id="displayedImage" src="/img/local/jr.png" alt="">
+                </div>
+                <div id="next-btn"><img src="/icon/arrow-right.svg" alt=""></div>
+              </div>
             </div>
+          </div>
+
+          <!-- Full-screen image -->
+          <div id="imageModal" class="modal">
+            <span id="closeModal" class="close">&times;</span>
+            <img id="fullScreenImage" class="modal-content">
           </div>
 
           <!-- Prescriptions -->
@@ -154,6 +164,26 @@
       </div>
     </main>
     <script src="../../js/local/doctor-dashboard/patient-history-api.js"></script>
+    <script>
+      const fullScreenImage = document.getElementById('fullScreenImage');
+      const imageModal = document.getElementById('imageModal');
+      const closeModal = document.getElementById('closeModal');
+
+      displayedImage.addEventListener('click', function () {
+        fullScreenImage.src = displayedImage.src;
+        imageModal.style.display = 'flex';
+      });
+
+      closeModal.addEventListener('click', function () {
+        imageModal.style.display = 'none';
+      });
+
+      imageModal.addEventListener('click', function (event) {
+        if (event.target === imageModal) {
+          imageModal.style.display = 'none';
+        }
+      });
+    </script>
 </body>
 
 </html>

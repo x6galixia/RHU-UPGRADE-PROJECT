@@ -170,6 +170,7 @@ router.get("/doctor-dashboard/search", ensureAuthenticated, checkUserType("Docto
   }
 });
 
+// fetch latestpatient history
 router.get("/doctor/patient-histories/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
   const { patient_id } = req.params;
 
@@ -227,22 +228,32 @@ router.get("/doctor/patient-histories/:patient_id", ensureAuthenticated, checkUs
       return acc;
     }, {});
 
-    // Change this line to return JSON data
     res.json({
       patientHistory,
-      groupedHistory
+      groupedHistory,
+      patientId: patient_id
     });
 
   } catch (err) {
     console.error("Error: ", err);
-    res.status(500).json({ error: "Server error" }); // Also return JSON on error
+    res.status(500).json({ error: "Server error" });
   }
 });
 
+// render patient history with the id
 router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
   const { patient_id } = req.params;
-  console.log("patient history clicked!")
+  console.log("patient history clicked!");
+
   try {
+    const result = await rhuPool.query(`SELECT EXISTS (SELECT 1 FROM patient_history WHERE patient_id = $1) AS exists`, [patient_id]);
+    const exists = result.rows[0].exists;
+
+    if (!exists) {
+      req.flash('noHistory', 'No History for this patient');
+      return res.redirect("/doctor-dashboard");
+    }
+
     res.render("doctor/patient-history", { patient_id });
   } catch (err) {
     console.error("Error: ", err);
@@ -250,37 +261,73 @@ router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUser
   }
 });
 
+// when date clicked
 router.post('/patient-history/:patientId', async (req, res) => {
   const { patientId } = req.params;
   const { date } = req.body;
-
   try {
-    const patientHistoryQuery = `
+    // Fetch the latest patient history and all check dates
+    const patientHistoryInfo = await rhuPool.query(`
       SELECT 
-        p.id, 
-        p.patient_id, 
-        p.last_name, 
-        p.first_name, 
-        -- Add other fields you want to retrieve
-        STRING_AGG(DISTINCT plr.lab_result::text, ', ') AS lab_results,
-        STRING_AGG(DISTINCT pp.medicine::text, ', ') AS medicines,
-        STRING_AGG(DISTINCT pp.instruction::text, ', ') AS instruction,
+        p.id, p.patient_id, p.rhu_id, p.last_name, p.first_name, p.middle_name, p.suffix, p.phone, p.gender,
+        p.birthdate, p.house_no, p.street, p.barangay, p.city, p.province, p.occupation, p.email, p.philhealth_no, p.guardian,
+        MAX(p.age) as age,
+        MAX(p.check_date) as check_date,
+        MAX(p.height) as height,
+        MAX(p.weight) as weight,
+        MAX(p.systolic) as systolic,
+        MAX(p.diastolic) as diastolic,
+        MAX(p.temperature) as temperature,
+        MAX(p.heart_rate) as heart_rate,
+        MAX(p.respiratory_rate) as respiratory_rate,
+        MAX(p.bmi) as bmi,
+        MAX(p.comment) as comment,
+        STRING_AGG(DISTINCT plr.lab_result, ', ') AS lab_results,
+        STRING_AGG(DISTINCT pp.medicine, ', ') AS medicines,
+        STRING_AGG(DISTINCT pp.instruction, ', ') AS instruction,
         STRING_AGG(DISTINCT pp.quantity::text, ', ') AS quantity,
-        STRING_AGG(DISTINCT ps.category::text, ', ') AS categories,
-        STRING_AGG(DISTINCT ps.service::text, ', ') AS services
+        STRING_AGG(DISTINCT ps.category, ', ') AS categories,
+        STRING_AGG(DISTINCT ps.service, ', ') AS services
       FROM patient_history p
       LEFT JOIN patient_lab_results plr ON p.id = plr.history_id
       LEFT JOIN patient_prescriptions pp ON p.id = pp.history_id
       LEFT JOIN patient_services ps ON p.id = ps.history_id
-      WHERE p.patient_id = $1 AND p.check_date::date = $2
-      GROUP BY p.id, p.patient_id, p.last_name, p.first_name
-    `;
+      WHERE p.patient_id = $1 and p.check_date = $2
+      GROUP BY p.id
+      ORDER BY p.check_date DESC
+      LIMIT 1
+    `, [patientId, date]);
 
-    const patientHistory = await rhuPool.query(patientHistoryQuery, [patientId, date]);
-    res.json(patientHistory.rows);
-  } catch (error) {
-    console.error('Error fetching patient history:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    const patientHistory = patientHistoryInfo.rows[0] || {};
+
+    // Fetch distinct check dates and group by year
+    const getPatientHistoryInfo = await rhuPool.query(`
+      SELECT DISTINCT 
+        EXTRACT(YEAR FROM check_date) AS year,
+        check_date 
+      FROM patient_history 
+      WHERE patient_id = $1
+      ORDER BY check_date DESC
+    `, [patientId]);
+
+    const groupedHistory = getPatientHistoryInfo.rows.reduce((acc, row) => {
+      const year = row.year;
+      if (!acc[year]) {
+        acc[year] = [];
+      }
+      acc[year].push(row.check_date);
+      return acc;
+    }, {});
+
+    res.json({
+      patientHistory,
+      groupedHistory,
+      patientId: patientId
+    });
+
+  } catch (err) {
+    console.error("Error: ", err);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
@@ -380,6 +427,7 @@ router.post("/doctor/findings-patient/send", async (req, res) => {
 
 router.get("/doctor-dashboard/prescribe/search", async (req, res) => {
   const { query } = req.query;
+  const rhu_id = req.user.rhu_id;
 
   if (!query) {
     return res.status(400).send("Query parameter is required");
@@ -387,8 +435,8 @@ router.get("/doctor-dashboard/prescribe/search", async (req, res) => {
 
   try {
     const result = await pharmacyPool.query(
-      "SELECT product_name, dosage, product_quantity, product_id, batch_number FROM inventory WHERE product_quantity <> 0 AND product_name ILIKE $1",
-      [`%${query}%`]
+      "SELECT product_name, dosage, product_quantity, product_id, batch_number FROM inventory WHERE product_quantity <> 0 AND product_name ILIKE $1 AND rhu_id = $2",
+      [`%${query}%`, rhu_id]
     );
     res.json(result.rows);
   } catch (err) {
