@@ -655,10 +655,12 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
   const existingPicture = value.existing_picture;
   const picture = req.file ? req.file.filename : existingPicture;
 
+  // Validate beneficiary ID
   if (isNaN(value.beneficiary_id)) {
     return res.status(400).json({ message: 'Invalid beneficiary ID' });
   }
 
+  // Validate schema
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
@@ -668,18 +670,37 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
       `UPDATE beneficiary 
        SET last_name = $1, first_name = $2, middle_name = $3, gender = $4, birthdate = $5, processed_date = $6, phone = $7, occupation = $8, senior_citizen = $9, pwd = $10, street = $11, barangay = $12, city = $13, province = $14, note = $15, picture = $16
        WHERE beneficiary_id = $17`,
-      [value.last_name, value.first_name, value.middle_name, value.gender, value.birthdate, value.processed_date, value.phone, value.occupation, value.senior_citizen, value.pwd, value.street, value.barangay, value.city, value.province, value.note, picture, value.beneficiary_id]
+      [
+        value.last_name,
+        value.first_name,
+        value.middle_name,
+        value.gender,
+        value.birthdate,
+        value.processed_date,
+        value.phone,
+        value.occupation,
+        value.senior_citizen,
+        value.pwd,
+        value.street,
+        value.barangay,
+        value.city,
+        value.province,
+        value.note,
+        picture,
+        value.beneficiary_id
+      ]
     );
 
+    // Check if the update was successful
     if (result.rowCount > 0) {
-      req.flash("success", "Beneficiary Updated Successfully");
+      req.flash("success", "Beneficiary updated successfully");
       return res.redirect("/pharmacy-records");
     } else {
-      res.status(404).json({ message: 'Beneficiary not found.' });
+      return res.status(404).json({ message: 'Beneficiary not found.' });
     }
-  } catch (error) {
-    console.error('Error updating beneficiary:', error);
-    res.status(500).json({ message: 'Failed to update the beneficiary.' });
+  } catch (err) {
+    console.error('Error updating beneficiary:', err);
+    return res.status(500).json({ message: 'Failed to update the beneficiary.' });
   }
 });
 

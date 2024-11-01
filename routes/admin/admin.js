@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const rhuPool = require("../../models/rhudb");
-const { setUserData, ensureAuthenticated, checkUserType, ensureAdminAuthenticated } = require("../../middlewares/middleware");
+const { setUserData, checkUserType, ensureAdminAuthenticated } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
