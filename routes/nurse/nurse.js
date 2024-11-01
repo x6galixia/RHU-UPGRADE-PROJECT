@@ -211,6 +211,7 @@ router.post("/nurse/admit-patient", async (req, res) => {
       const historyInsertResult = await rhuPool.query(historyInsertQuery, [
         patientData.patient_id,
         patientData.rhu_id,
+        doctorVisit ? doctorVisit.doctor_id : null,
         patientData.last_name,
         patientData.first_name,
         patientData.middle_name,
@@ -449,12 +450,17 @@ router.delete('/nurse/patient-registration/delete/:id', async (req, res) => {
   }
 });
 
-router.delete("/logout", (req, res) => {
+router.delete("/logout", (req, res, next) => {
   req.logOut((err) => {
     if (err) {
       return next(err);
     }
-    res.redirect("/");
+    req.session.destroy((err) => {
+      if (err) {
+        return next(err);
+      }
+      res.redirect("/user/login");
+    });
   });
 });
 

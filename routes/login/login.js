@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const rhuPool = require("../../models/rhudb");
-const { checkNotAuthenticated, ensureAdminAuthenticated } = require("../../middlewares/middleware");
+const { checkNotAuthenticated } = require("../../middlewares/middleware");
 const passport = require("passport");
 const Joi = require("joi");
 
@@ -54,7 +54,7 @@ router.post("/login/user", async (req, res, next) => {
           case "Pharmacist":
             return res.redirect("/pharmacy-inventory");
           default:
-            return res.redirect("/");
+            return res.redirect("/user/login");
         }
       });
     })(req, res, next);

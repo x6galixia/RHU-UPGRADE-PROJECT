@@ -85,12 +85,17 @@ router.post("/admin/create-user/submit", async (req, res) => {
     }
 });
 
-router.delete("/logout", (req, res) => {
+router.delete("/logout", (req, res, next) => {
     req.logOut((err) => {
       if (err) {
         return next(err);
       }
-      res.redirect("/admin/login");
+      req.session.destroy((err) => {
+        if (err) {
+          return next(err);
+        }
+        res.redirect("/user/login");
+      });
     });
   });
 
