@@ -642,7 +642,7 @@ router.post("/pharmacy-records/add-beneficiary", upload.single('picture'), async
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
       [value.last_name, value.first_name, value.middle_name, value.phone, value.gender, value.birthdate, value.street, value.barangay, value.city, value.province, value.occupation, value.senior_citizen, value.pwd, picture, value.note, value.processed_date]
     );
-
+    req.flash("success", "Beneficiary Added Successfully");
     res.redirect("/pharmacy-records");
   } catch (err) {
     console.error("Error: ", err);
@@ -672,6 +672,7 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
     );
 
     if (result.rowCount > 0) {
+      req.flash("success", "Beneficiary Updated Successfully");
       return res.redirect("/pharmacy-records");
     } else {
       res.status(404).json({ message: 'Beneficiary not found.' });
@@ -771,7 +772,7 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
       `, [value.patient_prescription_id]);
 
     await client.query('COMMIT');
-    req.flash("submit", "Medicine dispensed Successfully");
+    req.flash("success", "Medicine dispensed Successfully");
     return res.redirect("/pharmacy-dispense-request");
 
   } catch (err) {
@@ -820,10 +821,11 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
         });
       }
 
-      res.json({ message: 'Beneficiary deleted successfully.' });
+      req.flash("success", "Beneficiary Deleted Successfully");
     } else {
       res.status(404).json({ message: 'Beneficiary not found.' });
     }
+    res.redirect("/pharmacy-records");
   } catch (error) {
     console.error('Error deleting beneficiary:', error);
   }
