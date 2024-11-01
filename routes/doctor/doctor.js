@@ -367,26 +367,30 @@ router.post("/doctor/diagnose-patient/send", async (req, res) => {
   }
 
   try {
-    const isPatient = await rhuPool.query(
-      `SELECT * FROM doctor_visits WHERE patient_id = $1 AND diagnosis IS NULL`,
+    const { rows } = await rhuPool.query(
+      `SELECT * FROM doctor_visits WHERE patient_id = $1`,
       [value.patient_id]
     );
 
-    if (isPatient.rows.length > 0) {
+    if (rows.length > 0) {
+      // Update all rows for the patient
       await rhuPool.query(
-        `UPDATE doctor_visits SET diagnosis = $2 WHERE patient_id = $1`,
-        [value.patient_id, value.diagnosis]
+        `UPDATE doctor_visits SET diagnosis = $1 WHERE patient_id = $2`,
+        [value.diagnosis, value.patient_id]
       );
     } else {
+      // Insert a new row if no records exist
       await rhuPool.query(
         `INSERT INTO doctor_visits (patient_id, diagnosis) VALUES ($1, $2)`,
         [value.patient_id, value.diagnosis]
       );
     }
+
     req.flash("success", "Submitted Successfully");
     return res.redirect("/doctor-dashboard");
-  } catch (error) {
+  } catch (err) {
     console.error("Error: ", err);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -398,28 +402,31 @@ router.post("/doctor/findings-patient/send", async (req, res) => {
   }
 
   try {
-    const isPatient = await rhuPool.query(
-      `SELECT * FROM doctor_visits WHERE patient_id = $1 AND findings IS NULL`,
+    const { rows } = await rhuPool.query(
+      `SELECT * FROM doctor_visits WHERE patient_id = $1`,
       [value.patient_id]
     );
 
-    if (isPatient.rows.length > 0) {
+    if (rows.length > 0) {
+      // Update all rows for the patient
       await rhuPool.query(
-        `UPDATE doctor_visits SET findings = $2 WHERE patient_id = $1`,
-        [value.patient_id, value.findings]
+        `UPDATE doctor_visits SET findings = $1 WHERE patient_id = $2`,
+        [value.findings, value.patient_id]
       );
     } else {
+      // Insert a new row if no records exist
       await rhuPool.query(
         `INSERT INTO doctor_visits (patient_id, findings) VALUES ($1, $2)`,
         [value.patient_id, value.findings]
       );
     }
+
     req.flash("success", "Submitted Successfully");
     return res.redirect("/doctor-dashboard");
-  } catch (error) {
+  } catch (err) {
     console.error("Error: ", err);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
-
 });
 
 router.get("/doctor-dashboard/prescribe/search", async (req, res) => {

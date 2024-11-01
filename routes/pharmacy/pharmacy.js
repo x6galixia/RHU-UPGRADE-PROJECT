@@ -70,7 +70,7 @@ const beneficiarySchema = Joi.object({
 
 const dispenseSchema = Joi.object({
   patient_prescription_id: Joi.string().required(),
-  beneficiary_id: Joi.number().required(),
+  beneficiary_id: Joi.alternatives().try(Joi.number(), Joi.string()).optional(),
   transaction_number: Joi.string().required(),
   date_issued: Joi.date().required(),
   beneficiary_name: Joi.string().required(),
@@ -685,8 +685,8 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
 
 router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
   const { error, value } = dispenseSchema.validate(req.body);
-  console.log(value);
 
+  
   if (error) {
     return res.status(400).send(error.details[0].message);
   }
@@ -781,6 +781,22 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   } finally {
     client.release();
+  }
+});
+
+router.post("/pharmacy/reject-dispense", async (req, res) => {
+  const { error, value } = dispenseSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
+
+  try {
+    await rhuPool.query(`DELETE FROM patient_prescription_data WHERE patient_prescription_id = $1`, [value.patient_prescription_id]);
+    req.flash("success", "Successfully removed from dispense request");
+    return res.redirect("/pharmacy-dispense-request");
+  } catch (err) {
+    console.error("Error: ", err);
   }
 });
 

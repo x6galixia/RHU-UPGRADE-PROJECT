@@ -128,8 +128,20 @@ function popUp_button(button) {
       document.getElementById('req_occupation').value = selectedOption.getAttribute('data-occupation') || '';
       document.getElementById('req_guardian').value = selectedOption.getAttribute('data-guardian') || '';
 
+      document.getElementById("pl-name").innerText = `Name: ${selectedOption.getAttribute('data-full-name')}`;
+      document.getElementById("pl-age").innerText = `Age: ${selectedOption.getAttribute('data-age')}`;
+      document.getElementById("pl-gender").innerText = `Gender: ${selectedOption.getAttribute('data-gender')}`;
+      document.getElementById("pl-check-date").innerText = `Date: ${formatDate(checkDate)}`;
+      document.getElementById("pl-address").innerText = `Address: ${selectedOption.getAttribute('data-address')}`;
+      document.getElementById("pl-birthdate").innerText = `Birthdate: ${formatDate(birthDate)}`;
+      document.getElementById("pl-occupation").innerText = `Occupation: ${selectedOption.getAttribute('data-occupation')}`;
+      document.getElementById("pl-guardian").innerText = `Guardian: ${selectedOption.getAttribute('data-guardian')}`;
+
       const services = selectedOption.getAttribute('data-services') || ''; // Get services, default to empty string
       const servicesValue = (services === 'null' || services === undefined) ? '' : services;
+
+      const categories = selectedOption.getAttribute('data-categories') || ''; // Get services, default to empty string
+      const categoriesValue = (categories === 'null' || categories === undefined) ? '' : categories;
 
       // Clear existing list content
       document.getElementById('serviceList').innerHTML = '';
@@ -145,6 +157,36 @@ function popUp_button(button) {
         const p = document.createElement('p');
         p.textContent = "-- no recent lab req. --"; // Trim to remove extra spaces
         document.getElementById('serviceList').appendChild(p);
+      }
+
+      document.getElementById('category-list').innerHTML = '';
+      document.getElementById('service-list').innerHTML = '';
+
+      if (servicesValue) {
+        const serviceArray = servicesValue.split(','); // Split services by comma
+        serviceArray.forEach(service => {
+          const li = document.createElement('li');
+          li.textContent = service.trim(); // Trim to remove extra spaces
+          document.getElementById('service-list').appendChild(li);
+        });
+      } else {
+        const p = document.createElement('p');
+        p.textContent = "-- no recent services --"; // Message for no services
+        document.getElementById('service-list').appendChild(p);
+      }
+    
+      // Handle categories
+      if (categoriesValue) {
+        const categoryArray = categoriesValue.split(','); // Split categories by comma
+        categoryArray.forEach(category => {
+          const li = document.createElement('li');
+          li.textContent = category.trim(); // Trim to remove extra spaces
+          document.getElementById('category-list').appendChild(li);
+        });
+      } else {
+        const p = document.createElement('p');
+        p.textContent = "-- no recent categories --"; // Message for no categories
+        document.getElementById('category-list').appendChild(p);
       }
 
     }
@@ -289,9 +331,26 @@ function popUp_button(button) {
       document.getElementById('pres_birthdate').value = formatDate(birthDate);
       document.getElementById('pres_occupation').value = selectedOption.getAttribute('data-occupation') || '';
       document.getElementById('pres_guardian').value = selectedOption.getAttribute('data-guardian') || '';
+
+      document.getElementById("prnt-diag-fin").innerText = `${selectedOption.getAttribute('data-conclusion')}`;
+      document.getElementById("prnt-name").innerText = `Name: ${selectedOption.getAttribute('data-full-name')}`;
+      document.getElementById("prnt-age").innerText = `Age: ${selectedOption.getAttribute('data-age')}`;
+      document.getElementById("prnt-gender").innerText = `Gender: ${selectedOption.getAttribute('data-gender')}`;
+      document.getElementById("prnt-check-date").innerText = `Date: ${formatDate(checkDate)}`;
+      document.getElementById("prnt-address").innerText = `Address: ${selectedOption.getAttribute('data-address')}`;
+      document.getElementById("prnt-birthdate").innerText = `Birthdate: ${formatDate(birthDate)}`;
+      document.getElementById("prnt-occupation").innerText = `Occupation: ${selectedOption.getAttribute('data-occupation')}`;
+      document.getElementById("prnt-guardian").innerText = `Guardian: ${selectedOption.getAttribute('data-guardian')}`;
     }
     const medicine = selectedOption.getAttribute('data-medicine') || '';
     const medicineIn = (medicine === 'null' || medicine === undefined) ? '' : medicine;
+
+    const quantity = selectedOption.getAttribute('data-quantities') || '';
+    const quantityIn = (quantity === 'null' || quantity === undefined) ? '' : quantity;
+
+    const instruction = selectedOption.getAttribute('data-instructions') || '';
+    const instructionIn = (instruction === 'null' || instruction === undefined) ? '' : instruction;
+
     // Clear existing list content
     document.getElementById('medicineList').innerHTML = '';
 
@@ -308,11 +367,44 @@ function popUp_button(button) {
       p.textContent = "-- no recent prescribed medicine. --"; // Trim to remove extra spaces
       document.getElementById('medicineList').appendChild(p);
     }
+
+    document.getElementById('list-med').innerHTML = '';
+    if (medicineIn) {
+      const medicineArray = medicineIn.split(','); // Split medicines by comma
+      const quantitiesArray = quantityIn.split(','); // Split quantities by comma
+      const instructionsArray = instructionIn.split(','); // Split instructions by comma
+    
+      medicineArray.forEach((medicines, index) => {
+        const trimmedMedicine = medicines.trim(); // Trim to remove extra spaces
+        const trimmedQuantity = quantitiesArray[index] ? quantitiesArray[index].trim() : ''; // Get the corresponding quantity
+        const trimmedInstruction = instructionsArray[index] ? instructionsArray[index].trim() : 'Sig. Take every morning'; // Default instruction
+    
+        // Create elements for each medicine entry
+        const pMedicine = document.createElement('p');
+        pMedicine.className = 'b-p';
+        pMedicine.innerHTML = `${index + 1}. ${trimmedMedicine} <span>#${trimmedQuantity}</span>`; // Format medicine with quantity
+    
+        const pSig = document.createElement('p');
+        pSig.textContent = trimmedInstruction; // Use the corresponding instruction
+    
+        // Append the new elements to the main container
+        document.getElementById('list-med').appendChild(pMedicine);
+        document.getElementById('list-med').appendChild(pSig);
+      });
+    } else {
+      const p = document.createElement('p');
+      p.textContent = "-- no recent prescribed medicine. --"; // Message for no medicines
+      document.getElementById('list-med').appendChild(p);
+    }
+    
   }
 
   // dispense
   else if (buttonId === "reject_dispense_button") {
     reject_dispense.classList.toggle("visible");
+
+    const form = document.getElementById('dispense-delete-request');
+    form.action = "/pharmacy/reject-dispense";
   }
   else if (buttonId === "submit_dispense_button") {
     submit_dispense.classList.toggle("visible");
@@ -387,6 +479,8 @@ function popUp_button(button) {
         categoryServiceTableBody.appendChild(row);
       }
     }
+
+
   }
 
   overlay.classList.add("visible");
