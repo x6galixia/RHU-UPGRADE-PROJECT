@@ -17,7 +17,7 @@
 </head>
 
 <body>
-  <%- include("../includes/header.ejs")  %>
+  <%- include("../includes/admin-header.ejs")  %>
   <%- include("../includes/admin-sub-head.ejs")  %>
   <main>
 
@@ -84,7 +84,7 @@
         </div>
         <h1 class="heading">CREATE USER</h1>
         <main>
-          <form action="/admin/create-user/submit" method="POST">
+          <form action="/admin/create-user/submit" method="POST" id="submission-form">
             <div class="selecter">
               <select name="rhu_id" id="">
                 <option value="0" selected disabled>Select RHU</option>
@@ -150,15 +150,15 @@
 </script>
 
 <script>
-  document.querySelector("form").addEventListener("submit", function(event) {
+  document.getElementById("submission-form").addEventListener("submit", function(event) {
       const password = document.querySelector('input[name="password"]').value;
       const confirmPassword = document.querySelector('input[name="confirm_password"]').value;
       
       if (password !== confirmPassword) {
-          event.preventDefault(); // Prevent form submission
+          event.preventDefault();
           alert("Passwords do not match!");
       }
   });
-  </script>  
+</script>  
 
 </html>
