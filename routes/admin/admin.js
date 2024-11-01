@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const rhuPool = require("../../models/rhudb");
-const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
+const { setUserData, ensureAuthenticated, checkUserType, ensureAdminAuthenticated } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
@@ -26,26 +26,26 @@ const userSchema = Joi.object({
 
 router.use(express.json());
 
-router.get("/sign-in", ensureAuthenticated, checkUserType("Admin"), (req, res) => {
+router.get("/sign-in", ensureAdminAuthenticated, checkUserType("Admin"), (req, res) => {
     res.render("admin/sign-in", {
         user: req.user
     });
 })
 
-router.get("/admin-dashboard", ensureAuthenticated, checkUserType("Admin"), (req, res) => {
+router.get("/admin-dashboard", ensureAdminAuthenticated, checkUserType("Admin"), (req, res) => {
     
     res.render("admin/admin-dashboard", {
         user: req.user
     });
 });
 
-router.get("/admin-users", ensureAuthenticated, checkUserType("Admin"), (req, res) => {  
+router.get("/admin-users", ensureAdminAuthenticated, checkUserType("Admin"), (req, res) => {  
     res.render("admin/admin-users", {
         user: req.user
     });
 });
 
-router.get("/api/users", ensureAuthenticated, checkUserType("Admin"), async function (req, res) {
+router.get("/api/users", ensureAdminAuthenticated, checkUserType("Admin"), async function (req, res) {
     const ln = '000000';
         try {
             const result = await rhuPool.query('SELECT user_type, firstname, surname, middle_name FROM users WHERE license_number != $1', [ln]);
@@ -84,5 +84,14 @@ router.post("/admin/create-user/submit", async (req, res) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+router.delete("/logout", (req, res) => {
+    req.logOut((err) => {
+      if (err) {
+        return next(err);
+      }
+      res.redirect("/admin/login");
+    });
+  });
 
 module.exports = router;

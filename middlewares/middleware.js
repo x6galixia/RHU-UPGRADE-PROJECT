@@ -27,6 +27,18 @@ function ensureAuthenticated(req, res, next) {
     }
 }
 
+function ensureAdminAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        if (req.user.rhu_id) {
+            return next();
+        } else {
+            res.redirect("/admin/login");
+        }
+    } else {
+        res.redirect("/admin/login");
+    }
+}
+
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         const user = req.user;
@@ -62,5 +74,6 @@ module.exports = {
     setUserData,
     ensureAuthenticated,
     checkNotAuthenticated,
-    checkUserType
+    checkUserType,
+    ensureAdminAuthenticated
 };

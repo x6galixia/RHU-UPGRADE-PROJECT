@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const rhuPool = require("../../models/rhudb");
-const { checkNotAuthenticated } = require("../../middlewares/middleware");
+const { checkNotAuthenticated, ensureAdminAuthenticated } = require("../../middlewares/middleware");
 const passport = require("passport");
 const Joi = require("joi");
 
