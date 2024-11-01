@@ -427,6 +427,7 @@ router.post("/doctor/findings-patient/send", async (req, res) => {
 
 router.get("/doctor-dashboard/prescribe/search", async (req, res) => {
   const { query } = req.query;
+  const rhu_id = req.user.rhu_id;
 
   if (!query) {
     return res.status(400).send("Query parameter is required");
@@ -434,8 +435,8 @@ router.get("/doctor-dashboard/prescribe/search", async (req, res) => {
 
   try {
     const result = await pharmacyPool.query(
-      "SELECT product_name, dosage, product_quantity, product_id, batch_number FROM inventory WHERE product_quantity <> 0 AND product_name ILIKE $1",
-      [`%${query}%`]
+      "SELECT product_name, dosage, product_quantity, product_id, batch_number FROM inventory WHERE product_quantity <> 0 AND product_name ILIKE $1 AND rhu_id = $2",
+      [`%${query}%`, rhu_id]
     );
     res.json(result.rows);
   } catch (err) {
