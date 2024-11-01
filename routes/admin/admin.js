@@ -97,6 +97,6 @@ router.delete("/admin-logout", (req, res, next) => {
         res.redirect("/admin/login");
       });
     });
-  });
+});
 
 module.exports = router;

@@ -824,12 +824,17 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
   }
 });
 
-router.delete("/logout", (req, res) => {
+router.delete("/logout", (req, res, next) => {
   req.logOut((err) => {
     if (err) {
       return next(err);
     }
-    res.redirect("/");
+    req.session.destroy((err) => {
+      if (err) {
+        return next(err);
+      }
+      res.redirect("/user/login");
+    });
   });
 });
 
