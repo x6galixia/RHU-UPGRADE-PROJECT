@@ -88,57 +88,7 @@
 
 </header>
 <div class="overlay"></div>
-<script src="../js/global/logout.js"></script>
-<script src="../js/global/notif.js"></script>
-<script src="../js/global/time.js"></script>
-<link rel="stylesheet" href="../css/global/general.css">
-
-<!-- <script>
-      document.querySelectorAll(' .date-button').forEach(button=> {
-                        button.addEventListener('click', async (event) => {
-                        const selectedDate = event.target.getAttribute('data-date');
-
-                        try {
-                        const response = await fetch(`/patient-history/${patient_id}`, {
-                        method: 'POST',
-                        headers: {
-                        'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ date: selectedDate }),
-                        });
-
-                        if (!response.ok) throw new Error('Network response was not ok');
-
-                        const patientHistory = await response.json();
-                        displayPatientHistory(patientHistory);
-                        } catch (error) {
-                        console.error('Error fetching patient history:', error);
-                        }
-                        });
-                        });
-
-                        function displayPatientHistory(history) {
-                        const infoContainer = document.querySelector('.info-container');
-                        infoContainer.innerHTML = ''; // Clear previous information
-
-                        if (history.length === 0) {
-                        infoContainer.innerHTML = '<p>No records found for this date.</p>';
-                        return;
-                        }
-
-                        history.forEach(record => {
-                        const recordDiv = document.createElement('div');
-                        recordDiv.innerHTML = `
-                        <h2>${record.check_date}</h2>
-                        <p><strong>Name:</strong> ${record.first_name} ${record.last_name}</p>
-                        <p><strong>Lab Results:</strong> ${record.lab_results}</p>
-                        <p><strong>Medicines:</strong> ${record.medicines}</p>
-                        <p><strong>Instructions:</strong> ${record.instruction}</p>
-                        <p><strong>Categories:</strong> ${record.categories}</p>
-                        <p><strong>Services:</strong> ${record.services}</p>
-                        <hr>
-                        `;
-                        infoContainer.appendChild(recordDiv);
-                        });
-                        }
-                        </script> -->
+<script src="/js/global/logout.js"></script>
+<script src="/js/global/notif.js"></script>
+<script src="/js/global/time.js"></script>
+<link rel="stylesheet" href="/css/global/general.css">
