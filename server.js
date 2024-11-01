@@ -83,6 +83,10 @@ app.get("/", (req, res) => {
   res.redirect("/user/login");
 });
 
+app.get("/admin", (req, res) => {
+  res.redirect("/admin/login");
+});
+
 app.listen(process.env.PORT, () => {
   console.log(`Server is up and running on port ${process.env.PORT}`);
 });
