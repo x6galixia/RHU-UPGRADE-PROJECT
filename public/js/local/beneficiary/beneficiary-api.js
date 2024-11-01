@@ -476,13 +476,15 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => {
                 if (response.ok) {
-                    alert('Beneficiary deleted successfully.');
                     fetchBeneficiaryUpdates();
-
-                } 
+                    location.reload();
+                }
+                fetchBeneficiaryUpdates();
+                location.reload();
             })
             .catch(error => {
                 console.error('Error deleting beneficiary:', error);
+                location.reload();
             });
     }
 

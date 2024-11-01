@@ -820,12 +820,11 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
           }
         });
       }
-
-      req.flash("success", "Beneficiary Deleted Successfully");
     } else {
       res.status(404).json({ message: 'Beneficiary not found.' });
     }
-    res.redirect("/pharmacy-records");
+    req.flash("success", "Beneficiary Deleted Successfully");
+    return res.redirect("/pharmacy-records");
   } catch (error) {
     console.error('Error deleting beneficiary:', error);
   }
