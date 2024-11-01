@@ -16,7 +16,7 @@ router.get("/user/login", checkNotAuthenticated, (req, res) => {
 });
 
 router.get("/admin/login", checkNotAuthenticated, (req, res) => {
-  res.render("login/admin", {title : 'Admin | login'})
+  res.render("login/admin", { title: 'Admin | login' })
 });
 
 router.post("/login/user", async (req, res, next) => {
