@@ -507,8 +507,7 @@ router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
     res.redirect("/pharmacy-inventory");
   } catch (err) {
     req.flash("error", err);
-    console.error("Error: ", err);
-    res.sendStatus(500);
+    return res.redirect("/pharmacy-inventory");
   }
 });
 
@@ -544,8 +543,7 @@ router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
     return res.redirect("/pharmacy-inventory");
   } catch (err) {
     req.flash("error", err);
-    console.error("Error: ", err);
-    res.status(400).send("Error updating medicine");
+    return res.redirect("/pharmacy-inventory");
   }
 });
 
@@ -614,11 +612,11 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
       WHERE product_id = $2 AND rhu_id = $3`,
       [newProductQuantity, trimmedProductId, rhu_id]
     );
-    req.flash("error", "Medicine Transfer Successfully");
+    req.flash("success", "Medicine Transfer Successfully");
     return res.redirect("/pharmacy-inventory");
   } catch (err) {
-    console.error("Error: ", err);
-    res.status(400).send("Error transferring medicine");
+    req.flash("error", err);
+    return res.redirect("/pharmacy-inventory");
   }
 });
 
@@ -645,8 +643,8 @@ router.post("/pharmacy-records/add-beneficiary", upload.single('picture'), async
     req.flash("success", "Beneficiary Added Successfully");
     res.redirect("/pharmacy-records");
   } catch (err) {
-    console.error("Error: ", err);
-    res.status(500).send("Failed to add beneficiary.");
+    req.flash("error", err);
+    return res.redirect("/pharmacy-records");
   }
 });
 
@@ -696,11 +694,12 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
       req.flash("success", "Beneficiary updated successfully");
       return res.redirect("/pharmacy-records");
     } else {
-      return res.status(404).json({ message: 'Beneficiary not found.' });
+      req.flash("error", 'Beneficiary not found.');
+      return res.redirect("/pharmacy-records");
     }
   } catch (err) {
-    console.error('Error updating beneficiary:', err);
-    return res.status(500).json({ message: 'Failed to update the beneficiary.' });
+      req.flash("error", err);
+      return res.redirect("/pharmacy-records");
   }
 });
 
@@ -736,7 +735,7 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
     const beneficiaryResult = await client.query(beneficiaryCheckQuery, [beneficiary_id]);
 
     if (beneficiaryResult.rowCount === 0) {
-      return res.status(404).json({ message: `Beneficiary ID ${beneficiary_id} not found` });
+      return req.flash("error", `Beneficiary ID ${beneficiary_id} not found`);
     }
 
     // Insert into transaction_records
@@ -761,7 +760,7 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
 
       if (inventoryResult.rowCount === 0 || inventoryResult.rows[0].product_quantity < quantity) {
         await client.query('ROLLBACK');
-        return res.status(400).json({ message: `Insufficient stock for product ID: ${product_id}, batch number: ${batch_number}` });
+        return req.flash("error", `Insufficient stock for product ID: ${product_id}, batch number: ${batch_number}`);
       }
 
       // Update the inventory table to deduct the quantity based on product ID and batch number
@@ -776,7 +775,7 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
 
       if (result.rowCount === 0) {
         await client.query('ROLLBACK');
-        return res.status(400).json({ message: `Not enough stock for product ID: ${product_id}, batch number: ${batch_number}` });
+        return req.flash( "error", `Not enough stock for product ID: ${product_id}, batch number: ${batch_number}`);
       }
 
       // Insert into transaction_medicine with product details
@@ -798,8 +797,8 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
 
   } catch (err) {
     await client.query('ROLLBACK');
-    console.error("Error: ", err);
-    return res.status(500).json({ message: 'Internal server error' });
+    req.flash("error", err);
+    return res.redirect("/pharmacy-dispense-request");
   } finally {
     client.release();
   }
@@ -817,7 +816,8 @@ router.post("/pharmacy/reject-dispense", async (req, res) => {
     req.flash("success", "Successfully removed from dispense request");
     return res.redirect("/pharmacy-dispense-request");
   } catch (err) {
-    console.error("Error: ", err);
+    req.flash("error", err);
+    return res.redirect("/pharmacy-dispense-request");
   }
 });
 
@@ -863,7 +863,8 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
     req.flash("success", "Beneficiary Deleted Successfully");
     return res.redirect("/pharmacy-records");
   } catch (error) {
-    console.error('Error deleting beneficiary:', error);
+    req.flash("error", err);
+    return res.redirect("/pharmacy-records");
   }
 });
 
