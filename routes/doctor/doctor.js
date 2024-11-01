@@ -170,7 +170,6 @@ router.get("/doctor-dashboard/search", ensureAuthenticated, checkUserType("Docto
   }
 });
 
-// fetch latestpatient history
 router.get("/doctor/patient-histories/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
   const { patient_id } = req.params;
 
@@ -240,7 +239,6 @@ router.get("/doctor/patient-histories/:patient_id", ensureAuthenticated, checkUs
   }
 });
 
-// render patient history with the id
 router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
   const { patient_id } = req.params;
   console.log("patient history clicked!");
@@ -261,7 +259,6 @@ router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUser
   }
 });
 
-// when date clicked
 router.post('/patient-history/:patientId', async (req, res) => {
   const { patientId } = req.params;
   const { date } = req.body;
@@ -469,13 +466,9 @@ router.post("/doctor/prescribe-patient/send", async (req, res) => {
 
     if (isPatient.rows.length > 0) {
       await rhuPool.query(
-        `UPDATE doctor_visits 
-         SET medicine = $2, 
-             instruction = $3, 
-             quantity = $4,
-             doctor_id = $5
-         WHERE patient_id = $1`,
-        [value.patient_id, value.medicine, value.instruction, value.quantity, doctor_id]
+        `INSERT INTO doctor_visits (patient_id, medicine, instruction, quantity, doctor_id)
+         VALUES ($1, $2, $3, $4, $5)`,
+          [value.patient_id, value.medicine, value.instruction, value.quantity, doctor_id]
       );
 
       const checkPatientPrescription = await rhuPool.query(
