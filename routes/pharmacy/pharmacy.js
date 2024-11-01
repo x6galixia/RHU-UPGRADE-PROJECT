@@ -843,7 +843,7 @@ router.delete("/logout", (req, res, next) => {
     });
   });
 });
-
+ 
 async function fetchInventoryList(page, limit, rhu_id) {
   const offset = (page - 1) * limit;
 
