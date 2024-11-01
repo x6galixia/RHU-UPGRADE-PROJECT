@@ -793,7 +793,7 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
 
   try {
     const result = await pharmacyPool.query(
-      'SELECT picture FROM beneficiary WHERE beneficiary_id = $1',
+      'SELECT 1 FROM beneficiary WHERE beneficiary_id = $1',
       [beneficiaryId]
     );
 
@@ -808,7 +808,7 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
       [beneficiaryId]
     );
 
-    if (deleteResult.rowCount > 0) {
+    if (deleteResult.rowCount > 0 ) {
       if (picture) {
         const filePath = path.join(__dirname, '../../uploads/beneficiary-img/', picture);
 
@@ -820,15 +820,13 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
           }
         });
       }
-
-      req.flash("success", "Beneficiary Deleted Successfully");
     } else {
       res.status(404).json({ message: 'Beneficiary not found.' });
     }
-    res.redirect("/pharmacy-records");
+    req.flash("success", "Beneficiary Deleted Successfully");
+    return res.redirect("/pharmacy-records");
   } catch (error) {
     console.error('Error deleting beneficiary:', error);
-    res.status(500).json({ message: 'Failed to delete the beneficiary.' });
   }
 });
 

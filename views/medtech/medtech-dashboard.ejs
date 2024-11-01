@@ -22,8 +22,46 @@
           <img src="../icon/search.svg" alt="Search Icon" />
         </div>
         <div class="recently">
-          <button>RECENTLY ADDED</button>
+          <button id="recentlyAddedMed" onclick="popUp_button(this)">RECENTLY ADDED</button>
         </div>
+        <!-- POPPP -->
+        <div class="pop-up" id="recently-admitted-table-med">
+          <div class="close-container">
+              <img src="../icon/close.svg" alt="" class="close_popUp">
+          </div>
+          <h1 class="heading">RECENTLY ADMITTED</h1>
+          <main>
+              <div class="selecter">
+                  <p>Select an RHU</p>
+                  <select name="rhu_id" id="rhu-select">
+                      <option value="1">Main</option>
+                      <option value="2">Maypangdan</option>
+                      <option value="3">Tabunan</option>
+                      <option value="4">Songco</option>
+                  </select>
+              </div>
+              <div class="table-container">
+                  <table>
+                      <thead>
+                          <tr>
+                              <th>Name</th>
+                              <th>Date</th>
+                              <th>Nurse</th>
+                              <th></th>
+                          </tr>
+                      </thead>
+                      <tbody id="patient-list">
+                          <!-- recently admitted data here -->
+                      </tbody>
+                  </table>
+              </div>
+              <div class="pagination">
+                  <button class="button-green" id="previous-page">Previous</button>
+                  <button class="button-green" id="next-page">Next</button>
+              </div>
+          </main>
+      </div>
+      <!-- <div class="overlay" style="display: block;"></div> -->
       </div>
 
       <div class="table-container">
