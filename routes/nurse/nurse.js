@@ -200,7 +200,7 @@ router.post("/nurse/admit-patient", async (req, res) => {
             respiratory_rate, bmi, comment, follow_date)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
             $10, $11, $12, $13, $14, $15, $16, $17, $18,
-            $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30)
+            $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31)
         RETURNING id
       `;
 
@@ -384,7 +384,7 @@ router.post("/nurse/update-patient-details", async (req, res) => {
       UPDATE patients
       SET rhu_id = $1, last_name = $2, first_name = $3, middle_name = $4, suffix = $5, phone = $6, gender = $7, birthdate = $8, house_no = $9, street = $10, barangay = $11, city = $12, province = $13, occupation = $14, email = $15, philhealth_no = $16, guardian = $17
       WHERE patient_id = $18
-    `, [ rhu_id, value.last_name, value.first_name, value.middle_name, value.suffix, value.phone, value.gender, value.birthdate, house_no, street, barangay, city, province, value.occupation, value.email, value.philhealth_no, value.guardian, value.patient_id,
+    `, [rhu_id, value.last_name, value.first_name, value.middle_name, value.suffix, value.phone, value.gender, value.birthdate, house_no, street, barangay, city, province, value.occupation, value.email, value.philhealth_no, value.guardian, value.patient_id,
     ]);
 
     await rhuPool.query(`
@@ -404,8 +404,8 @@ router.post("/nurse/update-patient-details", async (req, res) => {
         comment = $12
       WHERE patient_id = $13
     `, [nurse_id, calculateAge(value.birthdate), new Date(), value.height, value.weight, value.systolic, value.diastolic, value.temperature, value.heart_rate, value.respiratory_rate, value.bmi, value.comment, value.patient_id]);
-      req.flash("submit", "Patient Updated Successfully");
-      return res.redirect("/nurse/patient-registration");
+    req.flash("submit", "Patient Updated Successfully");
+    return res.redirect("/nurse/patient-registration");
   } catch (err) {
     console.error("Error: ", err);
   }

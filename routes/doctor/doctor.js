@@ -352,7 +352,7 @@ router.post("/doctor/request-laboratory/send", async (req, res) => {
         [value.patient_id, value.category, value.service]
       );
     }
-
+    req.flash("success", "Request Submitted");
     return res.redirect("/doctor-dashboard");
   } catch (err) {
     console.error("Error: ", err);
@@ -383,7 +383,7 @@ router.post("/doctor/diagnose-patient/send", async (req, res) => {
         [value.patient_id, value.diagnosis]
       );
     }
-
+    req.flash("success", "Submitted Successfully");
     return res.redirect("/doctor-dashboard");
   } catch (error) {
     console.error("Error: ", err);
@@ -414,7 +414,7 @@ router.post("/doctor/findings-patient/send", async (req, res) => {
         [value.patient_id, value.findings]
       );
     }
-
+    req.flash("success", "Submitted Successfully");
     return res.redirect("/doctor-dashboard");
   } catch (error) {
     console.error("Error: ", err);
@@ -468,7 +468,7 @@ router.post("/doctor/prescribe-patient/send", async (req, res) => {
       await rhuPool.query(
         `INSERT INTO doctor_visits (patient_id, medicine, instruction, quantity, doctor_id)
          VALUES ($1, $2, $3, $4, $5)`,
-          [value.patient_id, value.medicine, value.instruction, value.quantity, doctor_id]
+        [value.patient_id, value.medicine, value.instruction, value.quantity, doctor_id]
       );
 
       const checkPatientPrescription = await rhuPool.query(

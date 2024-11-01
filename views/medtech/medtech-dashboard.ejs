@@ -144,13 +144,13 @@
         </div>
       </form>
 
-      <% if (messages.submit) { %>
+      <% if (messages.success) { %>
         <div class="overlay visible" id="susOo"></div>
         <div class="visible1" id="submit_prompt">
           <img src="../icon/check.svg" alt="">
           <div>
             <h2>
-              <%= messages.submit%>
+              <%= messages.success%>
             </h2>
             <main>
               <button type="button" class="button-green" id="close_message" onclick="yawa()">OK</button>
@@ -158,6 +158,21 @@
           </div>
         </div>
         <% } %>
+
+          <% if (messages.error) { %>
+            <div class="overlay visible" id="susOo"></div>
+            <div class="visible1" id="submit_prompt">
+              <img src="../icon/close1.svg" alt="">
+              <div>
+                <h2>
+                  <%= messages.error%>
+                </h2>
+                <main>
+                  <button type="button" class="button-green" id="close_message" onclick="yawa()">OK</button>
+                </main>
+              </div>
+            </div>
+            <% } %>
 
     </main>
     <script src="../../js/local/medtech-labs/labs-api.js"></script>

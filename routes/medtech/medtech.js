@@ -176,13 +176,13 @@ router.post("/medtech-dashboard/send-patient-lab", upload.array('lab_result', 6)
 
         await rhuPool.query(`
           INSERT INTO medtech_labs (patient_id, lab_result, medtech_id) 
-          VALUES ($1, $2, $3)`, 
+          VALUES ($1, $2, $3)`,
           [patientId, filename, medtech_id]
         );
       }
     }
-    
-    req.flash("submit", "Submitted Successfully");
+
+    req.flash("success", "Submitted Successfully");
     res.redirect("/medtech-dashboard");
   } catch (err) {
     console.error("Error: ", err);
