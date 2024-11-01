@@ -528,7 +528,7 @@ router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      req.flash("error", "kulang na tim medesina");
+      req.flash("error", "Medicine not found");
       return res.redirect("/pharmacy-inventory");
     }
 
@@ -569,7 +569,7 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
 
     if (medValue.rows.length === 0) {
       req.flash("error", "Medicine not available in inventory");
-      return res.status(404).send(`Medicine with product_id ${value.product_id} is not available in the source inventory`);
+      return res.redirect("/pharmacy-inventory");
     }
 
     const data = medValue.rows[0];
@@ -577,7 +577,7 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
     // Check if the stock is sufficient
     if (data.product_quantity < value.product_quantity) {
       req.flash("error", "Not enough stock available");
-      return res.status(500).send(`Not enough stock available. Available quantity: ${data.product_quantity}`);
+      return res.redirect("/pharmacy-inventory");
     }
 
     // Check if the medicine already exists in the target RHU
