@@ -41,6 +41,7 @@ function ensureAdminAuthenticated(req, res, next) {
 
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
+        // If user is authenticated, redirect based on user type
         const user = req.user;
         switch (user.user_type) {
             case "Nurse":
@@ -51,13 +52,13 @@ function checkNotAuthenticated(req, res, next) {
                 return res.redirect("/medtech-dashboard");
             case "Pharmacist":
                 return res.redirect("/pharmacy-inventory");
-            case "Admin": 
+            case "Admin":
                 return res.redirect("/admin-dashboard");
             default:
-                return res.redirect("/");
+                return res.redirect("/user/login");
         }
     }
-    next();
+    next(); // Proceed if user is not authenticated
 }
 
 function checkUserType(userType) {
@@ -68,7 +69,6 @@ function checkUserType(userType) {
         res.redirect("/user/login");
     };
 }
-
 
 module.exports = {
     setUserData,

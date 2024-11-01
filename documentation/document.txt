@@ -58,6 +58,7 @@ CREATE TABLE nurse_checks (
 CREATE TABLE doctor_visits (
     id SERIAL PRIMARY KEY NOT NULL,
     patient_id VARCHAR(255) REFERENCES patients(patient_id) ON DELETE CASCADE,
+    doctor_id INTEGER REFERENCES users(id) ON DELETE CASCADE, -- new
     follow_date DATE NULL,
     diagnosis TEXT NULL,
     findings TEXT NULL,
@@ -70,6 +71,7 @@ CREATE TABLE doctor_visits (
 
 CREATE TABLE medtech_labs (
     id SERIAL PRIMARY KEY NOT NULL,
+    medtech_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     patient_id VARCHAR(255) REFERENCES patients(patient_id) ON DELETE CASCADE,
     lab_result TEXT NULL
 );
@@ -78,6 +80,7 @@ CREATE TABLE patient_history (
     id SERIAL PRIMARY KEY NOT NULL,
     patient_id VARCHAR(255) REFERENCES patients(patient_id) ON DELETE CASCADE,
     rhu_id INTEGER REFERENCES rhu(rhu_id) ON DELETE CASCADE,
+    doctor_id INTEGER REFERENCES users(id) ON DELETE CASCADE, -- new
     last_name VARCHAR(50) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     middle_name VARCHAR(50) NULL,

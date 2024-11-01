@@ -315,7 +315,6 @@ router.post("/doctor/request-laboratory/send", async (req, res) => {
   }
 });
 
-
 router.post("/doctor/diagnose-patient/send", async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
 
@@ -400,6 +399,7 @@ router.get("/doctor-dashboard/prescribe/search", async (req, res) => {
 
 router.post("/doctor/prescribe-patient/send", async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
+  const doctor_id = req.user.id;
 
   console.log(value);
 
@@ -424,9 +424,10 @@ router.post("/doctor/prescribe-patient/send", async (req, res) => {
         `UPDATE doctor_visits 
          SET medicine = $2, 
              instruction = $3, 
-             quantity = $4
+             quantity = $4,
+             doctor_id = $5
          WHERE patient_id = $1`,
-        [value.patient_id, value.medicine, value.instruction, value.quantity]
+        [value.patient_id, value.medicine, value.instruction, value.quantity, doctor_id]
       );
 
       const checkPatientPrescription = await rhuPool.query(
@@ -480,14 +481,20 @@ router.post("/doctor/prescribe-patient/send", async (req, res) => {
   }
 });
 
-router.delete("/logout", (req, res) => {
+router.delete("/logout", (req, res, next) => {
   req.logOut((err) => {
     if (err) {
       return next(err);
     }
-    res.redirect("/");
+    req.session.destroy((err) => {
+      if (err) {
+        return next(err);
+      }
+      res.redirect("/user/login");
+    });
   });
 });
+
 
 async function fetchPatientList(page, limit) {
   const offset = (page - 1) * limit;
