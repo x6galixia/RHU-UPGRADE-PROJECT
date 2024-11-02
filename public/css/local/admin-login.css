@@ -16,6 +16,7 @@ body {
     margin-top: 20px;
     text-decoration: underline;
     color: #551A8B;
+    cursor: pointer;
 }
 .logo{
     display: grid;
@@ -28,7 +29,7 @@ body {
     margin-top: 20px;
 
     min-width: 380px;
-    min-height: 350px;
+    min-height: 380px;
     width: 200px;
     height: 150px;
     padding: 10px;
