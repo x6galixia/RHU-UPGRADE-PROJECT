@@ -185,8 +185,9 @@ select {
 }
 
 .image-section>.main-image>img {
-    height: 20em;
-    object-fit: scale-down;
+    height: 30em;
+    width: 20em;
+    object-fit: contain;
 }
 
 .modal {
