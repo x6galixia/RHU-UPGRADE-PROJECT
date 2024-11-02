@@ -11,7 +11,9 @@
     padding: 1em 2em;
     /* display: flex;
     flex-direction: column; */
-    align-self: self-start;
+}
+#date-container{
+    max-height: 700px;
 }
 
 .info-container {
@@ -19,20 +21,9 @@
     padding: 1em 2em;
 }
 
-h1 {
+h2 {
     margin-bottom: 1em;
 }
-
-label,
-p,
-input {
-    font-size: var(--font-size);
-}
-
-input {
-    font-weight: 200;
-}
-
 
 .patient-info {
     background-color: rgb(255, 255, 255);
@@ -40,7 +31,11 @@ input {
     gap: 2em;
     flex-wrap: wrap;
 }
-
+.date-container p{
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+}
 .inputs {
     flex: 1 1 40%;
     display: grid;
