@@ -32,7 +32,14 @@ h2 {
     display: flex;
     gap: 2em;
     flex-wrap: wrap;
+    list-style-type: none;
 }
+#categoryList,
+  #serviceList {
+    list-style-type: none; /* Removes bullets */
+    padding: 0;            /* Removes default padding */
+    margin: 0;             /* Removes default margin */
+  }
 .date-container p{
     text-decoration: underline;
     color: blue;
@@ -168,15 +175,12 @@ select {
     gap: 12px;
 }
 
-.image-section {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
 
-.image-section>.main-image {
-    display: grid;
-    place-items: center;
+.main-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
     flex: 1;
 }
 
@@ -197,6 +201,11 @@ select {
     background-color: rgba(0, 0, 0, 0.9);
     justify-content: center;
     align-items: center;
+}
+.turunga{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .modal-content {
@@ -219,4 +228,23 @@ select {
 #date-container {
     position: sticky;
     top: 28px;
+}
+th{
+    background-color: rgb(220, 219, 219) !important;
+    color: black;
+    font-weight: bold !important;
+}
+table{
+    width: 100%;              
+    table-layout: fixed;      
+    border-collapse: collapse;
+}
+.nomnoms{
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: 30px;
+    font-weight: bold;
+}
+#ko{
+    display: block !important;
 }

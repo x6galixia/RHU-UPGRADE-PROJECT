@@ -107,25 +107,34 @@
 
           <!-- laboratories -->
           <h2 class="form-header m">Laboratories </h2>
-          <div class="patient-info">
-            <div class="listing">
-              <p>Categories</p>
-              <ul id="categoryList">
-              </ul>
-            </div>
-            <div class="listing">
-              <p>Services</p>
-              <ul id="serviceList">
-              </ul>
-            </div>
+          <div class="patient-info" id="ko">
+            <table>
+              <tr>
+                <th>Categories</th>
+                <th>Services</th>
+              </tr>
+              <tr>
+                <td>
+                  <ul id="categoryList">
+                  </ul>
+                </td>
+                <td>
+                  <ul id="serviceList">
+                  </ul>
+                </td>
+              </tr>
+            </table>
+            
             <div class="listing ">
-              <p>Lab. Result</p>
+              <p class="nomnoms">LABORATORY RESULTS</p>
               <div class="image-section">
-                <div id="prev-btn"><img src="/icon/arrow-left.svg" alt=""></div>
+                
                 <div class="main-image">
+                  <div id="prev-btn"><img src="/icon/arrow-left.svg" alt=""></div>
                   <img id="displayedImage" src="/img/local/jr.png" alt="">
+                  <div id="next-btn"><img src="/icon/arrow-right.svg" alt=""></div>
                 </div>
-                <div id="next-btn"><img src="/icon/arrow-right.svg" alt=""></div>
+                
               </div>
             </div>
           </div>
@@ -138,23 +147,25 @@
 
           <!-- Prescriptions -->
           <h2 class="form-header m">Prescriptions</h2>
-          <div class="m patient-info">
-            <div class="listing">
-              <p>Medicine</p>
-              <ul id="medicineList">
-              </ul>
-            </div>
-            <div class="listing">
-              <p>Quantity</p>
-              <ul id="quantityList">
-              </ul>
-            </div>
-            <div class="listing">
-              <p>Instruction</p>
-              <ul id="instructionList">
-              </ul>
-            </div>
+          <div class="m patient-info" id="ko">
+            <table>
+              <thead>
+                <tr>
+                  <th>Medicine</th>
+                  <th>Quantity</th>
+                  <th>Instruction</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td id="medicineList"></td>
+                  <td id="quantityList"></td>
+                  <td id="instructionList"></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
+          
 
 
           <!-- End of info-container-->
