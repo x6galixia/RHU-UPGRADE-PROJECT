@@ -170,7 +170,6 @@ router.get("/doctor-dashboard/search", ensureAuthenticated, checkUserType("Docto
   }
 });
 
-// fetch latestpatient history
 router.get("/doctor/patient-histories/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
   const { patient_id } = req.params;
 
@@ -240,7 +239,6 @@ router.get("/doctor/patient-histories/:patient_id", ensureAuthenticated, checkUs
   }
 });
 
-// render patient history with the id
 router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
   const { patient_id } = req.params;
   console.log("patient history clicked!");
@@ -261,7 +259,6 @@ router.get("/doctor/patient-history/:patient_id", ensureAuthenticated, checkUser
   }
 });
 
-// when date clicked
 router.post('/patient-history/:patientId', async (req, res) => {
   const { patientId } = req.params;
   const { date } = req.body;
@@ -355,7 +352,7 @@ router.post("/doctor/request-laboratory/send", async (req, res) => {
         [value.patient_id, value.category, value.service]
       );
     }
-
+    req.flash("success", "Request Submitted");
     return res.redirect("/doctor-dashboard");
   } catch (err) {
     console.error("Error: ", err);
@@ -370,26 +367,30 @@ router.post("/doctor/diagnose-patient/send", async (req, res) => {
   }
 
   try {
-    const isPatient = await rhuPool.query(
-      `SELECT * FROM doctor_visits WHERE patient_id = $1 AND diagnosis IS NULL`,
+    const { rows } = await rhuPool.query(
+      `SELECT * FROM doctor_visits WHERE patient_id = $1`,
       [value.patient_id]
     );
 
-    if (isPatient.rows.length > 0) {
+    if (rows.length > 0) {
+      // Update all rows for the patient
       await rhuPool.query(
-        `UPDATE doctor_visits SET diagnosis = $2 WHERE patient_id = $1`,
-        [value.patient_id, value.diagnosis]
+        `UPDATE doctor_visits SET diagnosis = $1 WHERE patient_id = $2`,
+        [value.diagnosis, value.patient_id]
       );
     } else {
+      // Insert a new row if no records exist
       await rhuPool.query(
         `INSERT INTO doctor_visits (patient_id, diagnosis) VALUES ($1, $2)`,
         [value.patient_id, value.diagnosis]
       );
     }
 
+    req.flash("success", "Submitted Successfully");
     return res.redirect("/doctor-dashboard");
-  } catch (error) {
+  } catch (err) {
     console.error("Error: ", err);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -401,28 +402,31 @@ router.post("/doctor/findings-patient/send", async (req, res) => {
   }
 
   try {
-    const isPatient = await rhuPool.query(
-      `SELECT * FROM doctor_visits WHERE patient_id = $1 AND findings IS NULL`,
+    const { rows } = await rhuPool.query(
+      `SELECT * FROM doctor_visits WHERE patient_id = $1`,
       [value.patient_id]
     );
 
-    if (isPatient.rows.length > 0) {
+    if (rows.length > 0) {
+      // Update all rows for the patient
       await rhuPool.query(
-        `UPDATE doctor_visits SET findings = $2 WHERE patient_id = $1`,
-        [value.patient_id, value.findings]
+        `UPDATE doctor_visits SET findings = $1 WHERE patient_id = $2`,
+        [value.findings, value.patient_id]
       );
     } else {
+      // Insert a new row if no records exist
       await rhuPool.query(
         `INSERT INTO doctor_visits (patient_id, findings) VALUES ($1, $2)`,
         [value.patient_id, value.findings]
       );
     }
 
+    req.flash("success", "Submitted Successfully");
     return res.redirect("/doctor-dashboard");
-  } catch (error) {
+  } catch (err) {
     console.error("Error: ", err);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
-
 });
 
 router.get("/doctor-dashboard/prescribe/search", async (req, res) => {
@@ -469,12 +473,8 @@ router.post("/doctor/prescribe-patient/send", async (req, res) => {
 
     if (isPatient.rows.length > 0) {
       await rhuPool.query(
-        `UPDATE doctor_visits 
-         SET medicine = $2, 
-             instruction = $3, 
-             quantity = $4,
-             doctor_id = $5
-         WHERE patient_id = $1`,
+        `INSERT INTO doctor_visits (patient_id, medicine, instruction, quantity, doctor_id)
+         VALUES ($1, $2, $3, $4, $5)`,
         [value.patient_id, value.medicine, value.instruction, value.quantity, doctor_id]
       );
 

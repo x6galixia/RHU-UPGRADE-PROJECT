@@ -70,7 +70,7 @@ const beneficiarySchema = Joi.object({
 
 const dispenseSchema = Joi.object({
   patient_prescription_id: Joi.string().required(),
-  beneficiary_id: Joi.number().required(),
+  beneficiary_id: Joi.alternatives().try(Joi.number(), Joi.string()).optional(),
   transaction_number: Joi.string().required(),
   date_issued: Joi.date().required(),
   beneficiary_name: Joi.string().required(),
@@ -473,20 +473,20 @@ router.get("/pharmacy-trends", ensureAuthenticated, checkUserType("Pharmacist"),
 
 router.get("/pharmacy/generate-transaction-id/new-id", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   try {
-      const result = await pharmacyPool.query(
-          "SELECT transaction_number FROM transaction_records ORDER BY transaction_number DESC LIMIT 1"
-      );
+    const result = await pharmacyPool.query(
+      "SELECT transaction_number FROM transaction_records ORDER BY transaction_number DESC LIMIT 1"
+    );
 
-      let lastId = "T0000";
-      if (result.rows.length > 0 && result.rows[0].transaction_number) {
-          lastId = result.rows[0].transaction_number;
-      }
+    let lastId = "T0000";
+    if (result.rows.length > 0 && result.rows[0].transaction_number) {
+      lastId = result.rows[0].transaction_number;
+    }
 
-      const newId = generateNextTransactionId(lastId);
-      res.json({ id: newId });
+    const newId = generateNextTransactionId(lastId);
+    res.json({ id: newId });
   } catch (err) {
-      console.error("Error generating ID:", err);
-      res.status(500).json({ error: "Server error", details: err.message });
+    console.error("Error generating ID:", err);
+    res.status(500).json({ error: "Server error", details: err.message });
   }
 });
 
@@ -503,10 +503,11 @@ router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
       [value.product_id, value.product_code, value.product_name, value.brand_name, value.supplier, value.product_quantity, value.dosage_form, value.dosage, value.reorder_level, value.batch_number, value.expiration, value.date_added, 1]
     );
+    req.flash("success", "Medicine Added Successfully");
     res.redirect("/pharmacy-inventory");
   } catch (err) {
-    console.error("Error: ", err);
-    res.sendStatus(500);
+    req.flash("error", err);
+    return res.redirect("/pharmacy-inventory");
   }
 });
 
@@ -526,6 +527,7 @@ router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
     );
 
     if (result.rows.length === 0) {
+      req.flash("error", "Medicine not found");
       return res.redirect("/pharmacy-inventory");
     }
 
@@ -537,11 +539,11 @@ router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
       "UPDATE inventory SET batch_number = $4, date_added = $5, expiration = $6, product_quantity = $7 WHERE product_id = $1 AND product_code = $2 AND rhu_id = $3",
       [value.product_id, value.product_code, rhu_id, value.batch_number, value.date_added, value.expiration, newQuantity]
     );
-
+    req.flash("success", "Restock Medicine Successful");
     return res.redirect("/pharmacy-inventory");
   } catch (err) {
-    console.error("Error: ", err);
-    res.status(400).send("Error updating medicine");
+    req.flash("error", err);
+    return res.redirect("/pharmacy-inventory");
   }
 });
 
@@ -559,24 +561,26 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
 
     // Check if the medicine exists in the source inventory
     const medValue = await pharmacyPool.query(
-      "SELECT * FROM inventory WHERE product_id = $1 AND rhu_id = $2", 
+      "SELECT * FROM inventory WHERE product_id = $1 AND rhu_id = $2",
       [trimmedProductId, rhu_id]
     );
 
     if (medValue.rows.length === 0) {
-      return res.status(404).send(`Medicine with product_id ${value.product_id} is not available in the source inventory`);
+      req.flash("error", "Medicine not available in inventory");
+      return res.redirect("/pharmacy-inventory");
     }
 
     const data = medValue.rows[0];
 
     // Check if the stock is sufficient
     if (data.product_quantity < value.product_quantity) {
-      return res.status(500).send(`Not enough stock available. Available quantity: ${data.product_quantity}`);
+      req.flash("error", "Not enough stock available");
+      return res.redirect("/pharmacy-inventory");
     }
 
     // Check if the medicine already exists in the target RHU
     const targetMed = await pharmacyPool.query(
-      "SELECT * FROM inventory WHERE product_id = $1 AND rhu_id = $2", 
+      "SELECT * FROM inventory WHERE product_id = $1 AND rhu_id = $2",
       [trimmedProductId, value.rhu_id]
     );
 
@@ -586,7 +590,7 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
         INSERT INTO inventory (product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added, rhu_id)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
       `, [
-        data.product_id, data.product_code, data.product_name, data.brand_name, data.supplier, value.product_quantity, 
+        data.product_id, data.product_code, data.product_name, data.brand_name, data.supplier, value.product_quantity,
         data.dosage_form, data.dosage, data.reorder_level, data.batch_number, data.expiration, data.date_added, value.rhu_id
       ]);
     } else {
@@ -608,11 +612,11 @@ router.post("/pharmacy-inventory/transfer-medicine", async (req, res) => {
       WHERE product_id = $2 AND rhu_id = $3`,
       [newProductQuantity, trimmedProductId, rhu_id]
     );
-
+    req.flash("success", "Medicine Transfer Successfully");
     return res.redirect("/pharmacy-inventory");
   } catch (err) {
-    console.error("Error: ", err);
-    res.status(400).send("Error transferring medicine");
+    req.flash("error", err);
+    return res.redirect("/pharmacy-inventory");
   }
 });
 
@@ -636,11 +640,11 @@ router.post("/pharmacy-records/add-beneficiary", upload.single('picture'), async
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
       [value.last_name, value.first_name, value.middle_name, value.phone, value.gender, value.birthdate, value.street, value.barangay, value.city, value.province, value.occupation, value.senior_citizen, value.pwd, picture, value.note, value.processed_date]
     );
-
+    req.flash("success", "Beneficiary Added Successfully");
     res.redirect("/pharmacy-records");
   } catch (err) {
-    console.error("Error: ", err);
-    res.status(500).send("Failed to add beneficiary.");
+    req.flash("error", err);
+    return res.redirect("/pharmacy-records");
   }
 });
 
@@ -649,10 +653,12 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
   const existingPicture = value.existing_picture;
   const picture = req.file ? req.file.filename : existingPicture;
 
+  // Validate beneficiary ID
   if (isNaN(value.beneficiary_id)) {
     return res.status(400).json({ message: 'Invalid beneficiary ID' });
   }
 
+  // Validate schema
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
@@ -662,36 +668,57 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
       `UPDATE beneficiary 
        SET last_name = $1, first_name = $2, middle_name = $3, gender = $4, birthdate = $5, processed_date = $6, phone = $7, occupation = $8, senior_citizen = $9, pwd = $10, street = $11, barangay = $12, city = $13, province = $14, note = $15, picture = $16
        WHERE beneficiary_id = $17`,
-      [value.last_name, value.first_name, value.middle_name, value.gender, value.birthdate, value.processed_date, value.phone, value.occupation, value.senior_citizen, value.pwd, value.street, value.barangay, value.city, value.province, value.note, picture, value.beneficiary_id]
+      [
+        value.last_name,
+        value.first_name,
+        value.middle_name,
+        value.gender,
+        value.birthdate,
+        value.processed_date,
+        value.phone,
+        value.occupation,
+        value.senior_citizen,
+        value.pwd,
+        value.street,
+        value.barangay,
+        value.city,
+        value.province,
+        value.note,
+        picture,
+        value.beneficiary_id
+      ]
     );
 
+    // Check if the update was successful
     if (result.rowCount > 0) {
+      req.flash("success", "Beneficiary updated successfully");
       return res.redirect("/pharmacy-records");
     } else {
-      res.status(404).json({ message: 'Beneficiary not found.' });
+      req.flash("error", 'Beneficiary not found.');
+      return res.redirect("/pharmacy-records");
     }
-  } catch (error) {
-    console.error('Error updating beneficiary:', error);
-    res.status(500).json({ message: 'Failed to update the beneficiary.' });
+  } catch (err) {
+      req.flash("error", err);
+      return res.redirect("/pharmacy-records");
   }
 });
 
 router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
   const { error, value } = dispenseSchema.validate(req.body);
-  console.log(value);
 
+  
   if (error) {
-      return res.status(400).send(error.details[0].message);
+    return res.status(400).send(error.details[0].message);
   }
 
   const {
-      beneficiary_id,
-      transaction_number,
-      date_issued,
-      doctor,
-      receiver,
-      relationship_beneficiary,
-      medicines
+    beneficiary_id,
+    transaction_number,
+    date_issued,
+    doctor,
+    receiver,
+    relationship_beneficiary,
+    medicines
   } = value;
 
   // Use only the transaction number at index 1
@@ -699,81 +726,98 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
 
   const client = await pharmacyPool.connect();
   try {
-      await client.query('BEGIN');
+    await client.query('BEGIN');
 
-      // Check if beneficiary exists
-      const beneficiaryCheckQuery = `
+    // Check if beneficiary exists
+    const beneficiaryCheckQuery = `
           SELECT beneficiary_id FROM beneficiary WHERE beneficiary_id = $1
       `;
-      const beneficiaryResult = await client.query(beneficiaryCheckQuery, [beneficiary_id]);
+    const beneficiaryResult = await client.query(beneficiaryCheckQuery, [beneficiary_id]);
 
-      if (beneficiaryResult.rowCount === 0) {
-          return res.status(404).json({ message: `Beneficiary ID ${beneficiary_id} not found` });
-      }
+    if (beneficiaryResult.rowCount === 0) {
+      return req.flash("error", `Beneficiary ID ${beneficiary_id} not found`);
+    }
 
-      // Insert into transaction_records
-      const insertTransactionQuery = `
+    // Insert into transaction_records
+    const insertTransactionQuery = `
           INSERT INTO transaction_records (beneficiary_id, transaction_number, date_issued, doctor, reciever, relationship_beneficiary)
           VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
       `;
-      const transactionResult = await client.query(insertTransactionQuery, [beneficiary_id, transactionNumber, date_issued, doctor, receiver, relationship_beneficiary]);
-      const transactionId = transactionResult.rows[0].id;
+    const transactionResult = await client.query(insertTransactionQuery, [beneficiary_id, transactionNumber, date_issued, doctor, receiver, relationship_beneficiary]);
+    const transactionId = transactionResult.rows[0].id;
 
-      // Deduct quantities and insert into transaction_medicine
-      for (const medicine of medicines) {
-          const { product_id, quantity, batch_number, product_details } = medicine;
+    // Deduct quantities and insert into transaction_medicine
+    for (const medicine of medicines) {
+      const { product_id, quantity, batch_number, product_details } = medicine;
 
-          // First check if the stock is sufficient
-          const checkInventoryQuery = `
+      // First check if the stock is sufficient
+      const checkInventoryQuery = `
               SELECT product_quantity FROM inventory 
               WHERE product_id = $1 
               AND batch_number = $2
           `;
-          const inventoryResult = await client.query(checkInventoryQuery, [product_id, batch_number]);
+      const inventoryResult = await client.query(checkInventoryQuery, [product_id, batch_number]);
 
-          if (inventoryResult.rowCount === 0 || inventoryResult.rows[0].product_quantity < quantity) {
-              await client.query('ROLLBACK');
-              return res.status(400).json({ message: `Insufficient stock for product ID: ${product_id}, batch number: ${batch_number}` });
-          }
+      if (inventoryResult.rowCount === 0 || inventoryResult.rows[0].product_quantity < quantity) {
+        await client.query('ROLLBACK');
+        return req.flash("error", `Insufficient stock for product ID: ${product_id}, batch number: ${batch_number}`);
+      }
 
-          // Update the inventory table to deduct the quantity based on product ID and batch number
-          const updateInventoryQuery = `
+      // Update the inventory table to deduct the quantity based on product ID and batch number
+      const updateInventoryQuery = `
               UPDATE inventory 
               SET product_quantity = product_quantity - $1 
               WHERE product_id = $2 
               AND batch_number = $3 
               AND product_quantity >= $1
           `;
-          const result = await client.query(updateInventoryQuery, [quantity, product_id, batch_number]);
+      const result = await client.query(updateInventoryQuery, [quantity, product_id, batch_number]);
 
-          if (result.rowCount === 0) {
-              await client.query('ROLLBACK');
-              return res.status(400).json({ message: `Not enough stock for product ID: ${product_id}, batch number: ${batch_number}` });
-          }
+      if (result.rowCount === 0) {
+        await client.query('ROLLBACK');
+        return req.flash( "error", `Not enough stock for product ID: ${product_id}, batch number: ${batch_number}`);
+      }
 
-          // Insert into transaction_medicine with product details
-          const insertMedicineQuery = `
+      // Insert into transaction_medicine with product details
+      const insertMedicineQuery = `
               INSERT INTO transaction_medicine (tran_id, product_id, batch_number, product_details, quantity)
               VALUES ($1, $2, $3, $4, $5)
           `;
-          await client.query(insertMedicineQuery, [transactionId, product_id, batch_number, product_details, quantity]);
-      }
+      await client.query(insertMedicineQuery, [transactionId, product_id, batch_number, product_details, quantity]);
+    }
 
-      // Delete the records from patient patient_prescription_data
-      await rhuPool.query(`
+    // Delete the records from patient patient_prescription_data
+    await rhuPool.query(`
         DELETE FROM patient_prescription_data WHERE patient_prescription_id = $1
       `, [value.patient_prescription_id]);
 
-      await client.query('COMMIT');
-      req.flash("submit", "Medicine dispensed Successfully");
-      return res.redirect("/pharmacy-dispense-request");
-      
+    await client.query('COMMIT');
+    req.flash("success", "Medicine dispensed Successfully");
+    return res.redirect("/pharmacy-dispense-request");
+
   } catch (err) {
-      await client.query('ROLLBACK');
-      console.error("Error: ", err);
-      return res.status(500).json({ message: 'Internal server error' });
+    await client.query('ROLLBACK');
+    req.flash("error", err);
+    return res.redirect("/pharmacy-dispense-request");
   } finally {
-      client.release();
+    client.release();
+  }
+});
+
+router.post("/pharmacy/reject-dispense", async (req, res) => {
+  const { error, value } = dispenseSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
+
+  try {
+    await rhuPool.query(`DELETE FROM patient_prescription_data WHERE patient_prescription_id = $1`, [value.patient_prescription_id]);
+    req.flash("success", "Successfully removed from dispense request");
+    return res.redirect("/pharmacy-dispense-request");
+  } catch (err) {
+    req.flash("error", err);
+    return res.redirect("/pharmacy-dispense-request");
   }
 });
 
@@ -786,7 +830,7 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
 
   try {
     const result = await pharmacyPool.query(
-      'SELECT picture FROM beneficiary WHERE beneficiary_id = $1',
+      'SELECT 1 FROM beneficiary WHERE beneficiary_id = $1',
       [beneficiaryId]
     );
 
@@ -801,7 +845,7 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
       [beneficiaryId]
     );
 
-    if (deleteResult.rowCount > 0) {
+    if (deleteResult.rowCount > 0 ) {
       if (picture) {
         const filePath = path.join(__dirname, '../../uploads/beneficiary-img/', picture);
 
@@ -813,14 +857,14 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
           }
         });
       }
-
-      res.json({ message: 'Beneficiary deleted successfully.' });
     } else {
       res.status(404).json({ message: 'Beneficiary not found.' });
     }
+    req.flash("success", "Beneficiary Deleted Successfully");
+    return res.redirect("/pharmacy-records");
   } catch (error) {
-    console.error('Error deleting beneficiary:', error);
-    res.status(500).json({ message: 'Failed to delete the beneficiary.' });
+    req.flash("error", err);
+    return res.redirect("/pharmacy-records");
   }
 });
 
@@ -837,7 +881,7 @@ router.delete("/logout", (req, res, next) => {
     });
   });
 });
-
+ 
 async function fetchInventoryList(page, limit, rhu_id) {
   const offset = (page - 1) * limit;
 
@@ -930,7 +974,7 @@ async function fetchDispenseList(page, limit, rhu_id) {
   try {
     // Get the total number of items with the specific rhu_id
     const totalItemsResult = await rhuPool.query(
-      "SELECT COUNT(*) FROM patient_prescription_data WHERE rhu_id = $1", 
+      "SELECT COUNT(*) FROM patient_prescription_data WHERE rhu_id = $1",
       [rhu_id]
     );
     const totalItems = parseInt(totalItemsResult.rows[0].count, 10);

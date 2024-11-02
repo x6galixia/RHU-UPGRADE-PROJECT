@@ -156,7 +156,8 @@
               <div>
                 <div class="reject-heading">
                   <img src="../icon/warning.svg" alt="">
-                  <h2>Rejecting a dispense request will automatically delete from the list</h2>
+                  <h2>Rejecting a dispense request will
+                    automatically delete from the list</h2>
                 </div>
                 <main>
                   <h2>Are sure you want to reject this dispense request?</h2>
@@ -335,7 +336,8 @@
         <div>
           <div class="reject-heading">
             <img src="../icon/warning.svg" alt="">
-            <h2>Deleting a Beneficiary will automatically delete from the list</h2>
+            <h2>Deleting a Beneficiary will
+              automatically delete from the list</h2>
           </div>
           <main>
             <h2>Are sure you want to delete this Beneficiary?</h2>
@@ -372,7 +374,7 @@
                       <img class="icon1" src="../img/id-img/icon1.png" />
                       <p class="address" id="beneficiary-address">Maypangdan Borongan Eastern Samar</p>
                     </div>
-  
+
                     <div class="i3-t">
                       <img class="icon3" src="../img/id-img/icon3.png" />
                       <p class="phoneno." id="beneficiary-phone">09970752488</p>
@@ -404,14 +406,44 @@
           <button class="button-green" onclick="printContainer('id-container')">PRINT</button>
         </main>
       </div>
-      <script src="../../js/local/beneficiary/beneficiary-api.js"></script>
-      <script src="../../js/local/beneficiary/beneficiary-local.js"></script>
-      <script src="../../js/global/client-side-functions.js"></script>
-      <script src="../../js/global/pop-up.js"></script>
-      <script>
-        document.getElementById("logo").addEventListener('click', function () {
-          window.location.href = "/pharmacy-inventory";
-        })
-      </script>
+      <% if (messages.success) { %>
+        <div class="overlay visible" id="susOo"></div>
+        <div class="visible1" id="submit_prompt">
+          <img src="../icon/check.svg" alt="">
+          <div>
+            <h2>
+              <%= messages.success%>
+            </h2>
+            <main>
+              <button type="button" class="button-green" id="close_message" onclick="yawa()">OK</button>
+            </main>
+          </div>
+        </div>
+        <% } %>
+
+          <% if (messages.error) { %>
+            <div class="overlay visible" id="susOo"></div>
+            <div class="visible1" id="submit_prompt">
+              <img src="../icon/close1.svg" alt="">
+              <div>
+                <h2>
+                  <%= messages.error%>
+                </h2>
+                <main>
+                  <button type="button" class="button-green" id="close_message" onclick="yawa()">OK</button>
+                </main>
+              </div>
+            </div>
+            <% } %>
+              <script src="../../js/local/beneficiary/beneficiary-api.js"></script>
+              <script src="../../js/local/beneficiary/beneficiary-local.js"></script>
+              <script src="../../js/global/client-side-functions.js"></script>
+              <script src="../../js/global/pop-up.js"></script>
+              <script>
+                document.getElementById("logo").addEventListener('click', function () {
+                  window.location.href = "/pharmacy-inventory";
+                })
+              </script>
 </body>
+
 </html>
