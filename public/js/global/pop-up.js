@@ -314,12 +314,14 @@ function popUp_button(button) {
   }
 
   //doctor - prescribe
-  else if (select === "6") {
-    prescribed.classList.toggle('visible');
 
-    const selectedOption = button.options[button.selectedIndex];
+else if (select === "6") {
+  prescribed.classList.toggle('visible');
 
-    if (selectedOption) {
+  const selectedOption = button.options[button.selectedIndex];
+
+  if (selectedOption) {
+      // Set patient information
       const checkDate = selectedOption.getAttribute('data-check-date');
       const birthDate = selectedOption.getAttribute('data-birthdate');
 
@@ -332,6 +334,7 @@ function popUp_button(button) {
       document.getElementById('pres_occupation').value = selectedOption.getAttribute('data-occupation') || '';
       document.getElementById('pres_guardian').value = selectedOption.getAttribute('data-guardian') || '';
 
+      // Print details
       document.getElementById("prnt-diag-fin").innerText = `${selectedOption.getAttribute('data-conclusion')}`;
       document.getElementById("prnt-name").innerText = `Name: ${selectedOption.getAttribute('data-full-name')}`;
       document.getElementById("prnt-age").innerText = `Age: ${selectedOption.getAttribute('data-age')}`;
@@ -341,63 +344,64 @@ function popUp_button(button) {
       document.getElementById("prnt-birthdate").innerText = `Birthdate: ${formatDate(birthDate)}`;
       document.getElementById("prnt-occupation").innerText = `Occupation: ${selectedOption.getAttribute('data-occupation')}`;
       document.getElementById("prnt-guardian").innerText = `Guardian: ${selectedOption.getAttribute('data-guardian')}`;
-    }
-    const medicine = selectedOption.getAttribute('data-medicine') || '';
-    const medicineIn = (medicine === 'null' || medicine === undefined) ? '' : medicine;
-
-    const quantity = selectedOption.getAttribute('data-quantities') || '';
-    const quantityIn = (quantity === 'null' || quantity === undefined) ? '' : quantity;
-
-    const instruction = selectedOption.getAttribute('data-instructions') || '';
-    const instructionIn = (instruction === 'null' || instruction === undefined) ? '' : instruction;
-
-    // Clear existing list content
-    document.getElementById('medicineList').innerHTML = '';
-
-    if (medicineIn) {
-      const medicineArray = medicineIn.split(','); // Split services by comma
-      medicineArray.forEach(medicines => {
-        console.log(medicineArray);
-        const list = document.createElement('li');
-        list.textContent = medicines.trim(); // Trim to remove extra spaces
-        document.getElementById('medicineList').appendChild(list);
-      });
-    } else {
-      const p = document.createElement('p');
-      p.textContent = "-- no recent prescribed medicine. --"; // Trim to remove extra spaces
-      document.getElementById('medicineList').appendChild(p);
-    }
-
-    document.getElementById('list-med').innerHTML = '';
-    if (medicineIn) {
-      const medicineArray = medicineIn.split(','); // Split medicines by comma
-      const quantitiesArray = quantityIn.split(','); // Split quantities by comma
-      const instructionsArray = instructionIn.split(','); // Split instructions by comma
-    
-      medicineArray.forEach((medicines, index) => {
-        const trimmedMedicine = medicines.trim(); // Trim to remove extra spaces
-        const trimmedQuantity = quantitiesArray[index] ? quantitiesArray[index].trim() : ''; // Get the corresponding quantity
-        const trimmedInstruction = instructionsArray[index] ? instructionsArray[index].trim() : 'Sig. Take every morning'; // Default instruction
-    
-        // Create elements for each medicine entry
-        const pMedicine = document.createElement('p');
-        pMedicine.className = 'b-p';
-        pMedicine.innerHTML = `${index + 1}. ${trimmedMedicine} <span>#${trimmedQuantity}</span>`; // Format medicine with quantity
-    
-        const pSig = document.createElement('p');
-        pSig.textContent = trimmedInstruction; // Use the corresponding instruction
-    
-        // Append the new elements to the main container
-        document.getElementById('list-med').appendChild(pMedicine);
-        document.getElementById('list-med').appendChild(pSig);
-      });
-    } else {
-      const p = document.createElement('p');
-      p.textContent = "-- no recent prescribed medicine. --"; // Message for no medicines
-      document.getElementById('list-med').appendChild(p);
-    }
-    
   }
+
+  // Fetch medicine, quantities, and instructions
+  const medicine = selectedOption.getAttribute('data-medicine') || '';
+  const quantity = selectedOption.getAttribute('data-quantities') || '';
+  const instruction = selectedOption.getAttribute('data-instructions') || '';
+
+  // Clear existing list content
+  document.getElementById('medicineList').innerHTML = '';
+  document.getElementById('list-med').innerHTML = '';
+
+  // Prepare lists for displaying medicines, quantities, and instructions
+  if (medicine) {
+      const medicineArray = medicine.split(',').map(med => med.trim());
+      const quantitiesArray = quantity.split(',').map(qty => qty.trim());
+      const instructionsArray = instruction.split(',').map(instr => instr.trim());
+
+      // Create a Set to avoid duplicates
+      const uniqueEntries = new Set();
+      
+      // Combine data into a single array of objects
+      const combinedList = medicineArray.map((med, index) => {
+          const qty = quantitiesArray[index] || '';
+          const instr = instructionsArray[index] || '';
+          const entry = `${med} #${qty} | ${instr}`;
+          if (!uniqueEntries.has(entry) && med) {
+              uniqueEntries.add(entry);
+              return { med, qty, instr };
+          }
+          return null; // Filter out duplicates
+      }).filter(entry => entry !== null); // Remove null entries
+
+      // Display in medicineList first
+      combinedList.forEach(item => {
+          const list = document.createElement('li');
+          list.textContent = item.med; // Just the medicine for medicineList
+          document.getElementById('medicineList').appendChild(list);
+      });
+
+      // Then display in list-med with quantities and instructions
+      combinedList.forEach((item, index) => {
+          const pMedicine = document.createElement('p');
+          pMedicine.className = 'b-p';
+          pMedicine.innerHTML = `${index + 1}. ${item.med} <span>#${item.qty}</span>`;
+          
+          const pSig = document.createElement('p');
+          pSig.textContent = item.instr;
+
+          document.getElementById('list-med').appendChild(pMedicine);
+          document.getElementById('list-med').appendChild(pSig);
+      });
+  } else {
+      const p = document.createElement('p');
+      p.textContent = "-- no recent prescribed medicine. --";
+      document.getElementById('medicineList').appendChild(p);
+      document.getElementById('list-med').appendChild(p.cloneNode(true)); // Display the same message in list-med
+  }
+}
 
   // dispense
   else if (buttonId === "reject_dispense_button") {
@@ -485,7 +489,6 @@ function popUp_button(button) {
 
   overlay.classList.add("visible");
 }
-
 
 // close pop-up
 document.querySelectorAll(".close_popUp").forEach(function (closeBtn) {

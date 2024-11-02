@@ -98,15 +98,43 @@ router.get("/doctor-dashboard/search", ensureAuthenticated, checkUserType("Docto
   const { query } = req.query;
 
   try {
-    let searchResult;
+    // First, get the total count of unique patients
+    const totalItemsResult = await rhuPool.query(`
+      SELECT COUNT(DISTINCT p.patient_id) as count
+      FROM patients p
+      LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
+      LEFT JOIN doctor_visits dv ON p.patient_id = dv.patient_id
+      LEFT JOIN medtech_labs lr ON p.patient_id = lr.patient_id
+      LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
+      ${query ? `WHERE CONCAT(p.first_name, ' ', p.middle_name, ' ', p.last_name, ' ', p.suffix) ILIKE $1` : ''}
+    `, query ? [`%${query}%`] : []);
+
+    const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
+    const totalPages = Math.ceil(totalItems / limit);
 
     // Base query for patients
     const baseQuery = `
       SELECT 
-         p.patient_id, p.rhu_id, p.last_name, p.first_name, p.middle_name, p.suffix, p.phone, p.gender,
-        p.birthdate, p.house_no, p.street, p.barangay, p.city, p.province, p.occupation, p.email, p.philhealth_no, p.guardian,
+        p.patient_id, 
+        p.rhu_id, 
+        p.last_name, 
+        p.first_name, 
+        p.middle_name, 
+        p.suffix, 
+        p.phone, 
+        p.gender,
+        p.birthdate, 
+        p.house_no, 
+        p.street, 
+        p.barangay, 
+        p.city, 
+        p.province, 
+        p.occupation, 
+        p.email, 
+        p.philhealth_no, 
+        p.guardian,
         MAX(nc.age) AS age,
-        MAX(nc.check_date) AS check_date,
+        COALESCE(MAX(nc.check_date), '1900-01-01') AS check_date,
         MAX(nc.height) AS height,
         MAX(nc.weight) AS weight,
         MAX(nc.systolic) AS systolic,
@@ -116,16 +144,15 @@ router.get("/doctor-dashboard/search", ensureAuthenticated, checkUserType("Docto
         MAX(nc.respiratory_rate) AS respiratory_rate,
         MAX(nc.bmi) AS bmi,
         MAX(nc.comment) AS comment,
-        MAX(dv.follow_date) AS follow_date,
+        COALESCE(MAX(dv.follow_date), NULL) AS follow_date,
         COALESCE(MAX(dv.diagnosis), '') AS diagnosis,
         COALESCE(MAX(dv.findings), '') AS findings,
         STRING_AGG(DISTINCT dv.category, ', ') AS categories,
         STRING_AGG(DISTINCT dv.service, ', ') AS services,
-        STRING_AGG(DISTINCT dv.medicine, ', ') AS medicines,
-        STRING_AGG(DISTINCT dv.instruction, ', ') AS instructions,
-        STRING_AGG(DISTINCT dv.quantity::text, ', ') AS quantities,  -- Cast to text here
-        STRING_AGG(DISTINCT lr.lab_result, ', ') AS lab_results,  -- Assuming lab_result is already text
-        r.rhu_name, r.rhu_address
+        STRING_AGG(DISTINCT dv.medicine || '|' || dv.instruction || '|' || dv.quantity::text, ', ') AS medicine_details,
+        STRING_AGG(DISTINCT lr.lab_result, ', ') AS lab_results,
+        r.rhu_name, 
+        r.rhu_address
       FROM patients p
       LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
       LEFT JOIN doctor_visits dv ON p.patient_id = dv.patient_id
@@ -133,37 +160,41 @@ router.get("/doctor-dashboard/search", ensureAuthenticated, checkUserType("Docto
       LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
     `;
 
-    // If no query is provided, fetch all patients with pagination
-    if (!query) {
-      searchResult = await rhuPool.query(
-        `${baseQuery} GROUP BY p.patient_id, r.rhu_name, r.rhu_address ORDER BY p.first_name LIMIT $1 OFFSET $2`,
-        [limit, offset]
-      );
-    } else {
-      // Search patients based on the query
-      searchResult = await rhuPool.query(
-        `${baseQuery} 
-        WHERE CONCAT(p.first_name, ' ', p.middle_name, ' ', p.last_name, ' ', p.suffix) ILIKE $1
-          OR CONCAT(p.house_no, ' ', p.street, ' ', p.barangay, ' ', p.city, ' ', p.province) ILIKE $1
-          OR CONCAT(p.first_name, ' ', p.last_name, ' ', p.suffix) ILIKE $1
-          OR p.first_name ILIKE $1
-          OR p.middle_name ILIKE $1
-          OR p.last_name ILIKE $1
-          OR p.suffix ILIKE $1
-          OR r.rhu_name ILIKE $1
-        GROUP BY p.patient_id, r.rhu_name, r.rhu_address
-        ORDER BY p.first_name LIMIT $2 OFFSET $3`,
-        [`%${query}%`, limit, offset]
-      );
-    }
+    // Prepare the search query based on whether a search query was provided
+    let searchQuery = `${baseQuery} ${query ? `WHERE CONCAT(p.first_name, ' ', p.middle_name, ' ', p.last_name, ' ', p.suffix) ILIKE $1` : ''} 
+      GROUP BY p.patient_id, r.rhu_name, r.rhu_address
+      ORDER BY p.first_name 
+      LIMIT $2 OFFSET $3`;
 
-    const data = formatPatientData(searchResult.rows);
+    const searchResult = await rhuPool.query(searchQuery, query ? [`%${query}%`, limit, offset] : [limit, offset]);
+
+    const data = searchResult.rows.map(row => {
+      const medicinesDetails = row.medicine_details ? row.medicine_details.split(', ') : [];
+      
+      const medicines = [];
+      const quantities = [];
+      const instructions = [];
+      
+      medicinesDetails.forEach(detail => {
+        const [medicine, instruction, quantity] = detail.split('|');
+        medicines.push(medicine);
+        instructions.push(instruction);
+        quantities.push(quantity);
+      });
+      
+      return {
+        ...row,
+        medicines,
+        quantities,
+        instructions,
+      };
+    });
 
     if (data.length === 0) {
       return res.json({ message: "No patients found." });
     }
 
-    res.json({ getPatientList: data });
+    res.json({ getPatientList: data, totalPages });
   } catch (err) {
     console.error("Error: ", err.message, err.stack);
     res.status(500).send("An error occurred during the search.");
@@ -564,10 +595,26 @@ async function fetchPatientList(page, limit) {
     // Now, fetch the patient list with aggregation including prescription data
     const getPatientList = await rhuPool.query(`
       SELECT 
-        p.patient_id, p.rhu_id, p.last_name, p.first_name, p.middle_name, p.suffix, p.phone, p.gender,
-        p.birthdate, p.house_no, p.street, p.barangay, p.city, p.province, p.occupation, p.email, p.philhealth_no, p.guardian,
+        p.patient_id, 
+        p.rhu_id, 
+        p.last_name, 
+        p.first_name, 
+        p.middle_name, 
+        p.suffix, 
+        p.phone, 
+        p.gender,
+        p.birthdate, 
+        p.house_no, 
+        p.street, 
+        p.barangay, 
+        p.city, 
+        p.province, 
+        p.occupation, 
+        p.email, 
+        p.philhealth_no, 
+        p.guardian,
         MAX(nc.age) AS age,
-        MAX(nc.check_date) AS check_date,
+        COALESCE(MAX(nc.check_date), '1900-01-01') AS check_date,
         MAX(nc.height) AS height,
         MAX(nc.weight) AS weight,
         MAX(nc.systolic) AS systolic,
@@ -577,17 +624,16 @@ async function fetchPatientList(page, limit) {
         MAX(nc.respiratory_rate) AS respiratory_rate,
         MAX(nc.bmi) AS bmi,
         MAX(nc.comment) AS comment,
-        MAX(dv.follow_date) AS follow_date,
+        COALESCE(MAX(dv.follow_date), NULL) AS follow_date,
         COALESCE(MAX(dv.diagnosis), '') AS diagnosis,
         COALESCE(MAX(dv.findings), '') AS findings,
         STRING_AGG(DISTINCT dv.category, ', ') AS categories,
         STRING_AGG(DISTINCT dv.service, ', ') AS services,
-        STRING_AGG(DISTINCT dv.medicine, ', ') AS medicines,
-        STRING_AGG(DISTINCT dv.instruction, ', ') AS instructions,
-        STRING_AGG(DISTINCT dv.quantity::text, ', ') AS quantities,
+        STRING_AGG(dv.medicine || '|' || dv.instruction || '|' || dv.quantity::text, ', ') AS medicine_details,
         STRING_AGG(DISTINCT lr.lab_result, ', ') AS lab_results,
         STRING_AGG(DISTINCT pr.medicine, ', ') AS prescription_medicines,
-        r.rhu_name, r.rhu_address
+        r.rhu_name, 
+        r.rhu_address
       FROM patients p
       LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
       LEFT JOIN doctor_visits dv ON p.patient_id = dv.patient_id
@@ -599,22 +645,33 @@ async function fetchPatientList(page, limit) {
       LIMIT $1 OFFSET $2
     `, [limit, offset]);
 
-    const data = formatPatientData(getPatientList.rows);
+    const data = getPatientList.rows.map(row => {
+      const medicinesDetails = row.medicine_details ? row.medicine_details.split(', ') : [];
+      
+      const medicines = [];
+      const quantities = [];
+      const instructions = [];
+      
+      medicinesDetails.forEach(detail => {
+        const [medicine, instruction, quantity] = detail.split('|');
+        medicines.push(medicine);
+        instructions.push(instruction);
+        quantities.push(quantity);
+      });
+      
+      return {
+        ...row,
+        medicines,
+        quantities,
+        instructions,
+      };
+    });
+
     return { getPatientList: data, totalPages };
   } catch (err) {
     console.error("Error: ", err.message, err.stack);
     throw new Error("Error fetching patients list");
   }
-}
-
-function formatPatientData(rows) {
-  return rows.map((row) => ({
-    ...row,
-    middle_name: row.middle_name ? row.middle_name : "",
-    check_date: formatDate(row.check_date),
-    birthdate: formatDate(row.birthdate),
-    follow_date: formatDate(row.follow_date)
-  }));
 }
 
 module.exports = router;
