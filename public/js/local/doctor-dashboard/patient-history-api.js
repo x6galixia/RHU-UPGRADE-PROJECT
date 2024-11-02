@@ -229,5 +229,7 @@ function displayPatientHistory(data) {
       historyContainer.appendChild(dateElement);
     });
   }
-
+  
 }
+
+
