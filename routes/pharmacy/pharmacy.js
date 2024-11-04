@@ -752,7 +752,7 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
 
       if (recentTransactionResult.rowCount > 0) {
         await client.query('ROLLBACK');
-        req.flash("error", `Beneficiary has requested product ID: ${product_id} in the last 25 days. Dispensing not allowed.`);
+        req.flash("error", `Beneficiary has requested the medicine with product ID: ${product_id} twice in the last 25 days . Dispensing not allowed.`);
         return res.redirect("/pharmacy-dispense-request");
       }
     }
