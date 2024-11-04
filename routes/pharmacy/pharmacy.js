@@ -43,7 +43,9 @@ const medicineSchema = Joi.object({
   reorder_level: Joi.number().integer().min(0).optional(),
   batch_number: Joi.string().optional(),
   expiration: Joi.date().optional(),
-  date_added: Joi.date().optional()
+  date_added: Joi.date().optional(),
+  price: Joi.number().integer(),
+  therapeutic_category: Joi.string().optional()
 });
 
 const beneficiarySchema = Joi.object({
@@ -490,8 +492,32 @@ router.get("/pharmacy/generate-transaction-id/new-id", ensureAuthenticated, chec
   }
 });
 
+router.get("/pharmacy/trends/get-data", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  try {
+    const trendsData = await pharmacyPool.query(`
+      SELECT 
+        b.beneficiary_id, b.last_name, b.first_name, b.middle_name, b.phone, 
+        tr.transaction_number, tr.date_issued, tr.doctor, tr.reciever, 
+        tm.product_id, tm.batch_number, tm.quantity, 
+        inv.product_name, inv.brand_name, inv.supplier, inv.dosage_form, inv.expiration
+      FROM beneficiary b
+      JOIN transaction_records tr ON b.beneficiary_id = tr.beneficiary_id
+      JOIN transaction_medicine tm ON tr.id = tm.tran_id
+      JOIN inventory inv ON tm.product_id = inv.product_id AND tm.batch_number = inv.batch_number
+    `);
+
+    res.json(trendsData.rows);
+  } catch (err) {
+    console.error("Error: ", err);
+    res.status(500).send("Server error");
+  }
+});
+
 router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
+  const rhu_id = req.user.rhu_id;
+
+  console.log(value, rhu_id);
 
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
@@ -499,9 +525,9 @@ router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
 
   try {
     await pharmacyPool.query(`
-      INSERT INTO inventory (product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added, rhu_id)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
-      [value.product_id, value.product_code, value.product_name, value.brand_name, value.supplier, value.product_quantity, value.dosage_form, value.dosage, value.reorder_level, value.batch_number, value.expiration, value.date_added, 1]
+      INSERT INTO inventory (product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added, rhu_id, price, therapeutic_category)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
+      [value.product_id, value.product_code, value.product_name, value.brand_name, value.supplier, value.product_quantity, value.dosage_form, value.dosage, value.reorder_level, value.batch_number, value.expiration, value.date_added, rhu_id, value.price, value.therapeutic_category]
     );
     req.flash("success", "Medicine Added Successfully");
     res.redirect("/pharmacy-inventory");
@@ -536,8 +562,8 @@ router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
     const newQuantity = existingQuantity + value.product_quantity;
 
     await pharmacyPool.query(
-      "UPDATE inventory SET batch_number = $4, date_added = $5, expiration = $6, product_quantity = $7 WHERE product_id = $1 AND product_code = $2 AND rhu_id = $3",
-      [value.product_id, value.product_code, rhu_id, value.batch_number, value.date_added, value.expiration, newQuantity]
+      "UPDATE inventory SET batch_number = $4, date_added = $5, expiration = $6, product_quantity = $7, price = $8, therapeutic_category = $9 WHERE product_id = $1 AND product_code = $2 AND rhu_id = $3",
+      [value.product_id, value.product_code, rhu_id, value.batch_number, value.date_added, value.expiration, newQuantity, value.price, value.therapeutic_category]
     );
     req.flash("success", "Restock Medicine Successful");
     return res.redirect("/pharmacy-inventory");
