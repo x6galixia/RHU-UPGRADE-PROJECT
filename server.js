@@ -51,7 +51,7 @@ app.use(session({
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: process.env.NODE_ENV === 'production', maxAge: 60000 },
+  cookie: { secure: process.env.NODE_ENV === 'production'},
 }));
 app.use(passport.initialize());
 app.use(passport.session());
