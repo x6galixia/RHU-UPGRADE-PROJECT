@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../css/global/general.css" />
   <link rel="stylesheet" href="../css/local/pharmacy-trends.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <title>HealthSync</title>
     <link
       rel="shortcut icon"
@@ -29,9 +30,7 @@
             <h1 class="graph-heading">OUR GROWTH</h1>
             <h4 class="graph-date">2021-2023</h5>
           </div>
-          <div class="main-graph">
-            <img src="../img/local/growth.png" alt="">
-          </div>
+          <div style="width: auto;"><canvas id="ourGrowth"></canvas></div>
           <div class="data">
             <div>
               <div class="bullet bullet1"></div>
@@ -54,9 +53,7 @@
             <h1 class="graph-heading">TOTAL AVAILMENT</h1>
             <h4 class="graph-date">2021-2023</h4>
           </div>
-          <div class="main-graph">
-            <img src="../img/local/availment.png" alt="">
-          </div>
+          <div style="width: auto;"><canvas id="totalAvailment"></canvas></div>
           <div class="data">
             <div>
               <div class="bullet bullet1"></div>
@@ -80,9 +77,7 @@
           <div>
             <h1 class="graph-heading">AGE DEMOGRAPHICS</h1>
           </div>
-          <div class="main-graph">
-            <img src="../img/local/ageDemo.png" alt="">
-          </div>
+          <div style="width: auto;"><canvas id="ageDemographics"></canvas></div>
           <div class="data">
             <div>
               <div class="person child">
@@ -145,10 +140,10 @@
         <div>
           <h1 class="graph-heading">NON-COMMUNICABLE DISEASE</h1>
         </div>
-        <div>
-          <p>NCDs remain the leading cause of mortality in the country. Cardiovascular diseases or diseases of the heart account for 1 in every 3 NCD deaths in the Philippines, where hypertension, considered a “silent killer,”  is a major risk factor.
+        <div style="width: 50%; border: 1px solid black; padding: .5em;"><canvas id="nonCommunicableDisease"></canvas></div>
+        <div style="text-align: justify;">
+          <p style="margin-bottom: 1em;">NCDs remain the leading cause of mortality in the country. Cardiovascular diseases or diseases of the heart account for 1 in every 3 NCD deaths in the Philippines, where hypertension, considered a “silent killer,”  is a major risk factor.
             Source: WHO</p>
-          <img src="../img/local/ageDemo.png" alt="">
           <p>In 2020, hypertension was the leading disease in the Eastern Visayas region of the Philippines, with over 16.9 thousand cases. The other leading causes of morbidity in the region was acute respiratory infection and urinary tract infection.
             Source: statista.com</p>
         </div>
@@ -312,7 +307,10 @@
       </div>
     </div>
   </main>
+
+  <script src="../../js/local/pharmacy/par.js"></script>
   <script src="../js/local/trends/trends-api.js"></script>
+
   <script>
     document.getElementById("logo").addEventListener('click', function(){
       window.location.href = "/pharmacy-inventory";
