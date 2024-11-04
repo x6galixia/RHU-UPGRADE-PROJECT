@@ -15,6 +15,7 @@
     <main>
       <input type="hidden" id="patient-id" value="<%= patient_id %>">
       <h1 class="headings">PATIENT HISTORY</h1>
+      <img id="wew" src="/icon/arrow-left.svg" alt="">
       <div class="history-container">
         <div class="b date-container" id="date-container">
         </div>
@@ -124,17 +125,17 @@
                 </td>
               </tr>
             </table>
-            
+
             <div class="listing ">
               <p class="nomnoms">LABORATORY RESULTS</p>
               <div class="image-section">
-                
+
                 <div class="main-image">
                   <div id="prev-btn"><img src="/icon/arrow-left.svg" alt=""></div>
                   <img id="displayedImage" src="/img/local/jr.png" alt="">
                   <div id="next-btn"><img src="/icon/arrow-right.svg" alt=""></div>
                 </div>
-                
+
               </div>
             </div>
           </div>
@@ -165,6 +166,10 @@
               </tbody>
             </table>
           </div>
+
+
+
+          <!-- End of info-container-->
         </div>
       </div>
     </main>
@@ -187,6 +192,13 @@
         if (event.target === imageModal) {
           imageModal.style.display = 'none';
         }
+      });
+
+
+      const dateContainer = document.getElementById("date-container");
+      document.getElementById("wew").addEventListener('click', function () {
+        console.log("asd");
+        dateContainer.classList.toggle("selectedDate")
       });
     </script>
 </body>
