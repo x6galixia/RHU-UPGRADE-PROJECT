@@ -183,7 +183,6 @@ CREATE TABLE beneficiary (
     processed_date DATE NULL
 );
 
-
 CREATE TABLE transaction_records (
     id SERIAL PRIMARY KEY NOT NULL,
     beneficiary_id INTEGER REFERENCES beneficiary(beneficiary_id) ON DELETE CASCADE,
@@ -210,6 +209,8 @@ CREATE TABLE inventory (
     product_code VARCHAR(255) NOT NULL,
     product_name VARCHAR(255) NULL,
     brand_name VARCHAR(255) NULL,
+    therapeutic_category TEXT NULL,
+    price INT NULL,
     supplier VARCHAR(255) NULL,
     dosage_form VARCHAR(100) NULL,
     dosage VARCHAR(100) NULL,
@@ -218,6 +219,13 @@ CREATE TABLE inventory (
     date_added DATE NULL DEFAULT CURRENT_DATE,
     expiration DATE NULL,
     product_quantity INT NOT NULL CHECK (product_quantity >= 0)
+);
+
+CREATE TABLE trends_growth (
+    id SERIAL PRIMARY KEY NOT NULL,
+    trans_date DATE NOT NULL,
+    transactions INTEGER NOT NULL,
+    prescriptions_filled NOT NULL
 );
 
 CREATE INDEX idx_transaction_number ON transaction_records(transaction_number);
@@ -231,3 +239,8 @@ CREATE INDEX idx_beneficiary_name ON beneficiary USING gin(to_tsvector('english'
 CREATE INDEX idx_beneficiary_name_gender ON beneficiary (last_name, first_name, gender);
 CREATE INDEX idx_inventory_rhu_product ON inventory(rhu_id, product_id);
 CREATE INDEX idx_rhu_id ON rhu(rhu_id);
+
+-- new --
+
+CREATE INDEX idx_beneficiary_id ON transaction_records (beneficiary_id);
+CREATE INDEX idx_date_issued ON transaction_records (date_issued);
