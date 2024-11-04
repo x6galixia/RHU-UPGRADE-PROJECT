@@ -277,9 +277,9 @@ table {
 }
 .tungaers{
     display: flex;
-    justify-content: space-between;
+    justify-content: start;
     align-items: center;
 }
-.headings{
-    margin-right: 430px !important;
+.tungaers h1{
+    margin-left: 12em;
 }

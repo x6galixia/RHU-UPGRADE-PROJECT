@@ -127,84 +127,81 @@ function displayPatientHistory(data) {
   });
 
   // CATEGORIES
-  document.getElementById('categoryList').innerHTML = '';
-  if (categoriesIn) {
-    const categoriesArray = categoriesIn.split(',');
-    categoriesArray.forEach(category => {
-      console.log(categoriesArray);
-      const lis = document.createElement('li');
-      lis.textContent = category.trim();
-      document.getElementById('categoryList').appendChild(lis);
-    });
-  } else {
-    const p = document.createElement('p');
-    p.textContent = "-- no data found. --";
-    document.getElementById('categoryList').appendChild(p);
-  }
+document.getElementById('dataList').innerHTML = '';
 
-  // services
-  document.getElementById('serviceList').innerHTML = '';
-  if (servicesIn) {
-    const serviceArray = servicesIn.split(',');
-    serviceArray.forEach(service => {
-      console.log(serviceArray);
-      const lis = document.createElement('li');
-      lis.textContent = service.trim();
-      document.getElementById('serviceList').appendChild(lis);
-    });
-  } else {
-    const p = document.createElement('p');
-    p.textContent = "-- no data found. --";
-    document.getElementById('serviceList').appendChild(p);
-  }
+if (categoriesIn && servicesIn) {
+  const categoriesArray = categoriesIn.split(',');
+  const serviceArray = servicesIn.split(',');
 
-  // medicine
-  document.getElementById('medicineList').innerHTML = '';
-  if (medicineIn) {
-    const medicineArray = medicineIn.split(',');
-    medicineArray.forEach(medicine => {
-      console.log(medicineArray);
-      const lis = document.createElement('li');
-      lis.textContent = medicine.trim();
-      document.getElementById('medicineList').appendChild(lis);
-    });
-  } else {
-    const p = document.createElement('p');
-    p.textContent = "-- no data found. --";
-    document.getElementById('medicineList').appendChild(p);
-  }
+  const rowCount = Math.max(categoriesArray.length, serviceArray.length);
 
-  // quantity
-  document.getElementById('quantityList').innerHTML = '';
-  if (quantityIn) {
-    const quantityArray = quantityIn.split(',');
-    quantityArray.forEach(quantity => {
-      console.log(quantityArray);
-      const lis = document.createElement('li');
-      lis.textContent = quantity.trim();
-      document.getElementById('quantityList').appendChild(lis);
-    });
-  } else {
-    const p = document.createElement('p');
-    p.textContent = "-- no data found. --";
-    document.getElementById('quantityList').appendChild(p);
-  }
+  for (let i = 0; i < rowCount; i++) {
+    const row = document.createElement('tr');
 
-  // quantity
-  document.getElementById('instructionList').innerHTML = '';
-  if (instructionIn) {
-    const instructionArray = instructionIn.split(',');
-    instructionArray.forEach(instruction => {
-      console.log(instructionArray);
-      const lis = document.createElement('li');
-      lis.textContent = instruction.trim();
-      document.getElementById('instructionList').appendChild(lis);
-    });
-  } else {
-    const p = document.createElement('p');
-    p.textContent = "-- no data found. --";
-    document.getElementById('instructionList').appendChild(p);
+    const categoryCell = document.createElement('td');
+    categoryCell.textContent = categoriesArray[i] ? categoriesArray[i].trim() : "-- no data --";
+    row.appendChild(categoryCell);
+
+    const serviceCell = document.createElement('td');
+    serviceCell.textContent = serviceArray[i] ? serviceArray[i].trim() : "-- no data --";
+    row.appendChild(serviceCell);
+
+    
+    document.getElementById('dataList').appendChild(row);
   }
+} else {
+  const row = document.createElement('tr');
+  const noDataCell = document.createElement('td');
+  noDataCell.colSpan = 2; 
+  noDataCell.textContent = "-- no data found --";
+  row.appendChild(noDataCell);
+  document.getElementById('dataList').appendChild(row);
+}
+
+  // Clear any existing rows in the table body
+document.getElementById('prescriptionList').innerHTML = '';
+
+// Check if there is data in medicine, quantity, and instruction
+if (medicineIn && quantityIn && instructionIn) {
+  const medicineArray = medicineIn.split(',');
+  const quantityArray = quantityIn.split(',');
+  const instructionArray = instructionIn.split(',');
+
+  // Determine the number of rows to create based on the maximum length
+  const rowCount = Math.max(medicineArray.length, quantityArray.length, instructionArray.length);
+
+  for (let i = 0; i < rowCount; i++) {
+    // Create a new table row
+    const row = document.createElement('tr');
+
+    // Create and populate the medicine cell
+    const medicineCell = document.createElement('td');
+    medicineCell.textContent = medicineArray[i] ? medicineArray[i].trim() : "-- no data --";
+    row.appendChild(medicineCell);
+
+    // Create and populate the quantity cell
+    const quantityCell = document.createElement('td');
+    quantityCell.textContent = quantityArray[i] ? quantityArray[i].trim() : "-- no data --";
+    row.appendChild(quantityCell);
+
+    // Create and populate the instruction cell
+    const instructionCell = document.createElement('td');
+    instructionCell.textContent = instructionArray[i] ? instructionArray[i].trim() : "-- no data --";
+    row.appendChild(instructionCell);
+
+    // Append the row to the table body
+    document.getElementById('prescriptionList').appendChild(row);
+  }
+} else {
+  // If no data is available, display a single row indicating "no data found"
+  const row = document.createElement('tr');
+  const noDataCell = document.createElement('td');
+  noDataCell.colSpan = 3; // Span across all columns
+  noDataCell.textContent = "-- no data found --";
+  row.appendChild(noDataCell);
+  document.getElementById('prescriptionList').appendChild(row);
+}
+
 
   // Handle grouped history
   const historyContainer = document.getElementById('date-container');

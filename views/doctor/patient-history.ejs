@@ -13,11 +13,13 @@
 <body>
   <%- include("../includes/header.ejs") %>
     <main>
-      <input type="hidden" id="patient-id" value="<%= patient_id %>">      <div class="tungaers">
+      <input type="hidden" id="patient-id" value="<%= patient_id %>">      
+      <div class="tungaers">
         <button class="buton" onclick="window.location.href='/doctor-dashboard'">Go back</button>
         <h1 class="headings">PATIENT HISTORY</h1>
-        <img id="wew" src="/icon/arrow-left.svg" alt="">
+        
       </div>
+      <img id="wew" src="/icon/arrow-left.svg" alt="">
       <div class="history-container">
         <div class="b date-container" id="date-container">
         </div>
@@ -112,20 +114,15 @@
           <h2 class="form-header m">Laboratories </h2>
           <div class="patient-info" id="ko">
             <table>
-              <tr>
-                <th>Categories</th>
-                <th>Services</th>
-              </tr>
-              <tr>
-                <td>
-                  <ul id="categoryList">
-                  </ul>
-                </td>
-                <td>
-                  <ul id="serviceList">
-                  </ul>
-                </td>
-              </tr>
+              <thead>
+                <tr>
+                  <th>Categories</th>
+                  <th>Services</th>
+                </tr>
+              </thead>
+              <tbody id="dataList">
+                <!-- Dynamic rows will be inserted here -->
+              </tbody>
             </table>
 
             <div class="listing ">
@@ -159,12 +156,8 @@
                   <th>Instruction</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td id="medicineList"></td>
-                  <td id="quantityList"></td>
-                  <td id="instructionList"></td>
-                </tr>
+              <tbody id="prescriptionList">
+                <!-- Dynamic rows will be inserted here -->
               </tbody>
             </table>
           </div>
