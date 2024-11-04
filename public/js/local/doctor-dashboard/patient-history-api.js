@@ -208,7 +208,9 @@ function displayPatientHistory(data) {
   const historyContainer = document.getElementById('date-container');
   historyContainer.innerHTML = '';
 
-  for (const year in data.groupedHistory) {
+  const sortedYears = Object.keys(data.groupedHistory).sort((a, b) => b - a);
+
+  for (const year of sortedYears) {
     const yearElement = document.createElement('h3');
     yearElement.innerText = year;
     historyContainer.appendChild(yearElement);
@@ -222,14 +224,12 @@ function displayPatientHistory(data) {
       dateElement.innerText = formattedDate;
 
       dateElement.onclick = () => {
-        console.log("Selected date:", date);
-        console.log("Selected id:", data.patientId); // Corrected to data.patientId
-        fetchPatientHistory1(data.patientId, date);   // Use data.patientId here as well
+        fetchPatientHistory1(data.patientId, formattedDate);
       };
       historyContainer.appendChild(dateElement);
     });
   }
-  
+
 }
 
 
