@@ -5,11 +5,7 @@
   <meta charset="UTF-8" />
   <link rel="shortcut icon" type="image/png" href="" />
   <title>HealthSync</title>
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="../img/global/healthvector.png"
-    />
+  <link rel="shortcut icon" type="image/png" href="../img/global/healthvector.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../css/global/general.css" />
   <link rel="stylesheet" href="../css/local/index-form.css" />
@@ -17,148 +13,110 @@
 </head>
 
 <body>
-  <%- include("../includes/admin-header.ejs")  %>
-  <%- include("../includes/admin-sub-head.ejs")  %>
-  <main>
+  <%- include("../includes/admin-header.ejs") %>
+    <%- include("../includes/admin-sub-head.ejs") %>
+      <main>
 
-    <div class="search2">
-      <div class="search">
-        <input type="text" placeholder="Search..." />
-        <img src="../icon/search.svg" alt="" />
-      </div>
-    </div>
-    <div class="table-container">
-      <div class="separate-sec">
-        <div class="res-btn">
-          <button class="btn-users button-green">USERS</button>
-          <button class="btn-users user-btn">RESTRICTED</button>
+        <div class="search2">
+          <div class="search">
+            <input type="text" placeholder="Search..." />
+            <img src="../icon/search.svg" alt="" />
+          </div>
         </div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>USER TYPE</th>
-            <th>NAME</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="data-table">
-          <!-- Data will be inserted here -->
-        </tbody>
-      </table>
-      <script>
-        async function fetchData() {
-          const response = await fetch('/api/users');
-          const data = await response.json();
-          const dataTable = document.getElementById('data-table');
-      
-          data.forEach(user => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-              <td>${user.user_type}</td>
-              <td>${user.firstname} ${user.middle_name} ${user.surname}</td>
-            `;
-            dataTable.appendChild(row);
-          });
-        }
-      
-        // Call fetchData when the page loads
-        window.onload = fetchData;
-      </script>
-      
-      <div class="create-user-btn">
-        <button id="create-user-btn" onclick="popUp_button(this)">CREATE USER</button>
-      </div>
-      <div class="pop-up" id="create-user">
-        <div class="close-container">
-          <img src="../icon/close.svg" alt="" class="close_popUp">
-        </div>
-        <h1 class="heading">CREATE USER</h1>
-        <main>
-          <form action="/admin/create-user/submit" method="POST" id="submission-form">
-            <div class="selecter">
-              <select name="rhu_id" id="">
-                <option value="0" selected disabled>Select RHU</option>
-                <option value="1">Main</option>
-                <option value="2">Maypangdan</option>
-                <option value="3">Tabunan</option>
-                <option value="4">Songco</option>
-              </select>
+        <div class="table-container">
+          <div class="separate-sec">
+            <div class="res-btn">
+              <button class="btn-users button-green">USERS</button>
+              <button class="btn-users user-btn">RESTRICTED</button>
             </div>
-            <div class="gap-all">
-              <input type="text" placeholder="Surname" name="surname" required>
-              <input type="text" placeholder="Firstname" name="firstname" required>
-              <input type="text" placeholder="Middlename" name="middle_name">
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>USER TYPE</th>
+                <th>NAME</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="data-table"></tbody>
+          </table>
+
+          <div class="create-user-btn">
+            <button id="create-user-btn" onclick="popUp_button(this)">CREATE USER</button>
+          </div>
+
+          <div class="pop-up" id="create-user">
+            <div class="close-container">
+              <img src="../icon/close.svg" alt="" class="close_popUp">
             </div>
-            <div class="gap-all">
-              <select name="profession" id="">
-                <option value="Profession" selected disabled>Profession</option>
-                <option value="Pediatrician">Pediatrician</option>
-                <option value="Optalmologist">Optalmologist</option>
-                <option value="Oncologist">Oncologist</option>
-                <option value="Psychiatrist">Psychiatrist</option>
-                <option value="Dermatologist">Dermatologist</option>
-                <option value="Gynenacologist">Gynenacologist</option>
-                <option value="Rn">Registered nurse</option>
-                <option value="Mental Health Nursing">Mental Health Nursing</option>
-                <option value="Pediatric nursing">Pediatric nursing</option>
-                <option value="Oncology nursing">Oncology nursing</option>
-                <option value="Pharmacist">Pharmacist</option>
-                <option value="Medical Laboratory Scientist">Medical Laboratory Scientist</option>
-                <option value="Radiographer">Radiographer</option>
-                <option value="Clinical Laboratory Technologist">Clinical Laboratory Technologist</option>
-              </select>
-              <input type="text" placeholder="License no." name="license_number">
-              <input type="text" placeholder="Username" name="username" required>
-            </div>
-            <div class="gap-all">
-              <input type="password" placeholder="Password" name="password" required>
-              <input type="password" placeholder="Confirm password" name="confirm_password" required>
-              <select name="user_type" id="" required>
-                <option value="User" selected disabled>User Type</option>
-                <option value="Doctor">Doctor</option>
-                <option value="Nurse">Nurse</option>
-                <option value="Med Tech">Med Tech</option>
-                <option value="Pharmacist">Pharmacist</option>
-              </select>
-            </div>
-            <div class="create-all">
-              <button class="create-btn" type="submit">Create</button>
-            </div>
-          </form>
-        </main>
-      </div>
-  </main>
-  <script src="../../js/global/pop-up.js"></script>
+            <h1 class="heading">CREATE USER</h1>
+            <main>
+              <form action="/admin/create-user/submit" method="POST" id="submission-form">
+                <div class="selecter">
+                  <select name="rhu_id" id="">
+                    <option value="0" selected disabled>Select RHU</option>
+                    <option value="1">Main</option>
+                    <option value="2">Maypangdan</option>
+                    <option value="3">Tabunan</option>
+                    <option value="4">Songco</option>
+                  </select>
+                </div>
+                <div class="gap-all">
+                  <input type="text" placeholder="Surname" name="surname" required>
+                  <input type="text" placeholder="Firstname" name="firstname" required>
+                  <input type="text" placeholder="Middlename" name="middle_name">
+                </div>
+                <div class="gap-all">
+                  <select name="profession" id="">
+                    <option value="Profession" selected disabled>Profession</option>
+                    <option value="Pediatrician">Pediatrician</option>
+                    <option value="Optalmologist">Optalmologist</option>
+                    <option value="Oncologist">Oncologist</option>
+                    <option value="Psychiatrist">Psychiatrist</option>
+                    <option value="Dermatologist">Dermatologist</option>
+                    <option value="Gynenacologist">Gynenacologist</option>
+                    <option value="Rn">Registered nurse</option>
+                    <option value="Mental Health Nursing">Mental Health Nursing</option>
+                    <option value="Pediatric nursing">Pediatric nursing</option>
+                    <option value="Oncology nursing">Oncology nursing</option>
+                    <option value="Pharmacist">Pharmacist</option>
+                    <option value="Medical Laboratory Scientist">Medical Laboratory Scientist</option>
+                    <option value="Radiographer">Radiographer</option>
+                    <option value="Clinical Laboratory Technologist">Clinical Laboratory Technologist</option>
+                  </select>
+                  <input type="text" placeholder="License no." name="license_number">
+                  <input type="text" placeholder="Username" name="username" required>
+                </div>
+                <div class="gap-all">
+                  <input type="password" placeholder="Password" name="password" required>
+                  <input type="password" placeholder="Confirm password" name="confirm_password" required>
+                  <select name="user_type" id="" required>
+                    <option value="User" selected disabled>User Type</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Nurse">Nurse</option>
+                    <option value="Med Tech">Med Tech</option>
+                    <option value="Pharmacist">Pharmacist</option>
+                  </select>
+                </div>
+                <div class="create-all">
+                  <button class="create-btn" type="submit">Create</button>
+                </div>
+              </form>
+            </main>
+          </div>
+
+      </main>
+      <script src="../../js/global/pop-up.js"></script>
+      <script src="../../js/local/admin/admin-api.js"></script>
 </body>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    var nav2 = document.querySelector(".nav2");
-    if (nav2) {
-      nav2.classList.toggle("selected");
-    }
-  });
-</script>
-
-<script>
-  document.getElementById("submission-form").addEventListener("submit", function(event) {
-      const password = document.querySelector('input[name="password"]').value;
-      const confirmPassword = document.querySelector('input[name="confirm_password"]').value;
-      
-      if (password !== confirmPassword) {
-          event.preventDefault();
-          alert("Passwords do not match!");
-      }
-  });
-</script>  
 
 </html>
