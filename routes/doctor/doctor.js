@@ -170,18 +170,18 @@ router.get("/doctor-dashboard/search", ensureAuthenticated, checkUserType("Docto
 
     const data = searchResult.rows.map(row => {
       const medicinesDetails = row.medicine_details ? row.medicine_details.split(', ') : [];
-      
+
       const medicines = [];
       const quantities = [];
       const instructions = [];
-      
+
       medicinesDetails.forEach(detail => {
         const [medicine, instruction, quantity] = detail.split('|');
         medicines.push(medicine);
         instructions.push(instruction);
         quantities.push(quantity);
       });
-      
+
       return {
         ...row,
         medicines,
@@ -647,18 +647,18 @@ async function fetchPatientList(page, limit) {
 
     const data = getPatientList.rows.map(row => {
       const medicinesDetails = row.medicine_details ? row.medicine_details.split(', ') : [];
-      
+
       const medicines = [];
       const quantities = [];
       const instructions = [];
-      
+
       medicinesDetails.forEach(detail => {
         const [medicine, instruction, quantity] = detail.split('|');
         medicines.push(medicine);
         instructions.push(instruction);
         quantities.push(quantity);
       });
-      
+
       return {
         ...row,
         medicines,
