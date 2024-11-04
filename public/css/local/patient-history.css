@@ -189,6 +189,12 @@ select {
     width: 20em;
     object-fit: contain;
 }
+.buton {
+    width: auto !important;
+    padding: .5em 2em;
+    background-color: var(--pink-color);
+}
+
 
 .modal {
     display: none;
@@ -248,4 +254,12 @@ table{
 }
 #ko{
     display: block !important;
+}
+.tungaers{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.headings{
+    margin-right: 430px !important;
 }

@@ -14,7 +14,10 @@
   <%- include("../includes/header.ejs") %>
     <main>
       <input type="hidden" id="patient-id" value="<%= patient_id %>">
-      <h1 class="headings">PATIENT HISTORY</h1>
+      <div class="tungaers">
+        <button class="buton" onclick="window.location.href='/doctor-dashboard'">Go back</button>
+        <h1 class="headings">PATIENT HISTORY</h1>
+      </div>
       <div class="history-container">
         <div class="b date-container" id="date-container">
         </div>
