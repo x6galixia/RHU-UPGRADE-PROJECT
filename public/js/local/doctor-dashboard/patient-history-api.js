@@ -42,6 +42,8 @@ async function fetchPatientHistory1(patientId, date) {
 
 function displayPatientHistory(data) {
   const birthdate = new Date(data.patientHistory.birthdate).toISOString().split('T')[0];
+  console.log("Date fetch from database: ", data.patientHistory.birthdate);
+  console.log("Date converted: ", birthdate);
   document.getElementById('name').value = `${data.patientHistory.first_name} ${data.patientHistory.middle_name} ${data.patientHistory.last_name}`;
   document.getElementById('phil_no').value = `${data.patientHistory.philhealth_no}`;
   document.getElementById('suffix').value = `${data.patientHistory.suffix}`;
