@@ -344,8 +344,8 @@ async function insertServices(historyId, visit) {
 async function deleteOldRecords(patientId) {
   await Promise.all([
     rhuPool.query(`DELETE FROM medtech_labs WHERE patient_id = $1`, [patientId]),
-    rhuPool.query(`DELETE FROM nurse_checks WHERE patient_id = $1`, [patientId]),
-    rhuPool.query(`DELETE FROM doctor_visits WHERE patient_id = $1`, [patientId])
+    rhuPool.query(`DELETE FROM doctor_visits WHERE patient_id = $1`, [patientId]),
+    rhuPool.query(`DELETE FROM nurse_checks WHERE patient_id = $1`, [patientId])
   ]);
   console.log("Old records deleted successfully.");
 }
