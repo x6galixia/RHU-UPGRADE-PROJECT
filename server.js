@@ -37,21 +37,21 @@ app.use("/node_modules", express.static(path.join(__dirname, "node_modules")));
 app.use("/uploads", express.static('uploads')); // Serve uploads directly
 
 //-------MIDDLEWARE CONFIGURATION-------//
-app.use(compression()); // Enable Gzip compression
+app.use(compression());
 app.use(cors({
   origin: ['http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true // Allow credentials
+  credentials: true
 }));
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.json());  
 app.use(session({
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: process.env.NODE_ENV === 'production' },
+  cookie: { secure: process.env.NODE_ENV === 'production'},
 }));
 app.use(passport.initialize());
 app.use(passport.session());
