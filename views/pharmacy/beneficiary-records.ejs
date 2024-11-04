@@ -406,6 +406,8 @@
           <button class="button-green" onclick="printContainer('id-container')">PRINT</button>
         </main>
       </div>
+
+
       <% if (messages.success) { %>
         <div class="overlay visible" id="susOo"></div>
         <div class="visible1" id="submit_prompt">
@@ -435,15 +437,11 @@
               </div>
             </div>
             <% } %>
+
               <script src="../../js/local/beneficiary/beneficiary-api.js"></script>
               <script src="../../js/local/beneficiary/beneficiary-local.js"></script>
               <script src="../../js/global/client-side-functions.js"></script>
               <script src="../../js/global/pop-up.js"></script>
-              <script>
-                document.getElementById("logo").addEventListener('click', function () {
-                  window.location.href = "/pharmacy-inventory";
-                })
-              </script>
 </body>
 
 </html>
