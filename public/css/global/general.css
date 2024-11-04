@@ -270,6 +270,7 @@ input[type="checkbox"] {
 .pop-up,
 .pop-up-confirm {
   position: fixed;
+  min-width: 620px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

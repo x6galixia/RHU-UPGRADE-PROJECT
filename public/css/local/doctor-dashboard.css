@@ -139,7 +139,7 @@ button {
     height: auto;
     width: auto;
 } */
- 
+
 
 
 @page {
@@ -160,7 +160,7 @@ button {
         display: none !important;
     }
 
-     .overlay{
+    .overlay {
         z-index: -1 !important;
         background-color: white !important;
     }
@@ -207,8 +207,9 @@ main {
 #labReqPrint p {
     font-size: 1.5rem;
 }
+
 #resetaPrint,
-#labReqPrint  {
+#labReqPrint {
     display: flex;
     flex-direction: column;
 }
@@ -449,4 +450,10 @@ details {
     justify-content: center;
     padding: 0;
     margin-top: 20px;
+}
+
+.toHealthAssessment {
+    display: flex;
+    justify-content: start;
+    align-items: center;
 }

@@ -190,6 +190,36 @@ router.post("/medtech-dashboard/send-patient-lab", upload.array('lab_result', 6)
   }
 });
 
+router.get("/medtech-dashboard/recently-added", ensureAuthenticated, checkUserType("Med Tech"), async (req, res) => {
+  console.log("route accessed");
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 6;
+  const isAjax = req.query.ajax === "true";
+  const rhuId = req.query.rhu_id;
+
+  try {
+    const { getPatientList, totalPages } = await fetchPatientListForRecentlyAdded(
+      page,
+      limit,
+      rhuId
+    );
+
+    if (isAjax) {
+      return res.json({
+        getPatientList,
+        user: req.user,
+        currentPage: page,
+        totalPages,
+        limit,
+      });
+    }
+  } catch (err) {
+    console.error("Error: ", err.message, err.stack);
+    res.status(500).send("Internal server error");
+  }
+}
+);
+
 router.delete("/logout", (req, res, next) => {
   req.logOut((err) => {
     if (err) {
@@ -240,6 +270,99 @@ async function fetchPatientList(page, limit) {
     throw new Error("Error fetching patients list");
   }
 }
+
+async function fetchPatientListForRecentlyAdded(page, limit, rhuId) {
+  const offset = (page - 1) * limit;
+
+  try {
+    let query;
+    let queryParams = [limit, offset];
+    let countQuery;
+
+    if (rhuId) {
+      query = `
+        SELECT
+          ml.patient_id,
+          ml.medtech_id,
+          p.rhu_id,
+          p.last_name,
+          p.first_name,
+          p.middle_name,
+          p.suffix,
+          r.rhu_name,
+          CONCAT(u.firstname, ' ', u.surname) AS medtech_name
+        FROM medtech_labs ml
+        LEFT JOIN patients p ON ml.patient_id = p.patient_id
+        LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
+        LEFT JOIN users u ON ml.medtech_id = u.id
+        WHERE r.rhu_id = $3
+        GROUP BY ml.patient_id, ml.medtech_id, p.rhu_id, p.last_name, p.first_name, p.middle_name, p.suffix, r.rhu_name, u.firstname, u.surname
+        ORDER BY p.first_name
+        LIMIT $1 OFFSET $2
+      `;
+      queryParams.push(rhuId);
+
+      countQuery = `
+        SELECT COUNT(*) AS total
+        FROM medtech_labs ml
+        LEFT JOIN patients p ON ml.patient_id = p.patient_id
+        LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
+        LEFT JOIN users u ON ml.medtech_id = u.id
+        WHERE r.rhu_id = $1
+      `;
+    } else {
+      query = `
+        SELECT
+          ml.patient_id,
+          ml.medtech_id,
+          p.rhu_id,
+          p.last_name,
+          p.first_name,
+          p.middle_name,
+          p.suffix,
+          r.rhu_name,
+          CONCAT(u.firstname, ' ', u.surname) AS medtech_name
+        FROM medtech_labs ml
+        LEFT JOIN patients p ON ml.patient_id = p.patient_id
+        LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
+        LEFT JOIN users u ON ml.medtech_id = u.id
+        GROUP BY ml.patient_id, ml.medtech_id, p.rhu_id, p.last_name, p.first_name, p.middle_name, p.suffix, r.rhu_name, u.firstname, u.surname
+        ORDER BY p.first_name
+        LIMIT $1 OFFSET $2
+      `;
+
+      countQuery = `
+        SELECT COUNT(*) AS total
+        FROM medtech_labs ml
+        LEFT JOIN patients p ON ml.patient_id = p.patient_id
+        LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
+        LEFT JOIN users u ON ml.medtech_id = u.id
+      `;
+    }
+
+    const patientListResult = await rhuPool.query(query, queryParams);
+    const countResult = await rhuPool.query(countQuery, rhuId ? [rhuId] : []);
+
+    // Adjust mapping here
+    const formattedPatientList = patientListResult.rows.map(patient => ({
+      ...patient,
+      medtech_name: patient.medtech_name || 'N/A',
+    }));
+
+    const totalItems = parseInt(countResult.rows[0].total, 10);
+    const totalPages = Math.ceil(totalItems / limit);
+
+    return {
+      getPatientList: formattedPatientList,
+      totalPages,
+    };
+  } catch (err) {
+    console.error("Error fetching patient list:", err.message, err.stack);
+    throw new Error("Database query failed");
+  }
+}
+
+
 
 function getBasePatientQuery() {
   return `
