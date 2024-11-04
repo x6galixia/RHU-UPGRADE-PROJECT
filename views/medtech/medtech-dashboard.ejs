@@ -27,41 +27,40 @@
         <!-- POPPP -->
         <div class="pop-up" id="recently-admitted-table-med">
           <div class="close-container">
-              <img src="../icon/close.svg" alt="" class="close_popUp">
+            <img src="../icon/close.svg" alt="" class="close_popUp">
           </div>
-          <h1 class="heading">RECENTLY ADMITTED</h1>
+          <h1 class="heading">RECENTLY ADDED</h1>
           <main>
-              <div class="selecter">
-                  <p>Select an RHU</p>
-                  <select name="rhu_id" id="rhu-select">
-                      <option value="1">Main</option>
-                      <option value="2">Maypangdan</option>
-                      <option value="3">Tabunan</option>
-                      <option value="4">Songco</option>
-                  </select>
-              </div>
-              <div class="table-container">
-                  <table>
-                      <thead>
-                          <tr>
-                              <th>Name</th>
-                              <th>Date</th>
-                              <th>Nurse</th>
-                              <th></th>
-                          </tr>
-                      </thead>
-                      <tbody id="patient-list">
-                          <!-- recently admitted data here -->
-                      </tbody>
-                  </table>
-              </div>
-              <div class="pagination">
-                  <button class="button-green" id="previous-page">Previous</button>
-                  <button class="button-green" id="next-page">Next</button>
-              </div>
+            <div class="selecter">
+              <p>Select an RHU</p>
+              <select name="rhu_id" id="rhu-select">
+                <option value="1">Main</option>
+                <option value="2">Maypangdan</option>
+                <option value="3">Tabunan</option>
+                <option value="4">Songco</option>
+              </select>
+            </div>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Med Tech</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="medtech-added-list">
+                  <!-- recently admitted data here -->
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination">
+              <button class="button-green" id="previous-page">Previous</button>
+              <button class="button-green" id="next-page">Next</button>
+            </div>
           </main>
-      </div>
-      <!-- <div class="overlay" style="display: block;"></div> -->
+        </div>
+        <!-- <div class="overlay" style="display: block;"></div> -->
       </div>
 
       <div class="table-container">
@@ -172,6 +171,73 @@
             <div class="btn-l">
               <button type="button" class="close_popUp">Cancel</button>
               <button>Submit</button>
+            </div>
+          </div>
+        </div>
+        <!-- Full-screen image -->
+        <div id="imageModal" class="modal">
+          <span id="closeModal" class="close">&times;</span>
+          <img id="fullScreenImage" class="modal-content">
+        </div>
+      </form>
+
+      <!-- pop up for request lab -->
+      <form action="/medtech-dashboard/update-patient-lab" method="POST" enctype="multipart/form-data">
+        <!-- pop up for request lab -->
+        <div class="pop-up" id="update-lab-res">
+          <div class="head row just-bet">
+            <div class="row gap">
+              <img src="../icon/bottle.svg" />
+              <h2>Update Laboratory Request</h2>
+            </div>
+          </div>
+          <!------Initially hidden just for submitting the form-->
+          <input type="hidden" name="patient_id" id="lab_patient_id">
+
+          <div class="info col gap">
+            <div class="row gap">
+              <div class="row grow">
+                <label for="">Name:</label>
+                <input type="text" id="lab_full_name_update" class="under-line-input" />
+              </div>
+            </div>
+            <hr />
+            <div class="services-and-images">
+              <div class="request-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Service</th>
+                      <th>Category</th>
+                    </tr>
+                  </thead>
+                  <tbody class="list-of-request" id="categoryServiceTableBody">
+                  </tbody>
+                </table>
+
+              </div>
+              <div class="request-image">
+                <div class="image-section">
+                  <div id="prev-btn"><img src="../icon/arrow-left.svg" alt=""></div>
+                  <div class="main-image">
+                    <img id="displayedImage" src="../img/local/jr.png" alt="">
+                  </div>
+                  <div id="next-btn"><img src="../icon/arrow-right.svg" alt=""></div>
+                </div>
+                <input type="file" id="fileInput" name="lab_result" style="display: none;" multiple>
+                <div class="updateButtonContainer">
+                  <button type="button" class="button-bordered" id="uploadBtn">
+                    Change
+                  </button>
+                  <button type="button" class="button-bordered" id="uploadBtn">
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="btn-l">
+              <button type="button" class="close_popUp">Cancel</button>
+              <button>Update</button>
             </div>
           </div>
         </div>

@@ -199,7 +199,7 @@ router.post("/nurse/admit-patient", async (req, res) => {
 
 async function handleExistingPatient(value, rhu_id, house_no, street, barangay, city, province, nurse_id, patientData) {
   console.log("Patient exists. Migrating data to history tables.");
-  
+
   const [nurseChecksResult, doctorVisitsResult, medtechLabsResult] = await Promise.all([
     rhuPool.query(`SELECT * FROM nurse_checks WHERE patient_id = $1`, [value.patient_id]),
     rhuPool.query(`SELECT * FROM doctor_visits WHERE patient_id = $1`, [value.patient_id]),
@@ -207,16 +207,16 @@ async function handleExistingPatient(value, rhu_id, house_no, street, barangay, 
   ]);
 
   const historyId = await insertPatientHistory(patientData, nurseChecksResult, doctorVisitsResult, rhu_id, house_no, street, barangay, city, province);
-  
+
   await insertLabResults(historyId, medtechLabsResult);
   await insertVisitData(historyId, doctorVisitsResult);
-  
+
   console.log("Attempting to delete old records for patient ID:", value.patient_id);
   await deleteOldRecords(value.patient_id);
-  
+
   console.log("Updating existing patient record for ID:", value.patient_id);
   await updatePatientRecord(value, rhu_id, house_no, street, barangay, city, province);
-  
+
   console.log("Inserting new nurse checks for patient ID:", value.patient_id);
   await insertNurseChecks(value, nurse_id);
 }

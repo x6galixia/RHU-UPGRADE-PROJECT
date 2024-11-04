@@ -153,6 +153,15 @@ button {
   align-items: center;
 }
 
+#update-lab-res .services-and-images {
+  flex-direction: column;
+  gap: 24px;
+}
+
+#update-lab-res .services-and-images .request-table {
+  width: 100%;
+}
+
 .services-and-images>.request-table,
 .services-and-images>.request-image {
   width: 50%;
@@ -210,7 +219,8 @@ button {
 }
 
 .services-and-images>.request-image>.image-section>.main-image>img {
-  width: 90%;
+  width: 15rem;
+  height: 15rem;
   object-fit: scale-down;
 }
 
@@ -285,32 +295,27 @@ button {
 
 /* pop recently */
 
-.pop-up {
+#recently-admitted-table-med {
   padding: 30px 60px !important;
 }
 
-#recently-admitted-table .table-container {
+#recently-admitted-table-med .table-container {
   max-height: 370px;
   overflow: visible;
   position: relative;
 }
 
-#recently-admitted-table .table-container thead {
+#recently-admitted-table-med .table-container thead {
   position: sticky;
   top: 0;
 }
 
-#recently-admitted-table .table-container tbody tr td:last-child {
+#recently-admitted-table-med .table-container tbody tr td:last-child {
   font-weight: normal;
 }
 
-#recently-admitted-table .table-container tbody tr td:first-child {
+#recently-admitted-table-med .table-container tbody tr td:first-child {
   font-weight: bold;
-}
-
-#patient-list tr td:first-child {
-  text-align: start;
-  padding-left: 32px;
 }
 
 .selecter>select {
@@ -320,4 +325,45 @@ button {
 
 .selecter {
   margin-bottom: 12px;
+}
+
+.menu-row button {
+  width: fit-content;
+  /* background-color: #44a130; */
+  font-weight: normal;
+  color: black;
+  border-radius: 0;
+  background-color: white;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.menu-row button:hover {
+  width: fit-content;
+  height: fit-content;
+  background-color: #44a130;
+  color: #FFF;
+}
+
+.updateButtonContainer {
+  display: flex;
+  justify-content: space-around;
+  gap: 12px;
+}
+
+.updateButtonContainer button {
+  width: fit-content;
+}
+
+.updateButtonContainer button:first-child:hover {
+  width: fit-content;
+  height: fit-content;
+  background-color: #44a130;
+  color: #FFF;
+}
+
+.updateButtonContainer button:last-child:hover {
+  width: fit-content;
+  height: fit-content;
+  background-color: red;
+  color: #FFF;
 }

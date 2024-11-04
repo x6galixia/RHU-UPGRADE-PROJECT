@@ -178,6 +178,84 @@ document.addEventListener("DOMContentLoaded", function () {
         attachPaginationListeners();
     }
 
+    document.getElementById('recentlyAddedMed').addEventListener('click', function () {
+        console.log("pop-up clicked");
+        const rhuId = document.getElementById('rhu-select').value;
+        loadPage(1, rhuId);
+    });
+
+    document.getElementById('rhu-select').addEventListener('change', function () {
+        const rhuId = this.value;
+        loadPage(1, rhuId);
+    });
+
+    function loadPage(page, rhuId) {
+        fetch(`/medtech-dashboard/recently-added?page=${page}&rhu_id=${rhuId}&ajax=true`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response Data:', data);
+                console.log('Patient List:', data.getPatientList);
+                const tbody = document.getElementById('medtech-added-list');
+                tbody.innerHTML = ''; // Clear previous rows
+
+                if (data.getPatientList.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center">No patients found.</td></tr>`;
+                    document.getElementById('previous-page').style.display = 'none';
+                    document.getElementById('next-page').style.display = 'none';
+                    return;
+                }
+
+                // Populate the table with patient data
+                data.getPatientList.forEach(patient => {
+                    const row = `
+                <tr>
+                  <td>${patient.first_name} ${patient.middle_name} ${patient.last_name}</td>
+                  <td>${patient.medtech_name}</td>
+                  <td class="menu-row">
+                    <button id="update-id"
+                    data-id="${patient.patient_id}"
+                    data-rhu-id="${patient.rhu_id}"
+                    data-last-name="${patient.last_name}"
+                    data-first-name="${patient.first_name}"
+                    data-middle-name="${patient.middle_name}"
+                    onClick="fillUpdate(this)"
+                    >Update</button>
+                </td>
+                </tr>`;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+
+                const previousPageButton = document.getElementById('previous-page');
+                const nextPageButton = document.getElementById('next-page');
+
+                previousPageButton.style.display = data.currentPage > 1 ? 'inline-block' : 'none';
+                previousPageButton.onclick = () => loadPage(data.currentPage - 1, rhuId);
+
+                nextPageButton.style.display = data.currentPage < data.totalPages ? 'inline-block' : 'none';
+                nextPageButton.onclick = () => loadPage(data.currentPage + 1, rhuId);
+            })
+            .catch(error => console.error('Error fetching page:', error));
+    }
+
+
+
     // Initial setup
     attachPaginationListeners();
 });
+function fillUpdate(button) {
+    var buttonId = button.id;
+    if (buttonId === "update-id") {
+
+        console.log("clicked");
+
+        document.getElementById('update-lab-res').classList.add("visible");
+
+        document.getElementById('lab_full_name_update').value = button.getAttribute('data-first-name');
+    }
+
+}

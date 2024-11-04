@@ -32,9 +32,6 @@ function loadPage(page, rhuId) {
       const tbody = document.getElementById('patient-list');
       tbody.innerHTML = ''; // Clear previous rows
 
-      const mainContainerClass = "dot";
-      const tripleDotClass = "triple-dot";
-
       // Handle case when no patients are found
       if (data.getPatientList.length === 0) {
         tbody.innerHTML = `<tr><td colspan="4" style="text-align:center">No patients found.</td></tr>`;
@@ -135,7 +132,7 @@ function fillUpdate(button) {
     document.getElementById("register_patient").innerText = "Update";
     document.querySelector('#confirm_patient_registration h2').innerText = 'Are you sure you want update this patient?';
   }
-  
+
 }
 
 function attachDotEventListeners() {
@@ -365,12 +362,12 @@ function populateFormFields(data) {
 
 function printContainer(containerId) {
   var container = document.getElementById(containerId);
-  
+
   var printWindow = window.open('', '', 'height=600,width=800');
   printWindow.document.write('<html><head><title>Print</title>');
   printWindow.document.write('<link rel="stylesheet" href="../css/global/general.css">');
   printWindow.document.write('<link rel="stylesheet" href="../css/local/id.css">');
-  
+
   printWindow.document.write('</head><body>');
   printWindow.document.write(container.innerHTML);
   printWindow.document.write('</body></html>');
