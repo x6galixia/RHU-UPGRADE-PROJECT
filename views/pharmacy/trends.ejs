@@ -30,7 +30,7 @@
           <div style="width: auto;"><canvas id="ourGrowth"></canvas></div>
           <div class="data">
             <div>
-              <div class="bullet bullet"></div>
+              <div class="bullet bullet1"></div>
               <div>
                 <h3 id="prescriptions-filled"></h1>
                   <p>Prescriptions Filled</p>
@@ -56,14 +56,14 @@
             <div>
               <div class="bullet bullet1"></div>
               <div>
-                <h3 id="prescriptions-filled"></h1>
+                <h3 id="prescriptions-filled1"></h1>
                   <p>Prescriptions Filled</p>
               </div>
             </div>
             <div>
               <div class="bullet bullet2"></div>
               <div>
-                <h3 id="transactions"></h3>
+                <h3 id="transactions1"></h3>
                 <p>Transactions</p>
               </div>
             </div>
@@ -84,7 +84,7 @@
                   <img src="../icon/child-woman.svg" alt="">
                 </div>
                 <p>0-14 years old</p>
-                <p><strong>11,597</strong></p>
+                <p id="zeroToFourteen"><strong></strong></p> <!-- Updated ID -->
               </div>
               <div class="person sakto">
                 <div>
@@ -92,7 +92,7 @@
                   <img src="../icon/woman.svg" alt="">
                 </div>
                 <p>15-64 years old</p>
-                <p><strong>13,598</strong></p>
+                <p id="fifteenToSixtyFour"><strong></strong></p> <!-- Updated ID -->
               </div>
               <div class="person old">
                 <div>
@@ -100,11 +100,12 @@
                   <img src="../icon/old-woman.svg" alt="">
                 </div>
                 <p>65+ years old</p>
-                <p><strong>11,597</strong></p>
+                <p id="sixtyFivePlus"><strong></strong></p> <!-- Updated ID -->
               </div>
             </div>
           </div>
         </div>
+        
         <div class="summary">
           <div>
             <h1 class="graph-heading">SUMMARY OF BENEFICIARIES SERVE</h1>
@@ -138,17 +139,21 @@
         <div>
           <h1 class="graph-heading">NON-COMMUNICABLE DISEASE</h1>
         </div>
-        <div style="width: 50%; border: 1px solid black; padding: .5em;"><canvas id="nonCommunicableDisease"></canvas></div>
+        <div style="width: 50%; border: 1px solid black; padding: .5em;">
+          <canvas id="nonCommunicableDisease"></canvas>
+        </div>
         <div style="text-align: justify;">
-          <p style="margin-bottom: 1em;">NCDs remain the leading cause of mortality in the country. Cardiovascular diseases or diseases of the heart account for 1 in every 3 NCD deaths in the Philippines, where hypertension, considered a “silent killer,”  is a major risk factor.
+          <p style="margin-bottom: 1em;">NCDs remain the leading cause of mortality in the country. Cardiovascular diseases or diseases of the heart account for 1 in every 3 NCD deaths in the Philippines, where hypertension, considered a “silent killer,” is a major risk factor.
             Source: WHO</p>
-          <p>In 2020, hypertension was the leading disease in the Eastern Visayas region of the Philippines, with over 16.9 thousand cases. The other leading causes of morbidity in the region was acute respiratory infection and urinary tract infection.
+          <p>In 2020, hypertension was the leading disease in the Eastern Visayas region of the Philippines, with over 16.9 thousand cases. The other leading causes of morbidity in the region were acute respiratory infection and urinary tract infection.
             Source: statista.com</p>
         </div>
       </div>
+
+
       <div class="prescribe-drugs">
         <div>
-          <h1 class="graph-heading">TOP 10 MOST PRESCRIBE DRUGS</h1>
+          <h1 class="graph-heading">TOP 10 MOST PRESCRIBED DRUGS</h1>
         </div>
         <table>
           <thead>
@@ -157,149 +162,8 @@
               <th>NO. OF PATIENTS</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>wan</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>two</td>
-              <td>2</td>
-            </tr>
-            <tr>
-              <td>three</td>
-              <td>3</td>
-            </tr>
-            <tr>
-              <td>four</td>
-              <td>4</td>
-            </tr>
-            <tr>
-              <td>five</td>
-              <td>5</td>
-            </tr>
-            <tr>
-              <td>six</td>
-              <td>6</td>
-            </tr>
-            <tr>
-              <td>seven</td>
-              <td>7</td>
-            </tr>
-            <tr>
-              <td>eight</td>
-              <td>8</td>
-            </tr>
-            <tr>
-              <td>nine</td>
-              <td>9</td>
-            </tr>
-            <tr>
-              <td>ten</td>
-              <td>10</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="estimated-cost">
-        <div>
-          <h1 class="graph-heading">ESTIMATED COST OF AVAILMENT PER BENEFICIARY</h1>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th colspan="6">DIALYSIS PATIENTS</th>
-            </tr>
-            <tr>
-              <th>NAME OF MEDICINE</th>
-              <th>QUANTITY</th>
-              <th>UNIT COST</th>
-              <th>TOTAL COST</th>
-              <th>MARKET PRICE</th>
-              <th>TOTAL COST</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>wan</td>
-              <td>1</td>
-              <td>wan</td>
-              <td>1</td>
-              <td>wan</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>two</td>
-              <td>2</td>
-              <td>wan</td>
-              <td>1</td>
-              <td>wan</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>three</td>
-              <td>3</td>
-              <td>wan</td>
-              <td>1</td>
-              <td>wan</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>four</td>
-              <td>4</td>
-              <td>wan</td>
-              <td>1</td>
-              <td>wan</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>five</td>
-              <td>5</td>
-              <td>wan</td>
-              <td>1</td>
-              <td>wan</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>six</td>
-              <td>6</td>
-              <td>wan</td>
-              <td>1</td>
-              <td>wan</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>seven</td>
-              <td>7</td>
-              <td>wan</td>
-              <td>1</td>
-              <td>wan</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>eight</td>
-              <td>8</td>
-              <td>wan</td>
-              <td>1</td>
-              <td>wan</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>nine</td>
-              <td>9</td>
-              <td>wan</td>
-              <td>1</td>
-              <td>wan</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>ten</td>
-              <td>10</td>
-              <td>wan</td>
-              <td>1</td>
-              <td>wan</td>
-              <td>1</td>
-            </tr>
+          <tbody id="mostPrescribedDrugsBody">
+            <!-- Rows will be populated here by JavaScript -->
           </tbody>
         </table>
       </div>
