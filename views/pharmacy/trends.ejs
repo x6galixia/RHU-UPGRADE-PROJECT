@@ -19,10 +19,7 @@
   <%- include("../includes/header.ejs")  %>
   <%- include("../includes/pharmacy-sub-head.ejs")  %>
   <main>
-    <select name="" id="">
-      <option value="">YEARLY</option>
-      <option value="">MONTHLY</option>
-    </select>
+    
     <div class="graphs">
       <div>
         <div class="growth">
@@ -33,39 +30,40 @@
           <div style="width: auto;"><canvas id="ourGrowth"></canvas></div>
           <div class="data">
             <div>
-              <div class="bullet bullet1"></div>
+              <div class="bullet bullet"></div>
               <div>
-                <h3 id="prescriptions-filled">383,355</h1>
+                <h3 id="prescriptions-filled"></h1>
                   <p>Prescriptions Filled</p>
               </div>
             </div>
             <div>
               <div class="bullet bullet2"></div>
               <div>
-                <h3 id="transactions">135,645</h3>
+                <h3 id="transactions"></h3>
                 <p>Transactions</p>
               </div>
             </div>
           </div>
         </div>
+        
         <div class="availment">
           <div>
             <h1 class="graph-heading">TOTAL AVAILMENT</h1>
-            <h4 class="graph-date">2021-2023</h4>
+            <h4 class="graph-date"></h4>
           </div>
           <div style="width: auto;"><canvas id="totalAvailment"></canvas></div>
           <div class="data">
             <div>
               <div class="bullet bullet1"></div>
               <div>
-                <h3 id="prescriptions-filled">187,536</h1>
+                <h3 id="prescriptions-filled"></h1>
                   <p>Prescriptions Filled</p>
               </div>
             </div>
             <div>
               <div class="bullet bullet2"></div>
               <div>
-                <h3 id="transactions">67,671</h3>
+                <h3 id="transactions"></h3>
                 <p>Transactions</p>
               </div>
             </div>
@@ -307,8 +305,6 @@
       </div>
     </div>
   </main>
-
-  <script src="../../js/local/pharmacy/par.js"></script>
   <script src="../js/local/trends/trends-api.js"></script>
 
   <script>
