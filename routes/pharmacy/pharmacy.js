@@ -43,7 +43,9 @@ const medicineSchema = Joi.object({
   reorder_level: Joi.number().integer().min(0).optional(),
   batch_number: Joi.string().optional(),
   expiration: Joi.date().optional(),
-  date_added: Joi.date().optional()
+  date_added: Joi.date().optional(),
+  price: Joi.number().integer(),
+  therapeutic_category: Joi.string().optional()
 });
 
 const beneficiarySchema = Joi.object({
@@ -75,6 +77,7 @@ const dispenseSchema = Joi.object({
   date_issued: Joi.date().required(),
   beneficiary_name: Joi.string().required(),
   diagnosis: Joi.string().required(),
+  findings: Joi.string().required(),
   doctor: Joi.string().required(),
   receiver: Joi.string().required(),
   relationship_beneficiary: Joi.string().required(),
@@ -490,8 +493,149 @@ router.get("/pharmacy/generate-transaction-id/new-id", ensureAuthenticated, chec
   }
 });
 
+router.get("/pharmacy/trends/growth/monthly", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  try {
+    const growthMonthly = await pharmacyPool.query(`
+        SELECT 
+            EXTRACT(YEAR FROM tr.date_issued) AS year,
+            EXTRACT(MONTH FROM tr.date_issued) AS month,
+            SUM(tm.quantity) AS total_quantity,
+            COUNT(DISTINCT tr.transaction_number) AS total_transactions
+        FROM 
+            transaction_medicine tm
+        JOIN 
+            transaction_records tr ON tm.tran_id = tr.id
+        GROUP BY 
+            year, month
+        ORDER BY 
+            year, month;
+    `);
+    
+    return res.json(growthMonthly.rows);
+  } catch (error) {
+    console.error("Error: ", error);
+    res.status(500).json({ error: "An error occurred while fetching monthly growth trends" });
+  }
+});
+
+router.get("/pharmacy/trends/growth/yearly", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  try {
+    const growthYearly = await pharmacyPool.query(`
+        SELECT 
+            EXTRACT(YEAR FROM tr.date_issued) AS year,
+            SUM(tm.quantity) AS total_quantity,
+            COUNT(DISTINCT tr.transaction_number) AS total_transactions
+        FROM 
+            transaction_medicine tm
+        JOIN 
+            transaction_records tr ON tm.tran_id = tr.id
+        GROUP BY 
+            year
+        ORDER BY 
+            year;
+    `);
+    
+    return res.json(growthYearly.rows);
+  } catch (error) {
+    console.error("Error: ", error);
+    res.status(500).json({ error: "An error occurred while fetching yearly growth trends" });
+  }
+});
+
+router.get("/pharmacy/trends/age-demographics", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  try {
+    const ageDemographics = await pharmacyPool.query(`
+      SELECT 
+          CASE
+              WHEN age BETWEEN 0 AND 14 THEN '0-14'
+              WHEN age BETWEEN 15 AND 64 THEN '15-64'
+              WHEN age >= 65 THEN '65 and above'
+          END AS age_group,
+          COUNT(*) AS beneficiary_count
+      FROM 
+          beneficiary
+      GROUP BY 
+          age_group
+      ORDER BY 
+          age_group;
+    `);
+    
+    return res.json(ageDemographics.rows);
+  } catch (error) {
+    console.error("Error: ", error);
+    res.status(500).json({ error: "An error occurred while fetching age demographics trends" });
+  }
+});
+
+router.get("/pharmacy/trends/most-prescribe-drugs", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  try {
+    const mostPrescribe = await pharmacyPool.query(`
+        SELECT 
+            i.therapeutic_category,
+            COUNT(DISTINCT tr.beneficiary_id) AS total_beneficiaries
+        FROM 
+            transaction_medicine tm
+        JOIN 
+            transaction_records tr ON tm.tran_id = tr.id
+        JOIN 
+            inventory i ON tm.product_id = i.product_id
+        GROUP BY 
+            i.therapeutic_category
+        ORDER BY 
+            total_beneficiaries DESC
+        LIMIT 10;
+    `);
+    
+    return res.json(mostPrescribe.rows);
+  } catch (error) {
+    console.error("Error: ", error);
+    res.status(500).json({ error: "An error occurred while fetching most prescribe drugs trends" });
+  }
+});
+
+router.get("/pharmacy/trends/diagnosis/top", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  try {
+    const topDiagnoses = await pharmacyPool.query(`
+      SELECT 
+          diagnosis,
+          COUNT(*) AS diagnosis_count
+      FROM 
+          transaction_records
+      WHERE 
+          diagnosis IS NOT NULL AND diagnosis <> ''
+      GROUP BY 
+          diagnosis
+      ORDER BY 
+          diagnosis_count DESC
+      LIMIT 10;
+    `);
+    
+    return res.json(topDiagnoses.rows);
+  } catch (error) {
+    console.error("Error: ", error);
+    res.status(500).json({ error: "An error occurred while fetching the top diagnoses" });
+  }
+});
+
+router.get("/pharmacy/trends/number-of-beneficiaries", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  try {
+    const numberOfBeneficiaries = await pharmacyPool.query(`
+      SELECT COUNT(*) AS total_beneficiaries
+        FROM beneficiary;
+    `);
+    
+    return res.json(numberOfBeneficiaries.rows);
+  } catch (error) {
+    console.error("Error: ", error);
+    res.status(500).json({ error: "An error occurred while fetching most prescribe drugs trends" });
+  }
+});
+
 router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
+  const rhu_id = req.user.rhu_id;
+
+  console.log(value, rhu_id);
 
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
@@ -499,9 +643,9 @@ router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
 
   try {
     await pharmacyPool.query(`
-      INSERT INTO inventory (product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added, rhu_id)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
-      [value.product_id, value.product_code, value.product_name, value.brand_name, value.supplier, value.product_quantity, value.dosage_form, value.dosage, value.reorder_level, value.batch_number, value.expiration, value.date_added, 1]
+      INSERT INTO inventory (product_id, product_code, product_name, brand_name, supplier, product_quantity, dosage_form, dosage, reorder_level, batch_number, expiration, date_added, rhu_id, price, therapeutic_category)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
+      [value.product_id, value.product_code, value.product_name, value.brand_name, value.supplier, value.product_quantity, value.dosage_form, value.dosage, value.reorder_level, value.batch_number, value.expiration, value.date_added, rhu_id, value.price, value.therapeutic_category]
     );
     req.flash("success", "Medicine Added Successfully");
     res.redirect("/pharmacy-inventory");
@@ -536,8 +680,8 @@ router.post("/pharmacy-inventory/restock-medicine", async (req, res) => {
     const newQuantity = existingQuantity + value.product_quantity;
 
     await pharmacyPool.query(
-      "UPDATE inventory SET batch_number = $4, date_added = $5, expiration = $6, product_quantity = $7 WHERE product_id = $1 AND product_code = $2 AND rhu_id = $3",
-      [value.product_id, value.product_code, rhu_id, value.batch_number, value.date_added, value.expiration, newQuantity]
+      "UPDATE inventory SET batch_number = $4, date_added = $5, expiration = $6, product_quantity = $7, price = $8, therapeutic_category = $9 WHERE product_id = $1 AND product_code = $2 AND rhu_id = $3",
+      [value.product_id, value.product_code, rhu_id, value.batch_number, value.date_added, value.expiration, newQuantity, value.price, value.therapeutic_category]
     );
     req.flash("success", "Restock Medicine Successful");
     return res.redirect("/pharmacy-inventory");
@@ -717,7 +861,9 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
     doctor,
     receiver,
     relationship_beneficiary,
-    medicines
+    medicines,
+    diagnosis,
+    findings
   } = value;
 
   const transactionNumber = transaction_number;
@@ -752,17 +898,17 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
 
       if (recentTransactionResult.rowCount > 0) {
         await client.query('ROLLBACK');
-        req.flash("error", `Beneficiary has requested product ID: ${product_id} in the last 25 days. Dispensing not allowed.`);
+        req.flash("error", `Beneficiary has requested the medicine with product ID: ${product_id} twice in the last 25 days . Dispensing not allowed.`);
         return res.redirect("/pharmacy-dispense-request");
       }
     }
 
     // Insert into transaction_records
     const insertTransactionQuery = `
-      INSERT INTO transaction_records (beneficiary_id, transaction_number, date_issued, doctor, reciever, relationship_beneficiary)
-      VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
+      INSERT INTO transaction_records (beneficiary_id, transaction_number, date_issued, doctor, reciever, relationship_beneficiary, diagnosis, findings)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id
     `;
-    const transactionResult = await client.query(insertTransactionQuery, [beneficiary_id, transactionNumber, date_issued, doctor, receiver, relationship_beneficiary]);
+    const transactionResult = await client.query(insertTransactionQuery, [beneficiary_id, transactionNumber, date_issued, doctor, receiver, relationship_beneficiary, diagnosis, findings]);
     const transactionId = transactionResult.rows[0].id;
 
     // Deduct quantities and insert into transaction_medicine

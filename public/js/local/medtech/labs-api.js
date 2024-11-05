@@ -58,7 +58,16 @@ document.addEventListener("DOMContentLoaded", function () {
     pollIntervalId = setInterval(fetchPatientsUpdates, POLL_INTERVAL);
     fetchPatientsUpdates();
 
-    document.getElementById('searchInput').addEventListener('input', function (event) {
+    // Debounce function
+    function debounce(func, delay) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+
+    document.getElementById('searchInput').addEventListener('input', debounce(function (event) {
         event.preventDefault();
         const query = this.value;
 
@@ -115,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .finally(() => {
                 loadingSpinner.style.display = 'none';
             });
-    });
+    }, 300));
 
     document.addEventListener('focusin', function (event) {
         if (event.target && event.target.classList.contains('patientAttachLabResult')) {
