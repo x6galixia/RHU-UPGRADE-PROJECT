@@ -172,7 +172,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    document.getElementById('searchInput').addEventListener('input', function (event) {
+    // Debounce function
+    function debounce(func, delay) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+
+    document.getElementById('searchInput').addEventListener('input', debounce(function (event) {
         event.preventDefault();
         const query = this.value;
         if (query.trim() !== "") {
@@ -210,7 +219,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .finally(() => {
                 loadingSpinner.style.display = 'none';
             });
-    });
+    },300));
 
     function handlePagination(event) {
         event.preventDefault();
