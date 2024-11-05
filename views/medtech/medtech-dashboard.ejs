@@ -90,7 +90,7 @@
                 <% } %>
         </nav>
       </div>
-      <!-- pop up for request lab -->
+      <!-- pop up for recently added -->
       <form action="/medtech-dashboard/send-patient-lab" method="POST" enctype="multipart/form-data">
         <!-- pop up for request lab -->
         <div class="pop-up" id="lab-res">
@@ -180,9 +180,8 @@
           <img id="fullScreenImage" class="modal-content">
         </div>
       </form>
-
-      <!-- pop up for request lab -->
-      <form action="/medtech-dashboard/update-patient-lab" method="POST" enctype="multipart/form-data">
+      <!-- pop up for update -->
+      <form id="formUpdate" method="POST" enctype="multipart/form-data">
         <!-- pop up for request lab -->
         <div class="pop-up" id="update-lab-res">
           <div class="head row just-bet">
@@ -211,33 +210,33 @@
                       <th>Category</th>
                     </tr>
                   </thead>
-                  <tbody class="list-of-request" id="categoryServiceTableBody">
+                  <tbody class="list-of-request" id="categoryServiceTableBody1">
                   </tbody>
                 </table>
 
               </div>
               <div class="request-image">
                 <div class="image-section">
-                  <div id="prev-btn"><img src="../icon/arrow-left.svg" alt=""></div>
+                  <div id="prev-btn1"><img src="../icon/arrow-left.svg" alt=""></div>
                   <div class="main-image">
-                    <img id="displayedImage" src="../img/local/jr.png" alt="">
+                    <img id="displayedImage1" src="../img/local/jr.png" alt="">
                   </div>
-                  <div id="next-btn"><img src="../icon/arrow-right.svg" alt=""></div>
+                  <div id="next-btn1"><img src="../icon/arrow-right.svg" alt=""></div>
                 </div>
-                <input type="file" id="fileInput" name="lab_result" style="display: none;" multiple>
+                <input type="file" id="fileInput1" name="lab_result" style="display: none;" multiple>
                 <div class="updateButtonContainer">
-                  <button type="button" class="button-bordered" id="uploadBtn">
+                  <button type="button" class="button-bordered" id="uploadBtn1">
                     Change
                   </button>
-                  <button type="button" class="button-bordered" id="uploadBtn">
+                  <button type="button" class="button-bordered" id="deleteBtn">
                     Delete
                   </button>
                 </div>
               </div>
             </div>
             <div class="btn-l">
-              <button type="button" class="close_popUp">Cancel</button>
-              <button>Update</button>
+              <button type="button" class="close_popUp1">Cancel</button>
+              <button type="button" id="updateBtn">Update</button>
             </div>
           </div>
         </div>
@@ -353,6 +352,7 @@
       });
 
     </script>
+
 </body>
 
 </html>
