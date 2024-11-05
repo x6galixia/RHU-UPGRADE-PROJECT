@@ -571,15 +571,17 @@ router.get("/pharmacy/trends/most-prescribe-drugs", ensureAuthenticated, checkUs
     const mostPrescribe = await pharmacyPool.query(`
         SELECT 
             i.therapeutic_category,
-            SUM(tm.quantity) AS total_quantity
+            COUNT(DISTINCT tr.beneficiary_id) AS total_beneficiaries
         FROM 
             transaction_medicine tm
+        JOIN 
+            transaction_records tr ON tm.tran_id = tr.id
         JOIN 
             inventory i ON tm.product_id = i.product_id
         GROUP BY 
             i.therapeutic_category
         ORDER BY 
-            total_quantity DESC
+            total_beneficiaries DESC
         LIMIT 10;
     `);
     
