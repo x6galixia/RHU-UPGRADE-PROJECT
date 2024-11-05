@@ -495,18 +495,19 @@ router.get("/pharmacy/generate-transaction-id/new-id", ensureAuthenticated, chec
 router.get("/pharmacy/trends/growth/monthly", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   try {
     const growthMonthly = await pharmacyPool.query(`
-      SELECT 
-        EXTRACT(YEAR FROM tr.date_issued) AS year,
-        EXTRACT(MONTH FROM tr.date_issued) AS month,
-        SUM(tm.quantity) AS total_quantity
-      FROM 
-        transaction_medicine tm
-      JOIN 
-        transaction_records tr ON tm.tran_id = tr.id
-      GROUP BY 
-        year, month
-      ORDER BY 
-        year, month;
+        SELECT 
+            EXTRACT(YEAR FROM tr.date_issued) AS year,
+            EXTRACT(MONTH FROM tr.date_issued) AS month,
+            SUM(tm.quantity) AS total_quantity,
+            COUNT(DISTINCT tr.transaction_number) AS total_transactions
+        FROM 
+            transaction_medicine tm
+        JOIN 
+            transaction_records tr ON tm.tran_id = tr.id
+        GROUP BY 
+            year, month
+        ORDER BY 
+            year, month;
     `);
     
     return res.json(growthMonthly.rows);
@@ -519,17 +520,18 @@ router.get("/pharmacy/trends/growth/monthly", ensureAuthenticated, checkUserType
 router.get("/pharmacy/trends/growth/yearly", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   try {
     const growthYearly = await pharmacyPool.query(`
-      SELECT 
-          EXTRACT(YEAR FROM tr.date_issued) AS year,
-          SUM(tm.quantity) AS total_quantity
-      FROM 
-          transaction_medicine tm
-      JOIN 
-          transaction_records tr ON tm.tran_id = tr.id
-      GROUP BY 
-          year
-      ORDER BY 
-          year;
+        SELECT 
+            EXTRACT(YEAR FROM tr.date_issued) AS year,
+            SUM(tm.quantity) AS total_quantity,
+            COUNT(DISTINCT tr.transaction_number) AS total_transactions
+        FROM 
+            transaction_medicine tm
+        JOIN 
+            transaction_records tr ON tm.tran_id = tr.id
+        GROUP BY 
+            year
+        ORDER BY 
+            year;
     `);
     
     return res.json(growthYearly.rows);
