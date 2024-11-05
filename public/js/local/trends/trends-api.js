@@ -1,42 +1,96 @@
 (async function() {
-    async function getTrendsAgeDemographics() {
-      try {
-        const response = await fetch("/pharmacy/trends/age-demographics");
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();  // Extract the JSON data
-        console.log("Age Demographics: ", data);  // Log the actual data
-  
-        // Prepare labels and data for the chart
-        const ageGroups = data.map(row => row.age_group); // Extract age groups
-        const counts = data.map(row => row.beneficiary_count); // Extract beneficiary counts
-  
-        updateChart(ageGroups, counts);
-        
-        // Update the actual counts in the HTML
-        document.getElementById('zeroToFourteen').innerHTML = `<strong>${counts[0] || 0}</strong>`;
-        document.getElementById('fifteenToSixtyFour').innerHTML = `<strong>${counts[1] || 0}</strong>`;
-        document.getElementById('sixtyFivePlus').innerHTML = `<strong>${counts[2] || 0}</strong>`;
-        
-      } catch (error) {
-        console.error("Error fetching trends data:", error);
+  async function getTrendsAgeDemographics() {
+    try {
+      const response = await fetch("/pharmacy/trends/age-demographics");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      const data = await response.json();  // Extract the JSON data
+      console.log("Age Demographics: ", data);  // Log the actual data
+
+      // Prepare labels and data for the chart
+      const ageGroups = data.map(row => row.age_group); // Extract age groups
+      const counts = data.map(row => row.beneficiary_count); // Extract beneficiary counts
+
+      updateChart(ageGroups, counts);
+      
+      // Update the actual counts in the HTML
+      document.getElementById('zeroToFourteen').innerHTML = `<strong>${counts[0] || 0}</strong>`;
+      document.getElementById('fifteenToSixtyFour').innerHTML = `<strong>${counts[1] || 0}</strong>`;
+      document.getElementById('sixtyFivePlus').innerHTML = `<strong>${counts[2] || 0}</strong>`;
+      
+    } catch (error) {
+      console.error("Error fetching trends data:", error);
     }
-  
-    function updateChart(ageGroups, counts) {
+  }
+
+  function updateChart(ageGroups, counts) {
+    new Chart(
+      document.getElementById('ageDemographics'),
+      {
+        type: 'pie',  // Set the chart type to pie
+        data: {
+          labels: ageGroups,  // Age groups as x-axis labels
+          datasets: [
+            {
+              label: 'Beneficiary Count',  // Count of beneficiaries in each age group
+              data: counts,
+              backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],  // Different colors for each age group
+              borderColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      }
+    );
+  }
+
+  // Load the age demographics when the page is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    getTrendsAgeDemographics();
+  });
+})();
+
+
+(async function() {
+  async function getTopDiagnoses() {
+    try {
+      const response = await fetch("/pharmacy/trends/diagnosis/top");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json(); // Extract the JSON data
+      console.log("Top Diagnoses: ", data); // Log the actual data
+
+      // Update the chart with the fetched data
+      const labels = data.map(row => row.diagnosis);
+      const counts = data.map(row => row.diagnosis_count);
+
       new Chart(
-        document.getElementById('ageDemographics'),
+        document.getElementById('nonCommunicableDisease'),
         {
           type: 'bar',
           data: {
-            labels: ageGroups,  // Age groups as x-axis labels
+            labels: labels,
             datasets: [
               {
-                label: 'Beneficiary Count',  // Count of beneficiaries in each age group
+                label: 'Disease',
                 data: counts,
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: [
+                  '#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6', 
+                  '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D'
+                ], // Array of 10 different colors
+                borderColor: [
+                  '#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6', 
+                  '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D'
+                ],
                 borderWidth: 1
               }
             ]
@@ -50,63 +104,16 @@
           }
         }
       );
+    } catch (error) {
+      console.error("Error fetching top diagnoses:", error);
     }
-  
-    // Load the age demographics when the page is ready
-    document.addEventListener('DOMContentLoaded', () => {
-      getTrendsAgeDemographics();
-    });
-  })();
+  }
 
-  (async function() {
-    async function getTopDiagnoses() {
-      try {
-        const response = await fetch("/pharmacy/trends/diagnosis/top");
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json(); // Extract the JSON data
-        console.log("Top Diagnoses: ", data); // Log the actual data
-  
-        // Update the chart with the fetched data
-        const labels = data.map(row => row.diagnosis);
-        const counts = data.map(row => row.diagnosis_count);
-  
-        new Chart(
-          document.getElementById('nonCommunicableDisease'),
-          {
-            type: 'bar',
-            data: {
-              labels: labels,
-              datasets: [
-                {
-                  label: 'Disease',
-                  data: counts,
-                  backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                  borderColor: 'rgba(75, 192, 192, 1)',
-                  borderWidth: 1
-                }
-              ]
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true
-                }
-              }
-            }
-          }
-        );
-      } catch (error) {
-        console.error("Error fetching top diagnoses:", error);
-      }
-    }
-  
-    // Load the top diagnoses when the page is ready
-    document.addEventListener('DOMContentLoaded', () => {
-      getTopDiagnoses();
-    });
-  })();
+  // Load the top diagnoses when the page is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    getTopDiagnoses();
+  });
+})();
 
   (async function() {
     async function getTrendsGrowthMonthly() {
@@ -149,7 +156,7 @@
       new Chart(
         document.getElementById('totalAvailment'),
         {
-          type: 'bar',
+          type: 'line',
           data: {
             labels: months,  // Months and years as x-axis labels
             datasets: [
@@ -224,7 +231,7 @@
       new Chart(
         document.getElementById('ourGrowth'),
         {
-          type: 'bar',
+          type: 'line',
           data: {
             labels: years,  // Years as x-axis labels
             datasets: [
