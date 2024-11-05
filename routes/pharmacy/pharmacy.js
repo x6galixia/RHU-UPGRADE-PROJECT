@@ -77,6 +77,7 @@ const dispenseSchema = Joi.object({
   date_issued: Joi.date().required(),
   beneficiary_name: Joi.string().required(),
   diagnosis: Joi.string().required(),
+  findings: Joi.string().required(),
   doctor: Joi.string().required(),
   receiver: Joi.string().required(),
   relationship_beneficiary: Joi.string().required(),
@@ -592,6 +593,20 @@ router.get("/pharmacy/trends/most-prescribe-drugs", ensureAuthenticated, checkUs
   }
 });
 
+router.get("/pharmacy/trends/number-of-beneficiaries", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  try {
+    const numberOfBeneficiaries = await pharmacyPool.query(`
+      SELECT COUNT(*) AS total_beneficiaries
+        FROM beneficiary;
+    `);
+    
+    return res.json(numberOfBeneficiaries.rows);
+  } catch (error) {
+    console.error("Error: ", error);
+    res.status(500).json({ error: "An error occurred while fetching most prescribe drugs trends" });
+  }
+});
+
 router.post("/pharmacy-inventory/add-medicine", async (req, res) => {
   const { error, value } = medicineSchema.validate(req.body);
   const rhu_id = req.user.rhu_id;
@@ -822,7 +837,9 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
     doctor,
     receiver,
     relationship_beneficiary,
-    medicines
+    medicines,
+    diagnosis,
+    findings
   } = value;
 
   const transactionNumber = transaction_number;
@@ -864,10 +881,10 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
 
     // Insert into transaction_records
     const insertTransactionQuery = `
-      INSERT INTO transaction_records (beneficiary_id, transaction_number, date_issued, doctor, reciever, relationship_beneficiary)
-      VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
+      INSERT INTO transaction_records (beneficiary_id, transaction_number, date_issued, doctor, reciever, relationship_beneficiary, diagnosis, findings)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id
     `;
-    const transactionResult = await client.query(insertTransactionQuery, [beneficiary_id, transactionNumber, date_issued, doctor, receiver, relationship_beneficiary]);
+    const transactionResult = await client.query(insertTransactionQuery, [beneficiary_id, transactionNumber, date_issued, doctor, receiver, relationship_beneficiary, diagnosis, findings]);
     const transactionId = transactionResult.rows[0].id;
 
     // Deduct quantities and insert into transaction_medicine
