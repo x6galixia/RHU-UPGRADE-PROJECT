@@ -593,6 +593,30 @@ router.get("/pharmacy/trends/most-prescribe-drugs", ensureAuthenticated, checkUs
   }
 });
 
+router.get("/pharmacy/trends/diagnosis/top", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  try {
+    const topDiagnoses = await pharmacyPool.query(`
+      SELECT 
+          diagnosis,
+          COUNT(*) AS diagnosis_count
+      FROM 
+          transaction_records
+      WHERE 
+          diagnosis IS NOT NULL AND diagnosis <> ''
+      GROUP BY 
+          diagnosis
+      ORDER BY 
+          diagnosis_count DESC
+      LIMIT 10;
+    `);
+    
+    return res.json(topDiagnoses.rows);
+  } catch (error) {
+    console.error("Error: ", error);
+    res.status(500).json({ error: "An error occurred while fetching the top diagnoses" });
+  }
+});
+
 router.get("/pharmacy/trends/number-of-beneficiaries", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   try {
     const numberOfBeneficiaries = await pharmacyPool.query(`

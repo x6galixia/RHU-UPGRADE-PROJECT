@@ -1,92 +1,112 @@
 (async function() {
-  async function getTrendsAgeDemographics() {
-    try {
-      const response = await fetch("/pharmacy/trends/age-demographics");
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+    async function getTrendsAgeDemographics() {
+      try {
+        const response = await fetch("/pharmacy/trends/age-demographics");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();  // Extract the JSON data
+        console.log("Age Demographics: ", data);  // Log the actual data
+  
+        // Prepare labels and data for the chart
+        const ageGroups = data.map(row => row.age_group); // Extract age groups
+        const counts = data.map(row => row.beneficiary_count); // Extract beneficiary counts
+  
+        updateChart(ageGroups, counts);
+        
+        // Update the actual counts in the HTML
+        document.getElementById('zeroToFourteen').innerHTML = `<strong>${counts[0] || 0}</strong>`;
+        document.getElementById('fifteenToSixtyFour').innerHTML = `<strong>${counts[1] || 0}</strong>`;
+        document.getElementById('sixtyFivePlus').innerHTML = `<strong>${counts[2] || 0}</strong>`;
+        
+      } catch (error) {
+        console.error("Error fetching trends data:", error);
       }
-      const data = await response.json();  // Extract the JSON data
-      console.log("Age Demographics: ", data);  // Log the actual data
-
-      // Prepare labels and data for the chart
-      const ageGroups = data.map(row => row.age_group); // Extract age groups
-      const counts = data.map(row => row.beneficiary_count); // Extract beneficiary counts
-
-      updateChart(ageGroups, counts);
-    } catch (error) {
-      console.error("Error fetching trends data:", error);
     }
-  }
-
-  function updateChart(ageGroups, counts) {
-    new Chart(
-      document.getElementById('ageDemographics'),
-      {
-        type: 'bar',
-        data: {
-          labels: ageGroups,  // Age groups as x-axis labels
-          datasets: [
-            {
-              label: 'Beneficiary Count',  // Count of beneficiaries in each age group
-              data: counts,
-              backgroundColor: 'rgba(75, 192, 192, 0.6)',
-              borderColor: 'rgba(75, 192, 192, 1)',
-              borderWidth: 1
-            }
-          ]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
+  
+    function updateChart(ageGroups, counts) {
+      new Chart(
+        document.getElementById('ageDemographics'),
+        {
+          type: 'bar',
+          data: {
+            labels: ageGroups,  // Age groups as x-axis labels
+            datasets: [
+              {
+                label: 'Beneficiary Count',  // Count of beneficiaries in each age group
+                data: counts,
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+              }
+            ]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
             }
           }
         }
-      }
-    );
-  }
+      );
+    }
+  
+    // Load the age demographics when the page is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      getTrendsAgeDemographics();
+    });
+  })();
 
-  // Load the age demographics when the page is ready
-  document.addEventListener('DOMContentLoaded', () => {
-    getTrendsAgeDemographics();
-  });
-})();
-
-//   NON-COMMUNICABLE DISEASE
-(async function () {
-
-  const sakit = [
-    { sakit: 'Anthlhyperllpidemia', count: 190 },
-    { sakit: 'Anti-angina', count: 50 },
-    { sakit: 'Antihypertension', count: 100 },
-    { sakit: 'Antidiabetic', count: 100 },
-  ];
-  new Chart(
-    document.getElementById('nonCommunicableDisease'),
-    {
-      type: 'bar',
-      data: {
-        labels: sakit.map(row => row.sakit),
-        datasets: [
+  (async function() {
+    async function getTopDiagnoses() {
+      try {
+        const response = await fetch("/pharmacy/trends/diagnosis/top");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json(); // Extract the JSON data
+        console.log("Top Diagnoses: ", data); // Log the actual data
+  
+        // Update the chart with the fetched data
+        const labels = data.map(row => row.diagnosis);
+        const counts = data.map(row => row.diagnosis_count);
+  
+        new Chart(
+          document.getElementById('nonCommunicableDisease'),
           {
-            label: 'Disease',
-            data: sakit.map(row => row.count),
-            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1
+            type: 'bar',
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: 'Disease',
+                  data: counts,
+                  backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  borderWidth: 1
+                }
+              ]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
           }
-        ]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
+        );
+      } catch (error) {
+        console.error("Error fetching top diagnoses:", error);
       }
     }
-  );
-})();
+  
+    // Load the top diagnoses when the page is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      getTopDiagnoses();
+    });
+  })();
 
 (async function() {
   async function getTrendsGrowthMonthly() {
@@ -109,6 +129,9 @@
 
       const prescriptionsFilled = data.map(row => row.total_quantity); // Total prescriptions filled
       const totalTransactions = data.map(row => row.total_transactions); // Total transactions
+
+      document.getElementById('prescriptions-filled1').innerText = prescriptionsFilled;
+      document.getElementById('transactions1').innerText = totalTransactions;
 
       updateChart(months, prescriptionsFilled, totalTransactions);
     } catch (error) {
@@ -174,6 +197,10 @@
       const prescriptionsFilled = data.map(row => row.total_quantity);
       const totalTransactions = data.map(row => row.total_transactions);
 
+      document.getElementById('prescriptions-filled').innerText = prescriptionsFilled;
+      document.getElementById('transactions').innerText = totalTransactions;
+
+
       updateChart(years, prescriptionsFilled, totalTransactions);
     } catch (error) {
       console.error("Error fetching trends data:", error);
@@ -221,3 +248,42 @@
     getTrendsGrowthYearly();
   });
 })();
+
+
+(async function() {
+    async function getMostPrescribedDrugs() {
+      try {
+        const response = await fetch("/pharmacy/trends/most-prescribe-drugs");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json(); // Extract the JSON data
+        console.log("Most Prescribed Drugs: ", data); // Log the actual data
+  
+        // Update the table with the fetched data
+        const tbody = document.getElementById('mostPrescribedDrugsBody');
+        tbody.innerHTML = ''; // Clear existing rows
+  
+        data.forEach(drug => {
+          const row = document.createElement('tr');
+          const categoryCell = document.createElement('td');
+          const countCell = document.createElement('td');
+  
+          categoryCell.textContent = drug.therapeutic_category; // Set therapeutic category
+          countCell.textContent = drug.total_beneficiaries; // Set number of patients
+  
+          row.appendChild(categoryCell);
+          row.appendChild(countCell);
+          tbody.appendChild(row); // Append the row to the tbody
+        });
+  
+      } catch (error) {
+        console.error("Error fetching most prescribed drugs:", error);
+      }
+    }
+  
+    // Load the most prescribed drugs when the page is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      getMostPrescribedDrugs();
+    });
+  })();
