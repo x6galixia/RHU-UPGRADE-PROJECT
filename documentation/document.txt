@@ -221,13 +221,6 @@ CREATE TABLE inventory (
     product_quantity INT NOT NULL CHECK (product_quantity >= 0)
 );
 
-CREATE TABLE trends_growth (
-    id SERIAL PRIMARY KEY NOT NULL,
-    trans_date DATE NOT NULL,
-    transactions INTEGER NOT NULL,
-    prescriptions_filled NOT NULL
-);
-
 CREATE INDEX idx_transaction_number ON transaction_records(transaction_number);
 CREATE INDEX idx_batch_number_transaction ON transaction_records(batch_number);
 CREATE INDEX idx_product_code ON inventory(product_code);
