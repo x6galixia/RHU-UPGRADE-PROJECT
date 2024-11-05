@@ -188,6 +188,8 @@ CREATE TABLE transaction_records (
     beneficiary_id INTEGER REFERENCES beneficiary(beneficiary_id) ON DELETE CASCADE,
     transaction_number VARCHAR(50) NOT NULL UNIQUE,
     date_issued DATE NULL,
+    diagnosis TEXT NULL,
+    findings TEXT NULL,
     doctor VARCHAR(255) NULL,
     reciever VARCHAR(255) NULL,
     relationship_beneficiary VARCHAR(100) NULL

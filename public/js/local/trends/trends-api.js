@@ -2,6 +2,7 @@ getTrendsMostPrescribeDrugs();
 getTrendsAgeDemographics();
 getTrendsGrowthYearly();
 getTrendsGrowthMonthly();
+getTrendsNumberOfBeneficiaries();
 
 // Growth Monthly Data
 async function getTrendsGrowthMonthly() {
@@ -54,6 +55,20 @@ async function getTrendsMostPrescribeDrugs() {
         }
         const data = await response.json();  // Extract the JSON data
         console.log("Most Prescribe Drugs: ",data);  // Now you can log the actual data
+    } catch (error) {
+        console.error("Error fetching trends data:", error);
+    }
+}
+
+//Number of Beneficiaries
+async function getTrendsNumberOfBeneficiaries() {
+    try {
+        const response = await fetch("/pharmacy/trends/number-of-beneficiaries");
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();  // Extract the JSON data
+        console.log("Number of beneficiaries: ",data);  // Now you can log the actual data
     } catch (error) {
         console.error("Error fetching trends data:", error);
     }

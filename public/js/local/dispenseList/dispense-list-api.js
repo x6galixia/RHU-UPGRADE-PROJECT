@@ -117,10 +117,12 @@ document.addEventListener("DOMContentLoaded", function () {
             if (dispense.prescription && dispense.prescription.length > 0) {
                 document.getElementById("dispense_doctor").value = dispense.prescription[0]?.doctor_name || 'N/A';
                 document.getElementById("dispense_diagnosis").value = dispense.prescription[0]?.diagnosis || 'N/A';
+                document.getElementById("dispense_findings").value = dispense.prescription[0]?.findings || 'N/A';
                 createMedicineTableRows(dispense.prescription);
             } else {
                 document.getElementById("dispense_doctor").value = 'N/A';
                 document.getElementById("dispense_diagnosis").value = 'N/A';
+                document.getElementById("dispense_findings").value = 'N/A';
             }
 
             // Toggle visibility of the modal and overlay
