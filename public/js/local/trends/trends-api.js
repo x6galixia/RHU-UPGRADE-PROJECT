@@ -11,7 +11,7 @@ async function getTrendsGrowthMonthly() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();  // Extract the JSON data
-        console.log(data);  // Now you can log the actual data
+        console.log("Growth Monthly: ",data);  // Now you can log the actual data
     } catch (error) {
         console.error("Error fetching trends data:", error);
     }
@@ -25,7 +25,7 @@ async function getTrendsGrowthYearly() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();  // Extract the JSON data
-        console.log(data);  // Now you can log the actual data
+        console.log("Growth Yearly: ",data);  // Now you can log the actual data
     } catch (error) {
         console.error("Error fetching trends data:", error);
     }
@@ -39,7 +39,7 @@ async function getTrendsAgeDemographics() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();  // Extract the JSON data
-        console.log(data);  // Now you can log the actual data
+        console.log("Age Demographics: ",data);  // Now you can log the actual data
     } catch (error) {
         console.error("Error fetching trends data:", error);
     }
@@ -53,7 +53,7 @@ async function getTrendsMostPrescribeDrugs() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();  // Extract the JSON data
-        console.log(data);  // Now you can log the actual data
+        console.log("Most Prescribe Drugs: ",data);  // Now you can log the actual data
     } catch (error) {
         console.error("Error fetching trends data:", error);
     }
