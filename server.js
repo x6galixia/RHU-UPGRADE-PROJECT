@@ -8,6 +8,7 @@ const session = require("express-session");
 const flash = require("express-flash");
 const compression = require("compression");
 const initializePassport = require("./passportConfig");
+const bodyParser = require('body-parser');
 
 //-------DATABASES IMPORTING-------//
 const rhuPool = require("./models/rhudb");
@@ -45,13 +46,14 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());  
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+app.use(express.json());
 app.use(session({
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: process.env.NODE_ENV === 'production'},
+  cookie: { secure: process.env.NODE_ENV === 'production' },
 }));
 app.use(passport.initialize());
 app.use(passport.session());

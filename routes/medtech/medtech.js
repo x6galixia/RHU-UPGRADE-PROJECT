@@ -156,7 +156,7 @@ router.get("/medtech-dashboard/search", ensureAuthenticated, checkUserType("Med 
   }
 });
 
-router.post("/medtech-dashboard/send-patient-lab", upload.array('lab_result', 6), async (req, res) => {
+router.post("/medtech-dashboard/send-patient-lab", upload.array('lab_result', 6), ensureAuthenticated, checkUserType("Med Tech"), async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
   const medtech_id = req.user.id;
 
@@ -219,6 +219,56 @@ router.get("/medtech-dashboard/recently-added", ensureAuthenticated, checkUserTy
   }
 }
 );
+
+router.post('/medtech-dashboard/update-patient-lab', upload.array('lab_result'), async (req, res) => {
+  const { deletedImages } = req.body;
+  const addedImages = req.files; // This will be an array of uploaded files
+
+  console.log("Deleted Images: ", deletedImages);
+  console.log("Added Images: ", addedImages);
+
+  try {
+    // Handle deletions
+    if (deletedImages && deletedImages.length > 0) {
+      for (const image of deletedImages) {
+        // Delete from database
+        const deleteQuery = `DELETE FROM medtech_labs WHERE lab_result = $1`;
+        await rhuPool.query(deleteQuery, [image]);
+
+        // Delete file from server
+        const filePath = path.join(__dirname, '../../uploads/lab-results', image);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+      req.flash("success", "Deleted Successfully");
+    }
+
+    // Handle updates (new images)
+    if (addedImages && addedImages.length > 0) {
+      for (const file of addedImages) {
+        const oldImage = file.originalname; // Get the original filename
+        const newFilename = file.filename; // Get the new filename assigned by multer
+
+        // Update the database
+        const updateQuery = `UPDATE medtech_labs SET lab_result = $1 WHERE lab_result = $2`;
+        await rhuPool.query(updateQuery, [newFilename, oldImage]);
+
+        // Remove the old image file if it exists
+        const oldFilePath = path.join(__dirname, '../../uploads/lab-results', oldImage);
+        if (fs.existsSync(oldFilePath)) {
+          fs.unlinkSync(oldFilePath);
+        }
+      }
+      req.flash("success", "Updated Successfully");
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
 
 router.delete("/logout", (req, res, next) => {
   req.logOut((err) => {
@@ -290,11 +340,15 @@ async function fetchPatientListForRecentlyAdded(page, limit, rhuId) {
           p.middle_name,
           p.suffix,
           r.rhu_name,
-          CONCAT(u.firstname, ' ', u.surname) AS medtech_name
+          CONCAT(u.firstname, ' ', u.surname) AS medtech_name,
+          STRING_AGG(DISTINCT ml.lab_result, ', ') AS lab_results,
+          STRING_AGG(DISTINCT dv.category, ', ') AS categories,
+          STRING_AGG(DISTINCT dv.service, ', ') AS services
         FROM medtech_labs ml
         LEFT JOIN patients p ON ml.patient_id = p.patient_id
         LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
         LEFT JOIN users u ON ml.medtech_id = u.id
+        LEFT JOIN doctor_visits dv ON ml.patient_id = dv.patient_id
         WHERE r.rhu_id = $3
         GROUP BY ml.patient_id, ml.medtech_id, p.rhu_id, p.last_name, p.first_name, p.middle_name, p.suffix, r.rhu_name, u.firstname, u.surname
         ORDER BY p.first_name
@@ -303,11 +357,12 @@ async function fetchPatientListForRecentlyAdded(page, limit, rhuId) {
       queryParams.push(rhuId);
 
       countQuery = `
-        SELECT COUNT(*) AS total
+        SELECT COUNT(DISTINCT ml.patient_id) AS total
         FROM medtech_labs ml
         LEFT JOIN patients p ON ml.patient_id = p.patient_id
         LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
         LEFT JOIN users u ON ml.medtech_id = u.id
+        LEFT JOIN doctor_visits dv ON ml.patient_id = dv.patient_id
         WHERE r.rhu_id = $1
       `;
     } else {
@@ -321,29 +376,33 @@ async function fetchPatientListForRecentlyAdded(page, limit, rhuId) {
           p.middle_name,
           p.suffix,
           r.rhu_name,
-          CONCAT(u.firstname, ' ', u.surname) AS medtech_name
+          CONCAT(u.firstname, ' ', u.surname) AS medtech_name,
+          STRING_AGG(DISTINCT ml.lab_result, ', ') AS lab_results,
+          STRING_AGG(DISTINCT dv.category, ', ') AS categories,
+          STRING_AGG(DISTINCT dv.service, ', ') AS services
         FROM medtech_labs ml
         LEFT JOIN patients p ON ml.patient_id = p.patient_id
         LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
         LEFT JOIN users u ON ml.medtech_id = u.id
+        LEFT JOIN doctor_visits dv ON ml.patient_id = dv.patient_id
         GROUP BY ml.patient_id, ml.medtech_id, p.rhu_id, p.last_name, p.first_name, p.middle_name, p.suffix, r.rhu_name, u.firstname, u.surname
         ORDER BY p.first_name
         LIMIT $1 OFFSET $2
       `;
 
       countQuery = `
-        SELECT COUNT(*) AS total
+        SELECT COUNT(DISTINCT ml.patient_id) AS total
         FROM medtech_labs ml
         LEFT JOIN patients p ON ml.patient_id = p.patient_id
         LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
         LEFT JOIN users u ON ml.medtech_id = u.id
+        LEFT JOIN doctor_visits dv ON ml.patient_id = dv.patient_id
       `;
     }
 
     const patientListResult = await rhuPool.query(query, queryParams);
     const countResult = await rhuPool.query(countQuery, rhuId ? [rhuId] : []);
 
-    // Adjust mapping here
     const formattedPatientList = patientListResult.rows.map(patient => ({
       ...patient,
       medtech_name: patient.medtech_name || 'N/A',
@@ -361,6 +420,7 @@ async function fetchPatientListForRecentlyAdded(page, limit, rhuId) {
     throw new Error("Database query failed");
   }
 }
+
 
 function getBasePatientQuery() {
   return `

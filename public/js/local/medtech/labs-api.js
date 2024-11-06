@@ -228,8 +228,12 @@ document.addEventListener("DOMContentLoaded", function () {
                   <td class="menu-row">
                     <button id="update-id"
                     data-id="${patient.patient_id}"
+                    data-categories="${patient.categories}"
+                    data-services="${patient.services}"
                     data-rhu-id="${patient.rhu_id}"
+                    data-history-id="${patient.rhu_id}"
                     data-last-name="${patient.last_name}"
+                    data-lab-results="${patient.lab_results}"
                     data-first-name="${patient.first_name}"
                     data-middle-name="${patient.middle_name}"
                     onClick="fillUpdate(this)"
@@ -259,12 +263,153 @@ document.addEventListener("DOMContentLoaded", function () {
 function fillUpdate(button) {
     var buttonId = button.id;
     if (buttonId === "update-id") {
-
-        console.log("clicked");
-
         document.getElementById('update-lab-res').classList.add("visible");
+        document.getElementById('lab_full_name_update').value = `${button.getAttribute('data-first-name')} ${button.getAttribute('data-middle-name')} ${button.getAttribute('data-last-name')}`;
 
-        document.getElementById('lab_full_name_update').value = button.getAttribute('data-first-name');
+        // Retrieve labResults containing the filenames of the lab result images
+        const labResultsData = button.getAttribute('data-lab-results');
+        const labResults = labResultsData ? labResultsData.split(', ') : [];
+        const displayedImage = document.getElementById("displayedImage1");
+        const prevBtn = document.getElementById("prev-btn1");
+        const nextBtn = document.getElementById("next-btn1");
+        const fileInput = document.getElementById("fileInput1");
+        const uploadBtn = document.getElementById("uploadBtn1");
+        const deleteBtn = document.getElementById("deleteBtn");
+
+        let currentImageIndex = 0;
+        let deletedImages = [];
+        let addedImages = {};
+
+        // Function to update the displayed image
+        function updateDisplayedImage() {
+            if (labResults.length > 0) {
+                const currentImage = labResults[currentImageIndex];
+                if (addedImages[currentImage]) {
+                    displayedImage.src = addedImages[currentImage];
+                } else {
+                    displayedImage.src = `/uploads/lab-results/${currentImage}`;
+                }
+            } else {
+                displayedImage.src = "";
+                displayedImage.alt = "No lab results available";
+            }
+        }
+
+        // Initialize display
+        updateDisplayedImage();
+
+        // Next button functionality
+        nextBtn.addEventListener("click", () => {
+            if (labResults.length > 0) {
+                currentImageIndex = (currentImageIndex + 1) % labResults.length;
+                updateDisplayedImage();
+            }
+        });
+
+        // Prev button functionality
+        prevBtn.addEventListener("click", () => {
+            if (labResults.length > 0) {
+                currentImageIndex = (currentImageIndex - 1 + labResults.length) % labResults.length;
+                updateDisplayedImage();
+            }
+        });
+
+        uploadBtn.addEventListener("click", () => {
+            fileInput.click();
+        });
+
+        // Delete button functionality
+        deleteBtn.addEventListener("click", () => {
+            if (labResults.length > 0) {
+                const oldImage = labResults[currentImageIndex];
+                deletedImages.push(oldImage);
+                labResults.splice(currentImageIndex, 1);
+                currentImageIndex = Math.max(0, currentImageIndex - 1);
+                updateDisplayedImage();
+            }
+        });
+
+        fileInput.addEventListener("change", (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const currentImage = labResults[currentImageIndex];
+
+                const newImageUrl = URL.createObjectURL(file);
+
+                addedImages[currentImage] = file;
+                displayedImage.src = newImageUrl;
+            }
+        });
+
+        const updateBtn = document.getElementById("updateBtn");
+
+        updateBtn.addEventListener("click", async () => {
+            console.log("update clicked");
+            console.log("deleted: ", deletedImages);
+            console.log("added: ", Object.keys(addedImages));
+            console.log("Sending data...");
+
+            const formData = new FormData();
+            deletedImages.forEach(image => formData.append('deletedImages[]', image));
+            Object.entries(addedImages).forEach(([oldImage, file]) => {
+                formData.append('lab_result', file, oldImage);
+            });
+
+            try {
+                const response = await fetch('/medtech-dashboard/update-patient-lab', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert("Error updating lab results.");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Server error.");
+            }
+
+            document.getElementById("update-lab-res").classList.remove("visible");
+            updateDisplayedImage();
+        });
+
+        const services = button.getAttribute('data-services') || '';
+        const servicesValue = (services === 'null' || services === undefined) ? '' : services;
+
+        const categories = button.getAttribute('data-categories') || '';
+        const categoriesValue = (categories === 'null' || categories === undefined) ? '' : categories;
+
+        const servicesArray = servicesValue ? servicesValue.split(',') : [];
+        const categoriesArray = categoriesValue ? categoriesValue.split(',') : [];
+
+        const tableBody = document.getElementById('categoryServiceTableBody1');
+        tableBody.innerHTML = '';
+
+        const rowCount = Math.max(servicesArray.length, categoriesArray.length);
+
+        for (let i = 0; i < rowCount; i++) {
+            const row = document.createElement('tr');
+
+            const serviceCell = document.createElement('td');
+            serviceCell.innerText = servicesArray[i] || '';
+            row.appendChild(serviceCell);
+
+            const categoryCell = document.createElement('td');
+            categoryCell.innerText = categoriesArray[i] || '';
+            row.appendChild(categoryCell);
+
+            console.log(row);
+            tableBody.appendChild(row);
+        }
+
+        document.querySelector(".close_popUp1").addEventListener('click', function () {
+            document.getElementById("update-lab-res").classList.remove("visible");
+        })
+
+
     }
 
 }
