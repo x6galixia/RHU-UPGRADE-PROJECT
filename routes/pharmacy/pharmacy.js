@@ -77,6 +77,7 @@ const dispenseSchema = Joi.object({
   date_issued: Joi.date().required(),
   beneficiary_name: Joi.string().required(),
   diagnosis: Joi.string().required(),
+  findings: Joi.string().required(),
   doctor: Joi.string().required(),
   receiver: Joi.string().required(),
   relationship_beneficiary: Joi.string().required(),
@@ -495,18 +496,19 @@ router.get("/pharmacy/generate-transaction-id/new-id", ensureAuthenticated, chec
 router.get("/pharmacy/trends/growth/monthly", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   try {
     const growthMonthly = await pharmacyPool.query(`
-      SELECT 
-        EXTRACT(YEAR FROM tr.date_issued) AS year,
-        EXTRACT(MONTH FROM tr.date_issued) AS month,
-        SUM(tm.quantity) AS total_quantity
-      FROM 
-        transaction_medicine tm
-      JOIN 
-        transaction_records tr ON tm.tran_id = tr.id
-      GROUP BY 
-        year, month
-      ORDER BY 
-        year, month;
+        SELECT 
+            EXTRACT(YEAR FROM tr.date_issued) AS year,
+            EXTRACT(MONTH FROM tr.date_issued) AS month,
+            SUM(tm.quantity) AS total_quantity,
+            COUNT(DISTINCT tr.transaction_number) AS total_transactions
+        FROM 
+            transaction_medicine tm
+        JOIN 
+            transaction_records tr ON tm.tran_id = tr.id
+        GROUP BY 
+            year, month
+        ORDER BY 
+            year, month;
     `);
     
     return res.json(growthMonthly.rows);
@@ -519,17 +521,18 @@ router.get("/pharmacy/trends/growth/monthly", ensureAuthenticated, checkUserType
 router.get("/pharmacy/trends/growth/yearly", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   try {
     const growthYearly = await pharmacyPool.query(`
-      SELECT 
-          EXTRACT(YEAR FROM tr.date_issued) AS year,
-          SUM(tm.quantity) AS total_quantity
-      FROM 
-          transaction_medicine tm
-      JOIN 
-          transaction_records tr ON tm.tran_id = tr.id
-      GROUP BY 
-          year
-      ORDER BY 
-          year;
+        SELECT 
+            EXTRACT(YEAR FROM tr.date_issued) AS year,
+            SUM(tm.quantity) AS total_quantity,
+            COUNT(DISTINCT tr.transaction_number) AS total_transactions
+        FROM 
+            transaction_medicine tm
+        JOIN 
+            transaction_records tr ON tm.tran_id = tr.id
+        GROUP BY 
+            year
+        ORDER BY 
+            year;
     `);
     
     return res.json(growthYearly.rows);
@@ -569,19 +572,35 @@ router.get("/pharmacy/trends/most-prescribe-drugs", ensureAuthenticated, checkUs
     const mostPrescribe = await pharmacyPool.query(`
         SELECT 
             i.therapeutic_category,
-            SUM(tm.quantity) AS total_quantity
+            COUNT(DISTINCT tr.beneficiary_id) AS total_beneficiaries
         FROM 
             transaction_medicine tm
+        JOIN 
+            transaction_records tr ON tm.tran_id = tr.id
         JOIN 
             inventory i ON tm.product_id = i.product_id
         GROUP BY 
             i.therapeutic_category
         ORDER BY 
-            total_quantity DESC
+            total_beneficiaries DESC
         LIMIT 10;
     `);
     
     return res.json(mostPrescribe.rows);
+  } catch (error) {
+    console.error("Error: ", error);
+    res.status(500).json({ error: "An error occurred while fetching most prescribe drugs trends" });
+  }
+});
+
+router.get("/pharmacy/trends/number-of-beneficiaries", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  try {
+    const numberOfBeneficiaries = await pharmacyPool.query(`
+      SELECT COUNT(*) AS total_beneficiaries
+        FROM beneficiary;
+    `);
+    
+    return res.json(numberOfBeneficiaries.rows);
   } catch (error) {
     console.error("Error: ", error);
     res.status(500).json({ error: "An error occurred while fetching most prescribe drugs trends" });
@@ -818,7 +837,9 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
     doctor,
     receiver,
     relationship_beneficiary,
-    medicines
+    medicines,
+    diagnosis,
+    findings
   } = value;
 
   const transactionNumber = transaction_number;
@@ -860,10 +881,10 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
 
     // Insert into transaction_records
     const insertTransactionQuery = `
-      INSERT INTO transaction_records (beneficiary_id, transaction_number, date_issued, doctor, reciever, relationship_beneficiary)
-      VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
+      INSERT INTO transaction_records (beneficiary_id, transaction_number, date_issued, doctor, reciever, relationship_beneficiary, diagnosis, findings)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id
     `;
-    const transactionResult = await client.query(insertTransactionQuery, [beneficiary_id, transactionNumber, date_issued, doctor, receiver, relationship_beneficiary]);
+    const transactionResult = await client.query(insertTransactionQuery, [beneficiary_id, transactionNumber, date_issued, doctor, receiver, relationship_beneficiary, diagnosis, findings]);
     const transactionId = transactionResult.rows[0].id;
 
     // Deduct quantities and insert into transaction_medicine
