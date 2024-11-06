@@ -35,8 +35,8 @@
             {
               label: 'Beneficiary Count',  // Count of beneficiaries in each age group
               data: counts,
-              backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],  // Different colors for each age group
-              borderColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+              backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#FCDE56'],  // Different colors for each age group
+              borderColor: ['#FF6384', '#36A2EB', '#FFCE56', '#FCDE56'],
               borderWidth: 1
             }
           ]

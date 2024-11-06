@@ -93,9 +93,13 @@ const upload = multer({ storage: storage });
 router.use("/uploads/beneficiary-img", express.static("uploads"));
 
 router.get("/pharmacy-inventory", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const isAjax = req.query.ajax === "true";
+
+  const quantityNotification = getQuantityNotification(req.user.rhu_id);
+  const expiredNotification = getExpiredNotification(req.user.rhu_id);
 
   try {
     const { getInventoryList, totalPages } = await fetchInventoryList(page, limit, req.user.rhu_id);
@@ -103,6 +107,8 @@ router.get("/pharmacy-inventory", ensureAuthenticated, checkUserType("Pharmacist
     if (isAjax) {
       return res.json({
         getInventoryList,
+        quantityNotification,
+        expiredNotification,
         user: req.user,
         currentPage: page,
         totalPages,
@@ -112,6 +118,8 @@ router.get("/pharmacy-inventory", ensureAuthenticated, checkUserType("Pharmacist
 
     res.render("pharmacy/inventory", {
       getInventoryList,
+      quantityNotification,
+      expiredNotification,
       user: req.user,
       currentPage: page,
       totalPages,
@@ -1187,6 +1195,47 @@ function generateNextTransactionId(lastId) {
   }
 
   return "T0001";
+}
+
+//notification
+//Quantity
+async function getQuantityNotification(rhu_id) {
+  try {
+    const query = `
+      SELECT product_name, product_code, product_quantity
+      FROM inventory
+      WHERE rhu_id = $1 AND product_quantity <= 500;
+    `;
+    const result = await pharmacyPool.query(query, [rhu_id]);
+    
+    if (result.rows.length > 0) {
+      return json(result.rows);
+    }
+
+  } catch (error) {
+    console.error("Error: ", error);
+  }
+}
+//Expiration
+async function getExpiredNotification(rhu_id) {
+  try {
+    const query = `
+      SELECT product_name, product_code, expiration
+      FROM inventory
+      WHERE rhu_id = $1 
+      AND expiration >= DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
+      AND expiration < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '2 months';
+    `;
+    const result = await pool.query(query, [rhu_id]);
+
+    if (result.rows.length > 0) {
+      return result.rows;
+    } else {
+      return "No products expiring next month.";
+    }
+  } catch (error) {
+    console.error("Error: ", error);
+  }
 }
 
 module.exports = router;
