@@ -20,6 +20,7 @@
     "express-flash": "^0.0.2",
     "express-session": "^1.18.0",
     "fs": "^0.0.1-security",
+    "helmet": "^8.0.0",
     "html5-qrcode": "^2.3.8",
     "joi": "^17.13.3",
     "method-override": "^3.0.0",
