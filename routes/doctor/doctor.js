@@ -91,6 +91,10 @@ router.get("/doctor-dashboard", ensureAuthenticated, checkUserType("Doctor"), as
   }
 });
 
+router.get("/doctor-dashboard/patient-health-assessment", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
+  res.render("doctor/health-assessment");
+});
+
 router.get("/doctor-dashboard/search", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
