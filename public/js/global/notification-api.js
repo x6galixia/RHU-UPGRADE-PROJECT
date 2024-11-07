@@ -1,6 +1,17 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
+  function formatDate(dateString) {
+    const options = {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", options);
+  }
+
   const user_type = document.getElementById("user_fcking_type").value;
 
   if (user_type == "Doctor") {
@@ -105,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         Critical stock level
                       </p>
                       <p class="p-body">
-                      ${list.product_quantity}, ${list.product_name}, ${list.product_code}
+                      Quantity: ${list.product_quantity} Medicine: ${list.product_name} Product code: ${list.product_code}
                       </p>
                     </div>
                   </div>
@@ -115,14 +126,14 @@ document.addEventListener("DOMContentLoaded", function () {
           child += `
                   <div class="notif-separate">
                     <div class="notif-center">
-                      <img class="icon-p" src="/icon/warning.svg" alt="">
+                      <img class="icon-p" src="/icon/cale.svg" alt="">
                     </div>
                     <div class="notifContext">
                       <p class="p-head">
                         Medicine Expiring Soon
                       </p>
                       <p class="p-body">
-                      ${list.expiration}, ${list.product_name}, ${list.product_code}
+                      Expiration date: ${formatDate(list.expiration)} Medicine: ${list.product_name} Product code: ${list.product_code}
                       </p>
                     </div>
                   </div>

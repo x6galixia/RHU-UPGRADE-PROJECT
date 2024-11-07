@@ -1085,7 +1085,7 @@ async function fetchInventoryList(page, limit, rhu_id) {
 
     const { rows } = await pharmacyPool.query(query, [rhu_id, limit, offset]);
 
-    const totalItems = rows.length > 0 ? rows[0].total_count : 0;
+    const totalItems = rows.length > 0 ? rows[0].total_count : 10;
     const totalPages = Math.ceil(totalItems / limit);
 
     const data = rows.map(row => ({
