@@ -8,180 +8,183 @@
   <link rel="stylesheet" href="../css/local/pharmacy-trends.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <title>HealthSync</title>
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="../img/global/healthvector.png"
-    />
+  <link rel="shortcut icon" type="image/png" href="../img/global/healthvector.png" />
 </head>
 
 <body>
-  <%- include("../includes/header.ejs")  %>
-  <%- include("../includes/pharmacy-sub-head.ejs")  %>
-  <main>
-    
-    <div class="graphs">
-      <div>
-        <div class="growth">
+  <%- include("../includes/header.ejs") %>
+    <%- include("../includes/pharmacy-sub-head.ejs") %>
+      <main>
+
+        <div class="graphs">
           <div>
-            <h1 class="graph-heading">OUR GROWTH</h1>
-            <h4 class="graph-date"></h5>
-          </div>
-          <div style="width: auto;"><canvas id="ourGrowth"></canvas></div>
-          <div class="data">
-            <div>
-              <div class="bullet bullet1"></div>
+            <div class="growth">
               <div>
-                <h3 id="prescriptions-filled"></h1>
-                  <p>Prescriptions Filled</p>
+                <h1 class="graph-heading">OUR GROWTH</h1>
+                <h4 class="graph-date">
+                  </h5>
               </div>
-            </div>
-            <div>
-              <div class="bullet bullet2"></div>
-              <div>
-                <h3 id="transactions"></h3>
-                <p>Transactions</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="availment">
-          <div>
-            <h1 class="graph-heading">TOTAL AVAILMENT</h1>
-            <h4 class="graph-date"></h4>
-          </div>
-          <div style="width: auto;"><canvas id="totalAvailment"></canvas></div>
-          <div class="data">
-            <div>
-              <div class="bullet bullet1"></div>
-              <div>
-                <h3 id="prescriptions-filled1"></h1>
-                  <p>Prescriptions Filled</p>
-              </div>
-            </div>
-            <div>
-              <div class="bullet bullet2"></div>
-              <div>
-                <h3 id="transactions1"></h3>
-                <p>Transactions</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="demographics">
-          <div>
-            <h1 class="graph-heading">AGE DEMOGRAPHICS</h1>
-          </div>
-          <div style="width: auto;"><canvas id="ageDemographics"></canvas></div>
-          <div class="data">
-            <div>
-              <div class="person child">
+              <div style="width: auto;"><canvas id="ourGrowth"></canvas></div>
+              <div class="data">
                 <div>
-                  <img src="../icon/child-man.svg" alt="">
-                  <img src="../icon/child-woman.svg" alt="">
+                  <div class="bullet bullet1"></div>
+                  <div>
+                    <h3 id="prescriptions-filled">
+                      </h1>
+                      <p>Prescriptions Filled</p>
+                  </div>
                 </div>
-                <p>0-14 years old</p>
-                <p id="zeroToFourteen"><strong></strong></p> <!-- Updated ID -->
-              </div>
-              <div class="person sakto">
                 <div>
-                  <img src="../icon/man.svg" alt="">
-                  <img src="../icon/woman.svg" alt="">
+                  <div class="bullet bullet2"></div>
+                  <div>
+                    <h3 id="transactions"></h3>
+                    <p>Transactions</p>
+                  </div>
                 </div>
-                <p>15-64 years old</p>
-                <p id="fifteenToSixtyFour"><strong></strong></p> <!-- Updated ID -->
               </div>
-              <div class="person old">
+            </div>
+
+            <div class="availment">
+              <div>
+                <h1 class="graph-heading">TOTAL AVAILMENT</h1>
+                <h4 class="graph-date"></h4>
+              </div>
+              <div style="width: auto;"><canvas id="totalAvailment"></canvas></div>
+              <div class="data">
                 <div>
-                  <img src="../icon/old-man.svg" alt="">
-                  <img src="../icon/old-woman.svg" alt="">
+                  <div class="bullet bullet1"></div>
+                  <div>
+                    <h3 id="prescriptions-filled1">
+                      </h1>
+                      <p>Prescriptions Filled</p>
+                  </div>
                 </div>
-                <p>65+ years old</p>
-                <p id="sixtyFivePlus"><strong></strong></p> <!-- Updated ID -->
+                <div>
+                  <div class="bullet bullet2"></div>
+                  <div>
+                    <h3 id="transactions1"></h3>
+                    <p>Transactions</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        
-        <div class="summary">
           <div>
-            <h1 class="graph-heading">SUMMARY OF BENEFICIARIES SERVE</h1>
+            <div class="demographics">
+              <div>
+                <h1 class="graph-heading">AGE DEMOGRAPHICS</h1>
+              </div>
+              <div style="width: auto;"><canvas id="ageDemographics"></canvas></div>
+              <div class="data">
+                <div>
+                  <div class="person child">
+                    <div>
+                      <img src="../icon/child-man.svg" alt="">
+                      <img src="../icon/child-woman.svg" alt="">
+                    </div>
+                    <p>0-14 years old</p>
+                    <p id="zeroToFourteen"><strong></strong></p> <!-- Updated ID -->
+                  </div>
+                  <div class="person sakto">
+                    <div>
+                      <img src="../icon/man.svg" alt="">
+                      <img src="../icon/woman.svg" alt="">
+                    </div>
+                    <p>15-64 years old</p>
+                    <p id="fifteenToSixtyFour"><strong></strong></p> <!-- Updated ID -->
+                  </div>
+                  <div class="person old">
+                    <div>
+                      <img src="../icon/old-man.svg" alt="">
+                      <img src="../icon/old-woman.svg" alt="">
+                    </div>
+                    <p>65+ years old</p>
+                    <p id="sixtyFivePlus"><strong></strong></p> <!-- Updated ID -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="summary">
+              <div>
+                <h1 class="graph-heading">SUMMARY OF BENEFICIARIES SERVE</h1>
+              </div>
+              <div class="main-graph">
+                <div>
+                  <img src="../icon/tulo-na-tawo.svg" alt="">
+                  <div>
+                    <h2>71,961</h2>
+                    <p>Total Population</p>
+                  </div>
+                </div>
+                <div>
+                  <img src="../icon/documents.svg" alt="">
+                  <div>
+                    <h2>30,656</h2>
+                    <p>Total FMAP Beneficiaries</p>
+                  </div>
+                </div>
+                <div>
+                  <img src="../icon/bar-graph.svg" alt="">
+                  <div>
+                    <h2>42,60%</h2>
+                    <p>Achievement in Percent</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="main-graph">
+          <div class="disease">
             <div>
-              <img src="../icon/tulo-na-tawo.svg" alt="">
-              <div>
-                <h2>71,961</h2>
-                <p>Total Population</p>
-              </div>
+              <h1 class="graph-heading">NON-COMMUNICABLE DISEASE</h1>
             </div>
-            <div>
-              <img src="../icon/documents.svg" alt="">
-              <div>
-                <h2>30,656</h2>
-                <p>Total FMAP Beneficiaries</p>
-              </div>
+            <div style="width: 50%; padding: .5em;">
+              <canvas id="nonCommunicableDisease"></canvas>
             </div>
-            <div>
-              <img src="../icon/bar-graph.svg" alt="">
-              <div>
-                <h2>42,60%</h2>
-                <p>Achievement in Percent</p>
-              </div>
+            <div style="text-align: justify;">
+              <p style="margin-bottom: 1em;">NCDs remain the leading cause of mortality in the country. Cardiovascular
+                diseases or diseases of the heart account for 1 in every 3 NCD deaths in the Philippines, where
+                hypertension, considered a “silent killer,” is a major risk factor.
+                Source: WHO</p>
+              <p>In 2020, hypertension was the leading disease in the Eastern Visayas region of the Philippines, with
+                over 16.9 thousand cases. The other leading causes of morbidity in the region were acute respiratory
+                infection and urinary tract infection.
+                Source: statista.com</p>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="disease">
-        <div>
-          <h1 class="graph-heading">NON-COMMUNICABLE DISEASE</h1>
-        </div>
-        <div style="width: 50%; border: 1px solid black; padding: .5em;">
-          <canvas id="nonCommunicableDisease"></canvas>
-        </div>
-        <div style="text-align: justify;">
-          <p style="margin-bottom: 1em;">NCDs remain the leading cause of mortality in the country. Cardiovascular diseases or diseases of the heart account for 1 in every 3 NCD deaths in the Philippines, where hypertension, considered a “silent killer,” is a major risk factor.
-            Source: WHO</p>
-          <p>In 2020, hypertension was the leading disease in the Eastern Visayas region of the Philippines, with over 16.9 thousand cases. The other leading causes of morbidity in the region were acute respiratory infection and urinary tract infection.
-            Source: statista.com</p>
-        </div>
-      </div>
 
 
-      <div class="prescribe-drugs">
-        <div>
-          <h1 class="graph-heading">TOP 10 MOST PRESCRIBED DRUGS</h1>
+          <div class="prescribe-drugs">
+            <div>
+              <h1 class="graph-heading">TOP 10 MOST PRESCRIBED DRUGS</h1>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>THERAPEUTIC CATEGORY</th>
+                  <th>NO. OF PATIENTS</th>
+                </tr>
+              </thead>
+              <tbody id="mostPrescribedDrugsBody">
+                <!-- Rows will be populated here by JavaScript -->
+              </tbody>
+            </table>
+          </div>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>THERAPEUTIC CATEGORY</th>
-              <th>NO. OF PATIENTS</th>
-            </tr>
-          </thead>
-          <tbody id="mostPrescribedDrugsBody">
-            <!-- Rows will be populated here by JavaScript -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </main>
-  <script src="../js/local/trends/trends-api.js"></script>
-
-  <script>
-    document.getElementById("logo").addEventListener('click', function(){
-      window.location.href = "/pharmacy-inventory";
-    })
-    document.addEventListener("DOMContentLoaded", function() {
-    var nav3 = document.querySelector(".nav4");
-    if (nav3) {
-      nav3.classList.toggle("selected");
-    }
-  });
-  </script>
+      </main>
+      <script src="../js/local/trends/trends-api.js"></script>
+      <script src="../../js/global/notification-api.js"></script>
+      <script>
+        document.getElementById("logo").addEventListener('click', function () {
+          window.location.href = "/pharmacy-inventory";
+        })
+        document.addEventListener("DOMContentLoaded", function () {
+          var nav3 = document.querySelector(".nav4");
+          if (nav3) {
+            nav3.classList.toggle("selected");
+          }
+        });
+      </script>
 </body>
 
 </html>

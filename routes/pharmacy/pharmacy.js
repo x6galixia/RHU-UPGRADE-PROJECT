@@ -98,32 +98,46 @@ router.get("/pharmacy-inventory", ensureAuthenticated, checkUserType("Pharmacist
   const limit = parseInt(req.query.limit) || 10;
   const isAjax = req.query.ajax === "true";
 
-  const quantityNotification = getQuantityNotification(req.user.rhu_id);
-  const expiredNotification = getExpiredNotification(req.user.rhu_id);
-
   try {
     const { getInventoryList, totalPages } = await fetchInventoryList(page, limit, req.user.rhu_id);
 
     if (isAjax) {
       return res.json({
         getInventoryList,
-        quantityNotification,
-        expiredNotification,
         user: req.user,
         currentPage: page,
         totalPages,
-        limit
+        limit,
       });
     }
 
     res.render("pharmacy/inventory", {
       getInventoryList,
-      quantityNotification,
-      expiredNotification,
       user: req.user,
       currentPage: page,
       totalPages,
-      limit
+      limit,
+    });
+  } catch (err) {
+    console.error("Error: ", err);
+    res.sendStatus(500);
+  }
+});
+
+router.get("/pharmacy/notification", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  try {
+    const { expiredNotif } = await getExpiredNotification(req.user.rhu_id);
+    const { quantityNotif } = await getQuantityNotification(req.user.rhu_id);
+
+    console.log(req.user.rhu_id);
+
+    const totalOfNewNotif = expiredNotif.length + quantityNotif.length;
+
+    res.json({
+      expiredNotif,
+      user: req.user,
+      quantityNotif,
+      totalOfNewNotif
     });
   } catch (err) {
     console.error("Error: ", err);
@@ -518,7 +532,7 @@ router.get("/pharmacy/trends/growth/monthly", ensureAuthenticated, checkUserType
         ORDER BY 
             year, month;
     `);
-    
+
     return res.json(growthMonthly.rows);
   } catch (error) {
     console.error("Error: ", error);
@@ -542,7 +556,7 @@ router.get("/pharmacy/trends/growth/yearly", ensureAuthenticated, checkUserType(
         ORDER BY 
             year;
     `);
-    
+
     return res.json(growthYearly.rows);
   } catch (error) {
     console.error("Error: ", error);
@@ -567,7 +581,7 @@ router.get("/pharmacy/trends/age-demographics", ensureAuthenticated, checkUserTy
       ORDER BY 
           age_group;
     `);
-    
+
     return res.json(ageDemographics.rows);
   } catch (error) {
     console.error("Error: ", error);
@@ -593,7 +607,7 @@ router.get("/pharmacy/trends/most-prescribe-drugs", ensureAuthenticated, checkUs
             total_beneficiaries DESC
         LIMIT 10;
     `);
-    
+
     return res.json(mostPrescribe.rows);
   } catch (error) {
     console.error("Error: ", error);
@@ -617,7 +631,7 @@ router.get("/pharmacy/trends/diagnosis/top", ensureAuthenticated, checkUserType(
           diagnosis_count DESC
       LIMIT 10;
     `);
-    
+
     return res.json(topDiagnoses.rows);
   } catch (error) {
     console.error("Error: ", error);
@@ -631,7 +645,7 @@ router.get("/pharmacy/trends/number-of-beneficiaries", ensureAuthenticated, chec
       SELECT COUNT(*) AS total_beneficiaries
         FROM beneficiary;
     `);
-    
+
     return res.json(numberOfBeneficiaries.rows);
   } catch (error) {
     console.error("Error: ", error);
@@ -850,8 +864,8 @@ router.post('/pharmacy-records/update', upload.single('picture'), async (req, re
       return res.redirect("/pharmacy-records");
     }
   } catch (err) {
-      req.flash("error", err);
-      return res.redirect("/pharmacy-records");
+    req.flash("error", err);
+    return res.redirect("/pharmacy-records");
   }
 });
 
@@ -1020,7 +1034,7 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
       [beneficiaryId]
     );
 
-    if (deleteResult.rowCount > 0 ) {
+    if (deleteResult.rowCount > 0) {
       if (picture) {
         const filePath = path.join(__dirname, '../../uploads/beneficiary-img/', picture);
 
@@ -1056,7 +1070,7 @@ router.delete("/logout", (req, res, next) => {
     });
   });
 });
- 
+
 async function fetchInventoryList(page, limit, rhu_id) {
   const offset = (page - 1) * limit;
 
@@ -1206,17 +1220,16 @@ async function getQuantityNotification(rhu_id) {
       FROM inventory
       WHERE rhu_id = $1 AND product_quantity <= 500;
     `;
-    const result = await pharmacyPool.query(query, [rhu_id]);
-    
-    if (result.rows.length > 0) {
-      return json(result.rows);
-    }
-
+    const { rows } = await pharmacyPool.query(query, [rhu_id]);
+    const data = rows.map(row => ({ ...row }));
+    return { quantityNotif: data };
   } catch (error) {
     console.error("Error: ", error);
+    return { quantityNotif: [] };
   }
 }
-//Expiration
+
+// Expiration
 async function getExpiredNotification(rhu_id) {
   try {
     const query = `
@@ -1226,15 +1239,12 @@ async function getExpiredNotification(rhu_id) {
       AND expiration >= DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
       AND expiration < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '2 months';
     `;
-    const result = await pool.query(query, [rhu_id]);
-
-    if (result.rows.length > 0) {
-      return result.rows;
-    } else {
-      return "No products expiring next month.";
-    }
+    const { rows } = await pharmacyPool.query(query, [rhu_id]);
+    const data = rows.map(row => ({ ...row }));
+    return { expiredNotif: data };
   } catch (error) {
     console.error("Error: ", error);
+    return { expiredNotif: [] };
   }
 }
 

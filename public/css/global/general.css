@@ -34,7 +34,22 @@ header>.profile1>.notif {
   width: 40px;
   height: 35px;
   margin-right: 12px;
+  position: relative;
 }
+
+header>.profile1>.newNotif {
+  width: 12px;
+  height: 12px;
+  background-color: red;
+  border-radius: 50%;
+  position: absolute;
+  margin-left: 22px;
+  margin-top: 8px;
+  z-index: 1;
+  border-bottom: 1px solid #44a130;
+  border-left: 1px solid #44a130;
+}
+
 
 header>.logo>img {
   width: auto;
@@ -472,6 +487,11 @@ input[type="checkbox"] {
   text-wrap: nowrap;
 }
 
+.notifContainer {
+  display: flex;
+  flex-direction: column;
+}
+
 .notif-separate {
   display: flex;
 }
@@ -494,10 +514,24 @@ input[type="checkbox"] {
   margin-top: 9px;
   z-index: 1000;
   border-radius: 10px;
+  max-height: 80%;
+  overflow: auto;
+}
+
+.notification-drop::-webkit-scrollbar {
+  display: none;
+}
+
+.notifContext {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .notification-drop hr {
   margin: 0 !important;
+  position: sticky;
+  top: 44px;
 }
 
 .notif-separate {
@@ -521,10 +555,6 @@ input[type="checkbox"] {
   margin: 0;
   color: #333;
   font-size: 14px;
-}
-
-.notif-separate:last-child {
-  border-bottom: none;
 }
 
 .see-all {
@@ -570,6 +600,9 @@ input[type="checkbox"] {
   gap: 10px;
   justify-content: center;
   align-items: center;
+  position: sticky;
+  top: 0;
+  background: white;
 }
 
 .circle {
