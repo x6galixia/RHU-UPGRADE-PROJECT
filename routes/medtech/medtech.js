@@ -421,7 +421,6 @@ async function fetchPatientListForRecentlyAdded(page, limit, rhuId) {
   }
 }
 
-
 function getBasePatientQuery() {
   return `
     SELECT 
