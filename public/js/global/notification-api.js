@@ -34,14 +34,14 @@ document.addEventListener("DOMContentLoaded", function () {
           child += `
                   <div class="notif-separate">
                     <div class="notif-center">
-                      <img class="icon-p" src="/icon/warning.svg" alt="">
+                      <img class="icon-p" src="/icon/result.svg" alt="">
                     </div>
                     <div class="notifContext">
                       <p class="p-head">
-                       Laboratory Result Uploaded
+                       New Laboratory result
                       </p>
                       <p class="p-body">
-                      ${list.full_name}, ${list.rhu_name}, ${list.medtech_full_name}
+                      ${list.rhu_name}: ${list.full_name} from ${list.medtech_full_name}
                       </p>
                     </div>
                   </div>
@@ -98,11 +98,11 @@ document.addEventListener("DOMContentLoaded", function () {
           child += `
                   <div class="notif-separate">
                     <div class="notif-center">
-                      <img class="icon-p" src="/icon/warning.svg" alt="">
+                      <img class="icon-p" src="/icon/critical.svg" alt="">
                     </div>
                     <div class="notifContext">
                       <p class="p-head">
-                        Medicine Out Of Stock
+                        Critical stock level
                       </p>
                       <p class="p-body">
                       ${list.product_quantity}, ${list.product_name}, ${list.product_code}
