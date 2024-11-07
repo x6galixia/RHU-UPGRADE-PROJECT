@@ -91,6 +91,28 @@ router.get("/doctor-dashboard", ensureAuthenticated, checkUserType("Doctor"), as
   }
 });
 
+router.get("/doctor/notification", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
+  try {
+    const labResultsData = await getPatientsLabResults();
+
+    if (!labResultsData) {
+      console.log("No data returned from getPatientsLabResults.");
+      return res.status(500).json({ error: "Failed to fetch lab results." });
+    }
+
+    const { getPatientList, totalItems } = labResultsData;
+
+    res.json({
+      user: req.user,
+      labResultAvailable: getPatientList,
+      totalItems
+    });
+  } catch (err) {
+    console.error("Error: ", err);
+    res.sendStatus(500);
+  }
+});
+
 router.get("/doctor-dashboard/patient-health-assessment", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
   res.render("doctor/health-assessment");
 });
@@ -677,5 +699,45 @@ async function fetchPatientList(page, limit) {
     throw new Error("Error fetching patients list");
   }
 }
+
+async function getPatientsLabResults() {
+  try {
+    const totalItemsResult = await rhuPool.query(`
+      SELECT COUNT(DISTINCT ml.patient_id) as count
+      FROM medtech_labs ml
+      INNER JOIN doctor_visits dv ON ml.patient_id = dv.patient_id
+      INNER JOIN patients p ON ml.patient_id = p.patient_id
+    `);
+
+    const totalItems = parseInt(totalItemsResult.rows[0]?.count || 0, 10);
+
+    const getPatientListResult = await rhuPool.query(`
+      SELECT 
+        p.patient_id,
+        p.first_name || ' ' || p.middle_name || ' ' || p.last_name || COALESCE(' ' || p.suffix, '') AS full_name,
+        p.rhu_id,
+        r.rhu_name, 
+        r.rhu_address,
+        u.firstname || ' ' || u.middle_name || ' ' || u.surname AS medtech_full_name
+      FROM medtech_labs ml
+      INNER JOIN doctor_visits dv ON ml.patient_id = dv.patient_id
+      INNER JOIN patients p ON ml.patient_id = p.patient_id
+      LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
+      LEFT JOIN users u ON ml.medtech_id = u.id 
+      GROUP BY p.patient_id, r.rhu_name, r.rhu_address, u.firstname, u.middle_name, u.surname
+      ORDER BY p.first_name
+    `);
+
+    const getPatientList = getPatientListResult.rows.map(row => ({
+      ...row,
+    }));
+
+    return { getPatientList, totalItems };
+  } catch (err) {
+    console.error("Error fetching lab results:", err.message, err.stack);
+    throw new Error("Error fetching patients lab results");
+  }
+}
+
 
 module.exports = router;

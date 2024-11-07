@@ -6,6 +6,7 @@ function setUserData(req, res, next) {
         res.locals.surname = req.user.surname;
         res.locals.middle_initial = req.user.middle_name;
         res.locals.profession = req.user.profession;
+        res.locals.user_type = req.user.user_type;
     } else {
         res.locals.rhu_id = null;
         res.locals.firstname = null;
@@ -13,6 +14,7 @@ function setUserData(req, res, next) {
         res.locals.license_number = null;
         res.locals.middle_initial = null;
         res.locals.profession = null;
+        res.locals.user_type = null;
     }
     next();
 }

@@ -2,7 +2,7 @@
 <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
 <header>
   <div class="logo" id="logo"><img src="/img/global/logohealth.png" alt=""></div>
-
+  <input type="hidden" id="user_fcking_type" value="<%= user_type %>">
   <div class="date-time">
     <p> <i class='far fa-clock' style='font-size:24px'></i> <span id="time"></span></p>
     <hr class="lining">
@@ -14,53 +14,10 @@
     <div id="notif-drop" class="notification-drop">
       <div class="notif-head">
         <h3>Notifications</h3>
-        <div class="circle">3</div>
+        <div class="circle" id="TotalNumberOfNotification"></div>
       </div>
       <hr>
-      <div class="notif-separate">
-        <div class="notif-center">
-          <img class="icon-p" src="/icon/profile.svg" alt="">
-        </div>
-        <div>
-          <p class="p-head">
-            Doctor Adriane Garcia
-          </p>
-          <p class="p-body">
-            Send a laboratory request for patient Emma Silvero.
-          </p>
-        </div>
-
-      </div>
-      <div class="notif-separate">
-        <div class="notif-center">
-          <img class="icon-p" src="/icon/profile.svg" alt="">
-        </div>
-        <div>
-          <p class="p-head">
-            Nurse Eugene Gerna
-          </p>
-          <p class="p-body">
-            Sends a new patient.
-          </p>
-        </div>
-
-      </div>
-      <div class="notif-separate">
-        <div class="notif-center">
-          <img class="icon-p" src="/icon/profile.svg" alt="">
-        </div>
-        <div>
-          <p class="p-head">
-            Medtech Joel Carpio
-          </p>
-          <p class="p-body">
-            Sends laboratory results to doctor Garcia.
-          </p>
-        </div>
-
-      </div>
-      <div class="see-all">
-        <a href="">See all</a>
+      <div class="notifContainer">
       </div>
     </div>
 

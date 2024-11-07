@@ -37,21 +37,12 @@ document.addEventListener("DOMContentLoaded", function () {
         tableBody.innerHTML = rows; // Batch DOM update
     }
 
-    function getNotificationForQuantity(data) {
-
-        if (data.quantityNotif.length > 0) {
-            document.querySelector(".newNotifContainer").classList.toggle("newNotif");
-        }
-    }
-
     function fetchInventoryUpdates() {
         if (!isSearching) {
             fetch('/pharmacy-inventory?ajax=true')
                 .then(response => response.json())
                 .then(data => {
                     updateInventoryTable(data);
-                    // console.log(data)
-                    getNotificationForQuantity(data);
                 })
                 .catch(error => {
                     console.error('Error fetching inventory updates:', error);
