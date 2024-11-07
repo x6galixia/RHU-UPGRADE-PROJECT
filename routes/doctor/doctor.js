@@ -707,6 +707,8 @@ async function getPatientsLabResults() {
       FROM medtech_labs ml
       INNER JOIN doctor_visits dv ON ml.patient_id = dv.patient_id
       INNER JOIN patients p ON ml.patient_id = p.patient_id
+      GROUP BY ml.patient_id
+      HAVING COUNT(CASE WHEN dv.medicine IS NOT NULL THEN 1 END) = 0
     `);
 
     const totalItems = parseInt(totalItemsResult.rows[0]?.count || 0, 10);
@@ -725,6 +727,7 @@ async function getPatientsLabResults() {
       LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
       LEFT JOIN users u ON ml.medtech_id = u.id 
       GROUP BY p.patient_id, r.rhu_name, r.rhu_address, u.firstname, u.middle_name, u.surname
+      HAVING COUNT(CASE WHEN dv.medicine IS NOT NULL THEN 1 END) = 0
       ORDER BY p.first_name
     `);
 
@@ -738,6 +741,5 @@ async function getPatientsLabResults() {
     throw new Error("Error fetching patients lab results");
   }
 }
-
 
 module.exports = router;
