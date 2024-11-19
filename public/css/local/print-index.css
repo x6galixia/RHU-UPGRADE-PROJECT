@@ -1,0 +1,60 @@
+@media print {
+    
+    @page {
+        size: landscape;
+    }
+
+    /* #ina {
+        position: relative;
+    } */
+
+    /* #wihhh {
+        position: absolute !important;
+        top: 0;
+    } */
+
+    .pop-up {
+        position: absolute !important;
+        top: 0 !important;
+        left: 50% !important;
+        transform: translate(-50%) !important;
+    }
+
+    #hayy, .sub-head, header, .close_popUp, .heading, button {
+        display: none !important;
+    }
+
+    #beneficiary-info {
+        padding: 0 !important;
+        margin: 0 !important;
+        padding: 0 5px !important;
+    }
+
+
+    #beneficiary-index {
+        /* position: relative; */
+        width: 100% !important;
+    }
+
+    .index-form {
+        width: 100%;
+        font-size: 12px;
+    }
+
+    table thead tr {
+        background-color: var(--green-color) !important;
+        -webkit-print-color-adjust: exact; /* Ensures the color is printed in WebKit browsers like Chrome */
+        print-color-adjust: exact; /* Standard property */
+    }
+
+
+
+    .pop-up, .pop-up .table-container {
+        box-shadow: none !important;
+    }
+
+
+    #wihhh {
+        display: block !important;
+    }
+}

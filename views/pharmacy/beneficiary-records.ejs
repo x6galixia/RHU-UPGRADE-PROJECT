@@ -9,6 +9,7 @@
   <link rel="shortcut icon" type="image/png" href="" />
   <link rel="stylesheet" href="../css/global/general.css" />
   <link rel="stylesheet" href="../css/local/id.css" />
+  <link rel="stylesheet" href="../css/local/print-index.css" />
   <link rel="stylesheet" href="../css/local/pharmacy-beneficiary-records.css" />
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
@@ -16,10 +17,10 @@
   <link rel="shortcut icon" type="image/png" href="../img/global/healthvector.png" />
 </head>
 
-<body>
+<body id="ina">
   <%- include("../includes/header.ejs") %>
     <%- include("../includes/pharmacy-sub-head.ejs") %>
-      <main>
+      <main id="hayy">
         <div class="buttons">
           <div class="search">
             <input type="text" id="searchInput" placeholder="Search..." aria-label="Search" />
@@ -289,7 +290,7 @@
         </div>
         <h1 class="heading">BENEFICIARY INDEX FORM</h1>
         <main>
-          <div>
+          <div id="wihhh">
             <div class="beneficiary-info">
               <div class="info1">
                 <div class="input1">
@@ -329,7 +330,7 @@
               </table>
             </div>
           </div>
-          <button class="button-pink">PRINT</button>
+          <button class="button-pink" onclick="window.print()" >PRINT</button>
         </main>
       </div>
       <div class="pop-up-confirm" id="delete-beneficiary">
