@@ -117,6 +117,11 @@ router.get("/doctor-dashboard/patient-health-assessment", ensureAuthenticated, c
   res.render("doctor/health-assessment");
 });
 
+
+router.get("/doctor-dashboard/doctor-dash2", (req, res) => {
+  res.render("doctor/doctor-dash2");
+});
+
 router.get("/doctor-dashboard/search", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
