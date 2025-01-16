@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const rhuPool = require("../../models/rhudb");
+const rhuPool = require("../../config/rhudb");
 const Joi = require("joi");
 const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
-const { calculateAge, formatDate } = require("../../public/js/global/functions");
+const { calculateAge, formatDate } = require("../../../public/js/global/functions");
 
 const multer = require("multer");
 const fs = require('fs');

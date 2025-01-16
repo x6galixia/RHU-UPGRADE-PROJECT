@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const rhuPool = require("../../models/rhudb");
-const pharmacyPool = require("../../models/pharmacydb");
+const rhuPool = require("../../config/rhudb");
+const pharmacyPool = require("../../config/pharmacydb");
 const fs = require('fs').promises;
 const path = require('path');
 const { setUserData, ensureAuthenticated, checkUserType, } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
-const { calculateAge, formatDate, } = require("../../public/js/global/functions");
+const { calculateAge, formatDate, } = require("../../../public/js/global/functions");
 const Joi = require("joi");
 
 router.use(setUserData);

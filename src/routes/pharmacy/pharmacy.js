@@ -5,11 +5,11 @@ const fs = require('fs');
 const path = require('path');
 const router = express.Router();
 
-const pharmacyPool = require("../../models/pharmacydb");
-const { calculateAge, formatDate } = require("../../public/js/global/functions");
+const pharmacyPool = require("../../config/pharmacydb");
+const { calculateAge, formatDate } = require("../../../public/js/global/functions");
 const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
-const rhuPool = require("../../models/rhudb");
+const rhuPool = require("../../config/rhudb");
 
 router.use(setUserData);
 router.use(methodOverride("_method"));
@@ -1211,8 +1211,6 @@ function generateNextTransactionId(lastId) {
   return "T0001";
 }
 
-//notification
-//Quantity
 async function getQuantityNotification(rhu_id) {
   try {
     const query = `
@@ -1229,7 +1227,6 @@ async function getQuantityNotification(rhu_id) {
   }
 }
 
-// Expiration
 async function getExpiredNotification(rhu_id) {
   try {
     const query = `
