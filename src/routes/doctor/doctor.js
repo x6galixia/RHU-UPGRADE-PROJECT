@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
-const rhuPool = require("../../models/rhudb");
-const pharmacyPool = require("../../models/pharmacydb");
+const rhuPool = require("../../config/rhudb");
+const pharmacyPool = require("../../config/pharmacydb");
 const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
-const { formatDate, } = require("../../public/js/global/functions");
+const { formatDate, } = require("../../../public/js/global/functions");
 
 router.use(setUserData);
 router.use(methodOverride("_method"));
@@ -116,7 +116,6 @@ router.get("/doctor/notification", ensureAuthenticated, checkUserType("Doctor"),
 router.get("/doctor-dashboard/patient-health-assessment", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
   res.render("doctor/health-assessment");
 });
-
 
 router.get("/doctor-dashboard/doctor-dash2", (req, res) => {
   res.render("doctor/doctor-dash2");

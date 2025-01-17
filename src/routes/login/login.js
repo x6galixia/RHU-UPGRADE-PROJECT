@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const rhuPool = require("../../models/rhudb");
+const rhuPool = require("../../config/rhudb");
 const { checkNotAuthenticated } = require("../../middlewares/middleware");
 const passport = require("passport");
 const Joi = require("joi");
