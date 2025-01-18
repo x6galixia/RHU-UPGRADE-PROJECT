@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const rhuPool = require("../../models/rhudb");
+const rhuPool = require("../../config/rhudb");
 const { setUserData, checkUserType, ensureAdminAuthenticated } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
 const Joi = require("joi");

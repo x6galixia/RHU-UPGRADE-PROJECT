@@ -96,15 +96,21 @@
           </form>
         </main>
       </div>
-      <div class="pop-up" id="restock-med">
+      <div class="pop-up" id="restock-med" style="min-width: unset; ">
         <div class="close-container">
           <img src="../icon/close.svg" alt="" class="close_popUp">
         </div>
+        <style>
+          .growwwwww {
+            display: flex;
+            flex-grow: 1;
+          }
+        </style>
         <h1 class="heading">RESTOCK MEDICINE</h1>
-        <main>
+        <main style="padding: 0;">
           <form action="/pharmacy-inventory/restock-medicine" class="restock" method="POST">
-            <div>
-              <div>
+            <div style="gap: 40px;">
+              <div style="display: flex; flex-direction: column; gap: 16px;">
                 <div class="input-w8-label">
                   <label for="batch_number">Batch no</label>
                   <input type="text" placeholder="BATCH0001" id="batch_number" name="batch_number">
@@ -122,7 +128,7 @@
                   <input type="number" id="product_price" name="price">
                 </div>
               </div>
-              <div>
+              <div style="display: flex; flex-direction: column; gap: 16px;">
                 <div class="input-w8-label">
                   <label>Date Added</label>
                   <input type="date" class="current-date" name="date_added">

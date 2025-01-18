@@ -83,11 +83,10 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelector(".newNotifContainer").classList.toggle("newNotif");
         document.getElementById("TotalNumberOfNotification").style.display = "flex";
         document.getElementById("TotalNumberOfNotification").innerText = data.totalOfNewNotif;
-
       }
       updateNotificationContainer(data);
     }
-
+    
     function notifications() {
       fetch('/pharmacy/notification?ajax=true')
         .then(response => response.json())
@@ -99,56 +98,68 @@ document.addEventListener("DOMContentLoaded", function () {
           console.error('Error fetching inventory updates:', error);
         });
     }
-
+    
     function updateNotificationContainer(data) {
       const notifContainer = document.querySelector(".notifContainer");
       let child = '';
-
+    
       if (data.totalOfNewNotif > 0) {
+        // Handle critical stock level notifications
         data.quantityNotif.forEach(list => {
           child += `
-                  <div class="notif-separate">
-                    <div class="notif-center">
-                      <img class="icon-p" src="/icon/critical.svg" alt="">
-                    </div>
-                    <div class="notifContext">
-                      <p class="p-head">
-                        Critical stock level
-                      </p>
-                      <p class="p-body">
-                      Quantity: ${list.product_quantity} Medicine: ${list.product_name} Product code: ${list.product_code}
-                      </p>
-                    </div>
-                  </div>
-                  `;
+            <div class="notif-separate">
+              <div class="notif-center">
+                <img class="icon-p" src="/icon/critical.svg" alt="">
+              </div>
+              <div class="notifContext">
+                <p class="p-head">
+                  Critical stock level
+                </p>
+                <p class="p-body">
+                  Quantity: ${list.product_quantity} Medicine: ${list.product_name} Product code: ${list.product_code}
+                </p>
+              </div>
+            </div>
+          `;
         });
+    
+        // Handle expired and soon-to-expire notifications
         data.expiredNotif.forEach(list => {
+          const isExpired = list.status === 'expired';
+          const notificationType = isExpired ? 'Medicine Expired' : 'Medicine Expiring Soon';
+          const iconSrc = isExpired ? '/icon/expired.svg' : '/icon/cale.svg';
+    
           child += `
-                  <div class="notif-separate">
-                    <div class="notif-center">
-                      <img class="icon-p" src="/icon/cale.svg" alt="">
-                    </div>
-                    <div class="notifContext">
-                      <p class="p-head">
-                        Medicine Expiring Soon
-                      </p>
-                      <p class="p-body">
-                      Expiration date: ${formatDate(list.expiration)} Medicine: ${list.product_name} Product code: ${list.product_code}
-                      </p>
-                    </div>
-                  </div>
-                  `;
+            <div class="notif-separate">
+              <div class="notif-center">
+                <img class="icon-p" src="${iconSrc}" alt="">
+              </div>
+              <div class="notifContext">
+                <p class="p-head">
+                  ${notificationType}
+                </p>
+                <p class="p-body">
+                  Expiration date: ${formatDate(list.expiration)} Medicine: ${list.product_name} Product code: ${list.product_code}
+                </p>
+              </div>
+            </div>
+          `;
         });
       } else {
-        child = `<div class="notif-separate">
-                    <div class="notifContext">
-                      <p>No new notification.</p>
-                    </div>
-                  </div>`;
+        // No notifications
+        child = `
+          <div class="notif-separate">
+            <div class="notifContext">
+              <p>No new notification.</p>
+            </div>
+          </div>
+        `;
         document.getElementById("TotalNumberOfNotification").style.display = "none";
       }
+    
       notifContainer.innerHTML = child;
     }
+    
     notifications();
 
   }

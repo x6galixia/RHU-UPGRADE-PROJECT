@@ -1,6 +1,6 @@
 const LocalStrategy = require("passport-local").Strategy;
 const passport = require("passport");
-const rhuPool = require("./models/rhudb");
+const rhuPool = require("./rhudb");
 const bcrypt = require("bcrypt");
 
 const authenticateuser = (username, password, done) => {

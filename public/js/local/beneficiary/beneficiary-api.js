@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const POLL_INTERVAL = 3000;
+    const POLL_INTERVAL = 300;
     let pollIntervalId;
     let isSearching = false;
     let isDotMenuOpen = false;
@@ -141,6 +141,13 @@ document.addEventListener("DOMContentLoaded", function () {
             dot.addEventListener("click", function () {
                 const tripleDotContainer = dot.closest("td").querySelector(".triple-dot");
                 if (tripleDotContainer) {
+                    // Close all other open menus
+                    document.querySelectorAll(".triple-dot.visible").forEach(menu => {
+                        if (menu !== tripleDotContainer) {
+                            menu.classList.remove("visible");
+                        }
+                    });
+    
                     tripleDotContainer.classList.toggle("visible");
                     if (tripleDotContainer.classList.contains("visible")) {
                         clearInterval(pollIntervalId);
@@ -151,20 +158,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 }
             });
-
-            document.addEventListener("click", function (event) {
-                // Check if the click was outside the dot container
-                if (!dot.contains(event.target)) {
-                    const tripleDotContainer = dot.closest("td").querySelector(".triple-dot");
-                    if (tripleDotContainer && tripleDotContainer.classList.contains("visible")) {
-                        tripleDotContainer.classList.remove("visible");
-                        pollIntervalId = setInterval(fetchBeneficiaryUpdates, POLL_INTERVAL);
-                        isDotMenuOpen = false;
-                    }
-                }
-            });
         });
-
+    
+        document.addEventListener("click", function (event) {
+            // Check if the click was outside any dot container
+            if (!event.target.closest(".dot")) {
+                document.querySelectorAll(".triple-dot.visible").forEach(menu => {
+                    menu.classList.remove("visible");
+                    pollIntervalId = setInterval(fetchBeneficiaryUpdates, POLL_INTERVAL);
+                    isDotMenuOpen = false;
+                });
+            }
+        });
     }
 
     function updateBeneficiaryTable(data) {
@@ -211,8 +216,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         loadingSpinner.style.display = 'block';
-
-        fetch(`/pharmacy-records/search?query=${encodeURIComponent(query)}`)
+    
+        // Use the `/pharmacy-records` endpoint with the `query` parameter
+        fetch(`/pharmacy-records?query=${encodeURIComponent(query)}&ajax=true`)
             .then(response => response.json())
             .then(data => {
                 const tableBody = document.querySelector('#beneficiaryTableBody');
@@ -237,19 +243,21 @@ document.addEventListener("DOMContentLoaded", function () {
             .finally(() => {
                 loadingSpinner.style.display = 'none';
             });
-    }, 500));
+    }, 300));  
 
     // Function to handle pagination clicks
     function handlePagination(event) {
         event.preventDefault();
         const url = new URL(event.target.href);
         const params = new URLSearchParams(url.search);
+    
         // Add search query to the pagination URL if a search is active
-        if (currentSearchQuery) {
-            params.set('query', currentSearchQuery);
+        const searchQuery = document.getElementById('searchInput').value;
+        if (searchQuery.trim() !== "") {
+            params.set('query', searchQuery);
         }
         params.set('ajax', 'true');
-
+    
         // Fetch new data based on pagination link
         clearInterval(pollIntervalId);  // Stop the interval polling when manually fetching
         fetch(url.pathname + '?' + params.toString())

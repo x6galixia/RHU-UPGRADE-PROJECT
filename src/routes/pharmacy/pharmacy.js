@@ -5,11 +5,11 @@ const fs = require('fs');
 const path = require('path');
 const router = express.Router();
 
-const pharmacyPool = require("../../models/pharmacydb");
-const { calculateAge, formatDate } = require("../../public/js/global/functions");
+const pharmacyPool = require("../../config/pharmacydb");
+const { calculateAge, formatDate } = require("../../../public/js/global/functions");
 const { setUserData, ensureAuthenticated, checkUserType } = require("../../middlewares/middleware");
 const methodOverride = require("method-override");
-const rhuPool = require("../../models/rhudb");
+const rhuPool = require("../../config/rhudb");
 
 router.use(setUserData);
 router.use(methodOverride("_method"));
@@ -93,13 +93,13 @@ const upload = multer({ storage: storage });
 router.use("/uploads/beneficiary-img", express.static("uploads"));
 
 router.get("/pharmacy-inventory", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
-
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const isAjax = req.query.ajax === "true";
+  const searchQuery = req.query.query ? req.query.query.trim() : '';
 
   try {
-    const { getInventoryList, totalPages } = await fetchInventoryList(page, limit, req.user.rhu_id);
+    const { getInventoryList, totalPages } = await fetchInventoryList(page, limit, req.user.rhu_id, searchQuery);
 
     if (isAjax) {
       return res.json({
@@ -124,6 +124,43 @@ router.get("/pharmacy-inventory", ensureAuthenticated, checkUserType("Pharmacist
   }
 });
 
+router.get("/pharmacy-records", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const isAjax = req.query.ajax === "true";
+  const searchQuery = req.query.query ? req.query.query.trim() : '';
+
+  try {
+    // Fetch the beneficiary list with search and pagination
+    const { getBeneficiaryList, totalPages } = await fetchBeneficiaryList(page, limit, searchQuery);
+
+    if (isAjax) {
+      // Respond with JSON for AJAX requests
+      return res.json({
+        getBeneficiaryList,
+        user: req.user,
+        currentPage: page,
+        totalPages,
+        limit,
+        searchQuery,
+      });
+    }
+
+    // Render the EJS template for non-AJAX requests
+    res.render("pharmacy/beneficiary-records", {
+      getBeneficiaryList,
+      user: req.user,
+      currentPage: page,
+      totalPages,
+      limit,
+      searchQuery,
+    });
+  } catch (err) {
+    console.error("Error: ", err);
+    res.status(500).json({ message: "An error occurred while fetching beneficiary records." });
+  }
+});
+
 router.get("/pharmacy/notification", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
   try {
     const { expiredNotif } = await getExpiredNotification(req.user.rhu_id);
@@ -142,174 +179,6 @@ router.get("/pharmacy/notification", ensureAuthenticated, checkUserType("Pharmac
   } catch (err) {
     console.error("Error: ", err);
     res.sendStatus(500);
-  }
-});
-
-router.get("/pharmacy-inventory/search", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const offset = (page - 1) * limit;
-  const { query } = req.query;
-
-  try {
-    let searchResult;
-
-    if (!query) {
-      searchResult = await pharmacyPool.query(
-        `SELECT * FROM inventory WHERE rhu_id = $3 ORDER BY product_name LIMIT $1 OFFSET $2`, [limit, offset, req.user.rhu_id]
-      );
-    } else {
-      searchResult = await pharmacyPool.query(
-        `SELECT * FROM inventory 
-         WHERE rhu_id = $2 
-         AND (CONCAT(product_name, ' ', brand_name) ILIKE $1
-         OR product_name ILIKE $1
-         OR brand_name ILIKE $1)
-         LIMIT 10`,
-        [`%${query}%`, req.user.rhu_id]
-      );
-    }
-
-    const data = searchResult.rows.map(row => ({
-      ...row,
-      expiration: formatDate(row.expiration)
-    }));
-
-    res.json({ getInventoryList: data });
-  } catch (err) {
-    console.error("Error: ", err);
-    res.status(500).send("An error occurred during the search.");
-  }
-});
-
-router.get("/pharmacy-records", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const isAjax = req.query.ajax === "true";
-
-  try {
-    const { getBeneficiaryList, totalPages } = await fetchBeneficiaryList(page, limit);
-
-    if (isAjax) {
-      return res.json({
-        getBeneficiaryList,
-        user: req.user,
-        currentPage: page,
-        totalPages,
-        limit
-      });
-    }
-
-    res.render("pharmacy/beneficiary-records", {
-      getBeneficiaryList,
-      user: req.user,
-      currentPage: page,
-      totalPages,
-      limit
-    });
-  } catch (err) {
-    console.error("Error: ", err);
-    res.sendStatus(500);
-  }
-});
-
-router.get("/pharmacy-records/search", ensureAuthenticated, checkUserType("Pharmacist"), async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const offset = (page - 1) * limit;
-  const { query } = req.query;
-
-  try {
-    let searchResult;
-
-    if (!query) {
-      searchResult = await pharmacyPool.query(
-        `WITH medicine_agg AS (
-           SELECT tm.tran_id,
-                  json_agg(
-                    json_build_object(
-                      'product_id', tm.product_id,
-                      'batch_number', tm.batch_number,
-                      'product_details', tm.product_details,
-                      'quantity', tm.quantity
-                    )
-                  ) AS medicines
-           FROM transaction_medicine tm
-           GROUP BY tm.tran_id
-         )
-         SELECT b.*, 
-                COALESCE(json_agg(
-                  json_build_object(
-                    'id', t.id,
-                    'transaction_number', t.transaction_number,
-                    'date_issued', t.date_issued,
-                    'doctor', t.doctor,
-                    'reciever', t.reciever,
-                    'relationship_beneficiary', t.relationship_beneficiary,
-                    'medicines', COALESCE(m.medicines, '[]')
-                  )
-                ) FILTER (WHERE t.id IS NOT NULL), '[]') AS transaction_records
-         FROM beneficiary b
-         LEFT JOIN transaction_records t ON b.beneficiary_id = t.beneficiary_id
-         LEFT JOIN medicine_agg m ON t.id = m.tran_id
-         GROUP BY b.beneficiary_id
-         ORDER BY b.first_name
-         LIMIT $1 OFFSET $2`,
-        [limit, offset]
-      );
-    } else {
-      searchResult = await pharmacyPool.query(
-        `WITH medicine_agg AS (
-           SELECT tm.tran_id,
-                  json_agg(
-                    json_build_object(
-                      'product_id', tm.product_id,
-                      'batch_number', tm.batch_number,
-                      'product_details', tm.product_details,
-                      'quantity', tm.quantity
-                    )
-                  ) AS medicines
-           FROM transaction_medicine tm
-           GROUP BY tm.tran_id
-         )
-         SELECT b.*, 
-                COALESCE(json_agg(
-                  json_build_object(
-                    'id', t.id,
-                    'transaction_number', t.transaction_number,
-                    'date_issued', t.date_issued,
-                    'doctor', t.doctor,
-                    'reciever', t.reciever,
-                    'relationship_beneficiary', t.relationship_beneficiary,
-                    'medicines', COALESCE(m.medicines, '[]')
-                  )
-                ) FILTER (WHERE t.id IS NOT NULL), '[]') AS transaction_records
-         FROM beneficiary b
-         LEFT JOIN transaction_records t ON b.beneficiary_id = t.beneficiary_id
-         LEFT JOIN medicine_agg m ON t.id = m.tran_id
-         WHERE CONCAT(b.first_name, ' ', b.middle_name, ' ', b.last_name) ILIKE $1
-            OR CONCAT(b.first_name, ' ', b.last_name) ILIKE $1
-            OR b.first_name ILIKE $1
-            OR b.middle_name ILIKE $1
-            OR b.last_name ILIKE $1
-         GROUP BY b.beneficiary_id
-         LIMIT 10`,
-        [`%${query}%`]
-      );
-    }
-
-    const data = searchResult.rows.map(row => ({
-      ...row,
-      middle_name: row.middle_name ? row.middle_name : '',
-      age: calculateAge(row.birthdate),
-      senior_citizen: isSeniorCitizen(row.age),
-      transaction_records: row.transaction_records ? row.transaction_records : []
-    }));
-
-    res.json({ getBeneficiaryList: data });
-  } catch (err) {
-    console.error("Error: ", err);
-    res.status(500).send("An error occurred during the search.");
   }
 });
 
@@ -888,6 +757,11 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
     findings
   } = value;
 
+  if (typeof beneficiary_id === 'string') {
+    req.flash("error", "The patient is not a beneficiary.");
+    return res.redirect("/pharmacy-dispense-request");
+  }
+
   const transactionNumber = transaction_number;
 
   const client = await pharmacyPool.connect();
@@ -1071,7 +945,7 @@ router.delete("/logout", (req, res, next) => {
   });
 });
 
-async function fetchInventoryList(page, limit, rhu_id) {
+async function fetchInventoryList(page, limit, rhu_id, searchQuery = '') {
   const offset = (page - 1) * limit;
 
   try {
@@ -1079,13 +953,21 @@ async function fetchInventoryList(page, limit, rhu_id) {
       SELECT *, COUNT(*) OVER() AS total_count
       FROM inventory
       WHERE rhu_id = $1
+      AND (
+        product_name ILIKE $4 OR
+        product_code ILIKE $4 OR
+        expiration::text ILIKE $4
+      )
       ORDER BY product_name
       LIMIT $2 OFFSET $3
     `;
 
-    const { rows } = await pharmacyPool.query(query, [rhu_id, limit, offset]);
+    // Add wildcards to the search query for partial matching
+    const searchTerm = `%${searchQuery}%`;
 
-    const totalItems = rows.length > 0 ? rows[0].total_count : 10;
+    const { rows } = await pharmacyPool.query(query, [rhu_id, limit, offset, searchTerm]);
+
+    const totalItems = rows.length > 0 ? rows[0].total_count : 0;
     const totalPages = Math.ceil(totalItems / limit);
 
     const data = rows.map(row => ({
@@ -1100,14 +982,27 @@ async function fetchInventoryList(page, limit, rhu_id) {
   }
 }
 
-async function fetchBeneficiaryList(page, limit) {
+async function fetchBeneficiaryList(page, limit, searchQuery = '') {
   const offset = (page - 1) * limit;
 
   try {
-    const totalItemsResult = await pharmacyPool.query("SELECT COUNT(*) FROM beneficiary");
+    // Prepare the search term with wildcards
+    const searchTerm = `%${searchQuery}%`;
+
+    // Get the total items count with search filtering
+    const totalItemsResult = await pharmacyPool.query(
+      `SELECT COUNT(*) FROM beneficiary 
+       WHERE first_name ILIKE $1 
+       OR last_name ILIKE $1 
+       OR middle_name ILIKE $1 
+       OR CAST(birthdate AS TEXT) ILIKE $1`,
+      [searchTerm]
+    );
+
     const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
     const totalPages = Math.ceil(totalItems / limit);
 
+    // Query the beneficiary list with search filtering
     const beneficiaryList = await pharmacyPool.query(
       `WITH medicine_agg AS (
           SELECT tm.tran_id,
@@ -1137,11 +1032,16 @@ async function fetchBeneficiaryList(page, limit) {
       FROM beneficiary b
       LEFT JOIN transaction_records t ON b.beneficiary_id = t.beneficiary_id
       LEFT JOIN medicine_agg m ON t.id = m.tran_id
+      WHERE b.first_name ILIKE $3 
+         OR b.last_name ILIKE $3 
+         OR b.middle_name ILIKE $3 
+         OR CAST(b.birthdate AS TEXT) ILIKE $3
       GROUP BY b.beneficiary_id
       ORDER BY b.first_name
-      LIMIT $1 OFFSET $2`, [limit, offset]
+      LIMIT $1 OFFSET $2`, [limit, offset, searchTerm]
     );
 
+    // Format the data
     const data = beneficiaryList.rows.map(row => ({
       ...row,
       middle_name: row.middle_name ? row.middle_name : '',
@@ -1211,8 +1111,6 @@ function generateNextTransactionId(lastId) {
   return "T0001";
 }
 
-//notification
-//Quantity
 async function getQuantityNotification(rhu_id) {
   try {
     const query = `
@@ -1229,15 +1127,17 @@ async function getQuantityNotification(rhu_id) {
   }
 }
 
-// Expiration
 async function getExpiredNotification(rhu_id) {
   try {
     const query = `
-      SELECT product_name, product_code, expiration
+      SELECT product_name, product_code, expiration,
+             CASE
+               WHEN expiration < CURRENT_DATE THEN 'expired'
+               WHEN expiration <= CURRENT_DATE + INTERVAL '3 months' THEN 'soon_to_expire'
+             END AS status
       FROM inventory
       WHERE rhu_id = $1 
-      AND expiration >= DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
-      AND expiration < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '2 months';
+      AND (expiration < CURRENT_DATE OR expiration <= CURRENT_DATE + INTERVAL '3 months');
     `;
     const { rows } = await pharmacyPool.query(query, [rhu_id]);
     const data = rows.map(row => ({ ...row }));
