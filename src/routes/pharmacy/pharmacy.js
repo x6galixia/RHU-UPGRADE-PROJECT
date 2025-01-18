@@ -1230,11 +1230,14 @@ async function getQuantityNotification(rhu_id) {
 async function getExpiredNotification(rhu_id) {
   try {
     const query = `
-      SELECT product_name, product_code, expiration
+      SELECT product_name, product_code, expiration,
+             CASE
+               WHEN expiration < CURRENT_DATE THEN 'expired'
+               WHEN expiration <= CURRENT_DATE + INTERVAL '3 months' THEN 'soon_to_expire'
+             END AS status
       FROM inventory
       WHERE rhu_id = $1 
-      AND expiration >= DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
-      AND expiration < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '2 months';
+      AND (expiration < CURRENT_DATE OR expiration <= CURRENT_DATE + INTERVAL '3 months');
     `;
     const { rows } = await pharmacyPool.query(query, [rhu_id]);
     const data = rows.map(row => ({ ...row }));
