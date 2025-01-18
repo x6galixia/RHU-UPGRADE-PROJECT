@@ -337,3 +337,23 @@ input[type="button"] {
     background-color: #44a130;
     color: #FFF;
 }
+
+.form-with-image{
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+.form-with-image > div{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.form-with-image > div > div{
+    flex: 1;
+}
+.form-with-image  img{
+    object-fit: cover;
+    height: 100%;
+    border: 1px solid #000;
+}
