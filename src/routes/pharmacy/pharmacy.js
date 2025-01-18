@@ -757,6 +757,11 @@ router.post("/pharmacy/dispense-medicine/send", async (req, res) => {
     findings
   } = value;
 
+  if (typeof beneficiary_id === 'string') {
+    req.flash("error", "The patient is not a beneficiary.");
+    return res.redirect("/pharmacy-dispense-request");
+  }
+
   const transactionNumber = transaction_number;
 
   const client = await pharmacyPool.connect();
