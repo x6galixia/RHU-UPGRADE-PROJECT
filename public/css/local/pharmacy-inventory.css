@@ -106,3 +106,39 @@
   flex-direction: column;
   gap: 8px;
 }
+
+.out-of-stock {
+  /* Light red for out of stock */
+  background-color: #ffcccc; 
+}
+.expired {
+  /* Salmon for expired */
+  background-color: #ffa07a;
+}
+.near-to-expire {
+  /* Light yellow for near to expire */
+  background-color: #ffffcc; 
+}
+
+.color-coding > div > div{
+  height: 20px;
+  width:  20px;
+  border: 1px solid #000;
+}
+.color-coding > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-coding{
+  display: flex;
+  width: fit-content;
+  gap: 10px;
+  justify-content: space-between;
+  margin-top: 32px;
+}
+
+table{
+  margin-top: 10px !important;
+}

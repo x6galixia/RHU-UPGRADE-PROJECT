@@ -15,27 +15,46 @@ document.addEventListener("DOMContentLoaded", function () {
       let rows = '';
   
       if (data.getInventoryList.length > 0) {
-        data.getInventoryList.forEach(list => {
-          rows += `
-            <tr>
-              <td>${list.product_id}</td>
-              <td>${list.product_code}</td>
-              <td>${list.product_name}</td>
-              <td>${list.brand_name}</td>
-              <td>${list.supplier}</td>
-              <td>${list.dosage_form}</td>
-              <td>${list.dosage}</td>
-              <td>${list.reorder_level}</td>
-              <td>${list.batch_number}</td>
-              <td>${list.product_quantity}</td>
-              <td>${list.expiration}</td>
-            </tr>`;
-        });
+          const currentDate = new Date();
+  
+          data.getInventoryList.forEach(list => {
+              const expirationDate = new Date(list.expiration);
+              const nearToExpireDate = new Date();
+              nearToExpireDate.setMonth(currentDate.getMonth() + 3);
+  
+              let rowClass = "";
+  
+              // Check conditions for color coding
+              if (list.product_quantity <= 500) {
+                  rowClass = "out-of-stock"; // Out of stock class
+              } else if (expirationDate <= currentDate) {
+                  rowClass = "expired"; // Expired class
+              } else if (expirationDate <= nearToExpireDate) {
+                  rowClass = "near-to-expire"; // Near to expire class
+              }
+  
+              rows += `
+                  <tr class="${rowClass}">
+                      <td>${list.product_id}</td>
+                      <td>${list.product_code}</td>
+                      <td>${list.product_name}</td>
+                      <td>${list.brand_name}</td>
+                      <td>${list.supplier}</td>
+                      <td>${list.dosage_form}</td>
+                      <td>${list.dosage}</td>
+                      <td>${list.reorder_level}</td>
+                      <td>${list.batch_number}</td>
+                      <td>${list.product_quantity}</td>
+                      <td>${list.expiration}</td>
+                  </tr>`;
+          });
       } else {
-        rows = '<tr><td colspan="11">No list of Medicine</td></tr>';
+          rows = '<tr><td colspan="11">No list of Medicine</td></tr>';
       }
+  
       tableBody.innerHTML = rows; // Batch DOM update
-    }
+  }
+  
   
     function fetchInventoryUpdates() {
       if (!isSearching) {

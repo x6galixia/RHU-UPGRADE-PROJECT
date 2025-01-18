@@ -19,16 +19,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function formatDate(dateString) {
         const options = {
-          weekday: "short",
-          year: "numeric",
-          month: "short",
-          day: "numeric",
+            weekday: "short",
+            year: "numeric",
+            month: "short",
+            day: "numeric",
         };
         const date = new Date(dateString);
         return date.toLocaleDateString("en-US", options);
-      }
+    }
 
-      function debounce(func, delay) {
+    function debounce(func, delay) {
         let timeoutId;
         return function (...args) {
             clearTimeout(timeoutId);
@@ -37,28 +37,28 @@ document.addEventListener("DOMContentLoaded", function () {
             }, delay);
         };
     }
-    
+
 
     async function fetchTransactions(beneficiaryId) {
         const response = await fetch(`/pharmacy-records/beneficiary-index-form/${beneficiaryId}`);
         const transactions = await response.json();
         fillTransactionTable(transactions);
-    }    
+    }
 
     function fillTransactionTable(transactions) {
         const tableBody = document.querySelector("tbody[beneficiaryIndexTable]");
         tableBody.innerHTML = "";
-    
+
         if (transactions.length === 0) {
             const emptyRow = document.createElement('tr');
             emptyRow.innerHTML = '<td colspan="8">No transactions available</td>';
             tableBody.appendChild(emptyRow);
             return;
         }
-    
+
         transactions.forEach(transaction => {
             const row = document.createElement('tr');
-    
+
             row.innerHTML = `
                 <td>${transaction.transaction_number}</td>
                 <td>${transaction.product_details}</td>    
@@ -69,10 +69,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${transaction.reciever}</td>          
                 <td>${transaction.relationship_beneficiary}</td>
             `;
-    
+
             tableBody.appendChild(row);
         });
-    }    
+    }
 
     function createTableRow(beneficiary) {
         const row = document.createElement('tr');
@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById('searchInput').addEventListener('input', debounce(function (event) {
         event.preventDefault();
         const query = this.value;
-    
+
         if (query.trim() !== "") {
             isSearching = true;
             clearInterval(pollIntervalId);
@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
             isSearching = false;
             pollIntervalId = setInterval(fetchBeneficiaryUpdates, POLL_INTERVAL);
         }
-    
+
         loadingSpinner.style.display = 'block';
     
         // Use the `/pharmacy-records` endpoint with the `query` parameter
@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 const tableBody = document.querySelector('#beneficiaryTableBody');
                 tableBody.innerHTML = '';
-    
+
                 if (data.getBeneficiaryList.length === 0) {
                     tableBody.innerHTML = `
                         <tr>
