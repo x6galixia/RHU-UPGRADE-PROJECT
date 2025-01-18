@@ -260,6 +260,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Initial setup
     attachPaginationListeners();
 });
+
 function fillUpdate(button) {
     var buttonId = button.id;
     if (buttonId === "update-id") {
