@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
         data.quantityNotif.forEach((list) => {
           const isOutOfStock = list.stock_status === 'out_of_stock';
           const notificationType = isOutOfStock ? 'Out of Stock' : 'Critical stock level';
-          const iconSrc = isOutOfStock ? '/icon/out_of_stock.svg' : '/icon/critical.svg';
+          const iconSrc = isOutOfStock ? '/img/global/out-of-stock.png' : '/img/global/box.png';
 
           console.log("stock status: ", list.stock_status);
     
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
         data.expiredNotif.forEach((list) => {
           const isExpired = list.status === 'expired';
           const notificationType = isExpired ? 'Medicine Expired' : 'Medicine Expiring Soon';
-          const iconSrc = isExpired ? '/icon/expired.svg' : '/icon/cale.svg';
+          const iconSrc = isExpired ? '/img/global/expired.png' : '/img/global/soon.png ';
     
           child += `
             <div class="notif-separate">
