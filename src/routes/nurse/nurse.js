@@ -160,34 +160,39 @@ router.get("/nurse/fetchScannedData", async (req, res) => {
 });
 
 router.get("/nurse/fetchManualData", async (req, res) => {
-  const {beneficiaryID}  = req.query;
+  let { beneficiaryID } = req.query;
 
-  beneficiaryID = beneficiaryID.parseInt();
-  console.log(beneficiaryID);
   if (!beneficiaryID) {
-      return res.status(400).send("Query parameter is required");
+    return res.status(400).send("Query parameter is required");
   }
 
+  // Parse beneficiaryID to an integer
+  beneficiaryID = parseInt(beneficiaryID, 10);
+  if (isNaN(beneficiaryID)) {
+    return res.status(400).send("Invalid beneficiary ID");
+  }
+
+  console.log("Parsed beneficiaryID:", beneficiaryID);
+
   try {
-    const testResult = await pharmacyPool.query("SELECT * FROM beneficiary WHERE beneficiary_id = $1", [beneficiaryID]);
-    console.log("Database connection test:", testResult.rows[0]);
-      // const result = await pharmacyPool.query(
-      //     `SELECT *
-      //      FROM beneficiary 
-      //      WHERE beneficiary_id LIKE $1`, 
-      //     [`%${beneficiaryID}%`]
-      // );
+    // Query the beneficiary table in the pharmacy database
+    const result = await pharmacyPool.query(
+      `SELECT *
+       FROM beneficiary 
+       WHERE beneficiary_id = $1`, 
+      [beneficiaryID]
+    );
 
-      // console.log("result:", result);
+    console.log("Query result:", result.rows);
 
-      // if (result.rows.length > 0) {
-      //     return res.json({ success: true, data: result.rows });
-      // } else {
-      //     return res.json({ success: false, error: "No matching residents found." });
-      // }
+    if (result.rows.length > 0) {
+      return res.json({ success: true, data: result.rows });
+    } else {
+      return res.json({ success: false, error: "No matching residents found." });
+    }
   } catch (err) {
-      console.error("Error querying database:", err.stack, err.message, err);
-      return res.status(500).send("Internal server error");
+    console.error("Error querying database:", err.stack);
+    return res.status(500).send("Internal server error");
   }
 });
 
