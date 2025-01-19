@@ -935,7 +935,7 @@ router.delete('/pharmacy-inventory/delete-item/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
-      const deleteResult = await pharmacyPool.query(`DELETE FROM inventory WHERE product_id = $1`, [id]);
+      const deleteResult = await pharmacyPool.query(`DELETE FROM inventory WHERE product_id = $1 AND rhu_id = $2`, [id, req.user.rhu_id]);
 
       if (deleteResult.rowCount > 0 ){
         req.flash("success", "Item Deleted Successfully");   
