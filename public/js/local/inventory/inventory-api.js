@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>${list.batch_number}</td>
                     <td>${list.product_quantity}</td>
                     <td>${list.expiration}</td>
-                    <td><img src="/img/local/delete.png" style="height: 34px" onclick="deleteInventoryItem('${list.product_id}')" alt="delete"></td>
+                    <td><img src="/img/local/delete.png" style="height: 24px;" onclick="deleteInventoryItem('${list.product_id}')"></td>
                 </tr>`;
         });
     } else {
@@ -168,6 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function deleteInventoryItem(itemId) {
     console.log('Sending DELETE request for ID:', itemId);
+
     fetch(`/pharmacy-inventory/delete-item/${itemId}`, {
         method: 'DELETE',
         headers: {
@@ -178,12 +179,15 @@ document.addEventListener("DOMContentLoaded", function () {
           if (response.ok) {
             fetchInventoryUpdates();
             location.reload();
+            console.log('Sending DELETE request for ID:', itemId);
           }
           fetchInventoryUpdates();
                 location.reload();
+                console.log('Sending DELETE request for ID:', itemId);
       })
       .catch(error => {
           console.error('Error deleting beneficiary:', error);
           location.reload();
+          console.log('Sending DELETE request for ID:', itemId);
       });
 }
