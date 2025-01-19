@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
         data.expiredNotif.forEach((list) => {
           const isExpired = list.status === 'expired';
           const notificationType = isExpired ? 'Medicine Expired' : 'Medicine Expiring Soon';
-          const iconSrc = isExpired ? '/img/global/expired.png' : '/img/global/soon.png ';
+          const iconSrc = isExpired ? '/img/global/expired.png' : '/img/global/soon.png';
     
           child += `
             <div class="notif-separate">
