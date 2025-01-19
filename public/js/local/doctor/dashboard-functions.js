@@ -48,7 +48,7 @@ document.getElementById('medicine').addEventListener('input', function () {
                 data.forEach(item => {
                     const suggestionDiv = document.createElement('div');
                     suggestionDiv.classList.add('suggestion');
-                    suggestionDiv.textContent = `${item.product_name} - ${item.dosage} QTY: ${item.product_quantity} BTCH: ${item.batch_number}`;
+                    suggestionDiv.textContent = `${item.product_name} - ${item.dosage}`;
                     suggestionDiv.addEventListener('click', function () {
                         document.getElementById('medicine').value = item.product_name + " " + item.dosage;
                         suggestions.innerHTML = '';

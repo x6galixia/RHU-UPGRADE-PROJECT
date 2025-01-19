@@ -660,16 +660,21 @@ input[type="checkbox"] {
   display: flex;
   flex-direction: column;
 }
+#manualOrScan{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  width: 100%;
+  
+}
 
 .scanSwitch {
   justify-self: end;
-  align-self: self-end;
   display: flex;
   justify-content: end;
   align-items: end;
   flex-direction: column;
-  margin-top: 40px;
-  position: absolute;
 }
 
 

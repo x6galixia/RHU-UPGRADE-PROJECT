@@ -1,3 +1,6 @@
+
+
+
 function formatDate(date) {
   const d = new Date(date);
   const year = d.getFullYear();
@@ -302,7 +305,7 @@ document.getElementById('scanSwitch').addEventListener('change', function () {
   function handleKeyPress(event) {
     if (event.key === 'Enter') {
       const scannedData = event.target.value;
-      const secretKey = "KimGalicia";
+      const secretKey = "CG3 Tech";
 
       // Decrypt function
       function decryptData(cipherText, secretKey) {
@@ -311,9 +314,6 @@ document.getElementById('scanSwitch').addEventListener('change', function () {
       }
 
       const decryptedData = decryptData(scannedData, secretKey);
-
-      console.log(document.getElementById("qrOutput").value);
-      console.log(decryptedData);
 
       // Set scanned data to the QR output field
       document.getElementById("qrOutput").value = decryptedData;
