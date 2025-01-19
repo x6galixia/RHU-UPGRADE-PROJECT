@@ -46,7 +46,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>${list.batch_number}</td>
                     <td>${list.product_quantity}</td>
                     <td>${list.expiration}</td>
-                    <td><img src="/img/local/uninstall.png" style="height: 28px;" onclick="deleteInventoryItem('${list.product_id}')"></td>
+                    <td>
+                    <img src="/img/local/pencil.png" style="height: 20px; margin: 5px;" onclick="updateInventoryItem('${list.product_id}')">
+                    <img src="/img/local/recycle-bin.png" style="height: 20px; margin: 5px;" onclick="deleteInventoryItem('${list.product_id}')">
+                    </td>
                 </tr>`;
         });
     } else {
