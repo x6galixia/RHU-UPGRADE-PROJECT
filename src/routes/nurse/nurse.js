@@ -159,6 +159,38 @@ router.get("/nurse/fetchScannedData", async (req, res) => {
   }
 });
 
+router.get("/nurse/fetchManualData", async (req, res) => {
+  const {beneficiaryID}  = req.query;
+
+  beneficiaryID = beneficiaryID.parseInt();
+  console.log(beneficiaryID);
+  if (!beneficiaryID) {
+      return res.status(400).send("Query parameter is required");
+  }
+
+  try {
+    const testResult = await pharmacyPool.query("SELECT * FROM beneficiary WHERE beneficiary_id = $1", [beneficiaryID]);
+    console.log("Database connection test:", testResult.rows[0]);
+      // const result = await pharmacyPool.query(
+      //     `SELECT *
+      //      FROM beneficiary 
+      //      WHERE beneficiary_id LIKE $1`, 
+      //     [`%${beneficiaryID}%`]
+      // );
+
+      // console.log("result:", result);
+
+      // if (result.rows.length > 0) {
+      //     return res.json({ success: true, data: result.rows });
+      // } else {
+      //     return res.json({ success: false, error: "No matching residents found." });
+      // }
+  } catch (err) {
+      console.error("Error querying database:", err.stack, err.message, err);
+      return res.status(500).send("Internal server error");
+  }
+});
+
 router.post("/nurse/admit-patient", async (req, res) => {
   const { error, value } = patientSchema.validate(req.body);
   const rhu_id = req.user.rhu_id;
