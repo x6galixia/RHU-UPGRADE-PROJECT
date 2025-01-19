@@ -1142,7 +1142,7 @@ async function getQuantityNotification(rhu_id) {
           WHEN product_quantity > 0 AND product_quantity <= 500 THEN 'critical_stock'
         END AS stock_status
       FROM inventory
-      WHERE rhu_id = $1 AND product_quantity <= 500;
+      WHERE rhu_id = $1 AND product_quantity >0 AND product_quantity <= 500;
     `;
     const { rows } = await pharmacyPool.query(query, [rhu_id]);
     console.log("Query Result Rows:", rows); // Debugging
