@@ -64,9 +64,10 @@ router.get("/doctor-dashboard", ensureAuthenticated, checkUserType("Doctor"), as
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const isAjax = req.query.ajax === "true";
+  const searchQuery = req.query.search || ""; // Add search query parameter
 
   try {
-    const { getPatientList, totalPages } = await fetchPatientList(page, limit);
+    const { getPatientList, totalPages } = await fetchPatientList(page, limit, searchQuery); // Pass searchQuery
 
     if (isAjax) {
       return res.json({
@@ -119,116 +120,6 @@ router.get("/doctor-dashboard/patient-health-assessment", ensureAuthenticated, c
 
 router.get("/doctor-dashboard/doctor-dash2", (req, res) => {
   res.render("doctor/doctor-dash2");
-});
-
-router.get("/doctor-dashboard/search", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const offset = (page - 1) * limit;
-  const { query } = req.query;
-
-  try {
-    // First, get the total count of unique patients
-    const totalItemsResult = await rhuPool.query(`
-      SELECT COUNT(DISTINCT p.patient_id) as count
-      FROM patients p
-      LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
-      LEFT JOIN doctor_visits dv ON p.patient_id = dv.patient_id
-      LEFT JOIN medtech_labs lr ON p.patient_id = lr.patient_id
-      LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
-      ${query ? `WHERE CONCAT(p.first_name, ' ', p.middle_name, ' ', p.last_name, ' ', p.suffix) ILIKE $1` : ''}
-    `, query ? [`%${query}%`] : []);
-
-    const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
-    const totalPages = Math.ceil(totalItems / limit);
-
-    // Base query for patients
-    const baseQuery = `
-      SELECT 
-        p.patient_id, 
-        p.rhu_id, 
-        p.last_name, 
-        p.first_name, 
-        p.middle_name, 
-        p.suffix, 
-        p.phone, 
-        p.gender,
-        p.birthdate, 
-        p.house_no, 
-        p.street, 
-        p.barangay, 
-        p.city, 
-        p.province, 
-        p.occupation, 
-        p.email, 
-        p.philhealth_no, 
-        p.guardian,
-        MAX(nc.age) AS age,
-        COALESCE(MAX(nc.check_date), '1900-01-01') AS check_date,
-        MAX(nc.height) AS height,
-        MAX(nc.weight) AS weight,
-        MAX(nc.systolic) AS systolic,
-        MAX(nc.diastolic) AS diastolic,
-        MAX(nc.temperature) AS temperature,
-        MAX(nc.heart_rate) AS heart_rate,
-        MAX(nc.respiratory_rate) AS respiratory_rate,
-        MAX(nc.bmi) AS bmi,
-        MAX(nc.comment) AS comment,
-        COALESCE(MAX(dv.follow_date), NULL) AS follow_date,
-        COALESCE(MAX(dv.diagnosis), '') AS diagnosis,
-        COALESCE(MAX(dv.findings), '') AS findings,
-        STRING_AGG(DISTINCT dv.category, ', ') AS categories,
-        STRING_AGG(DISTINCT dv.service, ', ') AS services,
-        STRING_AGG(DISTINCT dv.medicine || '|' || dv.instruction || '|' || dv.quantity::text, ', ') AS medicine_details,
-        STRING_AGG(DISTINCT lr.lab_result, ', ') AS lab_results,
-        r.rhu_name, 
-        r.rhu_address
-      FROM patients p
-      LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
-      LEFT JOIN doctor_visits dv ON p.patient_id = dv.patient_id
-      LEFT JOIN medtech_labs lr ON p.patient_id = lr.patient_id
-      LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
-    `;
-
-    // Prepare the search query based on whether a search query was provided
-    let searchQuery = `${baseQuery} ${query ? `WHERE CONCAT(p.first_name, ' ', p.middle_name, ' ', p.last_name, ' ', p.suffix) ILIKE $1` : ''} 
-      GROUP BY p.patient_id, r.rhu_name, r.rhu_address
-      ORDER BY p.first_name 
-      LIMIT $2 OFFSET $3`;
-
-    const searchResult = await rhuPool.query(searchQuery, query ? [`%${query}%`, limit, offset] : [limit, offset]);
-
-    const data = searchResult.rows.map(row => {
-      const medicinesDetails = row.medicine_details ? row.medicine_details.split(', ') : [];
-
-      const medicines = [];
-      const quantities = [];
-      const instructions = [];
-
-      medicinesDetails.forEach(detail => {
-        const [medicine, instruction, quantity] = detail.split('|');
-        medicines.push(medicine);
-        instructions.push(instruction);
-        quantities.push(quantity);
-      });
-
-      return {
-        ...row,
-        medicines,
-        quantities,
-        instructions,
-      };
-    });
-
-    if (data.length === 0) {
-      return res.json({ message: "No patients found." });
-    }
-
-    res.json({ getPatientList: data, totalPages });
-  } catch (err) {
-    console.error("Error: ", err.message, err.stack);
-    res.status(500).send("An error occurred during the search.");
-  }
 });
 
 router.get("/doctor/patient-histories/:patient_id", ensureAuthenticated, checkUserType("Doctor"), async (req, res) => {
@@ -604,26 +495,23 @@ router.delete("/logout", (req, res, next) => {
   });
 });
 
-async function fetchPatientList(page, limit) {
+async function fetchPatientList(page, limit, searchQuery = "") {
   const offset = (page - 1) * limit;
 
   try {
-    // First, get the total count of unique patients
-    const totalItemsResult = await rhuPool.query(`
+    // Base query for counting total items
+    let countQuery = `
       SELECT COUNT(DISTINCT p.patient_id) as count
       FROM patients p
       LEFT JOIN nurse_checks nc ON p.patient_id = nc.patient_id
       LEFT JOIN doctor_visits dv ON p.patient_id = dv.patient_id
       LEFT JOIN medtech_labs lr ON p.patient_id = lr.patient_id
       LEFT JOIN prescription pr ON p.patient_id = pr.patient_prescription_id
-      LEFT JOIN rhu r ON p.rhu_id = r.rhu_id;
-    `);
+      LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
+    `;
 
-    const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
-    const totalPages = Math.ceil(totalItems / limit);
-
-    // Now, fetch the patient list with aggregation including prescription data
-    const getPatientList = await rhuPool.query(`
+    // Base query for fetching patient list
+    let patientQuery = `
       SELECT 
         p.patient_id, 
         p.rhu_id, 
@@ -670,11 +558,43 @@ async function fetchPatientList(page, limit) {
       LEFT JOIN medtech_labs lr ON p.patient_id = lr.patient_id
       LEFT JOIN prescription pr ON p.patient_id = pr.patient_prescription_id
       LEFT JOIN rhu r ON p.rhu_id = r.rhu_id
+    `;
+
+    // Add search condition if searchQuery is provided
+    if (searchQuery) {
+      const searchCondition = `
+        WHERE 
+          p.first_name ILIKE $1 OR 
+          p.last_name ILIKE $1 OR 
+          p.patient_id::text ILIKE $1 OR 
+          p.phone ILIKE $1 OR 
+          p.email ILIKE $1
+      `;
+      countQuery += searchCondition;
+      patientQuery += searchCondition;
+    }
+
+    // Complete the queries
+    countQuery += `;`;
+    patientQuery += `
       GROUP BY p.patient_id, r.rhu_name, r.rhu_address
       ORDER BY p.first_name
-      LIMIT $1 OFFSET $2
-    `, [limit, offset]);
+      LIMIT $${searchQuery ? 2 : 1} OFFSET $${searchQuery ? 3 : 2};
+    `;
 
+    // Execute the count query
+    const countParams = searchQuery ? [`%${searchQuery}%`] : [];
+    const totalItemsResult = await rhuPool.query(countQuery, countParams);
+    const totalItems = parseInt(totalItemsResult.rows[0].count, 10);
+    const totalPages = Math.ceil(totalItems / limit);
+
+    // Execute the patient list query
+    const queryParams = searchQuery
+      ? [`%${searchQuery}%`, limit, offset]
+      : [limit, offset];
+    const getPatientList = await rhuPool.query(patientQuery, queryParams);
+
+    // Process the data
     const data = getPatientList.rows.map(row => {
       const medicinesDetails = row.medicine_details ? row.medicine_details.split(', ') : [];
 
