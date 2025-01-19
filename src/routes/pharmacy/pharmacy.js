@@ -931,6 +931,20 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
   }
 });
 
+router.delete('/pharmacy-inventory/delete-item/:id', async (req, res) => {
+  const { id } = req.params.id;
+
+  try {
+      await pharmacyPool.query(`DELETE FROM inventory WHERE product_id = $1`, [id]);
+      req.flash("success", "Item Deleted Successfully");
+      return res.redirect("/pharmacy-inventory");
+  } catch (err) {
+      req.flash("error", err);
+      return res.redirect("/pharmacy-inventory");
+  }
+
+});
+
 router.delete("/logout", (req, res, next) => {
   req.logOut((err) => {
     if (err) {
@@ -1156,6 +1170,5 @@ async function getExpiredNotification(rhu_id) {
     return { expiredNotif: [] };
   }
 }
-
 
 module.exports = router;
