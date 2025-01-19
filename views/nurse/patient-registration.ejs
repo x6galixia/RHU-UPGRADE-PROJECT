@@ -38,20 +38,38 @@
                             <div class="patient-head">
                                 <h2 class="form-header">PATIENT INFORMATION</h2>
                             </div>
-                            <div class="scanSwitch">
-                                Scan QR
-                                <label class="switch">
-                                    <input type="checkbox" id="scanSwitch">
-                                    <span class="slider round"></span>
-                                </label>
+                            <div id="manualOrScan">
+                                <div style="display: flex; align-items: center;">
+                                    <div>
+                                        <input type="text" class="search-bar" id="searchBar" autocomplete="off"
+                                            placeholder="Search by Beneficiary ID">
+                                        <div id="results" style="display:none"></div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <img style="background-color: rgb(180, 180, 180); border-radius: 4px; padding: 2px;"
+                                            class="search-icon" id="searchIcon" src="../icon/search.svg" alt="">
+                                        <p id="searchLabel"
+                                            style="font-style: normal; color: rgb(58, 126, 214); line-height: 20px; margin-top: -30px; text-align: center;">
+                                            Manual search.</p>
+                                    </div>
+                                </div>
+                                <div class="scanSwitch">
+                                    Scan QR
+                                    <label class="switch">
+                                        <input type="checkbox" id="scanSwitch">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+
                             </div>
                             <input type="hidden" id="qrOutput" name="patient_id" style="position: absolute;">
                         </div>
-                        <div class="information">
+                        <div class="information" style="margin-top: 10px;">
                             <div class="form-with-image">
                                 <div class="r" style="border: 1px solid #0000;">
                                     <div>
-                                        <p style="text-decoration: underline; text-align: center; margin-bottom: 4px;">ID picture</p>
+                                        <p style="text-decoration: underline; text-align: center; margin-bottom: 4px;">
+                                            ID picture</p>
                                         <img src="../img/global/essu-logo.png" id="patient-image" alt="">
                                     </div>
                                 </div>
@@ -362,6 +380,77 @@
                             </div>
 
         </main>
+        <script>
+            const searchBar = document.getElementById('searchBar');
+            const searchIcon = document.getElementById('searchIcon');
+            searchIcon.addEventListener('click', () => {
+                searchBar.classList.toggle('open');
+                if (searchBar.classList.contains('open')) {
+                    document.getElementById('searchLabel').innerText = 'Click the icon to close.';
+                    searchBar.focus();
+                    searchIcon.style.marginLeft = "-30px"
+                    searchIcon.style.backgroundColor = "transparent"
+                    searchIcon.style.padding = "0"
+                    document.getElementById('searchBar').addEventListener('input', function () {
+                        const query = document.getElementById("searchBar").value;
+                        console.log("search balue",query);
+                        if (query.length > 0) {
+                          fetch(`/nurse/fetchManualData?beneficiaryID=${query}`, {
+                            method: 'GET',
+                            headers: {
+                              'Content-Type': 'application/json'
+                            },
+                          })
+                            .then(response => {
+                              if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                              }
+                              return response.json(); // Parse the JSON response
+                            })
+                            .then(data => {
+                              const resultsContainer = document.getElementById('results');
+                              resultsContainer.style.display = 'flex';
+                              resultsContainer.innerHTML = '';
+
+                              if (data.success && data.data.length > 0) {
+                                data.data.forEach(beneficiary => {
+                                  const listItem = document.createElement('div');
+                                  listItem.textContent = `${beneficiary.first_name} ${beneficiary.middle_name} ${beneficiary.last_name}`;
+                                  listItem.classList.add('result-item');
+                                  resultsContainer.appendChild(listItem);
+
+
+                                  listItem.addEventListener('click', () => {
+                                    console.log(beneficiary);
+                                    document.getElementById('searchBar').value = beneficiary.beneficiary_id;
+                                    document.getElementById('qrOutput').value = beneficiary.beneficiary_id;
+                                    populateFormFields(beneficiary);
+                                    resultsContainer.innerHTML = '';
+                                    resultsContainer.style.display = 'none'; 
+                                  });
+                                });
+                              } else {
+                                resultsContainer.textContent = '--No results found!--';
+                              }
+                            })
+                            .catch(error => {
+                              console.error("Error fetching residents:", error);
+                            });
+                        } else {
+                          const resultsContainer = document.getElementById('results');
+                          resultsContainer.innerHTML = '';
+                          resultsContainer.style.display = 'none';
+                        }
+                    });
+                } else {
+                    searchIcon.style.marginLeft = "0"
+                    searchIcon.style.backgroundColor = "rgb(180, 180, 180)"
+                    searchIcon.style.padding = "4px"
+                    searchBar.value = '';
+                    document.getElementById('searchLabel').innerHTML = 'Manual search.';
+                }
+            });
+        </script>
         <!-- fetch ID -->
         <script>
             // Fetch the new patient ID when the page loads
@@ -403,6 +492,7 @@
                 });
             });
         </script>
+        
         <script src="../js/local/nurse/patient-registration-api.js"></script>
         <script src="../js/global/pop-up.js"></script>
         <script src="../js/global/client-side-functions.js"></script>
