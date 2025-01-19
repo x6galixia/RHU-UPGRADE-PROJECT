@@ -195,6 +195,7 @@ table {
   margin-top: 32px;
   border-collapse: collapse;
   min-width: 100%;
+  cursor: pointer;
 }
 
 table>thead>tr {

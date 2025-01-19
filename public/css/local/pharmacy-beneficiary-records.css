@@ -284,3 +284,13 @@ select {
   font-size: 16px;
   text-align: center;
 }
+
+.table-container{
+  overflow: hidden !important;
+}
+.table-container table th{
+  text-wrap: wrap !important;
+}
+.table-container table{
+  width: 100%;
+}
