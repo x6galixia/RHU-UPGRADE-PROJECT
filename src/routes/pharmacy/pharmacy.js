@@ -1114,15 +1114,22 @@ function generateNextTransactionId(lastId) {
 async function getQuantityNotification(rhu_id) {
   try {
     const query = `
-      SELECT product_name, product_code, product_quantity
+      SELECT 
+        product_name, 
+        product_code, 
+        product_quantity,
+        CASE 
+          WHEN product_quantity = 0 THEN 'out_of_stock'
+          WHEN product_quantity > 0 AND product_quantity <= 500 THEN 'critical_stock'
+        END AS stock_status
       FROM inventory
       WHERE rhu_id = $1 AND product_quantity <= 500;
     `;
     const { rows } = await pharmacyPool.query(query, [rhu_id]);
-    const data = rows.map(row => ({ ...row }));
-    return { quantityNotif: data };
+    console.log("Query Result Rows:", rows); // Debugging
+    return { quantityNotif: rows };
   } catch (error) {
-    console.error("Error: ", error);
+    console.error("Error in getQuantityNotification:", error);
     return { quantityNotif: [] };
   }
 }
@@ -1130,22 +1137,25 @@ async function getQuantityNotification(rhu_id) {
 async function getExpiredNotification(rhu_id) {
   try {
     const query = `
-      SELECT product_name, product_code, expiration,
-             CASE
-               WHEN expiration < CURRENT_DATE THEN 'expired'
-               WHEN expiration <= CURRENT_DATE + INTERVAL '3 months' THEN 'soon_to_expire'
-             END AS status
+      SELECT 
+        product_name, 
+        product_code, 
+        expiration,
+        CASE
+          WHEN expiration < CURRENT_DATE THEN 'expired'
+          WHEN expiration <= CURRENT_DATE + INTERVAL '3 months' THEN 'soon_to_expire'
+        END AS status
       FROM inventory
       WHERE rhu_id = $1 
-      AND (expiration < CURRENT_DATE OR expiration <= CURRENT_DATE + INTERVAL '3 months');
+        AND (expiration < CURRENT_DATE OR expiration <= CURRENT_DATE + INTERVAL '3 months');
     `;
     const { rows } = await pharmacyPool.query(query, [rhu_id]);
-    const data = rows.map(row => ({ ...row }));
-    return { expiredNotif: data };
+    return { expiredNotif: rows };
   } catch (error) {
-    console.error("Error: ", error);
+    console.error("Error in getExpiredNotification:", error);
     return { expiredNotif: [] };
   }
 }
+
 
 module.exports = router;
