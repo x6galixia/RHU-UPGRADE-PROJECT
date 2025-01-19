@@ -932,11 +932,16 @@ router.delete('/pharmacy-records/delete/:id', async (req, res) => {
 });
 
 router.delete('/pharmacy-inventory/delete-item/:id', async (req, res) => {
-  const { id } = req.params.id;
+  const { id } = req.params;
 
   try {
-      await pharmacyPool.query(`DELETE FROM inventory WHERE product_id = $1`, [id]);
-      req.flash("success", "Item Deleted Successfully");
+      const deleteResult = await pharmacyPool.query(`DELETE FROM inventory WHERE product_id = $1`, [id]);
+
+      if (deleteResult.rowCount > 0 ){
+        req.flash("success", "Item Deleted Successfully");   
+      } else {
+        req.flash("error", "Item Deletion Failed"); 
+      }
       return res.redirect("/pharmacy-inventory");
   } catch (err) {
       req.flash("error", err);
