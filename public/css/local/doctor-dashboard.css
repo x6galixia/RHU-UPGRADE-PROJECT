@@ -457,3 +457,16 @@ details {
     justify-content: start;
     align-items: center;
 }
+
+.out-of-stock {
+    /* Light red for out of stock */
+    background-color: #ffcccc; 
+  }
+  .expired {
+    /* Salmon for expired */
+    background-color: #ffa07a;
+  }
+  .near-to-expire {
+    /* Light yellow for near to expire */
+    background-color: #ffffcc; 
+  }
