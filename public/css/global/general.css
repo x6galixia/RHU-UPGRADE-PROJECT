@@ -539,7 +539,15 @@ input[type="checkbox"] {
   display: flex;
   padding: 10px;
   border-bottom: 1px solid #ddd;
-  cursor: pointer;
+  /* cursor: pointer; */
+}
+
+.reject-heading h2{
+  text-align: left;
+}
+.reject-heading{
+  justify-content: center;
+  gap: 20px;
 }
 
 .notif-separate:hover {

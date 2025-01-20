@@ -107,31 +107,89 @@
   gap: 8px;
 }
 
+.critical-stock {
+  background-color: #ffcc80;
+}
+
 .out-of-stock {
   /* Light red for out of stock */
-  background-color: #ffcccc; 
+  background-color: #ffcccc;
 }
+
 .expired {
   /* Salmon for expired */
   background-color: #ffa07a;
 }
+
 .near-to-expire {
   /* Light yellow for near to expire */
-  background-color: #ffffcc; 
+  background-color: #ffffcc;
 }
 
-.color-coding > div > div{
+.icon-container {
+  width: 20px;
   height: 20px;
-  width:  20px;
+  border-radius: 50%;
+  border: .5px solid #000;
+  background-color: #fff;
+  display: grid;
+  place-items: center;
+  position: absolute;
+  left: 0;
+}
+
+.icon-container::after {
+  content: attr(data-tooltip);
+  /* Use the tooltip text from data-tooltip attribute */
+  position: absolute;
+  bottom: 125%;
+  /* Position above the icon */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  /* Semi-transparent black background */
+  color: white;
+  /* White text color */
+  padding: 5px 10px;
+  /* Padding for readability */
+  border-radius: 5px;
+  /* Rounded corners */
+  font-size: 14px;
+  /* Adjustable font size */
+  white-space: nowrap;
+  /* Prevent text wrapping */
+  display: none;
+  /* Hide by default */
+  z-index: 10;
+  /* Ensure it appears above other elements */
+}
+
+.icon-container:hover::after {
+  display: block;
+  /* Show tooltip on hover */
+}
+
+.icon {
+  color: red;
+  font-weight: bold;
+  width: 100%;
+  height: 100%;
+}
+
+
+.color-coding>div>div {
+  height: 20px;
+  width: 20px;
   border: 1px solid #000;
 }
-.color-coding > div {
+
+.color-coding>div {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.color-coding{
+.color-coding {
   display: flex;
   width: fit-content;
   gap: 10px;
@@ -139,6 +197,24 @@
   margin-top: 32px;
 }
 
-table{
+table {
   margin-top: 10px !important;
+}
+
+.reject-heading {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 2px solid black;
+  padding: 12px 0;
+}
+
+#delete-medicine main{
+  display: flex;
+  flex-direction: column;
+}
+#delete-medicine main div {
+  display: flex
+;
+    justify-content: space-around;
 }
