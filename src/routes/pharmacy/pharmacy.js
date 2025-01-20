@@ -1137,6 +1137,7 @@ async function getQuantityNotification(rhu_id) {
         product_name, 
         product_code, 
         product_quantity,
+        product_id,
         CASE 
           WHEN product_quantity = 0 THEN 'out_of_stock'
           WHEN product_quantity > 0 AND product_quantity <= 500 THEN 'critical_stock'
@@ -1160,6 +1161,7 @@ async function getExpiredNotification(rhu_id) {
         product_name, 
         product_code, 
         expiration,
+        product_id,
         CASE
           WHEN expiration < CURRENT_DATE THEN 'expired'
           WHEN expiration <= CURRENT_DATE + INTERVAL '3 months' THEN 'soon_to_expire'

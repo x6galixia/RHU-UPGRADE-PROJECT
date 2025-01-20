@@ -91,6 +91,30 @@ document.addEventListener("DOMContentLoaded", function () {
       let child = '';
     
       if (data.totalOfNewNotif > 0) {
+
+ // Handle expired and soon-to-expire notifications
+        data.expiredNotif.forEach((list) => {
+          const isExpired = list.status === 'expired';
+          const notificationType = isExpired ? 'Medicine Expired' : 'Medicine Expiring Soon';
+          const iconSrc = isExpired ? '/img/global/expired.png' : '/img/global/soon.png';
+          const expired = isExpired ? `<u onclick="deleteExpiredMedicine('${list.product_id}')">click here to remove</u>` : '';
+    
+          child += `
+            <div class="notif-separate">
+              <div class="notif-center">
+                <img class="icon-p" src="${iconSrc}" alt="">
+              </div>
+              <div class="notifContext">
+                <p class="p-head">${notificationType}</p>
+                <p class="p-body">
+                  Expiration date: ${formatDate(list.expiration)} Medicine: ${list.product_name} Product code: ${list.product_code}
+                </p>
+                <i><u style="color:red; cursor:pointer;">${expired}</u></i>
+              </div>
+            </div>
+          `;
+        });
+
         // Handle critical stock level and out of stock notifications
         data.quantityNotif.forEach((list) => {
           const isOutOfStock = list.stock_status === 'out_of_stock';
@@ -109,31 +133,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 <p class="p-body">
                   Quantity: ${list.product_quantity} Medicine: ${list.product_name} Product code: ${list.product_code}
                 </p>
+                <i ><u style="color:blue; cursor:pointer;">click here to restock.</u></i>
               </div>
             </div>
           `;
         });
-    
-        // Handle expired and soon-to-expire notifications
-        data.expiredNotif.forEach((list) => {
-          const isExpired = list.status === 'expired';
-          const notificationType = isExpired ? 'Medicine Expired' : 'Medicine Expiring Soon';
-          const iconSrc = isExpired ? '/img/global/expired.png' : '/img/global/soon.png';
-    
-          child += `
-            <div class="notif-separate">
-              <div class="notif-center">
-                <img class="icon-p" src="${iconSrc}" alt="">
-              </div>
-              <div class="notifContext">
-                <p class="p-head">${notificationType}</p>
-                <p class="p-body">
-                  Expiration date: ${formatDate(list.expiration)} Medicine: ${list.product_name} Product code: ${list.product_code}
-                </p>
-              </div>
-            </div>
-          `;
-        });
+       
       } else {
         // No notifications
         child = `
@@ -169,3 +174,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Add similar blocks for Nurse and Med Tech if necessary.
 });
+
+
+function deleteExpiredMedicine(id){
+  const confirmDeleteButton = document.getElementById('confirm-delete');
+  const cancelDeleteButton = document.getElementById('cancel-delete');
+  const pop_up_Delete = document.getElementById('delete-medicine');
+
+  pop_up_Delete.classList.add("visible");
+  overlay.classList.add("visible");
+
+  confirmDeleteButton.addEventListener('click', function () {
+      deleteInventoryItem(id);
+      pop_up_Delete.classList.remove("visible");
+      overlay.classList.remove("visible");
+  })
+  cancelDeleteButton.addEventListener('click', function () {
+      pop_up_Delete.classList.remove("visible");
+      overlay.classList.remove("visible");
+  })
+}

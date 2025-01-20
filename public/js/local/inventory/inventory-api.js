@@ -10,55 +10,6 @@ document.addEventListener("DOMContentLoaded", function () {
       nav1.classList.toggle("selected");
     }
   
-    function updateInventoryTable(data) {
-      const tableBody = document.getElementById("inventoryTableBody");
-      let rows = '';
-  
-      if (data.getInventoryList && data.getInventoryList.length > 0) {
-        const currentDate = new Date(); // Get the current date
-        const nearToExpireDate = new Date();
-        nearToExpireDate.setMonth(currentDate.getMonth() + 3); // Set to 3 months from now
-    
-        data.getInventoryList.forEach(list => {
-            const expirationDate = new Date(list.expiration); // Convert expiration date to Date object
-            let rowClass = "";
-    
-            // Check conditions for color coding
-            if (list.product_quantity <= 500) {
-                rowClass = "out-of-stock"; // Out of stock class
-            } else if (expirationDate <= currentDate) {
-                rowClass = "expired"; // Expired class
-            } else if (expirationDate <= nearToExpireDate) {
-                rowClass = "near-to-expire"; // Near to expire class
-            }
-    
-            // Build the table row
-            rows += `
-                <tr class="${rowClass}">
-                    <td>${list.product_id}</td>
-                    <td>${list.product_code}</td>
-                    <td>${list.product_name}</td>
-                    <td>${list.brand_name}</td>
-                    <td>${list.supplier}</td>
-                    <td>${list.dosage_form}</td>
-                    <td>${list.dosage}</td>
-                    <td>${list.reorder_level}</td>
-                    <td>${list.batch_number}</td>
-                    <td>${list.product_quantity}</td>
-                    <td>${list.expiration}</td>
-                    <td>
-                    <img src="/img/local/pencil.png" style="height: 20px; margin: 5px;" onclick="updateInventoryItem('${list.product_id}')">
-                    <img src="/img/local/recycle-bin.png" style="height: 20px; margin: 5px;" onclick="deleteInventoryItem('${list.product_id}')">
-                    </td>
-                </tr>`;
-        });
-    } else {
-        // If no data is available, show a message
-        rows = '<tr><td colspan="12">No list of Medicine</td></tr>';
-    }
-  
-      tableBody.innerHTML = rows; // Batch DOM update
-  }
   
   
     function fetchInventoryUpdates() {
@@ -168,6 +119,139 @@ document.addEventListener("DOMContentLoaded", function () {
     // Initial setup
     attachPaginationListeners();
   });
+
+  function attachDotEventListeners() {
+    document.querySelectorAll(".dot").forEach(function (dot) {
+        dot.addEventListener("click", function () {
+            const tripleDotContainer = dot.closest("td").querySelector(".triple-dot");
+            if (tripleDotContainer) {
+                // Close all other open menus
+                document.querySelectorAll(".triple-dot.visible").forEach(menu => {
+                    if (menu !== tripleDotContainer) {
+                        menu.classList.remove("visible");
+                    }
+                });
+
+                tripleDotContainer.classList.toggle("visible");
+                if (tripleDotContainer.classList.contains("visible")) {
+                    clearInterval(pollIntervalId);
+                    isDotMenuOpen = true;
+                } else {
+                    pollIntervalId = setInterval(fetchBeneficiaryUpdates, POLL_INTERVAL);
+                    isDotMenuOpen = false;
+                }
+            }
+        });
+    });
+
+    document.addEventListener("click", function (event) {
+        // Check if the click was outside any dot container
+        if (!event.target.closest(".dot")) {
+            document.querySelectorAll(".triple-dot.visible").forEach(menu => {
+                menu.classList.remove("visible");
+                pollIntervalId = setInterval(fetchBeneficiaryUpdates, POLL_INTERVAL);
+                isDotMenuOpen = false;
+            });
+        }
+    });
+}
+
+function updateInventoryTable(data) {
+  const tableBody = document.getElementById("inventoryTableBody");
+  let rows = '';
+
+  if (data.getInventoryList && data.getInventoryList.length > 0) {
+      const currentDate = new Date(); // Get the current date
+      const nearToExpireDate = new Date();
+      nearToExpireDate.setMonth(currentDate.getMonth() + 3); // Set to 3 months from now
+
+      data.getInventoryList.forEach(list => {
+          const expirationDate = new Date(list.expiration); // Convert expiration date to Date object
+          let rowClass = "";
+          let quantityIcon = ""; // Icon for the product quantity column
+          let expirationIcon = ""; // Icon for the expiration column
+          let quantityTooltip = ""; // Tooltip for product quantity column
+          let expirationTooltip = ""; // Tooltip for expiration column
+
+          const daysToExpire = Math.ceil((expirationDate - currentDate) / (1000 * 60 * 60 * 24)); // Calculate days to expire
+
+          // Critical stock condition
+          if (list.product_quantity <= 500) {
+              rowClass = "critical-stock";
+              quantityIcon = "!"; 
+              quantityTooltip = "This product is in critical stock.";
+          }
+
+          // Near-to-expire condition
+          if (expirationDate <= nearToExpireDate && expirationDate > currentDate) {
+              rowClass = "near-to-expire";
+              expirationIcon = "!"; 
+              expirationTooltip = `This product will expire in ${daysToExpire} days.`;
+          }
+
+          // Expired condition
+          if (expirationDate <= currentDate) {
+              rowClass = "expired";
+              expirationIcon = "!"; 
+              expirationTooltip = `This product expired ${Math.abs(daysToExpire)} days ago.`;
+          }
+
+          // Out-of-stock condition
+          if (list.product_quantity === 0) {
+              rowClass = "out-of-stock";
+              quantityIcon = "!";
+              quantityTooltip = "This product is out of stock.";
+          }
+
+          // Build the table row
+          rows += `
+              <tr class="${rowClass}">
+                  <td>${list.product_id}</td>
+                  <td>${list.product_code}</td>
+                  <td>${list.product_name}</td>
+                  <td>${list.brand_name}</td>
+                  <td>${list.supplier}</td>
+                  <td>${list.dosage_form}</td>
+                  <td>${list.dosage}</td>
+                  <td>${list.reorder_level}</td>
+                  <td>${list.batch_number}</td>
+                  <td>
+                      <div style="display:flex; align-items:center; justify-content:center; position:relative">
+                          ${list.product_quantity}
+                          ${quantityIcon ? `<div class="icon-container" data-tooltip="${quantityTooltip}"><span class="icon">${quantityIcon}</span></div>` : ''}
+                      </div>
+                  </td>
+                  <td style="min-width: 200px;">
+                      <div style="display:flex; align-items:center; justify-content:center; position:relative">
+                          ${list.expiration}
+                          ${expirationIcon ? `<div class="icon-container" data-tooltip="${expirationTooltip}"><span class="icon">${expirationIcon}</span></div>` : ''}
+                      </div>
+                  </td>
+                  <td class="menu-row">
+                    <img class="dot" src="../icon/triple-dot.svg" alt="">
+                    <div class="triple-dot">
+                        <div class="menu" data-id="${list.product_id}">
+                            <button id="delete-id" onclick="popUp_three_dot(this)">Delete</button>
+                            <button id="update-id" onclick="popUp_three_dot(this)">Update</button>
+                            <button id="generate-id" onclick="popUp_three_dot(this)">Generate ID</button>
+                        </div>
+                    </div>
+                  </td>
+                  </tr>`;
+      });
+                  // <td>
+
+                  //     <img src="/img/local/pencil.png" style="height: 20px; margin: 5px;" onclick="updateInventoryItem('${list.product_id}')">
+                  //     <img src="/img/local/recycle-bin.png" style="height: 20px; margin: 5px;" onclick="deleteInventoryItem('${list.product_id}')">
+                  // </td>
+  } else {
+      // If no data is available, show a message
+      rows = '<tr><td colspan="12">No list of Medicine</td></tr>';
+  }
+
+  tableBody.innerHTML = rows; // Batch DOM update
+  attachDotEventListeners();
+}
 
   function deleteInventoryItem(itemId) {
     console.log('Sending DELETE request for ID:', itemId);

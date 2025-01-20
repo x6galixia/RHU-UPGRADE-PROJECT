@@ -343,6 +343,7 @@ input[type="button"] {
     gap: 20px;
     width: 100%;
     flex-wrap: wrap;
+    align-items: center;
 }
 .form-with-image > div{
     display: flex;

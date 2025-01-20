@@ -358,7 +358,15 @@ function populateFormFields(data) {
   document.getElementById("gender").value = data.gender || '';
   document.getElementById("phone").value = data.phone || '';
   document.getElementById("occupation").value = data.occupation || '';
+
+  // Attach image to the patient-image element
+  const patientImage = document.getElementById('patient-image');
+  if (patientImage) {
+    patientImage.src = `/uploads/beneficiary-img/${data.picture}` || '';
+    patientImage.alt = data.first_name + ' ' + data.last_name || 'Patient Image';
+  }
 }
+
 
 function printContainer(containerId) {
   var container = document.getElementById(containerId);

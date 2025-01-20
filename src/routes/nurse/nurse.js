@@ -172,18 +172,16 @@ router.get("/nurse/fetchManualData", async (req, res) => {
     return res.status(400).send("Invalid beneficiary ID");
   }
 
-  console.log("Parsed beneficiaryID:", beneficiaryID);
 
   try {
     // Query the beneficiary table in the pharmacy database
     const result = await pharmacyPool.query(
       `SELECT *
        FROM beneficiary 
-       WHERE beneficiary_id = $1`, 
-      [beneficiaryID]
+       WHERE beneficiary_id::TEXT ILIKE $1 ORDER BY beneficiary_id ASC LIMIT 10`, 
+      [`${beneficiaryID}%`]
     );
 
-    console.log("Query result:", result.rows);
 
     if (result.rows.length > 0) {
       return res.json({ success: true, data: result.rows });
